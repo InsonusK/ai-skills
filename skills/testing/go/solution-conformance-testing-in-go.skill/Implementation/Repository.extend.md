@@ -57,7 +57,7 @@ require (
 )
 ```
 
-`report-template/index.html` — fill and copy the base's template, `{project-name}` = the service name: [`templates/report-template/index.html`](skills/testing/core/solution-conformance-testing.skill/templates/report-template/index.html)
+`report-template/index.html` — fill and copy `templates/report-template/index.html` from the folder of the base skill [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]], `{project-name}` = the service name
 
 # Rule changes
 
@@ -75,10 +75,10 @@ require (
   - Violation: a `.gremlins.yaml` with `unleash.threshold.efficacy: 80` and a `report` run that passes no threshold flag — `gremlins` exits `10` ("below efficacy-threshold").
   - Risk: the report workflow goes red over a score, which the parent contract forbids in a `report` run.
   - Fix: keep the two flags in `tools/testing/kinds/mutation.sh`; `0` switches a threshold off and overrides the configuration file. Without any threshold `gremlins` exits `0` however many mutants survive.
-- `test-kind-mutation` must run `gremlins unleash --integration --timeout-coefficient 10`, with `GOFLAGS=-count=1` set for that process.
+- `test-kind-mutation` must run `gremlins unleash --integration --timeout-coefficient {n}`, with `GOFLAGS=-count=1` set for that process; `{n}` is `10` unless the project exports `MUTATION_TIMEOUT_COEFFICIENT`.
   - Violation: `gremlins unleash .` with neither.
   - Risk: without `--integration` gremlins runs only the tests of the mutated package, and that package has none — its scenarios run from the `test/` package beside it — so every mutant that compiles survives: measured on this skill's example, 4 of 7 mutants lived and the score was 42.9%, against 7 killed and 100% with the flag. Without `-count=1` the first, unmutated run can come from the `go test` cache in no time; gremlins sizes each mutant's timeout from it, and a suite that takes seconds then has every mutant reported as timed out (measured on `gw009-001`: 81 timed out, none killed).
-  - Fix: keep all three on the `gremlins` line of `tools/testing/kinds/mutation.sh`. The coefficient covers the opposite case — a suite that runs in under a second: with the default, 4–5 killable mutants of the cached- and persistent-service examples were reported as timed out; with 10, none. The price is the whole suite once per mutant.
+  - Fix: keep all three on the `gremlins` line of `tools/testing/kinds/mutation.sh`. The coefficient covers the opposite case — a suite that runs in under a second: with the default, 4–5 killable mutants of the cached- and persistent-service examples were reported as timed out; with 10, none. The price is the whole suite once per mutant. A project whose mutants still time out with 10 adds `export MUTATION_TIMEOUT_COEFFICIENT := {n}` to its `Makefile` above the `include` — never an edit of `mutation.sh`.
 - `test-kind-mutation` must run `gremlins` with git's `diff.relative` switched on (`GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=diff.relative GIT_CONFIG_VALUE_0=true`).
   - Violation: `gremlins unleash --diff origin/main .` in a module at `services/api/` of a larger repository.
   - Risk: git names changed files from the repository root, `gremlins` compares them with module-relative paths — nothing matches, every mutant is `SKIPPED`, and the run is green over nothing.
@@ -86,6 +86,10 @@ require (
 - `COVERPKG` must exclude `gen/` and `tools/` from both `test-kind-unit` and `test-kind-mutation`.
   - Risk: mutating generated protobuf/gRPC code or this solution's own reporting tools produces meaningless surviving-mutant noise with no product logic behind it.
   - Fix: keep the `grep -Ev '/(gen|tools)(/|$)'` filter on `COVERPKG` and pass it to both `go test -coverpkg` and `gremlins --coverpkg`.
+- `test-kind-mutation` must exclude every dot-directory from mutation, beside `gen/` and `tools/`.
+  - Violation: `--exclude-files` for `gen/` and `tools/` only, in a project with skills synced into `.agents/` or `.claude/`.
+  - Risk: `gremlins` walks the file tree, not the module's packages — the Go files of the synced skills' assets and examples are reported as mutants no test covers, and mutant coverage drops over code that is not the project's.
+  - Fix: keep `--exclude-files='(^|/)\.[^/]+/.*'` on the `gremlins` line of `tools/testing/kinds/mutation.sh`.
 - `test-kind-unit` must run `go test` with `CUCUMBER_JSON_DIR=$TEST_KIND_DIR/report/tests/cucumber` (the runner adds its `cucumber:` output per `cucumber-testing-in-go`), then render `$TEST_KIND_DIR/report/tests/livingdoc/` with the base's `tools/livingdoc/`, exactly as `tools/testing/kinds/unit.sh` does.
   - Risk: without it the Go project has no living-doc view, or renders one with a Go-specific tool.
   - Fix: copy `tools/testing/kinds/unit.sh` and `tools/livingdoc/` unchanged.

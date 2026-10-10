@@ -1,5 +1,6 @@
 # .github/workflows/pull-request.yml - validates a pull request into develop or master.
-# Source: skill devops-github-wf-pull-request. Copied verbatim; never edited in the project.
+# Source: skill devops-github-wf-pull-request. Copied; a project edits only the test
+# environment of the test-kind job.
 name: Pull request
 
 on:
@@ -83,6 +84,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-toolchain
       - run: make init
+      # Test environment - the one part of this file a project edits: steps here start what
+      # the tests need (a database, a broker), and the job's env names it for them.
       - run: make test-kind-${{ matrix.kind }}
 
   # What the project delivers is built and not published, so a Dockerfile or a package that

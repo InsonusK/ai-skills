@@ -53,7 +53,7 @@ See [`examples/`](skills/angular/architecture/design-system/plateau/plateau-desi
 
 Per [`delta-conflict-analysis.md`](skills/angular/architecture/delta-conflict-analysis.md) — canonical, no resolver:
 
-- [`design-system-repository`](registry/design-system-repository.md) — `solution-design-system-structure` `.create` + `-tokens` / `-components` / `-ui-testing` `.extend`. `FMN`/`TMN`, `source: ordering-only`, **N = 4 — benign** (a two-project repo where each of its four common solutions adds one distinct, member-disjoint piece — the analogue of `monolith-repository`).
+- [`design-system-repository`](skills/angular/architecture/design-system/registry/design-system-repository.md) — `solution-design-system-structure` `.create` + `-tokens` / `-components` / `-ui-testing` `.extend`. `FMN`/`TMN`, `source: ordering-only`, **N = 4 — benign** (a two-project repo where each of its four common solutions adds one distinct, member-disjoint piece — the analogue of `monolith-repository`).
 
 # Usecases
 

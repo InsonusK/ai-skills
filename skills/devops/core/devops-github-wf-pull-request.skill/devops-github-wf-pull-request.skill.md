@@ -12,7 +12,7 @@ tags:
 ---
 
 # Goal
-- `.github/workflows/pull-request.yml`, an unchanged copy of this skill's asset.
+- `.github/workflows/pull-request.yml`, a copy of this skill's asset that differs from it only in the test environment of the `test-kind` job.
 - The actions and targets the workflow calls present in the project: `check-changes`, `setup-toolchain`, `release`, `make init`, `make version-check`, the testing targets.
 - Branch protection of `develop` and `master` requiring the status `Pull request report` and no other job.
 
@@ -33,11 +33,11 @@ tags:
 
 ## MUST
 
-### Copy the workflow verbatim
-Copy [[./assets/.github/workflows/pull-request.yml|pull-request.yml]] verbatim to `.github/workflows/pull-request.yml`; do not modify it.
-- Violation: a job for the project's stack or delivery typed into the file.
+### Change only the test environment
+Copy [[./assets/.github/workflows/pull-request.yml|pull-request.yml]] to `.github/workflows/pull-request.yml` and change nothing in it but the test environment of the `test-kind` job: steps between `make init` and the test step that start what the tests need, and `env` entries of that job, per [[skills/devops/core/devops-ci-orchestration.skill/devops-ci-orchestration.skill.md#Start test services in the test job|devops-ci-orchestration]].
+- Violation: a job for the project's stack or delivery typed into the file; a trigger, a job condition, or a `make` call changed.
 - Risk: the file stops being the one every project has, and a fix in the skill no longer applies to it.
-- Fix: restore the file; what differs between projects belongs in the `setup-toolchain` and `release` actions and behind `make`.
+- Fix: restore the file and re-add the test environment; what differs between projects belongs in the `setup-toolchain` and `release` actions and behind `make`.
 
 ### Provide what the workflow calls
 Before the first run, apply [[skills/devops/core/devops-ci-changes.skill.md|devops-ci-changes]], [[skills/devops/core/devops-ci-toolchain.skill.md|devops-ci-toolchain]], [[skills/devops/core/devops-project-version.skill/devops-project-version.skill.md|devops-project-version]], and [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]], take the project's release action per [[skills/devops/core/devops-github-wf-release.skill/devops-github-wf-release.skill.md|devops-github-wf-release]], and give the `Makefile` an `init` target.
@@ -55,7 +55,7 @@ Set branch protection to require the status `Pull request report`, never a test 
 Pass no `DELTA_BASE` to the test kinds.
 - Violation: `DELTA_BASE: origin/${{ github.base_ref }}` added to the `test-kind` job.
 - Risk: the mutation kind runs over the changed code and its result blocks the merge, which teaches authors to weaken assertions instead of reading the report.
-- Fix: leave the job's `env` as the template has it; mutation testing runs after the merge to `master`.
+- Fix: add no `DELTA_BASE` to the job's `env`; mutation testing runs after the merge to `master`.
 
 ### Raise the version in the pull request into master
 Raise the version in the same pull request that changes `code` or `docker` files, when it goes into `master`.
@@ -69,7 +69,7 @@ Open a pull request from a separate branch for every change.
 - Fix: create a branch, push it, open the pull request.
 
 # Check list
-- [ ] `.github/workflows/pull-request.yml` is byte-identical to this skill's asset.
+- [ ] `.github/workflows/pull-request.yml` differs from this skill's asset only in the test environment of the `test-kind` job.
 - [ ] `check-changes`, `setup-toolchain`, `release`, `tools/version/`, the testing targets, and `make init` exist and run locally.
 - [ ] Branch protection requires `Pull request report` only.
 - [ ] The `test-kind` job sets `TEST_RUN_PURPOSE: check` and no `DELTA_BASE`.

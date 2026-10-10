@@ -4,7 +4,7 @@ description: Sets up the Go side of the Cucumber/coverage/mutation quality gate 
 whenToUse: when setting up or reviewing the test tooling of a Go module that must prove conformance to solution-conformance-testing's gate, or wiring coverage, mutation testing, and the scenario inventory into a Go project's Makefile/CI pipeline
 domain: skill
 type: architecture
-version: 20261010120000
+version: 20261010180000
 tags:
   - skill/architecture/solution
   - solution/conformance-testing-in-go
@@ -89,7 +89,7 @@ FILES:
 - `make test-and-report TEST_RUN_PURPOSE=check` — mutation skipped without a delta base, coverage gathered but not published.
 - Real delta mutation in an isolated two-commit repository changes the scheme predicate: 2 mutants killed, 16 skipped, score 100%; only the changed checker condition is mutated. `go test -race -count=5` passes both scenario packages.
 - The `tests` link opens the living doc; every scenario appears with all tags and excluded reasons, plus the status legend. `result/scenarios.json` remains the tag-check and rendering input; there is no scenarios report directory.
-- Mutation keeps `--integration`, `GOFLAGS=-count=1`, and `--timeout-coefficient 10`: tests run in sibling `test/` packages, so package-only mutation runs would measure little.
+- Mutation keeps `--integration`, `GOFLAGS=-count=1`, and `--timeout-coefficient` (10, or the project's `MUTATION_TIMEOUT_COEFFICIENT`): tests run in sibling `test/` packages, so package-only mutation runs would measure little.
 
 # Rules
 
