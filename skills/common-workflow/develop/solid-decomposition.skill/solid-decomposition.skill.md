@@ -18,11 +18,10 @@ tags:
 - Give the user a checkpoint to confirm the decomposition before the agent generates any code.
 - Make every unit's usage scenario and test cases explicit and discoverable.
 - Keep a compact, per-feature index of capabilities, units, and their test cases — generated once and updated, not re-derived by reading the whole codebase.
-- Prefer automated diagram rendering over agent-drawn diagrams.
 
 # Scope
 This skill governs the process of decomposing and confirming design, independent of language or stack. It does not replace stack-specific conventions:
-- If the target stack has a plateau skill (for example `[plateau-plateau-python-cli](skills/python/architecture/plateau/plateau-python-cli/plateau-plateau-python-cli.skill.md)`, which defines `module-service-service` and `module-functions-function` templates), use its module templates to shape the file/class for each confirmed unit.
+- If the project is built from a plateau skill, use its module templates to shape the file/class for each confirmed unit.
 - Write each unit's test cases as scenarios in its `.feature` file, per [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md)'s scenarios-first protocol and [cucumber-testing](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md) — do not keep a separate test case list.
 - Use [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md) to decide what must be covered.
 - Use [test-driven-development](skills/testing/core/test-driven-development.skill/test-driven-development.skill.md) to decide the order of writing tests vs. implementation for each unit (step 4-5 below): new units get full red-green-refactor, refactors of existing units need a green baseline first, and local/mechanical fixes inside an already-decomposed unit don't need test-first ceremony.
@@ -35,7 +34,6 @@ This skill governs the process of decomposing and confirming design, independent
 - Depend on abstractions the caller defines, not on concrete implementations of collaborators (Dependency Inversion) — list what a unit depends on as roles, not classes.
 - The decomposition list is a checkpoint, not documentation-after-the-fact: show it to the user and wait for confirmation before writing code.
 - Test cases are attached to the unit at design time, not discovered after the code exists.
-- A diagram that a human can regenerate automatically is more trustworthy than one the agent drew by hand.
 
 # Workflow
 
@@ -49,8 +47,7 @@ This skill governs the process of decomposing and confirming design, independent
 4. **Attach test cases.** For each confirmed unit, write its cases as category-tagged scenarios in a `.feature` file, each tagged `@status/todo` until it runs, following [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md) rules for what to cover.
 5. **Generate code.** Implement exactly the confirmed units, one responsibility per unit, following [test-driven-development](skills/testing/core/test-driven-development.skill/test-driven-development.skill.md) for the test/implementation order: a brand-new unit gets full red-green-refactor per test case; a unit created by refactoring existing code needs a green baseline before restructuring. Apply the stack's plateau/module skill if one exists for the unit's kind.
 6. **Validate.** Run [architect-validator](skills/testing/core/architect-validator.skill.md) against the generated files.
-7. **Update the feature index.** Create or update `docs/features/{feature}.md` from [feature-index.template.md](skills/common-workflow/develop/solid-decomposition.skill/templates/feature-index.template.md): capabilities, units, links to their `.feature` files, and frontmatter `depends_on` links to every unit touched.
-8. **Render the diagram.** Run the `diagram-renderer` CLI against `docs/features/{feature}.md` (or the `docs/features/diagrams.yaml` config if one exists) to produce the `.canvas` diagram. Do not draw the diagram by hand.
+7. **Update the feature index.** Create or update `docs/features/{feature}.md` from [feature-index.template.md](skills/common-workflow/develop/solid-decomposition.skill/templates/feature-index.template.md): capabilities, units, and links to their `.feature` files.
 
 ## Decomposition list format
 ```
@@ -78,10 +75,7 @@ This skill governs the process of decomposing and confirming design, independent
 - Keep the orchestrator/entry point free of business logic; it only calls units in sequence and never branches on business rules that belong to a unit.
 - Create or update `docs/features/{feature}.md` for every feature that added or changed units.
   - Risk: without it, nobody can see what a feature is built from without re-reading all the code.
-  - Fix: maintain `docs/features/{feature}.md` with links to units and their test cases, and an auto-rendered diagram via `diagram-renderer`.
-- Render feature diagrams with `diagram-renderer`; never hand-draw them as mermaid/ASCII in the index document.
-  - Risk: a hand-drawn diagram silently drifts from the real code and nobody notices.
-  - Fix: derive the diagram from `depends_on` frontmatter links via `diagram-renderer`.
+  - Fix: maintain `docs/features/{feature}.md` with links to units and their test cases.
 - Run [architect-validator](skills/testing/core/architect-validator.skill.md) after generating or changing units belonging to a plateau.
 
 ## SHOULD
@@ -96,5 +90,4 @@ This skill governs the process of decomposing and confirming design, independent
 - [ ] Every confirmed unit has its test cases as category-tagged scenarios in a `.feature` file.
 - [ ] The orchestrator/entry point contains no business logic.
 - [ ] `docs/features/{feature}.md` exists and links every touched unit and its test cases.
-- [ ] The feature diagram was produced by `diagram-renderer`, not drawn by hand.
 - [ ] `architect-validator` was run after code generation for units belonging to a plateau.
