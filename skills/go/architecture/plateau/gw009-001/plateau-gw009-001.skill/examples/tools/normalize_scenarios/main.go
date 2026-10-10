@@ -43,7 +43,25 @@ var scenarioCategories = map[string]bool{
 var reasonComment = regexp.MustCompile(`^\s*#\s*(?:todo|broken):\s*(.*?)\s*$`)
 
 // skipDirs are never scanned for .feature files.
-var skipDirs = map[string]bool{".git": true, "node_modules": true, "vendor": true, "tmp": true, "public": true}
+var skipDirs = map[string]bool{"node_modules": true, "vendor": true, "tmp": true, "public": true}
+
+// outsideProject reports whether a directory holds something other than this project, the
+// boundary `go test ./...` draws: a dot-directory (skills synced into .agents/ or .claude/),
+// a nested Go module, or a nested repository - a git submodule has a .git entry of its own.
+func outsideProject(path string, d fs.DirEntry) bool {
+	if path == "." {
+		return false
+	}
+	if skipDirs[d.Name()] || strings.HasPrefix(d.Name(), ".") {
+		return true
+	}
+	for _, marker := range []string{"go.mod", ".git"} {
+		if _, err := os.Stat(filepath.Join(path, marker)); err == nil {
+			return true
+		}
+	}
+	return false
+}
 
 type entry struct {
 	Feature   string   `json:"feature"`
@@ -87,7 +105,7 @@ func run(eventsPath string) error {
 		if err != nil {
 			return err
 		}
-		if d.IsDir() && skipDirs[d.Name()] {
+		if d.IsDir() && outsideProject(path, d) {
 			return filepath.SkipDir
 		}
 		if d.IsDir() || !strings.HasSuffix(path, ".feature") {

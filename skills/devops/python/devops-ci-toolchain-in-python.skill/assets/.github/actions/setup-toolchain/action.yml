@@ -9,3 +9,7 @@ runs:
       with:
         python-version-file: pyproject.toml
         cache: pip
+    # Node for the living-doc renderer of the test report - every stack's report needs it.
+    - uses: actions/setup-node@v4
+      with:
+        node-version-file: tools/livingdoc/package.json

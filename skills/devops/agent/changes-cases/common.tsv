@@ -28,3 +28,12 @@ tools/testing/README.md	docs
 config/app.yaml	code
 migrations/0001_init.sql	code
 scripts/seed.sh	code
+docs/integration/api/proto/service.proto	code
+docs/integration/api/openapi/embed.go	code
+docs/integration/api/openapi/service.swagger.json	code
+docs/integration/client/billing/openapi.json	code
+docs/integration/api/README.md	-
+docs/architecture/overview.md	docs
+docs/img/schema.png	docs
+docs/notes.txt	docs
+docs/integrations-guide/a.txt	docs

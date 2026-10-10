@@ -100,7 +100,7 @@ A kind writes only below `$TEST_KIND_DIR` = `$TEST_WORK_DIR/kinds/{kind}/`:
 | `result/mutation-test.json` | `{ "killed": <int>, "survived": <int>, "timedout": <int>, "noCoverage": <int>, "score": <number> }` | `mutation` |
 | `report/tests/` | the tool's native test report; its entry page forwards to `livingdoc/` when the tool wrote none | `unit` — `kind_livingdoc` |
 | `report/tests/cucumber/` | the runner's standard Cucumber report — `*.json` (classic Cucumber JSON) or `*.ndjson` (Cucumber Messages), one protocol per stack | `unit` |
-| `report/tests/livingdoc/` | living-doc HTML rendered from `report/tests/cucumber/` by `tools/livingdoc/render.mjs` | `unit` (skipped when `npm` is unavailable) |
+| `report/tests/livingdoc/` | living-doc HTML rendered from `report/tests/cucumber/` by `tools/livingdoc/render.mjs` | `unit` (skipped, with the reason printed, when `npm` is unavailable or Node is older than 22) |
 | `report/coverage/` | the tool's native coverage report | `unit` (`report` only) |
 | `report/mutation/` | the tool's native mutation report | `mutation` |
 
