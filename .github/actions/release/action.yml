@@ -1,0 +1,30 @@
+# .github/actions/release/action.yml - delivers nothing - the release of this project is its tag and GitHub Release
+# Source: skill devops-release-tag-only. Copied verbatim; never edited in the project.
+name: release
+description: delivers nothing - the release of this project is its tag and GitHub Release
+inputs:
+  channel:
+    description: check - build and publish nothing; snapshot - a build of develop; release - a build of master
+    required: true
+  version:
+    description: The project's version, MAJOR.MINOR.PATCH
+    required: true
+  timestamp:
+    description: UTC time of the run, YYYYMMDDhhmmss - what makes a snapshot's name unique
+    required: true
+  registry-token:
+    description: Not used
+    required: false
+  snapshot-registry-token:
+    description: Not used
+    required: false
+outputs:
+  notes:
+    description: Lines for the text of the GitHub Release
+    value: ${{ steps.names.outputs.notes }}
+runs:
+  using: composite
+  steps:
+    - id: names
+      shell: bash
+      run: echo "notes=" >> "$GITHUB_OUTPUT"
