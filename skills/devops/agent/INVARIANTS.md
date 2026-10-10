@@ -36,7 +36,7 @@ Input is environment variables that state facts about the run: `DELTA_BASE` and 
 - `.github/actions/check-changes/action.yml` — one ready file per stack, copied verbatim. Outputs `code`, `test`, `ci`, `docker`, `docs`: `code` — what goes into the artifact, with the manifest and the version source; `test` — tests, features, `tools/testing/**`; `ci` — `.github/**`, `tools/version/**`, `Makefile`; `docker` — `Dockerfile`, `.dockerignore`; `docs` — `docs/**`, `*.md`. A file is in exactly one category.
 - `.github/actions/setup-toolchain/action.yml` — one ready file per stack, copied verbatim.
 - `.github/actions/release/action.yml` — what the project delivers, one ready file from the skill of that delivery. Inputs `channel` (`check`, `snapshot`, `release`), `version`, `timestamp`, two registry tokens; output `notes`; files for the Release in `dist/release`.
-- `.github/workflows/pull-request.yml`, `release.yml` — copied verbatim, the same in every project.
+- `.github/workflows/pull-request.yml`, `release.yml` — copied, the same in every project except the test environment of the `test-kind` job: the steps that start what the tests need and that job's `env`.
 
 ## 4. The processes
 

@@ -9,6 +9,7 @@ tags:
   - github-actions
 adr:
   - adr/make-for-what-changes.md
+  - adr/test-environment-in-workflow.md
 ---
 
 # Goal
@@ -53,7 +54,7 @@ Pass a workflow's knowledge of the run as `TEST_RUN_PURPOSE` (`check` or `report
 - Fix: set the two variables in the workflow; let each script decide what they mean for it.
 
 ### Copy what is decided once
-Take the change-detection action, the toolchain action, the release action, and both workflow files from the skills that ship them, and change only what a skill lists as a placeholder.
+Take the change-detection action, the toolchain action, the release action, and both workflow files from the skills that ship them, and change only what a skill lists as a placeholder or as the test environment.
 - Violation: path patterns or a tag string typed into a workflow from memory.
 - Risk: each project gets a slightly different copy, and a fix in the skill reaches none of them.
 - Fix: copy the file; propose a needed deviation to the user and fold it back into the skill's file.
@@ -64,8 +65,10 @@ Install the stack's toolchain with the `setup-toolchain` action of [[skills/devo
 - Risk: the list of what a checkout needs lives in the workflow, and a developer's machine is prepared differently.
 - Fix: keep one setup step for the toolchain and its cache; move every other preparation into the `init` target.
 
-### Start test services from the dev container's compose file
-Start a database or another service the tests need from `.devcontainer/docker-compose.yml`, before the test step.
+### Start test services in the test job
+Prepare what the tests need beyond the toolchain — a database, a broker, another service — in the `test-kind` job of both workflows: steps between `make init` and the test step, and `env` entries of that job. This is the one part of a copied workflow a project writes itself; how it is done is the project's choice, as long as the `make` test targets pass in CI and in the dev container alike. Decision: [[./adr/test-environment-in-workflow.md|test-environment-in-workflow]].
+
+Where the dev container already describes the service in `.devcontainer/docker-compose.yml`, start it from that file:
 ```yaml
       - run: docker compose --file .devcontainer/docker-compose.yml up --detach --wait {test-services}
 ```
@@ -78,6 +81,6 @@ Start a database or another service the tests need from `.devcontainer/docker-co
 - [ ] Every test, report, and version step is a `make` target of [[#Call only the caller contract|The caller contract]].
 - [ ] No workflow or action names a test tool, a test kind, a coverage or mutation switch, or a version file.
 - [ ] The workflow sets only `TEST_RUN_PURPOSE`, `DELTA_BASE`, and the two test directories; no script reads a `GITHUB_*` variable.
-- [ ] The three actions and the two workflow files are copies of their skills' files, differing only in listed placeholders.
+- [ ] The three actions and the two workflow files are copies of their skills' files, differing only in listed placeholders and the test environment of the `test-kind` job.
 - [ ] Preparation beyond the toolchain is in `make init`.
-- [ ] Services for tests are started from `.devcontainer/docker-compose.yml`; the workflow has no `services:` block.
+- [ ] Services for tests are started in the `test-kind` job, from `.devcontainer/docker-compose.yml` where it describes them; no service is described a second time.
