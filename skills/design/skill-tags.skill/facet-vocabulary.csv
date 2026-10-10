@@ -4,6 +4,7 @@ stack,stack/python,Python ecosystem
 stack,stack/dotnet,".NET ecosystem — covers C#, F#, and VB.NET alike; never add a competing language-name tag (e.g. csharp) for the same axis"
 stack,stack/typescript,TypeScript/JavaScript ecosystem
 stack,stack/ansible,Ansible ecosystem
+stack,stack/go,Go ecosystem
 framework,framework/angular,Angular framework (pairs with stack/typescript)
 framework,framework/aspnet-core,ASP.NET Core framework (pairs with stack/dotnet)
 framework,framework/ef-core,Entity Framework Core ORM (pairs with stack/dotnet)

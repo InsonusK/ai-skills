@@ -32,7 +32,7 @@ Standardize on Stryker Mutator for both C#/.NET (`dotnet-stryker`) and Angular/T
 
 - One mutation-testing tool family (Stryker) covers both .NET and Angular/TypeScript, so a full-stack system built from both gets one consistent report shape and one set of operational quirks to learn.
 - Mutmut is a mature, actively maintained, Python-native tool — no need to force a JVM- or Node-based mutation tool onto a Python project.
-- Gremlins is Go-native and ships a `--diff` flag that maps directly onto this approach's `ONLY_DELTA`/`DELTA_BASE` toggle, with no extra scripting to compute the changed-file set.
+- Gremlins is Go-native and ships a `--diff` flag that maps directly onto this approach's `check` run scoped by `DELTA_BASE`, with no extra scripting to compute the changed-file set.
 - The decision is recorded once here instead of being made independently (and possibly inconsistently) by each stack's own extending solution.
 
 ### Costs

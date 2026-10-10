@@ -67,10 +67,10 @@ require (
   - Fix: always pass `-coverpkg`/`-coverprofile` to `go test`; gate only the `go tool cover`/`$TEST_KIND_DIR/result/coverage-test.json` steps on `TEST_RUN_PURPOSE`, and remove `report/coverage/` in a `check` run so no coverage report is published without its badge.
 - `test-kind-unit` must run `tools/normalize_scenarios` after `go test` whether or not a test failed, and exit with the test run's own status afterwards.
   - Risk: with `set -o pipefail` a failing `go test` ends the pipeline, so `$TEST_KIND_DIR/result/scenarios.json` would be missing or stale exactly on the red run it should describe.
-  - Fix: capture the pipeline's status with `|| status=$$?`, run the scenario normalizer and the coverage step in the same shell, then `exit $$status`.
-- `test-kind-mutation` must `exit $$code` with `gremlins`' own exit status after `tools/normalize_mutation` has written its normalized result — never swallow it.
+  - Fix: capture the pipeline's status with `|| status=$?` in `tools/testing/kinds/unit.sh`, run the scenario normalizer and the coverage step after it, then `exit "$status"`.
+- `test-kind-mutation` must `exit "$code"` with `gremlins`' own exit status after `tools/normalize_mutation` has written its normalized result — never swallow it.
   - Risk: swallowing the exit code turns a real mutation-testing failure into a silently green CI step.
-  - Fix: capture `gremlins`' exit code before running the normalizer, and `exit` with it at the end of the target.
+  - Fix: capture `gremlins`' exit code before running the normalizer, and `exit` with it on the last line of `tools/testing/kinds/mutation.sh`.
 - `test-kind-mutation` must pass `--threshold-efficacy 0 --threshold-mcover 0` to `gremlins` in a `report` run, and leave the project's own thresholds in force in a `check` run.
   - Violation: a `.gremlins.yaml` with `unleash.threshold.efficacy: 80` and a `report` run that passes no threshold flag — `gremlins` exits `10` ("below efficacy-threshold").
   - Risk: the report workflow goes red over a score, which the parent contract forbids in a `report` run.
@@ -85,7 +85,7 @@ require (
   - Fix: keep the three variables on the `gremlins` line of `tools/testing/kinds/mutation.sh`; they change nothing when `go.mod` is in the repository root.
 - `COVERPKG` must exclude `gen/` and `tools/` from both `test-kind-unit` and `test-kind-mutation`.
   - Risk: mutating generated protobuf/gRPC code or this solution's own reporting tools produces meaningless surviving-mutant noise with no product logic behind it.
-  - Fix: keep the `grep -Ev '/(gen|tools)(/|$$)'` filter on `COVERPKG` and pass it to both `go test -coverpkg` and `gremlins --coverpkg`.
+  - Fix: keep the `grep -Ev '/(gen|tools)(/|$)'` filter on `COVERPKG` and pass it to both `go test -coverpkg` and `gremlins --coverpkg`.
 - `test-kind-unit` must run `go test` with `CUCUMBER_JSON_DIR=$TEST_KIND_DIR/report/tests/cucumber` (the runner adds its `cucumber:` output per `cucumber-testing-in-go`), then render `$TEST_KIND_DIR/report/tests/livingdoc/` with the base's `tools/livingdoc/`, exactly as `tools/testing/kinds/unit.sh` does.
   - Risk: without it the Go project has no living-doc view, or renders one with a Go-specific tool.
   - Fix: copy `tools/testing/kinds/unit.sh` and `tools/livingdoc/` unchanged.

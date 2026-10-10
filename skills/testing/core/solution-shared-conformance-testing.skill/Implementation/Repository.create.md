@@ -3,7 +3,7 @@ description: Shared conformance-spec project holding only .feature files, reused
 element_kind: repository
 change_kind: create
 tags:
-  - solution/component-conformance-testing
+  - solution/shared-conformance-testing
   - element/repository
 ---
 

@@ -1,32 +1,26 @@
 ---
+version: 20261010120000
 name: solid-decomposition
-description: Decompose a new piece of business logic into SOLID-compliant services/functions, confirm the decomposition with the user before generating code, and produce a compact per-feature index of usecases and test cases
+description: Decompose a new piece of business logic into SOLID-compliant, single-responsibility units and confirm the decomposition with the user before generating code
 whenToUse: before implementing any new business logic — a new service, function, command, or class that does more than parse input or wire dependencies. Apply it before writing code, not after.
 tags:
   - skill/develop
-  - concern/testing/unit
   - usecase
   - concern/architecture
-  - concern/testing
   - concern/coding
   - stack
 
 ---
 
 # Goal
-- Force decomposition of a task into small, single-responsibility units before code is written.
-- Give the user a checkpoint to confirm the decomposition before the agent generates any code.
-- Make every unit's usage scenario and test cases explicit and discoverable.
-- Keep a compact, per-feature index of capabilities, units, and their test cases — generated once and updated, not re-derived by reading the whole codebase.
-- Prefer automated diagram rendering over agent-drawn diagrams.
+- A decomposition list of small, single-responsibility units, written before any code.
+- The user's confirmation of that list before the agent generates code.
+- An orchestrator that only coordinates units, and units that depend on roles instead of concrete classes.
 
 # Scope
-This skill governs the process of decomposing and confirming design, independent of language or stack. It does not replace stack-specific conventions:
-- If the target stack has a plateau skill (for example `[plateau-plateau-python-cli](skills/python/architecture/plateau/plateau-python-cli/plateau-plateau-python-cli.skill.md)`, which defines `module-service-service` and `module-functions-function` templates), use its module templates to shape the file/class for each confirmed unit.
-- Write each unit's test cases as scenarios in its `.feature` file, per [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md)'s scenarios-first protocol and [cucumber-testing](skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md) — do not keep a separate test case list.
-- Use [code-coverage](skills/testing/core/code-coverage.skill.md) to decide what must be covered.
-- Use [test-driven-development](skills/testing/core/test-driven-development.skill/test-driven-development.skill.md) to decide the order of writing tests vs. implementation for each unit (step 4-5 below): new units get full red-green-refactor, refactors of existing units need a green baseline first, and local/mechanical fixes inside an already-decomposed unit don't need test-first ceremony.
-- Use [architect-validator](skills/testing/core/architect-validator.skill.md) as the final gate after code is generated.
+This skill governs how new business logic is split into units, independent of language or stack. It does not replace stack-specific conventions:
+- If the project is built from a plateau skill, use its module templates to shape the file/class for each confirmed unit.
+- The order of writing tests and implementation for each unit is set by [test-driven-development](skills/testing/core/test-driven-development.skill/test-driven-development.skill.md).
 
 # Core Principle
 - Decompose before you code. Never generate the implementation of new business logic in the same step as deciding its shape.
@@ -34,8 +28,6 @@ This skill governs the process of decomposing and confirming design, independent
 - The orchestrator (Command/controller/entry point) only coordinates calls to units; it must not contain business logic itself.
 - Depend on abstractions the caller defines, not on concrete implementations of collaborators (Dependency Inversion) — list what a unit depends on as roles, not classes.
 - The decomposition list is a checkpoint, not documentation-after-the-fact: show it to the user and wait for confirmation before writing code.
-- Test cases are attached to the unit at design time, not discovered after the code exists.
-- A diagram that a human can regenerate automatically is more trustworthy than one the agent drew by hand.
 
 # Workflow
 
@@ -46,11 +38,7 @@ This skill governs the process of decomposing and confirming design, independent
    - `depends_on` — the roles/abstractions it needs (not concrete classes)
    - `usage_scenario` — 1-3 sentences: who calls it, when, with what result
 3. **Confirm with the user.** Present the draft decomposition (see [decomposition list format](#decomposition-list-format)) before writing any code. Do not proceed until the user confirms or edits it.
-4. **Attach test cases.** For each confirmed unit, write its cases as category-tagged scenarios in a `.feature` file, each tagged `@status/todo` until it runs, following [code-coverage](skills/testing/core/code-coverage.skill.md) rules for what to cover.
-5. **Generate code.** Implement exactly the confirmed units, one responsibility per unit, following [test-driven-development](skills/testing/core/test-driven-development.skill/test-driven-development.skill.md) for the test/implementation order: a brand-new unit gets full red-green-refactor per test case; a unit created by refactoring existing code needs a green baseline before restructuring. Apply the stack's plateau/module skill if one exists for the unit's kind.
-6. **Validate.** Run [architect-validator](skills/testing/core/architect-validator.skill.md) against the generated files.
-7. **Update the feature index.** Create or update `docs/features/{feature}.md` from [feature-index.template.md](skills/common-workflow/develop/solid-decomposition.skill/templates/feature-index.template.md): capabilities, units, links to their `.feature` files, and frontmatter `depends_on` links to every unit touched.
-8. **Render the diagram.** Run the `diagram-renderer` CLI against `docs/features/{feature}.md` (or the `docs/features/diagrams.yaml` config if one exists) to produce the `.canvas` diagram. Do not draw the diagram by hand.
+4. **Generate code.** Implement exactly the confirmed units, one responsibility per unit, in the test/implementation order of [test-driven-development](skills/testing/core/test-driven-development.skill/test-driven-development.skill.md).
 
 ## Decomposition list format
 ```
@@ -72,29 +60,14 @@ This skill governs the process of decomposing and confirming design, independent
   - Risk: nobody can tell what the service does or which cases it must handle; changes to email logic risk breaking data fetching.
   - Fix: split into `ReportDataFetcher`, `ReportFormatter`, `ReportMailer` (Functions or Services depending on state), orchestrated by a `Command`.
 - Express `depends_on` as roles/abstractions the unit needs, not concrete classes it constructs itself.
-- Attach test cases — category-tagged scenarios in a `.feature` file — to every confirmed unit before or immediately after generating its code.
-  - Risk: without test cases attached at design time, nobody knows whether current behavior is correct or which cases are missing, and regressions go unnoticed.
-  - Fix: write the unit's `.feature` file at design time; a scenario not implemented yet carries `@status/todo`.
 - Keep the orchestrator/entry point free of business logic; it only calls units in sequence and never branches on business rules that belong to a unit.
-- Create or update `docs/features/{feature}.md` for every feature that added or changed units.
-  - Risk: without it, nobody can see what a feature is built from without re-reading all the code.
-  - Fix: maintain `docs/features/{feature}.md` with links to units and their test cases, and an auto-rendered diagram via `diagram-renderer`.
-- Render feature diagrams with `diagram-renderer`; never hand-draw them as mermaid/ASCII in the index document.
-  - Risk: a hand-drawn diagram silently drifts from the real code and nobody notices.
-  - Fix: derive the diagram from `depends_on` frontmatter links via `diagram-renderer`.
-- Run [architect-validator](skills/testing/core/architect-validator.skill.md) after generating or changing units belonging to a plateau.
 
 ## SHOULD
 - Reuse an existing unit instead of creating a near-duplicate when one already covers the responsibility.
-- Keep `docs/features/{feature}.md` short: links and one-line summaries, not copies of code or full test bodies.
 - Split a unit further if its `usage_scenario` requires describing more than one caller-facing outcome.
 
 # Check list
 - [ ] The decomposition list was shown to and confirmed by the user before code was written.
 - [ ] Every unit has exactly one responsibility sentence with no "and".
 - [ ] Every unit's `depends_on` lists roles/abstractions, not concrete classes.
-- [ ] Every confirmed unit has its test cases as category-tagged scenarios in a `.feature` file.
 - [ ] The orchestrator/entry point contains no business logic.
-- [ ] `docs/features/{feature}.md` exists and links every touched unit and its test cases.
-- [ ] The feature diagram was produced by `diagram-renderer`, not drawn by hand.
-- [ ] `architect-validator` was run after code generation for units belonging to a plateau.

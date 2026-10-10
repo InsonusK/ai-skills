@@ -4,7 +4,7 @@ description: Sets up the Go side of the Cucumber/coverage/mutation quality gate 
 whenToUse: when setting up or reviewing the test tooling of a Go module that must prove conformance to solution-conformance-testing's gate, or wiring coverage, mutation testing, and the scenario inventory into a Go project's Makefile/CI pipeline
 domain: skill
 type: architecture
-version: 20261010000000
+version: 20261010120000
 tags:
   - skill/architecture/solution
   - solution/conformance-testing-in-go

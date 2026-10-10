@@ -4,10 +4,10 @@ description: Defines how a group of Cucumber test cases that must hold identical
 whenToUse: when the same functional guarantee must be proven identically by two or more components/implementations of a system, or when deciding whether a group of Cucumber scenarios should move out of one project into a shared, reusable spec project
 domain: skill
 type: architecture
-version: 1
+version: 2
 tags:
   - skill/architecture/solution
-  - solution/component-conformance-testing
+  - solution/shared-conformance-testing
   - stack
   - concern/testing
   - concern/testing/bdd
