@@ -55,7 +55,7 @@ helm status {service-name} -n {namespace}
 kubectl get pods -n {namespace} -l app.kubernetes.io/instance={service-name}
 kubectl logs -n {namespace} -l app.kubernetes.io/instance={service-name},role!=migrate --tail=50
 kubectl port-forward -n {namespace} svc/{service-name} {host-port}:80
-curl http://localhost:{host-port}/health-check
+curl http://localhost:{host-port}/health/ready
 ```
 
 ## Update to a new version

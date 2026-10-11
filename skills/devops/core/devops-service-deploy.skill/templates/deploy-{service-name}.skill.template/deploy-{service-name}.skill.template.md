@@ -12,7 +12,7 @@ tags:
 ---
 
 # Goal
-- {service-name} running from the image `{registry}/{service-name}:{version}` on the chosen path, answering `/health-check` with 200.
+- {service-name} running from the image `{registry}/{service-name}:{version}` on the chosen path, answering `/health/ready` with 200.
 - Every secret of [[#Supply the configuration of this table]] created in the platform's secret store, none in a file of the repository.
 
 # Core Principle
@@ -57,8 +57,8 @@ Run the migration job of the path and wait for it to complete before the service
 - Risk: the new code runs against the old schema.
 - Fix: the wait step of the guide — on Docker Stack the job is deployed and waited for separately, because Swarm ignores `depends_on`.
 
-### Verify with /health-check
-After every deploy or update, confirm that `/health-check` returns 200 on the deployed service.
+### Verify with /health/ready
+After every deploy or update, confirm that `/health/ready` returns 200 on the deployed service.
 - Risk: a container that started and a service that works are not the same thing.
 - Fix: the verification commands at the end of each guide.
 
@@ -73,4 +73,4 @@ After every deploy or update, confirm that `/health-check` returns 200 on the de
 - [ ] The deployed image tag is `{version}`, built from the current code.
 - [ ] Every secret exists in the secret store and is passed as a `_FILE` variable.
 - [ ] The migration job completed before the service started.
-- [ ] `/health-check` returns 200 on the deployed service.
+- [ ] `/health/ready` returns 200 on the deployed service.

@@ -53,7 +53,7 @@ docker stack deploy -c docker-stack.example.yml --with-registry-auth {service-na
 docker stack services {service-name}
 docker stack ps {service-name}
 docker service logs --tail=50 {service-name}_{service-name}
-curl http://localhost:{host-port}/health-check
+curl http://localhost:{host-port}/health/ready
 ```
 
 ## Update to a new version

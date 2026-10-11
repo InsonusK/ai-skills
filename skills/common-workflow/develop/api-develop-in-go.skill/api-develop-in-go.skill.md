@@ -73,7 +73,7 @@ Copy [generated.sh](./assets/tools/testing/kinds/generated.sh) verbatim to `tool
 - Fix: the kind generates into a scratch directory and compares; when it fails, run `make proto-gen` and commit the result. It needs the layout of [Generate the spec from the proto file](#generate-the-spec-from-the-proto-file) and has no badge.
 
 ### Keep the contract's routes in one list
-Register every HTTP route of the contract from one list in `internal/api/http/server.go` and expose its patterns as `ContractRoutes()`, leaving the health, spec, and Swagger UI routes outside the list.
+Register every HTTP route of the contract from one list in `internal/api/http/server.go` and expose its patterns as `ContractRoutes()`, leaving the spec and Swagger UI routes and the health routes of [devops-service-deploy](../../../devops/core/devops-service-deploy.skill/devops-service-deploy.skill.md) outside the list.
 
 ```go
 type contractRoute struct {
@@ -91,7 +91,7 @@ func (s *Server) contractRoutes() []contractRoute { /* {"POST /v1/...", s.handle
 func (s *Server) ContractRoutes() []string
 ```
 
-- Violation: a contract route registered by its own `mux.HandleFunc` line beside the list; `GET /health` or the spec route inside the list.
+- Violation: a contract route registered by its own `mux.HandleFunc` line beside the list; `GET /health`, `GET /health/live`, `GET /health/ready`, or the spec route inside the list.
 - Risk: a route outside the list is invisible to the scenario that compares the list with the spec; a non-contract route inside it fails that scenario for an operation the spec rightly does not have.
 - Fix: `Handler()` loops over `contractRoutes()` and registers the routes outside the contract separately.
 
