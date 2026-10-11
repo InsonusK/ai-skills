@@ -107,9 +107,13 @@ else
 fi
 
 # 9b. Every shipped composite action parses, names a shell on every run step, and a release
-#     action keeps the contract the workflows call.
+#     action keeps the contract the workflows call. A job that calls check-changes on a pull
+#     request holds pull-requests: read.
 if [ -d "$A/node_modules/yaml" ]; then
   node "$A/actions-check.mjs" $(git ls-files -co --exclude-standard "$D/**/action.yml") >/tmp/devops-actions.log 2>&1 || { err "actions-check.mjs:"; grep FAIL /tmp/devops-actions.log; }
+  node "$A/workflows-check.mjs" $(git ls-files -co --exclude-standard "$D/**/*.yml" | grep '/\.github/workflows/') >/tmp/devops-workflows.log 2>&1 || { err "workflows-check.mjs:"; grep FAIL /tmp/devops-workflows.log; }
+else
+  echo "note: run 'npm install' in $A - the actions and the workflow permissions are not checked"
 fi
 # Exactly the release actions the release skill lists exist.
 listed=$(grep -oE '`devops-release-[a-z-]+`' $D/core/devops-github-wf-release.skill/devops-github-wf-release.skill.md | tr -d '`' | sort -u)

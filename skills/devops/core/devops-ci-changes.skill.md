@@ -2,7 +2,7 @@
 name: devops-ci-changes
 description: The five categories of changed files a CI workflow gates its jobs on — code, test, ci, docker, docs — what each category starts, and the check-changes composite action that reports them, shipped ready-made per stack
 whenToUse: when a CI workflow must run or skip jobs by what a pull request or a push changed, or when you add or review `.github/actions/check-changes/action.yml`
-updated: 20261010
+updated: 20261011
 tags:
   - stack
   - concern/ci
@@ -13,6 +13,7 @@ tags:
 - `.github/actions/check-changes/action.yml` in the project, an unchanged copy of the stack extension's asset.
 - Every workflow reading changed files only through that action's outputs `code`, `test`, `ci`, `docker`, `docs`.
 - Every job gated by the categories in [[#Gate each job by its categories]].
+- Every job that calls the action on a pull request holding `pull-requests: read`.
 
 # Core Principle
 - **Unknown means code** - `code` is every file no other category claims, so a file nobody classified starts the tests and a release instead of being skipped.
@@ -52,8 +53,15 @@ Expose the five outputs of the action unchanged from the `changes` job, and comb
 - Risk: the next job with a different combination needs a second `changes` job or a second combined output.
 - Fix: `if: needs.changes.outputs.code == 'true' || needs.changes.outputs.docker == 'true'` on the consuming job.
 
+### Grant pull-requests read to the calling job
+Give every job that calls the action in a workflow started by `pull_request` the permissions `contents: read` and `pull-requests: read`.
+- Violation: a workflow whose `permissions` lists only `contents: read`, with no `permissions` on the job that calls the action.
+- Risk: on a pull request the action reads the changed files from the GitHub API, not from git; in a private repository the call fails with `Resource not accessible by integration`, and every job that needs `changes` fails with it. A public repository answers without the scope, so the defect stays hidden there.
+- Fix: add both scopes as `permissions` of the calling job — a job's `permissions` replace the workflow's, and a composite action cannot declare its own; a workflow started only by `push` needs neither, the action compares commits with git.
+
 # Check list
 - [ ] `.github/actions/check-changes/action.yml` is byte-identical to the stack extension's asset.
 - [ ] No workflow contains a path pattern of its own.
 - [ ] Each job's `if:` uses the categories of [[#Gate each job by its categories]].
 - [ ] The `changes` job exposes `code`, `test`, `ci`, `docker`, `docs` unchanged.
+- [ ] Every job that calls the action in a `pull_request` workflow has `permissions` with `contents: read` and `pull-requests: read`.
