@@ -64,7 +64,7 @@ is_showcase = any(part.startswith("solution-conformance-testing-in-") for part i
 if is_showcase or feature_names >= showcase_features:
     for feature in sorted(showcase_features - feature_names):
         errors.append(f"showcase inventory is missing feature {feature}")
-    expected = ({f"@type/{v}" for v in ("domain", "service", "api", "infrastructure", "mapping", "contract", "tech-check")}
+    expected = ({f"@type/{v}" for v in ("domain", "service", "api/cli", "infrastructure/file", "mapping", "contract", "tech-check")}
                 | {f"@category/{v}" for v in ("happy", "boundary", "negative", "error", "concurrency", "security", "regression")}
                 | {"@status/todo", "@status/broken", "@status/validated"})
     tags = {tag for entry in inventory for tag in entry["tags"]}

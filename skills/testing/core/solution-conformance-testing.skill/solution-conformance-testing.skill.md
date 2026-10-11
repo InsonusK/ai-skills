@@ -4,7 +4,7 @@ description: Defines one unified approach to writing and running tests across pr
 whenToUse: when setting up or reviewing a project's testing strategy, when deciding whether a new test case belongs as a Cucumber scenario or a plain test, or when wiring a project's Makefile test targets
 domain: skill
 type: architecture
-version: 11
+version: 12
 updated: 20261011
 tags:
   - skill/architecture/solution
@@ -91,7 +91,7 @@ Every kind writes its whole output below its own `$TEST_KIND_DIR`, per [[./Imple
 ```
 - **Entry** — one `Scenario`/`Example`, or one `Examples:` block of a `Scenario Outline`. `examples` is that block's name (`""` for a plain scenario); `line` is the `Scenario` line, or the `Examples:` line for a block; `uri` is the `.feature` path relative to the repository root.
 - **Inventory source** — the `.feature` files themselves, so `@status/todo` and `@status/broken` entries the runner never executes are listed too. Only `passed` / `failed` come from the runner's own result.
-- **`type`** — the value of the one `@type/…` tag on the `Feature:` line, per [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#one-type-tag-per-feature|One type tag per feature]]; `none` when there is none, more than one, or an unknown value.
+- **`type`** — the value of the one `@type/…` tag on the `Feature:` line, whole (`service`, `api/http`, `infrastructure/db/postgresql`), per [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#one-type-tag-per-feature|One type tag per feature]]; `none` when there is none, more than one, or an unknown value.
 - **`category`** — the value of the one `@category/…` tag among the entry's own and inherited (`Feature`, `Rule`, `Scenario`, `Examples`) tags, per [[skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md#one-category-tag-per-scenario|One category tag per scenario]]; `none` when there is none, more than one, or an unknown value.
 - **`status`** — what the run says about the entry:
 

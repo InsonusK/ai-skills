@@ -123,7 +123,11 @@ jq -R -s --slurpfile results "$RESULTS" '
   def one($ns; $allowed): [.[] | select(startswith($ns + "/")) | ltrimstr($ns + "/")
       | select(. as $v | $allowed | index($v))] | unique
     | if length == 1 then .[0] else "none" end;
-  ["domain","service","api","infrastructure","mapping","contract","tech-check"] as $types
+  ["domain","service","api/http","api/grpc","api/cli","api/message",
+   "infrastructure/db/postgresql","infrastructure/db/redis","infrastructure/db/sqlite",
+   "infrastructure/queue/kafka","infrastructure/queue/rabbitmq",
+   "infrastructure/client/http","infrastructure/client/grpc","infrastructure/file",
+   "mapping","contract","tech-check"] as $types
   | ["happy","boundary","negative","error","concurrency","security","regression"] as $categories
   |
   ($results[0] | map({key: "\(.uri):\(.line)", value: .status}) | group_by(.key)

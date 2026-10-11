@@ -26,9 +26,13 @@ import (
 )
 
 // featureTypes are the values of @type/<x>: what part of the program a feature
-// specifies. Exactly one sits on the Feature line.
+// specifies. Exactly one sits on the Feature line, written to its last segment.
 var featureTypes = map[string]bool{
-	"domain": true, "service": true, "api": true, "infrastructure": true,
+	"domain": true, "service": true,
+	"api/http": true, "api/grpc": true, "api/cli": true, "api/message": true,
+	"infrastructure/db/postgresql": true, "infrastructure/db/redis": true, "infrastructure/db/sqlite": true,
+	"infrastructure/queue/kafka": true, "infrastructure/queue/rabbitmq": true,
+	"infrastructure/client/http": true, "infrastructure/client/grpc": true, "infrastructure/file": true,
 	"mapping": true, "contract": true, "tech-check": true,
 }
 

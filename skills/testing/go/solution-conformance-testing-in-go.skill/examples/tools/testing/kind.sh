@@ -89,8 +89,11 @@ kind_status_legend_json() {
     "items": [
       { "name": "@type/domain", "meaning": "a business rule of an entity, a value object, a validator or a pure function - no I/O" },
       { "name": "@type/service", "meaning": "a use case: one operation end to end, its collaborators replaced at their ports" },
-      { "name": "@type/api", "meaning": "an inbound adapter: how a request, a message or a command line becomes a call" },
-      { "name": "@type/infrastructure", "meaning": "an outbound adapter against the real dependency or its emulator: a store, a cache, a client" },
+      { "name": "@type/api/{transport}", "meaning": "an inbound adapter: how what arrives over that transport becomes a call - http, grpc, cli, message" },
+      { "name": "@type/infrastructure/db/{engine}", "meaning": "an outbound adapter to a store or a cache, against the real engine or its emulator - postgresql, redis, sqlite" },
+      { "name": "@type/infrastructure/queue/{broker}", "meaning": "an outbound adapter that publishes to a broker, real or emulated - kafka, rabbitmq" },
+      { "name": "@type/infrastructure/client/{protocol}", "meaning": "a client of another service, against that service or its emulator - http, grpc" },
+      { "name": "@type/infrastructure/file", "meaning": "an outbound adapter that reads and writes files" },
       { "name": "@type/mapping", "meaning": "the translation between two representations of the same data, no I/O" },
       { "name": "@type/contract", "meaning": "the shape other code depends on: commands, events, a published schema" },
       { "name": "@type/tech-check", "meaning": "a technical check of the plumbing, not of a business capability: logging, configuration, packaging" } ] },
@@ -130,7 +133,7 @@ kind_scenarios_check() {
   local found
   found=$(jq -r '
     (.scenarios | map(select(.type == "none")) | group_by(.uri)[]
-      | "  \(.[0].uri)  Feature \"\(.[0].feature)\" - needs exactly one of @type/domain @type/service @type/api @type/infrastructure @type/mapping @type/contract @type/tech-check on its Feature line"),
+      | "  \(.[0].uri)  Feature \"\(.[0].feature)\" - needs exactly one of @type/domain @type/service @type/api/{http|grpc|cli|message} @type/infrastructure/db/{postgresql|redis|sqlite} @type/infrastructure/queue/{kafka|rabbitmq} @type/infrastructure/client/{http|grpc} @type/infrastructure/file @type/mapping @type/contract @type/tech-check on its Feature line"),
     (.scenarios[] | select(.category == "none")
       | "  \(.uri):\(.line)  \(.scenario)\(if .examples != "" then " / " + .examples else "" end) - needs exactly one of @category/happy @category/boundary @category/negative @category/error @category/concurrency @category/security @category/regression")
     ' "$RESULT_DIR/scenarios.json")

@@ -1,4 +1,4 @@
-@type/infrastructure
+@type/infrastructure/file
 Feature: Keep the history of checks in a file
   Every check result is appended to a history file and can be read back.
 

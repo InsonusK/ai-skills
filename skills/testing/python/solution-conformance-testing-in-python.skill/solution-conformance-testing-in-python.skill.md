@@ -4,7 +4,7 @@ description: Sets up the Python side of the Cucumber/coverage/mutation quality g
 whenToUse: Set up or review the test suite of a Python package that must prove conformance to a Cucumber/Gherkin spec, add Gherkin scenarios and step definitions to an existing Python project, or wire coverage and mutation testing into a Python project's `make`/CI pipeline.
 domain: python
 type: architecture
-version: 20261009200000
+version: 20261011150000
 tags:
   - solution/conformance-testing-in-python
   - skill/architecture/solution
@@ -87,7 +87,7 @@ REPOSITORY:
 3. Whoever notices the survivor (via the report or the README's mutation-score badge) either strengthens the assertion in the corresponding scenario/step definition in a follow-up PR, or explicitly accepts it per [solution-conformance-testing](skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#must).
 
 # Ground truth
-[`examples/`](./examples/) is a small package carrying this solution as it is delivered (`src/` layout), and the place to see every tag at work: eight features, one for each `@type/…` (`domain` twice), with scenarios of every `@category/…`, two `@status/todo`, one `@status/broken` and one `@status/validated` — put there to show the tag; in a project only a person sets it. `src/linkcheck/` holds seven of the features in its `features/`, their step modules and a shared `conftest.py` in its `test/`; the sub-package `src/linkcheck/batch/` has its own `features/` and `test/`.
+[`examples/`](./examples/) is a small package carrying this solution as it is delivered (`src/` layout), and the place to see every tag at work: eight features, one for each part of the program a `@type/…` tag names (`domain` twice; `api/cli` and `infrastructure/file` of the detailed ones), with scenarios of every `@category/…`, two `@status/todo`, one `@status/broken` and one `@status/validated` — put there to show the tag; in a project only a person sets it. `src/linkcheck/` holds seven of the features in its `features/`, their step modules and a shared `conftest.py` in its `test/`; the sub-package `src/linkcheck/batch/` has its own `features/` and `test/`.
 - `make init`, then `make test-and-report`, with no Python package installed outside `.venv/` — exit `0`; 26/26 tests, coverage 99.2%, mutation score 87.4%; `result/scenarios.json` lists both `Examples:` blocks and the `@status/todo` entry with its reason; the living doc shows every scenario — the `todo` and `broken` ones with their reason — with all its tags, and the status legend below.
 - `pip wheel .` — the wheel holds the package's modules only: no `test/` path, no `.feature` file.
 - `make test-and-report TEST_RUN_PURPOSE=check` — mutation skipped, no coverage report, only the `tests` badge.
