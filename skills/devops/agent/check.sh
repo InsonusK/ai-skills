@@ -17,8 +17,9 @@ git ls-files -co --exclude-standard '*.md' | grep -v "^$A/" | tr '\n' '\0' | xar
 out=$(awk -F'\t' '$5=="broken" && ($1 ~ /^skills\/devops\// || $3 ~ /skills\/devops\//)' "$links")
 [ -n "$out" ] && { err "broken links from or into skills/devops:"; echo "$out" | cut -f1-3; }
 
-# 2. Isolation (INVARIANTS §5): a skill under skills/devops links outside it only to testing and design skills.
-out=$(awk -F'\t' '$1 ~ /^skills\/devops\// && $5=="ok" && $4 !~ /^skills\/(devops|testing|design)\// { print $1 "\t" $4 }' "$links" | sort -u)
+# 2. Isolation (INVARIANTS §5): a skill under skills/devops links outside it only to testing and design skills,
+#    and to documentation-for-ai-agents.
+out=$(awk -F'\t' '$1 ~ /^skills\/devops\// && $5=="ok" && $4 !~ /^skills\/(devops|testing|design|common-workflow\/documentation\/documentation-for-ai-agents\.skill)\// { print $1 "\t" $4 }' "$links" | sort -u)
 [ -n "$out" ] && { err "links leaving skills/devops:"; echo "$out"; }
 
 # 3. A stack-agnostic skill never links a stack-specialized one; a stack skill never links another stack's.
