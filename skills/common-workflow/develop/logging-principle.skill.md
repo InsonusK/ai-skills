@@ -2,6 +2,7 @@
 name: logging-principle
 description: Describes logging rules for development
 whenToUse: when writing code that requires logging or choosing a log level
+updated: 20261011
 tags:
   - skill/develop
   - logging
@@ -11,7 +12,9 @@ tags:
 ---
 
 # Goal
-- Standardize logging rules during development.
+- Every meaningful operation in the changed code logged through the language's or framework's logging mechanism, at the Info, Warning, Error, or Critical level its event falls under.
+- A parameter that enables `debug` logs, disabled by default.
+- Every log message naming the concrete subject of its event — which task, which record.
 
 # Core Principle
 - We classify errors and logs.

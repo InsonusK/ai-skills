@@ -1,18 +1,19 @@
 ---
 name: skill-content
-description: How the prose inside a skill file must read — Goal as a deliverables list, rules as named headings with one imperative sentence and Violation/Risk/Fix, every fact stated once, no authoring narrative, illustrations moved out
+description: How the prose inside a skill file must read — Goal as a deliverables list or, in a skill describing an element, as that element's purpose; rules as named headings with one imperative sentence and Violation/Risk/Fix, every fact stated once, no authoring narrative, illustrations moved out
 whenToUse: when you write or revise the text of a skill — the Goal and Core Principle bullets, the rule statements and their Violation/Risk/Fix elaboration — or when you tighten an existing skill for concision
-updated: 20261004
+updated: 20261011
 tags:
   - skill/core
   - stack
   - concern/documentation
 adr:
   - adr/rules-as-headings.md
+  - adr/goal-by-skill-genre.md
 ---
 
 # Goal
-- A `# Goal` section listing only verifiable outputs — the artifacts and verdicts that exist after the skill is applied.
+- **Goal by genre** - A `# Goal` in the form its skill's genre takes: verifiable outputs — artifacts and verdicts — in a procedure skill, the properties the element secures in an element skill.
 - Every rule under `# Rule` written as a `###` heading: a decodable name, one imperative sentence, then `Violation`/`Risk`/`Fix` bullets.
 - Every fact, mechanism, or criterion stated exactly once; every other mention a reference link to the one statement.
 - Every `# Goal`/`# Core Principle` bullet over ~20 words prefixed `**{Name}** - ` with a name a reader decodes without the skill's history.
@@ -31,10 +32,16 @@ adr:
 ## MUST
 
 ### Goal lists deliverables
-Write `# Goal` as the list of verifiable outputs the skill produces — what exists after the skill is applied.
+Write the `# Goal` of a procedure skill — one describing work the agent performs — as the list of verifiable outputs that exist after the skill is applied.
 - Violation: a Goal bullet reading "make the split defensible against a written baseline" — a principle duplicated from `# Core Principle`, not an output; or "turn a fuzzy sense into a reviewable artifact" — a meta-intention, unverifiable.
 - Risk: after applying the skill, its Goal cannot serve as acceptance criteria, and an idea stated in both `# Goal` and `# Core Principle` drifts.
 - Fix: each Goal bullet names a concrete artifact or verdict the reader can check off; working principles move to `# Core Principle`, scope boundaries to a scope rule in plain words.
+
+### Element skill's Goal states purpose
+Write the `# Goal` of an element skill — one describing an element of the target system: a solution, a plateau, a plateau component, or one of their structure elements — as the properties the system has because the element exists. Decision recorded in [adr/goal-by-skill-genre.md](./adr/goal-by-skill-genre.md).
+- Violation: a class skill whose Goal reads "The `{Entity}ByIdSpec` class in `{Module}.Application/Specifications`" — the artifact its `description` already names; or a Goal listing the files to create, which the implementation section owns.
+- Risk: the only deliverable of an element skill is the element itself, so a deliverables Goal repeats `description` and drops the one statement telling the agent what the element must keep true in a case the rules do not cover.
+- Fix: each bullet names a property checkable against the built system — "handlers express query intent by name, no inline `Where(...)`" — leaving the element's name and location to `description`.
 
 ### Rules are headings
 Write every rule under `# Rule` as a `###` heading — the rule's name — followed by the imperative statement as a plain paragraph, then its elaboration bullets.
@@ -89,7 +96,8 @@ Remove every `hint`, `example`, and `code example` block, and the `# How Apply t
 - Fix: delete all such blocks before committing.
 
 # Check list
-- [ ] `# Goal` lists verifiable deliverables — no working principles, scope notes, or meta-intentions.
+- [ ] A procedure skill's `# Goal` lists verifiable deliverables — no working principles, scope notes, or meta-intentions.
+- [ ] An element skill's `# Goal` lists properties the element secures — not the element's name, location, or files, which `description` and the implementation section own.
 - [ ] Every rule under `# Rule` is a `###` heading followed by one imperative sentence, then `Violation`/`Risk`/`Fix`.
 - [ ] No rule statement carries reasoning, consequences, or qualifiers that belong in `Risk`/`Fix`.
 - [ ] Every `## MUST` rule has `Risk` and `Fix` (`Violation` optional); `## SHOULD` only where non-obvious; `## MAY` none.
