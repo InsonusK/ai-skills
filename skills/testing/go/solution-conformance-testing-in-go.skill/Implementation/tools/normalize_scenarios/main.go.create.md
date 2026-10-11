@@ -36,7 +36,7 @@ Copy verbatim to `tools/normalize_scenarios/main.go`: [`assets/tools/normalize_s
 # Check list
 - [ ] `$TEST_KIND_DIR/result/scenarios.json` lists every `.feature` entry, `@status/todo` ones included, per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#scenario-inventory|the parent solution's scenario inventory]].
 - [ ] An `Examples:` block tagged `@category/negative` under a `Scenario Outline` is its own entry with `"category": "negative"`.
-- [ ] A feature tagged `@type/service` on its `Feature:` line gives every entry of it `"type": "service"`, one tagged `@type/api/http` gives `"type": "api/http"`; without exactly one `@type/…` tag there, or with a bare `@type/api`, `"none"`.
+- [ ] A feature tagged `@type/service` on its `Feature:` line gives every entry of it `"type": "service"`, one tagged `@type/api/http` gives `"type": "api/http"`; without exactly one `@type/…` tag there, or with a bare `@type/api`, `"none"`. The allowed values are read from `tools/testing/tags.json`, never listed in the program.
 - [ ] Every entry lists its own and inherited tags in `"tags"`, with `@`, sorted — a feature tagged `@type/service` gives every entry of it that tag.
 - [ ] A `.feature` file no runner picks up produces `"status": "not-run"` entries.
 - [ ] A scenario tagged `@status/broken` with `# broken: …` above its tags is `"status": "broken"` with that note; one tagged `@status/validated` has `"validated": true`.

@@ -4,7 +4,7 @@ description: Defines one unified approach to writing and running tests across pr
 whenToUse: when setting up or reviewing a project's testing strategy, when deciding whether a new test case belongs as a Cucumber scenario or a plain test, or when wiring a project's Makefile test targets
 domain: skill
 type: architecture
-version: 12
+version: 13
 updated: 20261011
 tags:
   - skill/architecture/solution
@@ -25,6 +25,7 @@ creates:
   - tools/testing/kind.sh
   - tools/testing/test-report.sh
   - tools/testing/normalize-scenarios.sh
+  - tools/testing/tags.json
   - tools/testing/messages-results.jq
 extends:
 depends_on:

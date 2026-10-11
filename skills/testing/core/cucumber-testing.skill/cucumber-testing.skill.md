@@ -1,5 +1,5 @@
 ---
-version: 20261011150000
+version: 20261011170000
 name: cucumber-testing
 description: Language-independent rules for writing and organizing Cucumber/Gherkin scenarios and their step definitions — generic comparators, expected-data placement, ordering, logging, and BDD editor setup
 whenToUse: when writing or reviewing a `.feature` file or its step definitions, when deciding whether an assertion step is reusable across scenarios, or when configuring an editor/devcontainer for Cucumber
@@ -65,7 +65,7 @@ Give every feature exactly one `@type/…` tag on its `Feature:` line — the ta
 A tag is written to its last segment, and every segment is a value from the table: the name of a database, a service or a client belongs in the feature's title, never in the tag.
 - Violation: a feature with no `@type/…` tag, with two, or with a value outside the table; a bare `@type/api` or `@type/infrastructure/db`; a name of the project's own in a segment (`@type/infrastructure/client/billing/http`); a `@type/…` tag on a single scenario instead of the `Feature:` line.
 - Risk: the report cannot show which parts of the program have a specification at all — a service whose rules are fully specified while its adapters have none looks like a fully specified one. A feature that needs two type tags specifies two things. A bare `@type/api` hides that the HTTP adapter is specified and the gRPC one is not; a free segment turns every typo into a new type.
-- Fix: tag the feature with the type of the code it sits beside; split a feature that spans two types into two files — an HTTP and a gRPC adapter of one use case are two features; add a transport, engine, broker or protocol missing from the table to the table before using it; tag a feature copied from another repository in the copy — the project that holds the copy owns its tags; a feature that comes from a shared spec project of [solution-shared-conformance-testing](skills/testing/core/solution-shared-conformance-testing.skill/solution-shared-conformance-testing.skill.md) is tagged in that spec project. The unit test kind fails, naming each feature without exactly one `@type/…` tag.
+- Fix: tag the feature with the type of the code it sits beside; split a feature that spans two types into two files — an HTTP and a gRPC adapter of one use case are two features; add a transport, engine, broker or protocol missing from the table to the table and to the project's `tools/testing/tags.json` before using it; tag a feature copied from another repository in the copy — the project that holds the copy owns its tags; a feature that comes from a shared spec project of [solution-shared-conformance-testing](skills/testing/core/solution-shared-conformance-testing.skill/solution-shared-conformance-testing.skill.md) is tagged in that spec project. The unit test kind fails, naming each feature without exactly one `@type/…` tag.
 ```gherkin
 @type/service
 Feature: Add item

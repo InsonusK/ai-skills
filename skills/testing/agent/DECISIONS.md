@@ -379,7 +379,7 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 ## Agent decisions — detailed type tags
 
 - The owner named `http`, `grpc`, `postgresql`, `redis`. Added so that every existing feature and every adapter of the catalog has a value: `cli` and `message` (the `api` row already covered a command line and a message), `sqlite`, `kafka`, `rabbitmq` (used by the catalog), `file` (the `store.feature` of every showcase).
-- The list is in three places that must agree: the table of `cucumber-testing`, `$types` in `normalize-scenarios.sh`, `featureTypes` in the Go `normalize_scenarios/main.go`; the Python `markers` list repeats it for `pytest --strict-markers`. A new engine or broker is added to all of them.
+- The values are one file, `tools/testing/tags.json` (asked by the owner, 2026-10-11): `normalize-scenarios.sh`, the Go `normalize_scenarios/main.go`, `kind_scenarios_check` and the legend of `kind.sh` read it and list nothing themselves. Two statements of the list stay outside it and `check.sh` §13 compares both with the file: the table of `cucumber-testing`, which an agent reads when it writes a feature, and the Python `markers`, which `pytest` reads from `pyproject.toml` before any project code runs.
 - `type` in `scenarios.json` is the whole value (`api/http`), not its first segment: nothing reads it but `kind_scenarios_check`, which only asks for `none`.
 - The legend shows the detailed tags as five rows with their values in the meaning, not seventeen rows.
 - The showcase covers every part of the program, not every value: `livingdoc-check.py` expects `@type/api/cli` and `@type/infrastructure/file`.

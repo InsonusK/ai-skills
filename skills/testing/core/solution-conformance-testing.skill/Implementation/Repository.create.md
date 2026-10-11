@@ -22,6 +22,7 @@ tools/
     kind.sh             ← sourced by every kind script: kind_mode, kind_skip, kind_badge*, kind_scenarios_check, kind_livingdoc
     test-report.sh      ← gathers report/ and badges/ of every kind into the report directory
     normalize-scenarios.sh, messages-results.jq   ← helpers a kind script may call
+    tags.json           ← the one list of `@type/…` and `@category/…` values: read by the normalizers, the tag check and the legend
     kinds/
       unit.sh           ← one script per test kind — the only stack-specific part
       mutation.sh
@@ -30,7 +31,7 @@ tools/
 ```
 
 ## Files
-- Copy verbatim, as a folder, to `tools/testing/`: [`assets/tools/testing/`](../assets/tools/testing/) — `testing.mk`, `testing.sh`, `kind.sh`, `test-report.sh`, `normalize-scenarios.sh`, `messages-results.jq`. Identical in every stack.
+- Copy verbatim, as a folder, to `tools/testing/`: [`assets/tools/testing/`](../assets/tools/testing/) — `testing.mk`, `testing.sh`, `kind.sh`, `test-report.sh`, `normalize-scenarios.sh`, `messages-results.jq`, `tags.json`. Identical in every stack.
 - Copy verbatim, as a folder, to `tools/livingdoc/`: [`assets/tools/livingdoc/`](../assets/tools/livingdoc/).
 - Add to the `Makefile`: `include tools/testing/testing.mk`.
 - Add to the repository's `.gitignore` (create it when missing): `tmp/` — the default work directory — and `tools/livingdoc/node_modules/`, plus the lines the stack's `solution-conformance-testing-in-{stack}` skill names.

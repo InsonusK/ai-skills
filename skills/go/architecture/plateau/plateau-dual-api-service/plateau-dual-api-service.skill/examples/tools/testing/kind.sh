@@ -15,6 +15,8 @@
 RESULT_DIR="$TEST_KIND_DIR/result"
 REPORT_DIR="$TEST_KIND_DIR/report"
 BADGE_DIR="$TEST_KIND_DIR/badges"
+# The one list of @type/... and @category/... values - read here and by the normalizers.
+KIND_TAGS="$(dirname "${BASH_SOURCE[0]}")/tags.json"
 
 # kind_mode <text> - what the kind does because of the run's purpose: to the log and the report.
 kind_mode() {
@@ -80,33 +82,20 @@ kind_badge_percent() {
 
 # kind_status_legend_json - what every tag and every run status means, group by group: the
 # one text behind the legend of the living doc. "shownAs" is the word the classic-JSON
-# living doc uses for that status.
+# living doc uses for that status. The @type and @category items come from tags.json.
 kind_status_legend_json() {
-  cat <<'JSON'
+  jq --slurpfile tags "$KIND_TAGS" '
+    def items($ns): [$tags[0][$ns][] | {
+      name: ("@\($ns)/\(.tag)" + (if .values then "/{\(.detail)}" else "" end)),
+      meaning: (.meaning + (if .values then " - " + (.values | join(", ")) else "" end)) }];
+    .groups[0].items = items("type") | .groups[1].items = items("category")' <<'JSON'
 { "groups": [
   { "title": "@type/… - what the feature specifies",
     "where": "On the Feature line, exactly one. A feature without it fails the unit test kind.",
-    "items": [
-      { "name": "@type/domain", "meaning": "a business rule of an entity, a value object, a validator or a pure function - no I/O" },
-      { "name": "@type/service", "meaning": "a use case: one operation end to end, its collaborators replaced at their ports" },
-      { "name": "@type/api/{transport}", "meaning": "an inbound adapter: how what arrives over that transport becomes a call - http, grpc, cli, message" },
-      { "name": "@type/infrastructure/db/{engine}", "meaning": "an outbound adapter to a store or a cache, against the real engine or its emulator - postgresql, redis, sqlite" },
-      { "name": "@type/infrastructure/queue/{broker}", "meaning": "an outbound adapter that publishes to a broker, real or emulated - kafka, rabbitmq" },
-      { "name": "@type/infrastructure/client/{protocol}", "meaning": "a client of another service, against that service or its emulator - http, grpc" },
-      { "name": "@type/infrastructure/file", "meaning": "an outbound adapter that reads and writes files" },
-      { "name": "@type/mapping", "meaning": "the translation between two representations of the same data, no I/O" },
-      { "name": "@type/contract", "meaning": "the shape other code depends on: commands, events, a published schema" },
-      { "name": "@type/tech-check", "meaning": "a technical check of the plumbing, not of a business capability: logging, configuration, packaging" } ] },
+    "items": [] },
   { "title": "@category/… - what kind of test the scenario is",
     "where": "On a Scenario or an Examples block, exactly one. A scenario without it fails the unit test kind.",
-    "items": [
-      { "name": "@category/happy", "meaning": "valid input, the expected result" },
-      { "name": "@category/boundary", "meaning": "an edge of what is allowed: empty, zero, the largest, the first, the last" },
-      { "name": "@category/negative", "meaning": "invalid input is rejected with its error" },
-      { "name": "@category/error", "meaning": "a dependency or the environment fails, and the program says so" },
-      { "name": "@category/concurrency", "meaning": "several actors at the same time" },
-      { "name": "@category/security", "meaning": "access, secrets, hostile input" },
-      { "name": "@category/regression", "meaning": "a defect found once, kept fixed" } ] },
+    "items": [] },
   { "title": "@status/… - the state of the scenario",
     "where": "Optional, beside the category tag.",
     "items": [
@@ -131,11 +120,12 @@ JSON
 kind_scenarios_check() {
   [ -f "$RESULT_DIR/scenarios.json" ] || return 0
   local found
-  found=$(jq -r '
+  found=$(jq -r --slurpfile tags "$KIND_TAGS" '
+    def names($ns): [$tags[0][$ns][] | "@\($ns)/\(.tag)" + (if .values then "/{\(.values | join("|"))}" else "" end)] | join(" ");
     (.scenarios | map(select(.type == "none")) | group_by(.uri)[]
-      | "  \(.[0].uri)  Feature \"\(.[0].feature)\" - needs exactly one of @type/domain @type/service @type/api/{http|grpc|cli|message} @type/infrastructure/db/{postgresql|redis|sqlite} @type/infrastructure/queue/{kafka|rabbitmq} @type/infrastructure/client/{http|grpc} @type/infrastructure/file @type/mapping @type/contract @type/tech-check on its Feature line"),
+      | "  \(.[0].uri)  Feature \"\(.[0].feature)\" - needs exactly one of \(names("type")) on its Feature line"),
     (.scenarios[] | select(.category == "none")
-      | "  \(.uri):\(.line)  \(.scenario)\(if .examples != "" then " / " + .examples else "" end) - needs exactly one of @category/happy @category/boundary @category/negative @category/error @category/concurrency @category/security @category/regression")
+      | "  \(.uri):\(.line)  \(.scenario)\(if .examples != "" then " / " + .examples else "" end) - needs exactly one of \(names("category"))")
     ' "$RESULT_DIR/scenarios.json")
   [ -z "$found" ] && return 0
   {
