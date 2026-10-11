@@ -2,13 +2,15 @@
 name: mermaid-diagram
 description: How to draw mermaid diagramm
 whenToUse: draw mermaid diagramm
+updated: 20261011
 tags:
   - stack
   - concern/documentation
 ---
 
 # Goal
-- add standard of mermaid drawings
+- Every sequence diagram with more than 3 lifelines, and every other diagram with more than 5 elements, stored as its own `*.mmd` file in a `diagrams` folder beside the markdown file and embedded with `@import ... {as="mermaid"}`.
+- Every sequence diagram with numbered steps.
 
 # Rules
 ## In case when mermaid diagram is bug
