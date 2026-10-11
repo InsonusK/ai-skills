@@ -33,7 +33,7 @@ Input is environment variables that state facts about the run: `DELTA_BASE` and 
 ## 3. Where the logic lives in a project
 
 - `tools/version/` — `version.mk` and `version.sh`, identical in every project of every stack, and `read-version.sh`, the one script that differs by stack. Assets of the project-version skill, copied verbatim; the project's `Makefile` includes `version.mk` as it includes `tools/testing/testing.mk`.
-- `.github/actions/check-changes/action.yml` — one ready file per stack, copied verbatim. Outputs `code`, `test`, `ci`, `docker`, `docs`: `code` — what goes into the artifact, with the manifest and the version source; `test` — tests, features, `tools/testing/**`; `ci` — `.github/**`, `tools/version/**`, `Makefile`; `docker` — `Dockerfile`, `.dockerignore`; `docs` — `docs/**`, `*.md`. A file is in exactly one category.
+- `.github/actions/check-changes/action.yml` — one ready file per stack, copied verbatim. Outputs `code`, `test`, `ci`, `docker`, `docs`: `code` — what goes into the artifact, with the manifest and the version source; `test` — tests, features, `tools/testing/**`; `ci` — `.github/**`, `tools/version/**`, `Makefile`; `docker` — `Dockerfile`, `.dockerignore`; `docs` — `docs/**`, `*.md`. A file is in exactly one category. On a pull request it reads the files from the GitHub API, so the job that calls it holds `pull-requests: read`.
 - `.github/actions/setup-toolchain/action.yml` — one ready file per stack, copied verbatim.
 - `.github/actions/release/action.yml` — what the project delivers, one ready file from the skill of that delivery. Inputs `channel` (`check`, `snapshot`, `release`), `version`, `timestamp`, two registry tokens; output `notes`; files for the Release in `dist/release`.
 - `.github/workflows/pull-request.yml`, `release.yml` — copied, the same in every project except the test environment of the `test-kind` job: the steps that start what the tests need and that job's `env`.
@@ -60,7 +60,7 @@ A change of `docs` alone runs nothing but `changes` and `report`. A project whos
 
 ## 5. The skills
 
-Gathered under `skills/devops/`, as testing is under `skills/testing/`: `core/` for stack-agnostic skills — the two workflow skills among them — `{stack}/` for extensions. Stacks: go, python, typescript, dotnet, angular. A skill under `skills/devops/` links outside it only to `skills/testing/` and `skills/design/`.
+Gathered under `skills/devops/`, as testing is under `skills/testing/`: `core/` for stack-agnostic skills — the two workflow skills among them — `{stack}/` for extensions. Stacks: go, python, typescript, dotnet, angular. A skill under `skills/devops/` links outside it only to `skills/testing/` and `skills/design/`, and to `documentation-for-ai-agents` — the base skill of the deploy skill a service repository gets.
 
 | Skill | Holds | Replaces |
 | --- | --- | --- |
@@ -78,7 +78,7 @@ Every script, action and workflow is a real file in `assets/` or `templates/` (p
 ## 6. Ground truth
 
 - `agent/fixtures.sh` runs `tools/version/` of every stack against a throw-away git repository: the version printed, a raised and an unraised version, a malformed one, no version at the base.
-- `agent/check.sh`: links resolve, the §1 check, every stack has every extension, no reference to a removed skill, every workflow passes `actionlint`, every composite action parses and every release action keeps its contract.
+- `agent/check.sh`: links resolve, the §1 check, every stack has every extension, no reference to a removed skill, every workflow passes `actionlint`, every composite action parses and every release action keeps its contract, a job that calls `check-changes` on a pull request holds `pull-requests: read`.
 - `test/devops/build-sample.sh` builds a sample repository from the testing Go example and every DevOps asset; `test/devops/run-local.sh` runs in it every `make` call the workflows make.
 - A green run on GitHub of that sample — not done yet, see `STATUS.md`.
 

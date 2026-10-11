@@ -17,8 +17,9 @@ git ls-files -co --exclude-standard '*.md' | grep -v "^$A/" | tr '\n' '\0' | xar
 out=$(awk -F'\t' '$5=="broken" && ($1 ~ /^skills\/devops\// || $3 ~ /skills\/devops\//)' "$links")
 [ -n "$out" ] && { err "broken links from or into skills/devops:"; echo "$out" | cut -f1-3; }
 
-# 2. Isolation (INVARIANTS §5): a skill under skills/devops links outside it only to testing and design skills.
-out=$(awk -F'\t' '$1 ~ /^skills\/devops\// && $5=="ok" && $4 !~ /^skills\/(devops|testing|design)\// { print $1 "\t" $4 }' "$links" | sort -u)
+# 2. Isolation (INVARIANTS §5): a skill under skills/devops links outside it only to testing and design skills,
+#    and to documentation-for-ai-agents.
+out=$(awk -F'\t' '$1 ~ /^skills\/devops\// && $5=="ok" && $4 !~ /^skills\/(devops|testing|design|common-workflow\/documentation\/documentation-for-ai-agents\.skill)\// { print $1 "\t" $4 }' "$links" | sort -u)
 [ -n "$out" ] && { err "links leaving skills/devops:"; echo "$out"; }
 
 # 3. A stack-agnostic skill never links a stack-specialized one; a stack skill never links another stack's.
@@ -107,9 +108,13 @@ else
 fi
 
 # 9b. Every shipped composite action parses, names a shell on every run step, and a release
-#     action keeps the contract the workflows call.
+#     action keeps the contract the workflows call. A job that calls check-changes on a pull
+#     request holds pull-requests: read.
 if [ -d "$A/node_modules/yaml" ]; then
   node "$A/actions-check.mjs" $(git ls-files -co --exclude-standard "$D/**/action.yml") >/tmp/devops-actions.log 2>&1 || { err "actions-check.mjs:"; grep FAIL /tmp/devops-actions.log; }
+  node "$A/workflows-check.mjs" $(git ls-files -co --exclude-standard "$D/**/*.yml" | grep '/\.github/workflows/') >/tmp/devops-workflows.log 2>&1 || { err "workflows-check.mjs:"; grep FAIL /tmp/devops-workflows.log; }
+else
+  echo "note: run 'npm install' in $A - the actions and the workflow permissions are not checked"
 fi
 # Exactly the release actions the release skill lists exist.
 listed=$(grep -oE '`devops-release-[a-z-]+`' $D/core/devops-github-wf-release.skill/devops-github-wf-release.skill.md | tr -d '`' | sort -u)

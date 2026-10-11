@@ -20,6 +20,11 @@ jobs:
   changes:
     name: Detect changed files
     runs-on: ubuntu-latest
+    # A job's permissions replace the workflow's. check-changes reads the files of the pull
+    # request from the GitHub API; without pull-requests: read a private repository refuses.
+    permissions:
+      contents: read
+      pull-requests: read
     outputs:
       code: ${{ steps.filter.outputs.code }}
       test: ${{ steps.filter.outputs.test }}
