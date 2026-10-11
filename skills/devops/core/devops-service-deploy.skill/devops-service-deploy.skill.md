@@ -1,6 +1,6 @@
 ---
 name: devops-service-deploy
-description: What a service repository must contain so that the service can be deployed by anyone — its own deploy skill with filled Docker Compose, Docker Stack, and Kubernetes or Helm examples, a health-check endpoint, secrets suppliable as files, and a documented configuration contract
+description: What a service repository must contain so that the service can be deployed by anyone — its own deploy skill with filled Docker Compose, Docker Stack, and Kubernetes or Helm examples, liveness and readiness endpoints, secrets suppliable as files, and a documented configuration contract
 whenToUse: when you create a service or change anything its deployment depends on — image, ports, environment variables, secrets, dependencies, migrations — and when you review a service repository's deploy skill
 updated: 20261011
 tags:
@@ -13,12 +13,14 @@ tags:
   - helm
 adr:
   - adr/use-concern-devops-tag.md
+  - adr/separate-liveness-and-readiness-endpoints.md
+  - adr/stack-healthcheck-probes-liveness.md
 ---
 
 # Goal
 - **The service's deploy skill** - `docs/skills/devops/deploy-{service-name}.skill/` in the service repository, filled from this skill's template: the deploy skill, a Compose file, a Stack manifest, and either Kubernetes manifests or a Helm chart, each with a step-by-step guide.
 - `docker-entrypoint.sh` at the repository root, an unchanged copy of this skill's asset, wired into the `Dockerfile`.
-- A `/health-check` endpoint that every deployment path probes.
+- The `/health/live` and `/health/ready` endpoints that every deployment path probes, beside the service's `/health`.
 - `.env.example` at the repository root for the dev container, and `.env` in `.gitignore`.
 - The root `README.md` and the image label pointing at the deploy skill.
 
@@ -74,11 +76,18 @@ Keep `docker-stack.example.yml` a separate file with a `deploy:` block and Swarm
 - Risk: `docker stack deploy` silently ignores `build`, `env_file`, `restart`, `network_mode`, and `depends_on`, so the stack runs with the wrong configuration and no error.
 - Fix: fill the Stack manifest of the template and its own deploy guide.
 
-### Expose /health-check and probe it on every path
-Implement an HTTP `/health-check` endpoint that returns 200 once the process and its dependencies are ready, and point the Compose and Stack `healthcheck` and the Kubernetes `livenessProbe` and `readinessProbe` at it.
-- Violation: a manifest that starts the service with no health check, or one probing another path.
-- Risk: an orchestrator cannot tell a hung process from a healthy one, and a rolling update routes traffic to a replica that never became ready.
-- Fix: add the endpoint; keep the probes of the templates.
+### Expose the health endpoints and probe them on every path
+Implement the HTTP endpoints of this table, each answering 200 on success and 503 otherwise, and point every `healthcheck` and probe at the endpoint the table names. Decisions recorded in [[./adr/separate-liveness-and-readiness-endpoints.md|separate-liveness-and-readiness-endpoints]] and [[./adr/stack-healthcheck-probes-liveness.md|stack-healthcheck-probes-liveness]].
+
+| Endpoint | Succeeds when | Called by |
+| --- | --- | --- |
+| `/health/live` | the process answers; no dependency is checked | the Kubernetes `livenessProbe`, the Docker Stack `healthcheck` |
+| `/health/ready` | the process and every dependency it needs to serve a request are ready | the Kubernetes `readinessProbe`, the Docker Compose `healthcheck`, the verification step of every guide |
+| `/health` | the process answers; the body carries the service's status and version | clients and people, never a probe |
+
+- Violation: a manifest that starts the service with no health check; one endpoint behind both Kubernetes probes; a `/health/live` that queries the database; a Stack `healthcheck` on `/health/ready`.
+- Risk: an orchestrator cannot tell a hung process from a healthy one, and a rolling update routes traffic to a replica that never became ready; a liveness check that fails with a dependency makes Kubernetes and Swarm restart every replica during a database outage, which repairs nothing and, once Swarm's `restart_policy.max_attempts` is used up, leaves the service down after the database is back.
+- Fix: add the endpoints; keep the probes of the templates.
 
 ### Apply migrations in exactly one mode
 When the service has a schema migration, apply it either as a one-shot job that finishes before the service starts, or at the service's own startup behind a flag — the second only for a deployment that can never have more than one instance.
@@ -162,7 +171,7 @@ Add a Kustomize overlay or a `skaffold.yaml` for local Kubernetes development.
 - [ ] The examples name the service's real variables, ports, and dependencies; no sample variable is left.
 - [ ] The folders are `templates/docker/compose/`, `templates/docker/stack/`, `templates/docker/`, and one of `templates/k8s/` or `templates/helm/`.
 - [ ] The Stack manifest is its own file with a `deploy:` block.
-- [ ] `/health-check` exists, and every `healthcheck` and probe calls it.
+- [ ] `/health/live`, `/health/ready`, and `/health` exist; `/health/live` checks no dependency; every `healthcheck` and probe calls the endpoint the rule's table names.
 - [ ] A migration runs in exactly one mode per deployment; a chart derives it from `migrate.mode` and passes `helm lint` and `helm template` in both modes.
 - [ ] `docker-entrypoint.sh` is byte-identical to this skill's asset, and the `Dockerfile` has the four lines.
 - [ ] Every variable, secret, and volume is listed; secrets are marked in `env.example`.

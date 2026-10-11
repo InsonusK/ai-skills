@@ -13,7 +13,9 @@ services:
     secrets:
       - connection_string
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health-check"]
+      # /health/live, not /health/ready: Swarm kills and replaces an unhealthy
+      # task, so a check that fails with a dependency restarts every replica.
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/live"]
       interval: 30s
       timeout: 5s
       retries: 3
