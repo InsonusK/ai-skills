@@ -117,14 +117,17 @@ find . \( -name '.?*' -o -name node_modules -o -name bin -o -name obj -o -name t
   ' "$uri"
 done > "$INVENTORY"
 
-jq -R -s --slurpfile results "$RESULTS" '
+jq -R -s --slurpfile results "$RESULTS" --slurpfile tags "$(dirname "$0")/tags.json" '
   # The one allowed value of a tag namespace among the given tags ("type/service" ->
   # "service"), or "none" when there is none or more than one.
   def one($ns; $allowed): [.[] | select(startswith($ns + "/")) | ltrimstr($ns + "/")
       | select(. as $v | $allowed | index($v))] | unique
     | if length == 1 then .[0] else "none" end;
-  ["domain","service","api","infrastructure","mapping","contract","tech-check"] as $types
-  | ["happy","boundary","negative","error","concurrency","security","regression"] as $categories
+  # The values tags.json allows in a namespace: an entry with "values" is written to its
+  # last segment ("api" + "http" -> "api/http"), the bare tag is not a value.
+  def allowed($ns): [$tags[0][$ns][] | if .values then .tag as $t | .values[] | "\($t)/\(.)" else .tag end];
+  allowed("type") as $types
+  | allowed("category") as $categories
   |
   ($results[0] | map({key: "\(.uri):\(.line)", value: .status}) | group_by(.key)
      | map({key: .[0].key, value: map(.value)}) | from_entries) as $status

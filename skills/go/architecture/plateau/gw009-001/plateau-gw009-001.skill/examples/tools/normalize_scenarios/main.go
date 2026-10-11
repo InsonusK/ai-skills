@@ -25,18 +25,44 @@ import (
 	messages "github.com/cucumber/messages/go/v34"
 )
 
-// featureTypes are the values of @type/<x>: what part of the program a feature
-// specifies. Exactly one sits on the Feature line.
-var featureTypes = map[string]bool{
-	"domain": true, "service": true, "api": true, "infrastructure": true,
-	"mapping": true, "contract": true, "tech-check": true,
-}
+// tagsFile is the one list of @type/<x> and @category/<x> values, shared with
+// tools/testing/kind.sh.
+const tagsFile = "tools/testing/tags.json"
 
+// featureTypes are the values of @type/<x>: what part of the program a feature
+// specifies. Exactly one sits on the Feature line, written to its last segment.
 // scenarioCategories are the values of @category/<x>: what kind of test a scenario is.
-// Exactly one is on the scenario or inherited.
-var scenarioCategories = map[string]bool{
-	"happy": true, "boundary": true, "negative": true, "error": true,
-	"concurrency": true, "security": true, "regression": true,
+// Exactly one is on the scenario or inherited. Both are filled by loadTags.
+var featureTypes, scenarioCategories map[string]bool
+
+// loadTags reads the allowed values from tagsFile: an entry with "values" is written to
+// its last segment ("api" + "http" -> "api/http"), the bare tag is not a value.
+func loadTags() error {
+	raw, err := os.ReadFile(tagsFile)
+	if err != nil {
+		return err
+	}
+	var lists map[string][]struct {
+		Tag    string   `json:"tag"`
+		Values []string `json:"values"`
+	}
+	if err := json.Unmarshal(raw, &lists); err != nil {
+		return fmt.Errorf("%s: %w", tagsFile, err)
+	}
+	allowed := func(ns string) map[string]bool {
+		set := map[string]bool{}
+		for _, e := range lists[ns] {
+			if len(e.Values) == 0 {
+				set[e.Tag] = true
+			}
+			for _, v := range e.Values {
+				set[e.Tag+"/"+v] = true
+			}
+		}
+		return set
+	}
+	featureTypes, scenarioCategories = allowed("type"), allowed("category")
+	return nil
 }
 
 // reasonComment is the "# todo: ..." / "# broken: ..." line directly above the tags.
@@ -96,6 +122,9 @@ func main() {
 }
 
 func run(eventsPath string) error {
+	if err := loadTags(); err != nil {
+		return err
+	}
 	results, err := readResults(eventsPath)
 	if err != nil {
 		return err

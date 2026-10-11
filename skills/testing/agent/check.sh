@@ -61,7 +61,7 @@ out=$(git grep -nIE 'skills/(common-workflow|angular|dotnet|go|python|typescript
 # 6. Shared files in every example are verbatim copies of the core skill's assets.
 core=skills/testing/core/solution-conformance-testing.skill/assets
 for f in tools/testing/testing.mk tools/testing/testing.sh tools/testing/kind.sh tools/testing/test-report.sh \
-         tools/testing/normalize-scenarios.sh tools/testing/messages-results.jq \
+         tools/testing/normalize-scenarios.sh tools/testing/messages-results.jq tools/testing/tags.json \
          tools/livingdoc/render.mjs tools/livingdoc/package.json tools/livingdoc/package-lock.json; do
   while IFS= read -r copy; do
     cmp -s "$core/$f" "$copy" || err "$copy differs from $core/$f"
@@ -141,6 +141,22 @@ out=$(git grep -lE '^test-(kind|report|and-report)[a-z-]*:' -- 'skills/**/exampl
 # 12. The removed page must not come back as a live function/call.
 out=$(git grep -n 'kind_scenarios_report' -- skills ':!*/agent/*' ':!*/adr/*')
 [ -n "$out" ] && { err "removed scenario-page function/call:"; echo "$out"; }
+
+# 13. One list of tag values: tools/testing/tags.json. The two statements of it that cannot read the file -
+#     the table of cucumber-testing and the pytest markers - say the same.
+tags=skills/testing/core/solution-conformance-testing.skill/assets/tools/testing/tags.json
+cuke=skills/testing/core/cucumber-testing.skill/cucumber-testing.skill.md
+want=$(jq -r '(.type[] | "@type/\(.tag)" + (if .values then "/{\(.detail)}: " + (.values | join(" ")) else ":" end)),
+              (.category[] | "@category/\(.tag):")' "$tags" | sed 's/ *$//' | sort)
+have=$( { grep -E '^\| `@type/' "$cuke" | perl -ne '@t = /`([^`]+)`/g; print shift(@t), ": @t\n"'
+          grep -oE '@category/[a-z-]+' "$cuke" | sort -u | sed 's/$/:/'; } | sed 's/ *$//' | sort)
+[ "$want" = "$have" ] || { err "$cuke and $tags list different tag values (< tags.json, > skill):"; diff <(echo "$want") <(echo "$have") | grep '^[<>]'; }
+want=$(jq -r '.type[], .category[] | if .values then .tag as $t | .values[] | "\($t)/\(.)" else .tag end' "$tags" | sort)
+py=skills/testing/python/solution-conformance-testing-in-python.skill
+for f in "$py/examples/pyproject.toml" "$py/Implementation/pyproject.toml.extend.md"; do
+  have=$(grep -oE '"(type|category)/[a-z/-]+' "$f" | sed -E 's/^"(type|category)\///' | sort -u)
+  [ "$want" = "$have" ] || { err "$f: markers differ from $tags (< tags.json, > markers):"; diff <(echo "$want") <(echo "$have") | grep '^[<>]'; }
+done
 
 [ $fail -eq 0 ] && echo "skills/testing: all checks passed"
 exit $fail
