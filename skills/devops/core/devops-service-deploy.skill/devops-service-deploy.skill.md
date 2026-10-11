@@ -2,7 +2,7 @@
 name: devops-service-deploy
 description: What a service repository must contain so that the service can be deployed by anyone — its own deploy skill with filled Docker Compose, Docker Stack, and Kubernetes or Helm examples, a health-check endpoint, secrets suppliable as files, and a documented configuration contract
 whenToUse: when you create a service or change anything its deployment depends on — image, ports, environment variables, secrets, dependencies, migrations — and when you review a service repository's deploy skill
-updated: 20261010
+updated: 20261011
 tags:
   - stack
   - app-type/service
@@ -16,13 +16,14 @@ adr:
 ---
 
 # Goal
-- **The service's deploy skill** - `skills/devops/deploy-{service-name}.skill/` in the service repository, filled from this skill's template: the deploy skill, a Compose file, a Stack manifest, and either Kubernetes manifests or a Helm chart, each with a step-by-step guide.
+- **The service's deploy skill** - `docs/skills/devops/deploy-{service-name}.skill/` in the service repository, filled from this skill's template: the deploy skill, a Compose file, a Stack manifest, and either Kubernetes manifests or a Helm chart, each with a step-by-step guide.
 - `docker-entrypoint.sh` at the repository root, an unchanged copy of this skill's asset, wired into the `Dockerfile`.
 - A `/health-check` endpoint that every deployment path probes.
 - `.env.example` at the repository root for the dev container, and `.env` in `.gitignore`.
 - The root `README.md` and the image label pointing at the deploy skill.
 
 # Core Principle
+- The deploy skill is documentation for an AI agent, so it is stored and worded per [[skills/common-workflow/documentation/documentation-for-ai-agents.skill/documentation-for-ai-agents.skill.md|documentation-for-ai-agents]]; this skill's template takes the place of that skill's library templates.
 - **Deployment knowledge lives with the code** - How a service is deployed is written in its own repository and changed in the same pull request as the code, not kept in a wiki or an agent's memory.
 - **Three paths, three purposes** - Docker Compose runs the service locally, Docker Stack runs it on one or several hosts without a cluster, Kubernetes runs it replicated in a cluster.
 - **One secret mechanism** - Every variable can be given as a file, so a Docker secret, a Swarm secret, and a Kubernetes Secret reach the process the same way.
@@ -34,7 +35,7 @@ adr:
 ## MUST
 
 ### Create the deploy skill from the template
-Fill and copy the folder [[./templates/deploy-{service-name}.skill.template/deploy-{service-name}.skill.template.md|deploy-{service-name}.skill.template]] to `skills/devops/deploy-{service-name}.skill/` in the service repository, renaming the skill file to `deploy-{service-name}.skill.md` and replacing every placeholder of this table.
+Fill and copy the folder [[./templates/deploy-{service-name}.skill.template/deploy-{service-name}.skill.template.md|deploy-{service-name}.skill.template]] to `docs/skills/devops/deploy-{service-name}.skill/` in the service repository, renaming the skill file to `deploy-{service-name}.skill.md` and replacing every placeholder of this table.
 
 | Placeholder | Replace with |
 | --- | --- |
@@ -45,8 +46,8 @@ Fill and copy the folder [[./templates/deploy-{service-name}.skill.template/depl
 | `{host-port}` | the port published on the host |
 | `{date}` | the day the deploy skill is written, `YYYYMMDD` |
 
-- Violation: deployment described only in the README, or the template copied with `{service-name}` left in it.
-- Risk: every deployment depends on what one person remembers, and a copied command fails on a literal placeholder.
+- Violation: deployment described only in the README, the deploy skill kept under `skills/` instead of `docs/skills/devops/`, or the template copied with `{service-name}` left in it.
+- Risk: every deployment depends on what one person remembers, an agent that loads the project's documentation skills from `docs/skills/` never sees the deploy skill, and a copied command fails on a literal placeholder.
 - Fix: copy the folder, fill it, and search the result for `{`; update it in every pull request that changes a deployment fact.
 
 ### Replace the sample configuration with the service's own
@@ -102,7 +103,7 @@ In a Helm chart, render the migration Job and set the Deployment's `MIGRATE_ON_S
 ### Resolve NAME_FILE variables in the entrypoint
 Copy [[./assets/docker-entrypoint.sh|docker-entrypoint.sh]] verbatim to the repository root and add these lines to the `Dockerfile`, with the service's start command in `CMD`.
 ```dockerfile
-LABEL org.opencontainers.image.description="Deploy instructions: skills/devops/deploy-{service-name}.skill/deploy-{service-name}.skill.md"
+LABEL org.opencontainers.image.description="Deploy instructions: docs/skills/devops/deploy-{service-name}.skill/deploy-{service-name}.skill.md"
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 ENTRYPOINT ["docker-entrypoint.sh"]
@@ -136,7 +137,7 @@ Fill and copy [[./templates/root-env.example|root-env.example]] to `.env.example
 - Fix: development defaults only in `.env.example`; `.env` ignored, `!.env.example` kept.
 
 ### Point the README at the deploy skill
-Link `skills/devops/deploy-{service-name}.skill/deploy-{service-name}.skill.md` from the root `README.md`.
+Link `docs/skills/devops/deploy-{service-name}.skill/deploy-{service-name}.skill.md` from the root `README.md`.
 - Risk: a person never learns the deploy skill exists; the image label of [[#Resolve NAME_FILE variables in the entrypoint]] covers whoever has only the image.
 - Fix: one line in the README's deployment section.
 
@@ -157,7 +158,7 @@ Keep plain manifests and a chart side by side while the service moves from one t
 Add a Kustomize overlay or a `skaffold.yaml` for local Kubernetes development.
 
 # Check list
-- [ ] `skills/devops/deploy-{service-name}.skill/` exists; searching it for `{` finds no placeholder.
+- [ ] `docs/skills/devops/deploy-{service-name}.skill/` exists; searching it for `{` finds no placeholder.
 - [ ] The examples name the service's real variables, ports, and dependencies; no sample variable is left.
 - [ ] The folders are `templates/docker/compose/`, `templates/docker/stack/`, `templates/docker/`, and one of `templates/k8s/` or `templates/helm/`.
 - [ ] The Stack manifest is its own file with a `deploy:` block.
