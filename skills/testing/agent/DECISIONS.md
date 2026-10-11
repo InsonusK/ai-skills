@@ -370,3 +370,17 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - Angular testing skills are split by repository shape: one application (the existing skill), one library, an Nx workspace. An Nx application with its Nx packages in one repository is the workspace shape.
 - In an Nx workspace logic lies in packages and in the application alike, and both are tested: scenarios lie beside the logic in any project.
 - The TaskBox feature file gets its tags at the source when the owner returns to the TaskBox work.
+
+## Owner-decided (2026-10-11, detailed type tags)
+
+- `@type/api` and `@type/infrastructure` are written to a last segment that names the transport or the dependency: `api/{http|grpc|cli|message}`, `infrastructure/db/{postgresql|redis|sqlite}`, `infrastructure/queue/{kafka|rabbitmq}`, `infrastructure/client/{http|grpc}`, `infrastructure/file`. The bare tags are no longer values.
+- The values stay a closed list. The name of a client or a service is in the feature's title, not in the tag — the owner's first form `client/{name}/{kind}` was dropped for it.
+
+## Agent decisions — detailed type tags
+
+- The owner named `http`, `grpc`, `postgresql`, `redis`. Added so that every existing feature and every adapter of the catalog has a value: `cli` and `message` (the `api` row already covered a command line and a message), `sqlite`, `kafka`, `rabbitmq` (used by the catalog), `file` (the `store.feature` of every showcase).
+- The values are one file, `tools/testing/tags.json` (asked by the owner, 2026-10-11): `normalize-scenarios.sh`, the Go `normalize_scenarios/main.go`, `kind_scenarios_check` and the legend of `kind.sh` read it and list nothing themselves. Two statements of the list stay outside it and `check.sh` §13 compares both with the file: the table of `cucumber-testing`, which an agent reads when it writes a feature, and the Python `markers`, which `pytest` reads from `pyproject.toml` before any project code runs.
+- `type` in `scenarios.json` is the whole value (`api/http`), not its first segment: nothing reads it but `kind_scenarios_check`, which only asks for `none`.
+- The legend shows the detailed tags as five rows with their values in the meaning, not seventeen rows.
+- The showcase covers every part of the program, not every value: `livingdoc-check.py` expects `@type/api/cli` and `@type/infrastructure/file`.
+- `taskbox-conformance.feature` is `@type/infrastructure/db/postgresql` in the `gw009-001` copy, whose only store is `pgstore`. At the source the file runs once per store: there it needs one tag per store, which one file cannot carry — open, with the TaskBox work.

@@ -1,4 +1,4 @@
-@type/api
+@type/api/cli
 Feature: Check URLs from the command line
   The command line turns its arguments into checks, prints one line per URL, and reports
   the outcome through its exit code.

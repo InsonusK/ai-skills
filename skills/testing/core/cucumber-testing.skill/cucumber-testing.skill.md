@@ -1,9 +1,9 @@
 ---
-version: 20261011120000
+version: 20261011170000
 name: cucumber-testing
 description: Language-independent rules for writing and organizing Cucumber/Gherkin scenarios and their step definitions — generic comparators, expected-data placement, ordering, logging, and BDD editor setup
 whenToUse: when writing or reviewing a `.feature` file or its step definitions, when deciding whether an assertion step is reusable across scenarios, or when configuring an editor/devcontainer for Cucumber
-updated: 20261010
+updated: 20261011
 tags:
   - stack
   - concern/testing/bdd
@@ -53,15 +53,19 @@ Give every feature exactly one `@type/…` tag on its `Feature:` line — the ta
 | --- | --- |
 | `@type/domain` | a business rule of an entity, a value object, a validator or a pure function — no I/O |
 | `@type/service` | a use case: one operation orchestrated end to end, its collaborators replaced at their ports |
-| `@type/api` | an inbound adapter: how a request, a message or a command line becomes a call, and its result a response |
-| `@type/infrastructure` | an outbound adapter against the real dependency or its emulator: a store, a cache, a client of another service, a queue |
+| `@type/api/{transport}` | an inbound adapter: how what arrives over that transport becomes a call, and its result a response — `http`, `grpc`, `cli` (a command line), `message` (a consumer of a queue or topic) |
+| `@type/infrastructure/db/{engine}` | an outbound adapter to a store or a cache, against the real engine or its emulator — `postgresql`, `redis`, `sqlite` |
+| `@type/infrastructure/queue/{broker}` | an outbound adapter that publishes to a broker, against the real broker or its emulator — `kafka`, `rabbitmq` |
+| `@type/infrastructure/client/{protocol}` | a client of another service, against that service or its emulator — `http`, `grpc` |
+| `@type/infrastructure/file` | an outbound adapter that reads and writes files |
 | `@type/mapping` | the translation between two representations of the same data, with no I/O: transport object, domain model, stored row |
 | `@type/contract` | the shape other code depends on: commands, queries, events, interface markers, a published schema |
 | `@type/tech-check` | a technical check of the plumbing every module passes through, not of a business capability: a pipeline behavior, logging, configuration, error handling |
 
-- Violation: a feature with no `@type/…` tag, with two, or with a value outside the table; a `@type/…` tag on a single scenario instead of the `Feature:` line.
-- Risk: the report cannot show which parts of the program have a specification at all — a service whose rules are fully specified while its adapters have none looks like a fully specified one. A feature that needs two type tags specifies two things.
-- Fix: tag the feature with the type of the code it sits beside; split a feature that spans two types into two files; tag a feature copied from another repository in the copy — the project that holds the copy owns its tags; a feature that comes from a shared spec project of [solution-shared-conformance-testing](skills/testing/core/solution-shared-conformance-testing.skill/solution-shared-conformance-testing.skill.md) is tagged in that spec project. The unit test kind fails, naming each feature without exactly one `@type/…` tag.
+A tag is written to its last segment, and every segment is a value from the table: the name of a database, a service or a client belongs in the feature's title, never in the tag.
+- Violation: a feature with no `@type/…` tag, with two, or with a value outside the table; a bare `@type/api` or `@type/infrastructure/db`; a name of the project's own in a segment (`@type/infrastructure/client/billing/http`); a `@type/…` tag on a single scenario instead of the `Feature:` line.
+- Risk: the report cannot show which parts of the program have a specification at all — a service whose rules are fully specified while its adapters have none looks like a fully specified one. A feature that needs two type tags specifies two things. A bare `@type/api` hides that the HTTP adapter is specified and the gRPC one is not; a free segment turns every typo into a new type.
+- Fix: tag the feature with the type of the code it sits beside; split a feature that spans two types into two files — an HTTP and a gRPC adapter of one use case are two features; add a transport, engine, broker or protocol missing from the table to the table and to the project's `tools/testing/tags.json` before using it; tag a feature copied from another repository in the copy — the project that holds the copy owns its tags; a feature that comes from a shared spec project of [solution-shared-conformance-testing](skills/testing/core/solution-shared-conformance-testing.skill/solution-shared-conformance-testing.skill.md) is tagged in that spec project. The unit test kind fails, naming each feature without exactly one `@type/…` tag.
 ```gherkin
 @type/service
 Feature: Add item
@@ -204,7 +208,7 @@ Use the runner's own step-listing/generation facility, when it has one, instead 
 - [ ] Every scenario is structured as an input/expected-result matrix (data table or `Examples:`), not a narrative.
 - [ ] No unit-test-framework test duplicates what a `.feature` scenario could express; every plain test other than the runner entry point has its reason in a comment above it.
 - [ ] No test exists solely to cover code unreachable through the public API.
-- [ ] Every feature carries exactly one `@type/…` tag on its `Feature:` line: `domain`, `service`, `api`, `infrastructure`, `mapping`, `contract`, `tech-check`.
+- [ ] Every feature carries exactly one `@type/…` tag on its `Feature:` line: `domain`, `service`, `api/{http|grpc|cli|message}`, `infrastructure/db/{postgresql|redis|sqlite}`, `infrastructure/queue/{kafka|rabbitmq}`, `infrastructure/client/{http|grpc}`, `infrastructure/file`, `mapping`, `contract`, `tech-check` — written to its last segment, with no name of the project's own in it.
 - [ ] Every scenario (or `Examples:` block) carries exactly one `@category/…` tag: `happy`, `boundary`, `negative`, `error`, `concurrency`, `security`, `regression`.
 - [ ] Every scenario that must not run yet is tagged `@status/todo` or `@status/broken` with its `# todo:` / `# broken:` reason, filtered out of the executed run, and confirmed excluded rather than reported as passing.
 - [ ] No `@status/validated` tag was added by an agent, and none is left on a scenario changed in this work.
