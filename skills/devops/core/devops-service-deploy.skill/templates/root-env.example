@@ -7,7 +7,7 @@
 # so dev-only placeholder secrets are acceptable here; anything that would
 # be a real secret in staging/production still goes through the
 # NAME_FILE convention when the same variable is used outside the
-# devcontainer (see deploy skill: skills/devops/deploy-{service-name}.skill/).
+# devcontainer (see deploy skill: docs/skills/devops/deploy-{service-name}.skill/).
 
 APP_ENVIRONMENT=development
 SERVICE_PORT=8080
