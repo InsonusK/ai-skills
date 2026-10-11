@@ -24,9 +24,11 @@ runs:
     - uses: dorny/paths-filter@v3
       id: filter
       with:
-        # A pull request is compared with the commit it branched from. A push is compared
-        # with the commit before it - which needs the pushed branch itself as the base;
-        # the default base is the repository's default branch.
+        # A pull request is compared with the commit it branched from: the files come from
+        # the GitHub API, which needs pull-requests: read on the calling job, and 'base' is
+        # ignored with a warning in the log. A push is compared with the commit before it -
+        # which needs the pushed branch itself as the base; the default base is the
+        # repository's default branch.
         base: ${{ github.ref }}
         # every: a file counts for a category only when it matches all of its patterns, so
         # a category lists its places inside one pair of braces and then what it leaves out.

@@ -2,7 +2,7 @@
 name: devops-github-wf-pull-request
 description: Stack-agnostic GitHub Actions workflow that validates a pull request into develop or master — what changed, a raised version into master, the README badges, every test kind as a parallel check run, a build of what the project delivers — and reports one required status
 whenToUse: when you create or update `.github/workflows/pull-request.yml`, or set up branch protection for `develop`/`master`
-updated: 20261010
+updated: 20261011
 tags:
   - stack
   - concern/ci
