@@ -2,7 +2,7 @@
 name: devops-release-docker-image
 description: Release action for a project that ships a Docker image — builds the image, and pushes it to ghcr.io as {version} and latest from master and as {version}-{timestamp} from develop; in a pull request it only builds
 whenToUse: when a project with a `Dockerfile` needs `.github/actions/release/action.yml`, or when you review how its image is tagged and pushed
-updated: 20261010
+updated: 20261011
 tags:
   - stack
   - concern/ci
@@ -13,6 +13,7 @@ tags:
 # Goal
 - `.github/actions/release/action.yml` in the project, an unchanged copy of this skill's file.
 - A `Dockerfile` at the repository root that uses `ARG VERSION`.
+- A `.dockerignore`, when the project has one, that leaves `docs/integration` in the build context.
 - From `master`: `ghcr.io/{owner}/{repo}:{version}` and `:latest`. From `develop`: `:{version}-{timestamp}`. In a pull request: a build, nothing pushed.
 
 # Core Principle
@@ -34,6 +35,16 @@ Declare `ARG VERSION` in the `Dockerfile` and pass it into the build of the prog
 - Risk: a snapshot image `1.4.0-20261010120000` holds a program that reports `1.4.0`, and two snapshots cannot be told apart.
 - Fix: `ARG VERSION=` in the build stage, used by the build command when it is not empty.
 
+### Keep the API contracts in the build context
+In a `.dockerignore` that excludes `docs`, re-include `docs/integration` on the next line.
+```
+docs
+!docs/integration
+```
+- Violation: a `.dockerignore` with `docs` alone, or one that re-includes a single file of a contract folder and not the files the build reads beside it.
+- Risk: the API contracts under `docs/integration` are embedded and generated from, as [[skills/devops/core/devops-ci-changes.skill.md|devops-ci-changes]] classifies them, so the image build fails on a missing source (in Go: `package {module}/docs/integration/api/openapi is not in std`) — and only in the delivery job, because tests and a local build run in the full checkout.
+- Fix: add the exception line; a `.dockerignore` that does not exclude `docs` needs none.
+
 ### Only for a project with a Dockerfile
 Take this action only when the project has a `Dockerfile` at its root.
 - Risk: every push and every pull request fails building an image that has no `Dockerfile`.
@@ -42,4 +53,5 @@ Take this action only when the project has a `Dockerfile` at its root.
 # Check list
 - [ ] `.github/actions/release/action.yml` is an unchanged copy of this skill's file.
 - [ ] The `Dockerfile` is at the repository root and uses `ARG VERSION`.
+- [ ] A `.dockerignore` that excludes `docs` re-includes `docs/integration`.
 - [ ] A pull request that changes the `Dockerfile` builds the image in `Delivery builds`.
