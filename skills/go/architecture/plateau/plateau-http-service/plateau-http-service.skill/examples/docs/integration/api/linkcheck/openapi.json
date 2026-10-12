@@ -1,0 +1,67 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Link check",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/v1/links/check": {
+      "post": {
+        "operationId": "checkLink",
+        "summary": "Validate a URL and return its normalized form",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CheckRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The URL is well-formed",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CheckResponse" }
+              }
+            }
+          },
+          "default": {
+            "description": "An error, as google.rpc.Status",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Status" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CheckRequest": {
+        "type": "object",
+        "properties": {
+          "url": { "type": "string" }
+        }
+      },
+      "CheckResponse": {
+        "type": "object",
+        "properties": {
+          "url": { "type": "string" },
+          "normalized": { "type": "string" }
+        }
+      },
+      "Status": {
+        "type": "object",
+        "description": "google.rpc.Status in proto-JSON",
+        "properties": {
+          "code": { "type": "integer", "format": "int32", "description": "The grpc status code" },
+          "message": { "type": "string" },
+          "details": { "type": "array", "items": { "type": "object" } }
+        }
+      }
+    }
+  }
+}

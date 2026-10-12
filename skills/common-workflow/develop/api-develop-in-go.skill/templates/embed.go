@@ -5,5 +5,5 @@ package {contract-package}
 
 import _ "embed"
 
-//go:embed {file}.swagger.json
+//go:embed {spec-file}
 var Spec []byte

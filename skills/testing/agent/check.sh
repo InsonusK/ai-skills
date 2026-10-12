@@ -93,10 +93,13 @@ out=$(git grep -nE 'make unit-test|make mutation-test|test-report-build|TEST_BAD
 [ -n "$out" ] && { err "references to the previous testing contract:"; echo "$out"; }
 
 # 10. Example tooling equals the stack skill's assets: the kind scripts, and the Go normalizers they call.
+# A kind another skill ships (generated.sh of api-develop-in-go) is compared with that skill's asset.
+foreign=skills/common-workflow/develop/api-develop-in-go.skill/assets
 for s in go dotnet; do
   src=skills/testing/$s/solution-conformance-testing-in-$s.skill/assets
   while IFS= read -r copy; do
-    cmp -s "$src/tools/testing/kinds/$(basename "$copy")" "$copy" || err "$copy differs from $src/tools/testing/kinds/"
+    from=$src; [ -f "$from/tools/testing/kinds/$(basename "$copy")" ] || from=$foreign
+    cmp -s "$from/tools/testing/kinds/$(basename "$copy")" "$copy" || err "$copy differs from $from/tools/testing/kinds/"
   done < <(git ls-files -co --exclude-standard "skills/$s/**/examples/tools/testing/kinds/*.sh")
 done
 for s in go python typescript dotnet; do   # the runnable example inside the testing skill itself
