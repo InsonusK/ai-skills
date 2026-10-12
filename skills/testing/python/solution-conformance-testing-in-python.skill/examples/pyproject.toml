@@ -30,7 +30,7 @@ markers = [
     "category/happy", "category/boundary", "category/negative", "category/error",
     "category/concurrency", "category/security", "category/regression",
     "type/domain", "type/service",
-    "type/api/http", "type/api/grpc", "type/api/cli", "type/api/message",
+    "type/api/http", "type/api/grpc", "type/api/cli", "type/api/message", "type/api/schedule",
     "type/infrastructure/db/postgresql", "type/infrastructure/db/redis", "type/infrastructure/db/sqlite",
     "type/infrastructure/queue/kafka", "type/infrastructure/queue/rabbitmq",
     "type/infrastructure/client/http", "type/infrastructure/client/grpc", "type/infrastructure/file",

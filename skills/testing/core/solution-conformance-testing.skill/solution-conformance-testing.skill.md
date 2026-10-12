@@ -5,7 +5,7 @@ whenToUse: when setting up or reviewing a project's testing strategy, when decid
 domain: skill
 type: architecture
 version: 13
-updated: 20261011
+updated: 20261012
 tags:
   - skill/architecture/solution
   - solution/conformance-testing

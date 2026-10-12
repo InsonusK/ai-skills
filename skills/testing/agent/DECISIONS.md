@@ -384,3 +384,8 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - The legend shows the detailed tags as five rows with their values in the meaning, not seventeen rows.
 - The showcase covers every part of the program, not every value: `livingdoc-check.py` expects `@type/api/cli` and `@type/infrastructure/file`.
 - `taskbox-conformance.feature` is `@type/infrastructure/db/postgresql` in the `gw009-001` copy, whose only store is `pgstore`. At the source the file runs once per store: there it needs one tag per store, which one file cannot carry — open, with the TaskBox work.
+
+## Agent decisions — the `schedule` transport and who edits `tags.json` (2026-10-12, issue #210)
+
+- `@type/api/schedule` is a value: an inbound adapter started by the clock (cron, a timer). `testing-strategy` already asks for scenarios of a scheduled workflow, and none of `http`, `grpc`, `cli`, `message` describes it; a feature of such an adapter was tagged `@type/tech-check` and disappeared among configuration checks.
+- Two instructions contradicted: the Fix of "One type tag per feature" told a project to add a missing value to its own `tools/testing/tags.json`, and `solution-conformance-testing` requires that file to be a byte-for-byte copy of the asset. The second holds — the values are a closed list (owner-decided, 2026-10-11), and a list each project extends is not closed. The Fix now says: propose the value to the skill's owner, use the nearest value of the table until a release carries it, never edit the project's copy.

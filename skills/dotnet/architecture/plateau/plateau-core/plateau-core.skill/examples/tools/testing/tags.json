@@ -2,7 +2,7 @@
   "type": [
     { "tag": "domain", "meaning": "a business rule of an entity, a value object, a validator or a pure function - no I/O" },
     { "tag": "service", "meaning": "a use case: one operation end to end, its collaborators replaced at their ports" },
-    { "tag": "api", "detail": "transport", "values": ["http", "grpc", "cli", "message"],
+    { "tag": "api", "detail": "transport", "values": ["http", "grpc", "cli", "message", "schedule"],
       "meaning": "an inbound adapter: how what arrives over that transport becomes a call" },
     { "tag": "infrastructure/db", "detail": "engine", "values": ["postgresql", "redis", "sqlite"],
       "meaning": "an outbound adapter to a store or a cache, against the real engine or its emulator" },
