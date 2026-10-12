@@ -70,4 +70,4 @@ func writeError(w http.ResponseWriter, code int, err error) {
 
 # Check list
 - [ ] Every `code…` constant has a row in `httpStatus`.
-- [ ] No `http.Error` call and no `map[string]string{"error": …}` in the package.
+- [ ] No `http.Error` call and no error body built from a map in the package.
