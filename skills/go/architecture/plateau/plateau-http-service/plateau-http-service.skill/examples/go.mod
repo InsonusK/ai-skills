@@ -6,6 +6,7 @@ require (
 	github.com/cucumber/gherkin/go/v42 v42.0.0
 	github.com/cucumber/godog v0.16.0
 	github.com/cucumber/messages/go/v34 v34.2.0
+	github.com/swaggest/swgui v1.8.9
 )
 
 require (
@@ -14,4 +15,5 @@ require (
 	github.com/hashicorp/go-memdb v1.3.5 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
+	github.com/vearutop/statigz v1.4.0 // indirect
 )

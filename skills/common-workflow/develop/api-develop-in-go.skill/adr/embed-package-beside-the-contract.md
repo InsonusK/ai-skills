@@ -23,7 +23,7 @@ tags:
 **Selected.**
 
 ### Description
-`docs/integration/api/{contract-name}/embed.go` holds `//go:embed {file}.swagger.json` and exports `Spec []byte`. The HTTP server imports it.
+`docs/integration/api/{contract-name}/embed.go` holds `//go:embed {spec-file}` and exports `Spec []byte`. The HTTP server imports it.
 
 ### Benefits
 - One file is the published contract and the served one.
