@@ -2,13 +2,15 @@
 name: architect-validator
 description: Validate that all architecture pattern was applied correctly
 whenToUse: After make code changes
+updated: 20261011
 tags:
   - stack
   - concern/architecture
 
 ---
 # Goal
-- Check that plateau was applied correctly: (solutions, templates)
+- Every changed file checked against every check list of the plateau, solutions, and templates that apply to it.
+- A `BUG: {description}` comment at each violation found, linking the skill file that defines the correct way.
 
 # Core Principle
 - Validate all classes, check all solution and templates applied to class

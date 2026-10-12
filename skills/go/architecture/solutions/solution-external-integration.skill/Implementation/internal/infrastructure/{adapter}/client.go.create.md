@@ -20,7 +20,7 @@ tags:
 # Implementation changes
 ```go
 // Package {adapter} wraps the generated gRPC client for the external
-// service (proto/{external}/v1/{external}.proto) and implements the
+// service (docs/integration/client/{api-name}/{file}.proto) and implements the
 // domain's outbound port.
 package {adapter}
 
@@ -33,7 +33,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 
-	externalv1 "{module-path}/gen/{external}"
+	externalv1 "{module-path}/gen/client/{api-name}"
 	"{module-path}/internal/domain/interfaces"
 )
 

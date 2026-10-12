@@ -50,7 +50,10 @@ func run() error {
 
 	httpServer := &http.Server{
 		Addr:    ":" + cfg.HTTPListenPort,
-		Handler: apihttp.New(domainService).Handler(),
+		Handler: apihttp.New(domainService, apihttp.Options{
+			DocsEnabled: cfg.HTTPAPIDocsEnabled,
+			BasePath:    cfg.HTTPBasePath,
+		}).Handler(),
 	}
 
 	go func() {
@@ -75,6 +78,10 @@ func run() error {
 - A single-server `run()` (this solution's shape) blocks on `httpServer.ListenAndServe()` directly; the moment a second concurrent long-running loop is added (e.g. by [[skills/go/architecture/solutions/solution-grpc-api.skill/solution-grpc-api.skill.md|solution-grpc-api]]), `run()` must be converted to an `errgroup.Group` — never two bare blocking calls in sequence.
   - Risk: two sequential blocking calls means the second server never starts.
   - Fix: the solution introducing the second loop makes this conversion; see its own `main.go.extend.md`.
+
+- `run()` must pass `cfg.HTTPAPIDocsEnabled` and `cfg.HTTPBasePath` to the HTTP adapter as `apihttp.Options` — the adapter reads no environment variable itself.
+  - Risk: a setting read in two places is validated in one of them, and a test cannot start the adapter with docs on.
+  - Fix: `config.Load()` is the only reader; `Options` carries the values.
 
 # Check list
 - [ ] `run()` blocks on `httpServer.ListenAndServe()` and returns cleanly on shutdown.

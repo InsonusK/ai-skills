@@ -18,7 +18,7 @@ adr:
   - adr/ignore-unknown-request-fields.md
   - adr/success-status-by-outcome.md
   - adr/error-body-google-rpc-status.md
-updated: 20261011
+updated: 20261012
 ---
 
 # Goal
@@ -86,9 +86,9 @@ Make every URL the service emits — Swagger UI's spec URL, `openapi.json`'s `se
 - Fix: the ingress strips the prefix before forwarding, so keep routes mounted at `/`; use `HTTP_BASE_PATH` (normalized to a leading `/`, no trailing `/`) only to build emitted URLs — prefix redirects/`Location`, set `servers[0].url` to `{HTTP_BASE_PATH}`, and point Swagger UI at a relative `./openapi.json` (or `{HTTP_BASE_PATH}/openapi.json`). Set `HTTP_BASE_PATH` to the ingress path in the service's k8s manifests per [devops-service-deploy](../../../devops/core/devops-service-deploy.skill/devops-service-deploy.skill.md).
 
 ### Place contract files under `docs/integration/api`
-Store every grpc `.proto` and `openapi.json` file describing this service's own published API under `docs/integration/api/{contract-name}/`.
-- Violation: the service's own contract committed elsewhere in the repo (next to the server code, in a `contracts/` folder at the root, etc.).
-- Risk: consumers and reviewers can't find the published contract without knowing where this service chose to put it.
+Store every grpc `.proto` and `openapi.json` file describing this service's own published API under `docs/integration/api/{contract-name}/` — one folder per contract, holding the contract file, the spec generated from it, and nothing of another contract.
+- Violation: the service's own contract committed elsewhere in the repo (next to the server code, in a `contracts/` folder at the root, etc.); folders by kind of file (`docs/integration/api/proto/`, `docs/integration/api/openapi/`) instead of by contract.
+- Risk: consumers and reviewers can't find the published contract without knowing where this service chose to put it; a consumer that copies the contract to its `docs/integration/client/{api-name}/` has to collect it from several folders.
 - Fix: move it to `docs/integration/api/{contract-name}/`.
 
 ### Follow the standard proto-JSON mapping

@@ -46,7 +46,7 @@ internal/api/grpc/
 # Allowed Dependencies
 - `internal/domain/services`
 - `internal/domain/interfaces` (for sentinel errors, once it exists)
-- `gen/api` (this module's own generated stubs)
+- `gen/api/{contract-name}` (this module's own generated stubs)
 - `google.golang.org/grpc`, `google.golang.org/grpc/codes`, `google.golang.org/grpc/status`
 
 # Rules

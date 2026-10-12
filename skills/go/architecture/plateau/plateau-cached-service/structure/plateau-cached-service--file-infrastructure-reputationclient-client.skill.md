@@ -5,7 +5,7 @@ whenToUse: when creating or editing internal/infrastructure/reputationclient/cli
 domain: skill
 type: template
 plateau: plateau-cached-service
-version: 20260917030000
+version: 20261012000000
 tags:
   - skill/template/file
   - plateau/plateau-cached-service
@@ -27,7 +27,7 @@ __Applied solutions:__
 ```go
 // Skill: file-infrastructure-reputationclient-client
 // Plateau: plateau-cached-service
-// Version: 20260917030000
+// Version: 20261012000000
 
 package reputationclient
 
@@ -40,7 +40,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 
-	reputationv1 "{module-path}/gen/reputation"
+	reputationv1 "{module-path}/gen/client/reputation"
 	"{module-path}/internal/domain/interfaces"
 )
 
@@ -50,7 +50,8 @@ type Client struct {
 }
 
 // Dial connects to the reputation service's plaintext gRPC address. A real
-// consumer of this catalog would add TLS transport credentials here.
+// consumer of this catalog would add TLS transport credentials here (see
+// solution-external-integration's own Boundaries).
 func Dial(addr string) (*Client, error) {
 	conn, err := grpc.NewClient(addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
@@ -78,7 +79,7 @@ func translateErr(err error) error {
 	return err
 }
 ```
-Verified against this plateau's own `examples/internal/infrastructure/reputationclient/client.go` — `go build`/`go vet` clean; smoke-tested end-to-end against a real (throwaway, test-only) gRPC reputation server: a URL containing "bad" comes back flagged with the server's reason; stopping that server before a request makes `CheckReputation` return `interfaces.ErrUnavailable`, which the HTTP adapter maps to `502` and the gRPC adapter maps to `codes.Unavailable`.
+Verified against this plateau's own `examples/internal/infrastructure/reputationclient/client.go` — `go build`/`go vet` clean; smoke-tested end-to-end against a real (throwaway, test-only) gRPC reputation server: a URL containing "bad" comes back flagged with the server's reason; stopping that server before a request makes `CheckReputation` return `interfaces.ErrUnavailable`, which the HTTP adapter answered `502` at the time and answers 503 since it follows the canonical table (held by `http_api.feature`) and the gRPC adapter maps to `codes.Unavailable`.
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-external-integration.skill/solution-external-integration.skill.md|solution-external-integration]] - [[skills/go/architecture/solutions/solution-external-integration.skill/Implementation/internal/infrastructure/{adapter}/client.go.create.md|client.go]]

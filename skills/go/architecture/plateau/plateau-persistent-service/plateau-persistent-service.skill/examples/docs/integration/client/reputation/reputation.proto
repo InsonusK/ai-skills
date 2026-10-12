@@ -1,0 +1,19 @@
+// version: 1.0.0
+syntax = "proto3";
+
+package reputation.v1;
+
+option go_package = "github.com/example/reputation-service/gen/api/reputation";
+
+service ReputationService {
+  rpc CheckReputation(CheckReputationRequest) returns (CheckReputationResponse);
+}
+
+message CheckReputationRequest {
+  string url = 1;
+}
+
+message CheckReputationResponse {
+  bool flagged = 1;
+  string reason = 2;
+}

@@ -29,7 +29,17 @@ internal/
       test/                       ← godog step definitions + World
   api/
     http/
-      server.go                   ← solution-go-http-api
+      server.go                   ← solution-go-http-api (Options, contract routes, handlers)
+      docs.go                     ← solution-go-http-api (spec and Swagger UI routes)
+      errors.go                   ← solution-go-http-api (the error body)
+      features/                   ← the HTTP API feature, @type/api/http
+      test/
+docs/
+  integration/
+    api/
+      {contract-name}/
+        openapi.json              ← solution-go-http-api (hand-written contract)
+        embed.go                  ← solution-go-http-api
 tools/
   normalize_unittest/main.go      ← solution-conformance-testing-in-go
   normalize_scenarios/main.go     ← solution-conformance-testing-in-go
@@ -38,7 +48,7 @@ tools/
 ```
 
 - **No `internal/domain/interfaces/`** at baseline — created by `solution-go-domain-ports`, a shared prerequisite the first-applied of `solution-external-integration`/`solution-cached-db`/`solution-persistent-db` depends on (VP-C005/VP-C002/VP-C001).
-- **No `internal/infrastructure/`, `internal/api/grpc/`, `proto/`, `buf/`, `gen/`** at baseline — each created by its own VP-realizing solution.
+- **No `internal/infrastructure/`, `internal/api/grpc/`, `buf.yaml`, `buf.gen.yaml`, `gen/`, `docs/integration/client/`** at baseline — each created by its own VP-realizing solution. `proto/` and `buf/` exist in no plateau: see [§9](#9-api-contracts-issue-206).
 - Every Go module dependency is pinned once in `go.mod` — no separate central-package-management solution exists for this stack (unlike the dotnet catalog); see `feature/feature-model.md`'s "Modeling choices" section.
 
 ## 2. Common features → realizing solution (must be 1:1 covered)
@@ -67,7 +77,7 @@ tools/
 ## 4. Link & path conventions
 
 - Every internal link points inside `skills/go/architecture/` — this catalog has no version-prefixed staging tree (no pre-existing catalog to parallel-build against; see `agent/DECISIONS.md`).
-- **Carve-out:** `solution-conformance-testing-in-go` legitimately `depends_on`/references `skills/testing/core/solution-conformance-testing.skill` (the stack-agnostic parent it implements, including its own `adr/mutation-tool-per-stack.md`, which this catalog's build updated directly) and `skills/testing/go/cucumber-testing-in-go.skill.md` (the scenario-authoring rules it delegates to). `solution-go-repository-structure`, `solution-go-domain-logic`, `solution-go-http-api`, and every `Package.create.md`/`Struct.template`/`Functions.template` also legitimately reference `skills/design/skill-design.skill/skill-design.skill.md` and `skills/common-workflow/architecture/design/*` (the pipeline skills themselves). `solution-go-db-migrations` legitimately references (body prose only, never `depends_on:` — it is not a `solution-*.skill.md`) `skills/devops/core/devops-service-deploy.skill/devops-service-deploy.skill.md`, whose own "migration step" rule owns the deployment topology that gates `cmd/migrate` ahead of the app on each platform. These are the only allowed external `depends_on`/references in the catalog.
+- **Carve-out:** `solution-conformance-testing-in-go` legitimately `depends_on`/references `skills/testing/core/solution-conformance-testing.skill` (the stack-agnostic parent it implements, including its own `adr/mutation-tool-per-stack.md`, which this catalog's build updated directly) and `skills/testing/go/cucumber-testing-in-go.skill.md` (the scenario-authoring rules it delegates to). `solution-go-repository-structure`, `solution-go-domain-logic`, `solution-go-http-api`, and every `Package.create.md`/`Struct.template`/`Functions.template` also legitimately reference `skills/design/skill-design.skill/skill-design.skill.md` and `skills/common-workflow/architecture/design/*` (the pipeline skills themselves). `solution-go-db-migrations` legitimately references (body prose only, never `depends_on:` — it is not a `solution-*.skill.md`) `skills/devops/core/devops-service-deploy.skill/devops-service-deploy.skill.md`, whose own "migration step" rule owns the deployment topology that gates `cmd/migrate` ahead of the app on each platform. `solution-go-http-api`, `solution-grpc-api`, `solution-external-integration`, and the plateau skills built from them legitimately reference `skills/common-workflow/develop/api-develop.skill`, `api-develop-in-go.skill`, and `api-client-develop.skill.md` — the owners of the contract rules ([§9](#9-api-contracts-issue-206)). These are the only allowed external `depends_on`/references in the catalog.
 - Wikilink form: `[[skills/go/architecture/solutions/solution-x.skill/solution-x.skill.md|solution-x]]`. Frontmatter `depends_on` entries end with `.skill.md` before the `|`.
 - Implementation-file links: `[[.../solution-x.skill/Implementation/{path}/{File}.{kind}.md#SECTION|label]]`.
 - A solution's folder name, its main file name, and its `name:` field are identical: `solution-{name}.skill` / `solution-{name}.skill.md` / `name: solution-{name}`.
@@ -95,3 +105,34 @@ tools/
 ## 8. Ground truth
 
 Each of the five plateaus' own `examples/` must `go build ./...`, `go vet ./...`, and `make test-kind-unit` (godog scenarios green) — `plateau-persistent-service`'s example additionally needs a reachable PostgreSQL and Redis to run its full scenario set; document the exact `docker run`/connection-string setup in that plateau's own root skill. Until a plateau's example passes, that plateau is "plausible", not "verified".
+
+## 9. API contracts (issue #206)
+
+The catalog follows `api-develop` and `api-develop-in-go`. Those two skills own the rules; this section fixes only what the catalog adds — which solution owns which file, and what is the same in every plateau. Owner decisions of 2026-10-12 are marked **(owner)**.
+
+### Who owns what
+
+| Solution | Owns |
+| --- | --- |
+| `solution-go-http-api` (baseline) | `docs/integration/api/{contract-name}/openapi.json` hand-written **(owner)** and `embed.go`; `internal/api/http/` — `server.go`, `docs.go`, `errors.go`, the feature and its steps; `HTTP_API_DOCS_ENABLED` and `HTTP_BASE_PATH` in `config.go` |
+| `solution-grpc-api` (VP1) | replaces the hand-written spec by `{contract-name}/{file}.proto` and the `{file}.swagger.json` generated from it; `buf.yaml`, `buf.lock`, `buf.gen.yaml`, the `tool` lines of `go.mod`, `make proto-gen`, `gen/api/{contract-name}/`, `tools/testing/kinds/generated.sh`; rewrites the HTTP adapter onto the generated messages (`protojson.go` replaces `errors.go`); `internal/api/grpc/` |
+| `solution-external-integration` (VP-C005) | `docs/integration/client/{api-name}/{file}.proto`, the provider's copy unchanged; the second module of `buf.yaml`; `buf.gen.client.yaml`, which sets `go_package` by buf managed mode; `gen/client/{api-name}/` |
+
+### The same in every plateau
+
+- **One wire form.** `POST /v1/…` routes; JSON keys in lowerCamelCase; every field present in a response; an unknown request field ignored; an unparseable body answered 400. Error body `{"code", "message", "details"}` — `google.rpc.Status` — with the status from the canonical gRPC-to-HTTP table (`ErrUnavailable` → 503, not 502). Success status 201 / 202 / 200 by what the method did. The baseline writes this by hand with `encoding/json`; from VP1 on it is `protojson` over the generated messages (handlers written by hand, no grpc-gateway — **owner**). The same feature file passes on both, so adding VP1 changes no byte a client sees.
+- **Contract.** One folder per contract. The proto file starts with `// version: {major}.{minor}.{patch}`, declares `package {name}.v{major};` and `go_package "{module-path}/gen/api/{contract-name}"`; no version folder. The spec's `info.version` equals it.
+- **Docs routes.** `GET /openapi.json`, `GET /swagger/`, and `GET /swagger` redirecting to it — registered only when `HTTP_API_DOCS_ENABLED=true`. Routes stay mounted at `/`; `HTTP_BASE_PATH` goes only into emitted URLs: the spec's `servers[0].url` (OpenAPI 3, hand-written) or `basePath` (OpenAPI 2, generated), Swagger UI's spec and asset URLs, the redirect's `Location`.
+- **Swagger UI.** `github.com/swaggest/swgui` `v5emb`, pinned in `go.mod` — assets embedded in the binary through a Go module **(owner)**.
+- **Routes.** Contract routes come from one `contractRoutes()` list exposed as `ContractRoutes()`; `/health` and the docs routes are outside it.
+- **Feature.** `internal/api/http/features/http_api.feature`, `@type/api/http`: the operations scenario of `api-develop-in-go`; each method's success status and body; a request with an unknown field; an invalid and an unparseable request; the docs routes on, under `/prefix`, and off.
+- **Generators.** `tool` lines of `go.mod`, run as `go tool …`; nothing installed with `@latest`.
+
+### Not in this change
+
+- `/health/live` and `/health/ready` of `devops-service-deploy`: the catalog keeps `GET /health` only. A readiness that checks Redis, PostgreSQL and the outbound grpc client is a change of the adapters and their ports, not of the API contract — a separate issue.
+- The skeleton solutions (Kafka, outbox) and `solution-go-db-migrations` are untouched.
+
+### Ground truth, added to §8
+
+Every plateau example passes `make test-and-report`; one with a proto contract lists the `generated` kind and passes it. Each binary was started with `HTTP_API_DOCS_ENABLED=true HTTP_BASE_PATH=/prefix` and answered `/openapi.json`, `/swagger/`, and a Swagger UI asset. `check.sh` §10 holds the mechanical part: no statement of the previous layout or wire form, and in every example the contract folder, the docs switch, the operations scenario, and — with a proto contract — `buf.yaml`, `buf.lock`, the `tool` lines, and the `generated` kind.

@@ -1,0 +1,17 @@
+version: v2
+inputs:
+  - directory: docs/integration/client
+# A consumed contract is the provider's file and names the provider's go_package;
+# managed mode sets this module's without editing it.
+managed:
+  enabled: true
+  override:
+    - file_option: go_package_prefix
+      value: github.com/example/linkcheck-service/gen/client
+plugins:
+  - local: ["go", "tool", "protoc-gen-go"]
+    out: gen/client
+    opt: paths=source_relative
+  - local: ["go", "tool", "protoc-gen-go-grpc"]
+    out: gen/client
+    opt: paths=source_relative

@@ -5,7 +5,7 @@ whenToUse: "when editing the composition root: wiring adapters, the TaskBox work
 domain: skill
 type: template
 plateau: plateau-gw009-001
-version: 20260928120000
+version: 20261012000000
 tags:
   - skill/template/file
   - plateau/plateau-gw009-001
@@ -60,7 +60,7 @@ __Applied solutions:__
 ```go
 // Skill: file-cmd-service-main
 // Plateau: plateau-gw009-001
-// Version: 20260928120000
+// Version: 20261012000000
 
 package main
 
@@ -80,7 +80,7 @@ import (
 
 	"golang.org/x/sync/errgroup"
 
-	apiv1 "{module-path}/gen/api"
+	apiv1 "{module-path}/gen/api/linkcheck"
 	apigrpc "{module-path}/internal/api/grpc"
 	apihttp "{module-path}/internal/api/http"
 	apitasks "{module-path}/internal/api/tasks"
@@ -90,9 +90,9 @@ import (
 	"{module-path}/internal/infrastructure/reputationcache"
 	"{module-path}/internal/infrastructure/reputationclient"
 	"{module-path}/internal/logging"
-	"{module-path}/internal/version"
 	"{module-path}/internal/taskbox"
 	"{module-path}/internal/taskbox/pgstore"
+	"{module-path}/internal/version"
 )
 
 func main() {
@@ -153,8 +153,11 @@ func run() error {
 	apiv1.RegisterLinkCheckServiceServer(grpcServer, apigrpc.New(domainService))
 
 	httpServer := &http.Server{
-		Addr:    ":" + cfg.HTTPListenPort,
-		Handler: apihttp.New(domainService).Handler(),
+		Addr: ":" + cfg.HTTPListenPort,
+		Handler: apihttp.New(domainService, apihttp.Options{
+			DocsEnabled: cfg.HTTPAPIDocsEnabled,
+			BasePath:    cfg.HTTPBasePath,
+		}).Handler(),
 	}
 
 	g, ctx := errgroup.WithContext(ctx)

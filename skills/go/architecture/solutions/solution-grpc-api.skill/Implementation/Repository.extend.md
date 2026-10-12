@@ -1,5 +1,5 @@
 ---
-description: Add proto/{service}/{service}.proto, buf/buf.gen.yaml, and the Makefile's proto-gen target
+description: Add buf.yaml, buf.gen.yaml, the generator tool lines, the Makefile's proto-gen target, gen/api, and the generated test kind
 element_kind: repository
 change_kind: extend
 tags:
@@ -11,55 +11,67 @@ tags:
 
 ## Repository Structure
 ```
-proto/
-  {service}/
-    {service}.proto
-buf/
-  buf.gen.yaml
+buf.yaml
+buf.lock                (written by `go tool buf dep update`; committed)
+buf.gen.yaml
 gen/
-  api/                  (generated; committed, not gitignored)
+  api/
+    {contract-name}/    (generated; committed, not gitignored)
+docs/
+  integration/
+    api/
+      {contract-name}/  (the proto file and its generated spec - see that folder's own file)
+tools/
+  testing/
+    kinds/
+      generated.sh      (copied unchanged from api-develop-in-go)
 Makefile                (extended)
+go.mod                  (extended: tool lines)
 ```
 
 ## Directory and class skills
 | Directory | file | Description |
 | --------- | ---- | ----------- |
-| proto/{service} | {service}.proto | This module's own exposed gRPC contract |
-| buf | buf.gen.yaml | codegen config: proto/{service} → gen/api |
+| . | buf.yaml | names `docs/integration/api` as the module of this service's own contracts, and the two imported modules |
+| . | buf.gen.yaml | codegen config: `docs/integration/api` → `gen/api` and the spec beside each proto file |
+| tools/testing/kinds | generated.sh | the `generated` test kind |
 
 # Implementation changes
 
-`proto/{service}/{service}.proto` — no version subdirectory in the proto path: `buf generate`'s `paths=source_relative` mirrors the proto's path *relative to the directory passed to `buf generate`* into the output, so a `v1/` segment in the proto path lands the generated code at `gen/api/v1/*.go` — a different Go import path (`.../gen/api/v1`) than the flat `.../gen/api` the `go_package` option below declares, which is a real, verified mismatch, not a style preference:
-```protobuf
-syntax = "proto3";
-
-package {service};
-
-option go_package = "{module-path}/gen/api";
-
-service {Service} {
-  // {Method} mirrors the domain service's own method.
-  rpc {Method}({Method}Request) returns ({Method}Response);
-}
-
-message {Method}Request {
-  string input = 1;
-}
-
-message {Method}Response {
-}
+`buf.yaml`:
+```yaml
+# docs/integration/api is the one module; each contract is a folder of it.
+version: v2
+modules:
+  - path: docs/integration/api
+deps:
+  - buf.build/googleapis/googleapis
+  - buf.build/grpc-ecosystem/grpc-gateway
 ```
 
-`buf/buf.gen.yaml` — local plugins (installed once via `go install google.golang.org/protobuf/cmd/protoc-gen-go@latest` and `go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest`), not `buf.build` remote plugins, so `make proto-gen` works without depending on buf.build's remote plugin execution being reachable:
+`buf.gen.yaml` — local plugins started through `go tool`, not `buf.build` remote plugins, so `make proto-gen` runs the versions `go.mod` pins:
 ```yaml
 version: v2
+# Only the service's own contracts: buf.yaml may also name a module of consumed ones.
+inputs:
+  - directory: docs/integration/api
 plugins:
-  - local: protoc-gen-go
+  - local: ["go", "tool", "protoc-gen-go"]
     out: gen/api
     opt: paths=source_relative
-  - local: protoc-gen-go-grpc
+  - local: ["go", "tool", "protoc-gen-go-grpc"]
     out: gen/api
     opt: paths=source_relative
+  - local: ["go", "tool", "protoc-gen-openapiv2"]
+    out: docs/integration/api
+```
+
+`go.mod` (added once, then `go tool buf dep update` writes `buf.lock`):
+```bash
+go get -tool github.com/bufbuild/buf/cmd/buf \
+  google.golang.org/protobuf/cmd/protoc-gen-go \
+  google.golang.org/grpc/cmd/protoc-gen-go-grpc \
+  github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2
 ```
 
 `Makefile` (added target):
@@ -67,24 +79,28 @@ plugins:
 .PHONY: proto-gen
 
 proto-gen:
-	buf generate proto/{service} --template buf/buf.gen.yaml
+	go tool buf generate --template buf.gen.yaml
 ```
+
+`tools/testing/kinds/generated.sh` — copy the asset of [[skills/common-workflow/develop/api-develop-in-go.skill/api-develop-in-go.skill.md|api-develop-in-go]] unchanged.
 
 # Rule changes
 
 ## MUST
-- This module's own exposed contract lives under `proto/{service}/` — never in the same `proto/` subtree as a contract for a service this module calls *as a client*.
-  - Violation: adding an external service's `.proto` file under `proto/{service}/` alongside this module's own.
-  - Risk: two different services' proto `package` declarations compiled into the same `gen/api` output can collide on generated type/package names.
-  - Fix: an external service's contract gets its own subtree ([[skills/go/architecture/solutions/solution-external-integration.skill/solution-external-integration.skill.md|solution-external-integration]]'s `proto/{external}/`), generated into its own `gen/{external}` output, never merged with `gen/api`.
-- Never nest the proto file under a version subdirectory (`proto/{service}/v1/{service}.proto`) while `go_package` declares a flat import path.
-  - Violation: `proto/{service}/v1/{service}.proto` with `option go_package = "{module-path}/gen/api"`.
-  - Risk: `buf generate`'s `paths=source_relative` then emits the generated code at `gen/api/v1/*.go` — a different Go import path than every hand-written file that imports `.../gen/api` expects, a mismatch that only surfaces as an import error when something tries to use the generated package (verified by actually running `buf generate` against this exact shape).
-  - Fix: keep the proto flat at `proto/{service}/{service}.proto`, matching the `go_package` option's own path exactly; put any version marker in the proto `package` name instead (`package {service}.v1;`) if one is wanted.
-- `gen/api` is committed to the repository, never gitignored.
-  - Risk: an ungenerated `gen/api` breaks every build until someone remembers to run `make proto-gen` with the right `buf`/plugin versions installed.
-  - Fix: commit the generated output; `make proto-gen` regenerates it in place when the `.proto` changes, and CI can diff it to catch drift.
+- Keep this module's own contract under `docs/integration/api/` and a contract it consumes under `docs/integration/client/` — never one module, one template, or one `gen/` subtree for both.
+  - Violation: an external service's `.proto` file in `docs/integration/api/`; `buf.gen.yaml` with no `inputs` in a repository whose `buf.yaml` names both modules.
+  - Risk: the consumed contract is generated into `gen/api/` and gets an OpenAPI spec as if this service published it; the `generated` kind then holds files this service does not own.
+  - Fix: `inputs: - directory: docs/integration/api` in `buf.gen.yaml`; the consumed contract gets its own template ([[skills/go/architecture/solutions/solution-external-integration.skill/solution-external-integration.skill.md|solution-external-integration]]'s `buf.gen.client.yaml`).
+- Run every generator as a `tool` line of `go.mod` through `go tool`.
+  - Violation: `go install google.golang.org/protobuf/cmd/protoc-gen-go@latest`; `local: protoc-gen-go` in `buf.gen.yaml`.
+  - Risk: two machines generate different files from one proto file, and the `generated` kind fails on the one that did not commit.
+  - Fix: `go get -tool …` once; `local: ["go", "tool", "{plugin}"]`.
+- `gen/api`, `buf.lock`, and the generated spec are committed to the repository, never gitignored.
+  - Risk: an ungenerated `gen/api` breaks every build until someone runs `make proto-gen`; an unpinned import generates differently tomorrow.
+  - Fix: commit the generated output; `make proto-gen` regenerates it in place when the proto file changes, and `make test-kind-generated` fails when it was not.
 
 # Check list
-- [ ] `make proto-gen` succeeds against a clean checkout with `buf`, `protoc-gen-go`, and `protoc-gen-go-grpc` installed (`go install .../protoc-gen-go@latest` and `.../protoc-gen-go-grpc@latest` for the latter two — no `buf.build` remote-plugin network dependency).
-- [ ] `gen/api/*.go` lands flat (no nested version directory) and is tracked in version control.
+- [ ] `make proto-gen` succeeds against a clean checkout with nothing installed but Go.
+- [ ] `go.mod` holds the four `tool` lines; no `@latest` install appears in the `Makefile` or the README.
+- [ ] `gen/api/{contract-name}/*.pb.go` and `buf.lock` are tracked in version control.
+- [ ] `make test-kinds` lists `generated - no badge`.

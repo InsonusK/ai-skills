@@ -26,7 +26,7 @@ needed; unlike Docker Stack and Kubernetes, Compose enforces this ordering nativ
 ```bash
 docker compose ps
 docker compose logs --tail=50 {service-name}
-curl http://localhost:{host-port}/health-check
+curl http://localhost:{host-port}/health/ready
 ```
 
 ## Update to a new version

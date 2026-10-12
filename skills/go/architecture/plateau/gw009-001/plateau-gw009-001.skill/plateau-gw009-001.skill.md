@@ -4,7 +4,7 @@ description: GW009.001 — persistent service with TaskBox; plateau-persistent-s
 whenToUse: when a Go web-service with PostgreSQL must run follow-up work after a data change — retried, ordered per key, and atomic with the change — or when reviewing a Go service's TaskBox wiring against the VP-C003 contract
 domain: skill
 type: template
-version: 20261009200000
+version: 20261012000000
 updated: 20261008
 tags:
   - skill/template/plateau
@@ -27,6 +27,7 @@ registry:
   - "[[skills/go/architecture/registry/internal-infrastructure-store-store-go.md|internal-infrastructure-store-store-go]]"
   - "[[skills/go/architecture/registry/internal-infrastructure-store.md|internal-infrastructure-store]]"
   - "[[skills/go/architecture/registry/internal-domain-interfaces-store-port-go.md|internal-domain-interfaces-store-port-go]]"
+  - "[[skills/go/architecture/registry/docs-integration-api-contract.md|docs-integration-api-contract]]"
 ---
 
 # Goal
@@ -73,7 +74,8 @@ See `structure/` — this plateau's own copy of every file skill.
 - New: [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--file-domain-interfaces-task.skill.md|file-domain-interfaces-task]], [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--package-api-tasks.skill.md|package-api-tasks]], [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--file-api-tasks-handlers.skill.md|file-api-tasks-handlers]], [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--file-infrastructure-linkstore-migrations.skill.md|file-infrastructure-linkstore-migrations]], [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--package-cmd-migrate.skill.md|package-cmd-migrate]], [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--file-cmd-migrate-main.skill.md|file-cmd-migrate-main]].
 - Extended: [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--file-infrastructure-linkstore-store.skill.md|file-infrastructure-linkstore-store]] (pool injected, data + tasks in one tx), [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--package-infrastructure-linkstore.skill.md|package-infrastructure-linkstore]] (migrations), [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--file-domain-interfaces-link-history.skill.md|file-domain-interfaces-link-history]] (`Record` takes tasks), [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--package-domain-interfaces.skill.md|package-domain-interfaces]] (`task.go`), [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--file-domain-services-linkcheck.skill.md|file-domain-services-linkcheck]] (re-check scheduling, `Recheck`), [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--file-config-config.skill.md|file-config-config]], [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--file-cmd-service-main.skill.md|file-cmd-service-main]], [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--repo-gw009-001.skill.md|repo-gw009-001]].
 - Not described here: `internal/taskbox` (with `pgstore/`, `features/`, `test/`) is the **pre-release copy of the `taskbox-go` library** — its source of truth is that repository ([[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]); at `taskbox-go` v0.1.0 the example drops the copy and depends on the module.
-- Unchanged since GW007.001: the HTTP/gRPC adapters and their packages, the reputation client and cache, `reputation.go`, `reputation_cache.go`, `package-domain-services`, logging, version.
+- Changed on 2026-10-12 with GW007.001 (issue #206, the catalog follows `api-develop`): [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--file-api-http-server.skill.md|file-api-http-server]] and [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--package-api-http.skill.md|package-api-http]] (the HTTP form over the contract's generated messages), new [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--file-api-http-docs.skill.md|file-api-http-docs]], [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--file-api-http-protojson.skill.md|file-api-http-protojson]], [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--package-docs-integration-api.skill.md|package-docs-integration-api]], [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--package-docs-integration-client.skill.md|package-docs-integration-client]]; the repo layout and `file-config-config` (`HTTP_API_DOCS_ENABLED`, `HTTP_BASE_PATH`).
+- Unchanged since GW007.001 otherwise: the gRPC adapter and its package, the reputation client and cache, `reputation.go`, `reputation_cache.go`, `package-domain-services`, logging, version.
 
 # Registry
 Element intersections this plateau adds or grows — see each entry's growth history:
@@ -82,6 +84,8 @@ Element intersections this plateau adds or grows — see each entry's growth his
 - [[skills/go/architecture/registry/internal-domain-interfaces-store-port-go.md|internal-domain-interfaces-store-port-go]] (new, N=2)
 - [[skills/go/architecture/registry/cmd-service-main-go.md|cmd-service-main-go]] (N=9), [[skills/go/architecture/registry/internal-config-config-go.md|internal-config-config-go]] (N=9), [[skills/go/architecture/registry/repo-root.md|repo-root]] (N=5), [[skills/go/architecture/registry/internal-domain-services-service-go.md|internal-domain-services-service-go]] (N=5)
 - Unchanged: [[skills/go/architecture/registry/internal-api-http-server-go.md|internal-api-http-server-go]], [[skills/go/architecture/registry/internal-api-grpc-server-go.md|internal-api-grpc-server-go]] — TaskBox adds no field to any HTTP/gRPC response.
+- [[skills/go/architecture/registry/docs-integration-api-contract.md|docs-integration-api-contract]] (N=2: `solution-grpc-api` replaces the baseline's hand-written spec by the proto file)
+- [[skills/go/architecture/registry/internal-api-http-server-go.md|internal-api-http-server-go]] gained `solution-grpc-api` on 2026-10-12 — its two `FMC` pairings are resolved inside the extending solutions, see that entry.
 
 # Ground truth
 `examples/` evolved from GW007.001's, verified on 2026-09-28:
@@ -91,4 +95,9 @@ Element intersections this plateau adds or grows — see each entry's growth his
 - `make test-kind-mutation` (re-run 2026-10-08, after the mutation kind got `gremlins --integration`): 79 mutants killed, none lived, 2 timed out, 60 in code no scenario reaches — score 56%, about ten minutes with PostgreSQL. Before that change gremlins ran only the mutated package's own tests while the godog runners live in `test/` subpackages, and the run proved nothing (3 killed, 78 lived).
 - Runtime smoke test (real PostgreSQL, Redis, a throwaway fake reputation gRPC server, `RECHECK_AFTER=2s`): `cmd/migrate` applied versions 1–2; a flagged check wrote its history row and a pending task (group = URL, delay 2 s) in one transaction, a clean check none; after 2 s the re-check got `503` and was retried 2 s later (1 s × 2¹), then succeeded — the fresh verdict appeared in `link_checks`, `GET /v1/links/recent`, and the Redis cache. A task still pending when the service was killed ran after the restart.
 
-To run it yourself: `cd example && go mod tidy && make build && DATABASE_DSN=… REPUTATION_ADDR=… go run ./cmd/migrate && TEST_DATABASE_DSN=… make test-kind-unit`.
+API contract, verified 2026-10-12 after the move onto `api-develop` (issue #206):
+- `TEST_DATABASE_DSN=… make test-and-report` against a real PostgreSQL 17 — green: 66 tests, 48 scenarios; the `generated` kind up to date; mutation 96 killed / 0 lived / 2 timed out / 56 not covered.
+- The HTTP feature stubs the reputation port, the cache, and the history store (whose `Record` takes the tasks and drops them).
+- Not re-run after the move: the runtime smoke test with Redis and a fake reputation server above.
+
+To run it yourself: `cd examples && go mod tidy && make build && DATABASE_DSN=… REPUTATION_ADDR=… go run ./cmd/migrate && TEST_DATABASE_DSN=… make test-kind-unit`.

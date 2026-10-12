@@ -5,7 +5,7 @@ whenToUse: when creating or editing internal/api/grpc/server.go, or adding a new
 domain: skill
 type: template
 plateau: plateau-persistent-service
-version: 20260917040000
+version: 20261012000000
 tags:
   - skill/template/file
   - plateau/plateau-persistent-service
@@ -35,7 +35,7 @@ __Applied solutions:__
 ```go
 // Skill: file-api-grpc-server
 // Plateau: plateau-persistent-service
-// Version: 20260917040000
+// Version: 20261012000000
 
 package grpc
 
@@ -46,7 +46,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	apiv1 "{module-path}/gen/api"
+	apiv1 "{module-path}/gen/api/linkcheck"
 	"{module-path}/internal/domain/interfaces"
 	"{module-path}/internal/domain/services"
 )
@@ -107,7 +107,7 @@ func toStatus(err error) error {
 	}
 }
 ```
-`proto/linkcheck/linkcheck.proto` gains the matching RPC and messages (`RecentChecksRequest{limit}`, `HistoryEntry{normalized, flagged, reason, checked_at_unix}`, `RecentChecksResponse{repeated HistoryEntry entries}`) — see this plateau's own `examples/proto/linkcheck/linkcheck.proto`.
+`docs/integration/api/linkcheck/linkcheck.proto` gains the matching RPC, with its `google.api.http` annotation `get: "/v1/links/recent"`, and messages (`RecentChecksRequest{limit}`, `HistoryEntry{normalized, flagged, reason, checked_at_unix}`, `RecentChecksResponse{repeated HistoryEntry entries}`) — see this plateau's own `examples/docs/integration/api/linkcheck/linkcheck.proto`.
 
 Verified against this plateau's own `examples/internal/api/grpc/server.go` — smoke-tested with `grpcurl`: `RecentChecks` after two `Check` calls returned both entries, matching the HTTP adapter's own `GET /v1/links/recent` response and the raw `psql` row contents exactly — confirming both transports share the one domain-service instance and its store.
 

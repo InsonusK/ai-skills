@@ -2,6 +2,7 @@
 name: no-test-theater-in-python
 description: pytest-specific rules for assertion strength — naming, parametrize vs. copy-paste, specific exception assertions, mock call assertions, branch coverage, mutation testing, and CLI bad-input coverage.
 whenToUse: When writing or reviewing pytest tests in a Python project.
+updated: 20261011
 tags:
   - stack/python
   - pytest
@@ -11,7 +12,9 @@ tags:
 ---
 
 # Goal
-- Add pytest/Python-specific rules on top of the language-agnostic test-quality rules.
+- pytest tests named `test_<behavior>_when_<condition>`, asserting a specific exception type and the concrete arguments of every mock call the test's claim rests on.
+- Branch coverage measured with `coverage run --branch`.
+- A dedicated bad-input test category in every CLI application.
 
 # Scope
 This skill extends [no-test-theater](skills/testing/core/no-test-theater.skill/no-test-theater.skill.md) — apply both together; this skill only adds Python-specific rules.

@@ -45,7 +45,7 @@ internal/infrastructure/{adapter}/
 
 # Allowed Dependencies
 - `internal/domain/interfaces` (the port this package implements)
-- `gen/{external}` (this external service's generated client stubs)
+- `gen/client/{api-name}` (this external service's generated client stubs)
 - `google.golang.org/grpc`, `google.golang.org/grpc/codes`, `google.golang.org/grpc/status`
 
 # Rules

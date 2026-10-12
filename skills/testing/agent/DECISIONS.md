@@ -384,3 +384,13 @@ One line per non-mechanical choice. ⚠️ = a genuine architectural fork, waiti
 - The legend shows the detailed tags as five rows with their values in the meaning, not seventeen rows.
 - The showcase covers every part of the program, not every value: `livingdoc-check.py` expects `@type/api/cli` and `@type/infrastructure/file`.
 - `taskbox-conformance.feature` is `@type/infrastructure/db/postgresql` in the `gw009-001` copy, whose only store is `pgstore`. At the source the file runs once per store: there it needs one tag per store, which one file cannot carry — open, with the TaskBox work.
+
+## Agent decisions — the `schedule` transport and who edits `tags.json` (2026-10-12, issue #210)
+
+- `@type/api/schedule` is a value: an inbound adapter started by the clock (cron, a timer). `testing-strategy` already asks for scenarios of a scheduled workflow, and none of `http`, `grpc`, `cli`, `message` describes it; a feature of such an adapter was tagged `@type/tech-check` and disappeared among configuration checks.
+- Two instructions contradicted: the Fix of "One type tag per feature" told a project to add a missing value to its own `tools/testing/tags.json`, and `solution-conformance-testing` requires that file to be a byte-for-byte copy of the asset. The second holds — the values are a closed list (owner-decided, 2026-10-11), and a list each project extends is not closed. The Fix now says: propose the value to the skill's owner, use the nearest value of the table until a release carries it, never edit the project's copy.
+
+## Agent decisions — test code out of the Go coverage and mutation set (2026-10-12, issue #211)
+
+- `mutation.sh` excludes `test/` and `testdata/`, and `COVERPKG` of both Go kinds excludes `test` packages. A blanket exclusion, not a `MUTATION_EXCLUDE_FILES` hook: `devops-ci-changes-in-go` already defines `{package}/test/` as test code, and a hook would let two projects publish scores measured over different sets.
+- Measured on a copy of the Go example with one comparator in `internal/test/testkit/` used by a suite: before — 18 killed, 4 lived, 4 not covered, 81.8%; after — 18 killed, 100%. Statement coverage 92.5% → 94.7%, every product package still in the profile: `-coverpkg` chooses what is measured, the suites in `test/` still run.

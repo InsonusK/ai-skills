@@ -1,0 +1,9 @@
+# docs/integration/api: this service's own contracts, one folder each.
+# docs/integration/client: the contracts it consumes, the providers' copies unchanged.
+version: v2
+modules:
+  - path: docs/integration/api
+  - path: docs/integration/client
+deps:
+  - buf.build/googleapis/googleapis
+  - buf.build/grpc-ecosystem/grpc-gateway

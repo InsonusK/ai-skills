@@ -42,13 +42,13 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
           livenessProbe:
             httpGet:
-              path: /health-check
+              path: /health/live
               port: {{ .Values.service.targetPort }}
             initialDelaySeconds: 10
             periodSeconds: 30
           readinessProbe:
             httpGet:
-              path: /health-check
+              path: /health/ready
               port: {{ .Values.service.targetPort }}
             initialDelaySeconds: 5
             periodSeconds: 10

@@ -14,7 +14,7 @@ import (
 
 	"golang.org/x/sync/errgroup"
 
-	apiv1 "github.com/example/linkcheck-service/gen/api"
+	apiv1 "github.com/example/linkcheck-service/gen/api/linkcheck"
 	apigrpc "github.com/example/linkcheck-service/internal/api/grpc"
 	apihttp "github.com/example/linkcheck-service/internal/api/http"
 	"github.com/example/linkcheck-service/internal/config"
@@ -48,8 +48,11 @@ func run() error {
 	apiv1.RegisterLinkCheckServiceServer(grpcServer, apigrpc.New(domainService))
 
 	httpServer := &http.Server{
-		Addr:    ":" + cfg.HTTPListenPort,
-		Handler: apihttp.New(domainService).Handler(),
+		Addr: ":" + cfg.HTTPListenPort,
+		Handler: apihttp.New(domainService, apihttp.Options{
+			DocsEnabled: cfg.HTTPAPIDocsEnabled,
+			BasePath:    cfg.HTTPBasePath,
+		}).Handler(),
 	}
 
 	g, ctx := errgroup.WithContext(ctx)
