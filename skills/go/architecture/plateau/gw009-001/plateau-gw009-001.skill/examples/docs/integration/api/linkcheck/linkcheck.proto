@@ -1,0 +1,58 @@
+// version: 1.0.0
+syntax = "proto3";
+
+package linkcheck.v1;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option go_package = "github.com/example/linkcheck-service/gen/api/linkcheck";
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Link check"
+    version: "1.0.0"
+  }
+};
+
+service LinkCheckService {
+  // Check validates a URL, returns its normalized form, and says whether the
+  // reputation service flags it.
+  rpc Check(CheckRequest) returns (CheckResponse) {
+    option (google.api.http) = {
+      post: "/v1/links/check"
+      body: "*"
+    };
+  }
+
+  // RecentChecks lists the latest checks, newest first.
+  rpc RecentChecks(RecentChecksRequest) returns (RecentChecksResponse) {
+    option (google.api.http) = {get: "/v1/links/recent"};
+  }
+}
+
+message CheckRequest {
+  string url = 1;
+}
+
+message CheckResponse {
+  string url = 1;
+  string normalized = 2;
+  bool flagged = 3;
+  string reason = 4;
+}
+
+message RecentChecksRequest {
+  // At most this many entries; 20 when unset or not positive.
+  int32 limit = 1;
+}
+
+message HistoryEntry {
+  string normalized = 1;
+  bool flagged = 2;
+  string reason = 3;
+  int64 checked_at_unix = 4;
+}
+
+message RecentChecksResponse {
+  repeated HistoryEntry entries = 1;
+}

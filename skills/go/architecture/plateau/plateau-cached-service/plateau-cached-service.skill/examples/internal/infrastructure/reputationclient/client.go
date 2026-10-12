@@ -1,5 +1,5 @@
 // Package reputationclient wraps the generated gRPC client for the external
-// reputation service (proto/reputation/reputation.proto) and implements the
+// reputation service (docs/integration/client/reputation/reputation.proto) and implements the
 // domain's ReputationChecker port.
 package reputationclient
 
@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
 
-	reputationv1 "github.com/example/linkcheck-service/gen/reputation"
+	reputationv1 "github.com/example/linkcheck-service/gen/client/reputation"
 	"github.com/example/linkcheck-service/internal/domain/interfaces"
 )
 

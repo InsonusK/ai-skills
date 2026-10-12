@@ -5,7 +5,7 @@ whenToUse: when editing the reputation-service adapter, or deciding whether new 
 domain: skill
 type: template
 plateau: plateau-cached-service
-version: 20260917030000
+version: 20261012000000
 tags:
   - skill/template/package
   - plateau/plateau-cached-service
@@ -39,7 +39,7 @@ internal/infrastructure/reputationclient/
 ## Directory and file skills
 | Directory\|file | Description | Pattern skill |
 | --------------- | ----------- | -------------- |
-| client.go | `Client` implementing `ReputationChecker` via `gen/reputation` | [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--file-infrastructure-reputationclient-client.skill.md]] |
+| client.go | `Client` implementing `ReputationChecker` via `gen/client/reputation` | [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--file-infrastructure-reputationclient-client.skill.md]] |
 
 # Go Dependencies
 | Module | Version constraint | Purpose |
@@ -48,7 +48,7 @@ internal/infrastructure/reputationclient/
 
 # Allowed Dependencies
 - `internal/domain/interfaces`
-- `gen/reputation`
+- `gen/client/reputation`
 - `google.golang.org/grpc`, `google.golang.org/grpc/codes`, `google.golang.org/grpc/status`, `google.golang.org/grpc/credentials/insecure`
 
 # Rules

@@ -1,5 +1,6 @@
-// Package http is the inbound HTTP adapter: it decodes requests, calls the
-// domain service, and encodes the result back as JSON.
+// Package http is the inbound HTTP adapter: the HTTP form of the service's
+// grpc contract. It decodes a request into the contract's generated message,
+// calls the domain service, and encodes the result back as proto-JSON.
 package http
 
 import (
@@ -8,26 +9,69 @@ import (
 	"log/slog"
 	"net/http"
 	"strconv"
-	"time"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
+	apiv1 "github.com/example/linkcheck-service/gen/api/linkcheck"
 	"github.com/example/linkcheck-service/internal/domain/interfaces"
 	"github.com/example/linkcheck-service/internal/domain/services"
 	"github.com/example/linkcheck-service/internal/version"
 )
 
-type Server struct {
-	service *services.LinkCheckService
+// Options are the deployment switches of the HTTP adapter.
+type Options struct {
+	// DocsEnabled registers the spec and Swagger UI routes (HTTP_API_DOCS_ENABLED).
+	DocsEnabled bool
+	// BasePath is the path prefix the service is published under (HTTP_BASE_PATH):
+	// empty, or with a leading "/" and no trailing one. Routes stay mounted at "/";
+	// only the URLs handed to a client carry it.
+	BasePath string
 }
 
-func New(service *services.LinkCheckService) *Server {
-	return &Server{service: service}
+type Server struct {
+	service *services.LinkCheckService
+	options Options
+}
+
+func New(service *services.LinkCheckService, options Options) *Server {
+	return &Server{service: service, options: options}
+}
+
+type contractRoute struct {
+	pattern string
+	handler http.HandlerFunc
+}
+
+// contractRoutes are the operations of the published contract. The contract is
+// generated from the proto file and these routes are written by hand, so they
+// are kept in one list a test holds against the contract (ContractRoutes).
+func (s *Server) contractRoutes() []contractRoute {
+	return []contractRoute{
+		{"POST /v1/links/check", s.handleCheck},
+		{"GET /v1/links/recent", s.handleRecent},
+	}
+}
+
+// ContractRoutes lists the served operations of the published contract as
+// "METHOD /path" patterns.
+func (s *Server) ContractRoutes() []string {
+	patterns := []string{}
+	for _, route := range s.contractRoutes() {
+		patterns = append(patterns, route.pattern)
+	}
+	return patterns
 }
 
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
+	for _, route := range s.contractRoutes() {
+		mux.HandleFunc(route.pattern, route.handler)
+	}
 	mux.HandleFunc("GET /health", handleHealth)
-	mux.HandleFunc("POST /v1/links/check", s.handleCheck)
-	mux.HandleFunc("GET /v1/links/recent", s.handleRecent)
+	if s.options.DocsEnabled {
+		registerDocs(mux, s.options.BasePath)
+	}
 	return mux
 }
 
@@ -43,81 +87,77 @@ func handleHealth(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewEncoder(w).Encode(healthResponse{Status: "ok", Version: version.Version})
 }
 
-type checkRequest struct {
-	URL string `json:"url"`
-}
-
-type checkResponse struct {
-	URL        string `json:"url"`
-	Normalized string `json:"normalized"`
-	Flagged    bool   `json:"flagged"`
-	Reason     string `json:"reason,omitempty"`
-}
-
 func (s *Server) handleCheck(w http.ResponseWriter, r *http.Request) {
-	var req checkRequest
-	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+	req := &apiv1.CheckRequest{}
+	if err := readMessage(r, req); err != nil {
 		slog.Error("http: check decode failed", "error", err)
-		writeError(w, http.StatusBadRequest, err)
+		writeError(w, status.New(codes.InvalidArgument, err.Error()))
 		return
 	}
 
-	result, err := s.service.Check(r.Context(), req.URL)
+	result, err := s.service.Check(r.Context(), req.GetUrl())
 	if err != nil {
-		code := http.StatusInternalServerError
-		switch {
-		case errors.Is(err, services.ErrInvalidURL):
-			code = http.StatusBadRequest
-		case errors.Is(err, interfaces.ErrUnavailable):
-			code = http.StatusBadGateway
-		}
-		slog.Error("http: check failed", "url", req.URL, "status", code, "error", err)
-		writeError(w, code, err)
+		st := toStatus(err)
+		slog.Error("http: check failed", "url", req.GetUrl(), "code", st.Code(), "error", err)
+		writeError(w, st)
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(checkResponse{
-		URL:        result.URL,
+	// 200: the history entry the check leaves is a record of the call, not a
+	// business object the caller asked to create.
+	writeMessage(w, http.StatusOK, &apiv1.CheckResponse{
+		Url:        result.URL,
 		Normalized: result.Normalized,
 		Flagged:    result.Flagged,
 		Reason:     result.Reason,
 	})
 }
 
-type historyEntry struct {
-	Normalized string    `json:"normalized"`
-	Flagged    bool      `json:"flagged"`
-	Reason     string    `json:"reason,omitempty"`
-	CheckedAt  time.Time `json:"checked_at"`
-}
-
 func (s *Server) handleRecent(w http.ResponseWriter, r *http.Request) {
-	limit := 20
+	// A GET has no body: the request message is filled from the query.
+	req := &apiv1.RecentChecksRequest{}
 	if v := r.URL.Query().Get("limit"); v != "" {
-		if n, err := strconv.Atoi(v); err == nil && n > 0 {
-			limit = n
+		n, err := strconv.ParseInt(v, 10, 32)
+		if err != nil {
+			writeError(w, status.New(codes.InvalidArgument, "limit: "+err.Error()))
+			return
 		}
+		req.Limit = int32(n)
+	}
+	limit := int(req.GetLimit())
+	if limit <= 0 {
+		limit = 20
 	}
 
 	entries, err := s.service.RecentChecks(r.Context(), limit)
 	if err != nil {
-		slog.Error("http: recent failed", "error", err)
-		writeError(w, http.StatusInternalServerError, err)
+		st := toStatus(err)
+		slog.Error("http: recent failed", "code", st.Code(), "error", err)
+		writeError(w, st)
 		return
 	}
 
-	out := make([]historyEntry, len(entries))
+	out := make([]*apiv1.HistoryEntry, len(entries))
 	for i, e := range entries {
-		out[i] = historyEntry{Normalized: e.Normalized, Flagged: e.Flagged, Reason: e.Reason, CheckedAt: e.CheckedAt}
+		out[i] = &apiv1.HistoryEntry{
+			Normalized:    e.Normalized,
+			Flagged:       e.Flagged,
+			Reason:        e.Reason,
+			CheckedAtUnix: e.CheckedAt.Unix(),
+		}
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(out)
+	writeMessage(w, http.StatusOK, &apiv1.RecentChecksResponse{Entries: out})
 }
 
-func writeError(w http.ResponseWriter, code int, err error) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(code)
-	_ = json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+// toStatus translates a domain error into the grpc status the contract answers
+// with; the HTTP status follows from its code.
+func toStatus(err error) *status.Status {
+	switch {
+	case errors.Is(err, services.ErrInvalidURL):
+		return status.New(codes.InvalidArgument, err.Error())
+	case errors.Is(err, interfaces.ErrUnavailable):
+		return status.New(codes.Unavailable, err.Error())
+	default:
+		return status.New(codes.Internal, err.Error())
+	}
 }

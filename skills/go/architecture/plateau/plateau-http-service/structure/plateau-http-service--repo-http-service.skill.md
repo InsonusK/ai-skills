@@ -5,7 +5,7 @@ whenToUse: when adding, removing, or relocating a top-level package under this p
 domain: skill
 type: template
 plateau: plateau-http-service
-version: 20261006000000
+version: 20261012000000
 tags:
   - skill/template/repo
   - plateau/plateau-http-service
@@ -23,6 +23,10 @@ Makefile
 .gitignore
 report-template/
   index.html
+docs/
+  integration/
+    api/
+      linkcheck/                 ← package tier, see plateau-http-service--package-docs-integration-api.skill.md
 cmd/
   {service}/
     main.go                       ← file tier, see plateau-http-service--file-cmd-{service}-main.skill.md
@@ -52,6 +56,7 @@ __Applied solutions:__
 | ----------------- | -------------- | ------------ |
 | internal/domain/services | [[skills/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--package-domain-services.skill.md]] | Business logic |
 | internal/api/http | [[skills/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--package-api-http.skill.md]] | Inbound HTTP adapter |
+| docs/integration/api/linkcheck | [[skills/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--package-docs-integration-api.skill.md]] | The service's own API contract and its embed package |
 
 # Rules
 

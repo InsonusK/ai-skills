@@ -4,7 +4,7 @@ description: The base Go web-service plateau — no DB, domain-logic separation,
 whenToUse: when starting a new Go web-service from scratch with no database and no alternative API yet, or reviewing whether a change follows this family's ports-and-adapters/config/logging/testing conventions
 domain: skill
 type: template
-version: 20261008170000
+version: 20261012000000
 tags:
   - skill/template/plateau
   - plateau/plateau-http-service
@@ -34,10 +34,12 @@ The foundation every other plateau in this catalog composes from: a Go web-servi
 # Capabilities
 - api
   - `GET /health` (liveness/readiness) and `POST /v1/links/check` (validate + normalize a URL), both thin translations over `LinkCheckService`.
+  - The contract `docs/integration/api/linkcheck/openapi.json` (hand-written, version 1.0.0), embedded in the binary; `GET /openapi.json` and Swagger UI at `GET /swagger/` when `HTTP_API_DOCS_ENABLED=true`, prefix-safe under `HTTP_BASE_PATH`.
+  - One wire form for every plateau built on this one: lowerCamelCase JSON, `google.rpc.Status` error bodies, statuses from the canonical gRPC-to-HTTP table.
 - domain
   - `LinkCheckService.Check`: parses a URL, accepts only `http`/`https` schemes, lowercases scheme+host, leaves the path unchanged; rejects everything else via `ErrInvalidURL`.
 - testing
-  - `make test-kind-unit`/`test-kind-mutation`/`test-report`/`test-and-report` — godog scenarios in `internal/domain/services/features/check.feature`, `go test -cover`, `gremlins`, and a `$TEST_REPORT_DIR/` report site.
+  - `make test-kind-unit`/`test-kind-mutation`/`test-report`/`test-and-report` — godog scenarios in `internal/domain/services/features/check.feature` and `internal/api/http/features/http_api.feature`, `go test -cover`, `gremlins`, and a `$TEST_REPORT_DIR/` report site.
 
 # Usecases
 
@@ -60,7 +62,7 @@ sequenceDiagram
 ```
 
 ## Invalid URL
-`Check` returns `ErrInvalidURL` for anything that fails to parse, has no host, or uses a scheme other than `http`/`https`; the HTTP adapter maps it to `400` with a JSON `{"error": "..."}` body. Any other domain error would map to `500`, but none is reachable at this plateau (no outbound dependency can fail yet).
+`Check` returns `ErrInvalidURL` for anything that fails to parse, has no host, or uses a scheme other than `http`/`https`; the HTTP adapter maps it to `INVALID_ARGUMENT` — `400` with a `google.rpc.Status` body, `{"code": 3, "message": "…", "details": []}`. Any other domain error would map to `INTERNAL`, `500`, but none is reachable at this plateau (no outbound dependency can fail yet).
 
 # Structure
 See `structure/`:
@@ -73,6 +75,9 @@ See `structure/`:
 - [[skills/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--file-logging-logger.skill.md|file-logging-logger]]
 - [[skills/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--file-domain-services-linkcheck.skill.md|file-domain-services-linkcheck]]
 - [[skills/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--file-api-http-server.skill.md|file-api-http-server]]
+- [[skills/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--file-api-http-docs.skill.md|file-api-http-docs]] (the spec and Swagger UI routes)
+- [[skills/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--file-api-http-errors.skill.md|file-api-http-errors]] (the `google.rpc.Status` error body)
+- [[skills/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--package-docs-integration-api.skill.md|package-docs-integration-api]] (the service's own contract: the hand-written `openapi.json`, `embed.go`)
 
 # Registry
 Three intersections found at this plateau (all canonical `FMN`, no resolver) — see `registry/`:
@@ -84,8 +89,12 @@ Three intersections found at this plateau (all canonical `FMN`, no resolver) —
 `examples/` is a real, runnable Go module (`github.com/example/linkcheck-service`), verified:
 - `go build ./...` and `go vet ./...` — clean.
 - `make test-kind-unit` — 5/5 godog scenarios green (`internal/domain/services/test`), `TestFeatures` the only test function.
-- `make test-kind-mutation` — `gremlins` runs clean (3 killed / 4 survived / 0 timed out / 20 not covered against this plateau's small surface — the HTTP-adapter path has no scenario coverage yet, expected at this plateau).
+- `make test-kind-mutation` — at this plateau's first build `gremlins` reported 3 killed / 4 survived / 20 not covered, the HTTP adapter having no scenario then; see the 2026-10-12 figures below.
 - `make test-report` — `$TEST_REPORT_DIR/` assembled with `index.html` + three badge files.
 - Runtime smoke test: built binary started, `GET /health` → `200`; `POST /v1/links/check` with a valid/invalid URL → `200`/`400` as designed.
 
-To run it yourself: `cd example && go mod tidy && make build && make test-kind-unit && make run`.
+API contract, verified 2026-10-12 after the move onto `api-develop` (issue #206):
+- `make test-and-report` — green: 21 tests, 9 scenarios (5 domain, 4 of the new `http_api.feature` with 12 example rows); mutation 15 killed / 0 lived / 21 not covered (`cmd/` and `internal/config` have no scenario), score 41.7%.
+- The built binary, started with `HTTP_API_DOCS_ENABLED=true HTTP_BASE_PATH=/lc`: `/swagger` → `301` to `/lc/swagger/`; `/swagger/` names `/lc/openapi.json` and its assets under `/lc/swagger/`; a Swagger UI asset → `200`; `/openapi.json` carries the prefix; with no variable set both routes → `404` (the last by the feature).
+
+To run it yourself: `cd examples && go mod tidy && make build && make test-kind-unit && make run`.

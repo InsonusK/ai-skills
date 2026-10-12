@@ -12,6 +12,11 @@ import (
 type Config struct {
 	LogLevel       string
 	HTTPListenPort string
+	// HTTPAPIDocsEnabled registers the spec and Swagger UI routes; off unless set.
+	HTTPAPIDocsEnabled bool
+	// HTTPBasePath is the path prefix the service is published under: empty, or
+	// with a leading "/" and no trailing one.
+	HTTPBasePath   string
 	GRPCListenPort string
 	ReputationAddr string
 }
@@ -19,15 +24,27 @@ type Config struct {
 func Load() (*Config, error) {
 	l := &loader{}
 	cfg := &Config{
-		LogLevel:       l.get("LOG_LEVEL", "info"),
-		HTTPListenPort: l.get("HTTP_LISTEN_PORT", "8080"),
-		GRPCListenPort: l.get("GRPC_LISTEN_PORT", "50051"),
-		ReputationAddr: l.require("REPUTATION_ADDR"),
+		LogLevel:           l.get("LOG_LEVEL", "info"),
+		HTTPListenPort:     l.get("HTTP_LISTEN_PORT", "8080"),
+		HTTPAPIDocsEnabled: l.getBool("HTTP_API_DOCS_ENABLED", false),
+		HTTPBasePath:       normalizeBasePath(l.get("HTTP_BASE_PATH", "")),
+		GRPCListenPort:     l.get("GRPC_LISTEN_PORT", "50051"),
+		ReputationAddr:     l.require("REPUTATION_ADDR"),
 	}
 	if l.err != nil {
 		return nil, l.err
 	}
 	return cfg, nil
+}
+
+// normalizeBasePath gives a path prefix its one form: "" for none, otherwise a
+// leading "/" and no trailing one ("orders/" and "/orders" both become "/orders").
+func normalizeBasePath(path string) string {
+	path = strings.Trim(strings.TrimSpace(path), "/")
+	if path == "" {
+		return ""
+	}
+	return "/" + path
 }
 
 // loader reads env vars, stopping at the first error so Load's field list

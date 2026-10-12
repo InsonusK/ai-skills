@@ -11,8 +11,13 @@ import (
 
 // Config holds all runtime settings, sourced from environment variables.
 type Config struct {
-	LogLevel         string
-	HTTPListenPort   string
+	LogLevel       string
+	HTTPListenPort string
+	// HTTPAPIDocsEnabled registers the spec and Swagger UI routes; off unless set.
+	HTTPAPIDocsEnabled bool
+	// HTTPBasePath is the path prefix the service is published under: empty, or
+	// with a leading "/" and no trailing one.
+	HTTPBasePath     string
 	GRPCListenPort   string
 	ReputationAddr   string
 	RedisHost        string
@@ -30,25 +35,37 @@ type Config struct {
 func Load() (*Config, error) {
 	l := &loader{}
 	cfg := &Config{
-		LogLevel:         l.get("LOG_LEVEL", "info"),
-		HTTPListenPort:   l.get("HTTP_LISTEN_PORT", "8080"),
-		GRPCListenPort:   l.get("GRPC_LISTEN_PORT", "50051"),
-		ReputationAddr:   l.require("REPUTATION_ADDR"),
-		RedisHost:        l.get("REDIS_HOST", "localhost"),
-		RedisPort:        l.get("REDIS_PORT", "6379"),
-		RedisPassword:    l.get("REDIS_PASSWORD", ""),
-		RedisDB:          l.getInt("REDIS_DB", 0),
-		DatabaseDSN:      l.require("DATABASE_DSN"),
-		MigrateOnStart:   l.getBool("MIGRATE_ON_START", false),
-		TaskWorkers:      l.getInt("TASKBOX_WORKERS", 2),
-		TaskLease:        l.getDuration("TASKBOX_LEASE", 5*time.Minute),
-		TaskPollInterval: l.getDuration("TASKBOX_POLL_INTERVAL", time.Second),
-		RecheckAfter:     l.getDuration("RECHECK_AFTER", time.Hour),
+		LogLevel:           l.get("LOG_LEVEL", "info"),
+		HTTPListenPort:     l.get("HTTP_LISTEN_PORT", "8080"),
+		HTTPAPIDocsEnabled: l.getBool("HTTP_API_DOCS_ENABLED", false),
+		HTTPBasePath:       normalizeBasePath(l.get("HTTP_BASE_PATH", "")),
+		GRPCListenPort:     l.get("GRPC_LISTEN_PORT", "50051"),
+		ReputationAddr:     l.require("REPUTATION_ADDR"),
+		RedisHost:          l.get("REDIS_HOST", "localhost"),
+		RedisPort:          l.get("REDIS_PORT", "6379"),
+		RedisPassword:      l.get("REDIS_PASSWORD", ""),
+		RedisDB:            l.getInt("REDIS_DB", 0),
+		DatabaseDSN:        l.require("DATABASE_DSN"),
+		MigrateOnStart:     l.getBool("MIGRATE_ON_START", false),
+		TaskWorkers:        l.getInt("TASKBOX_WORKERS", 2),
+		TaskLease:          l.getDuration("TASKBOX_LEASE", 5*time.Minute),
+		TaskPollInterval:   l.getDuration("TASKBOX_POLL_INTERVAL", time.Second),
+		RecheckAfter:       l.getDuration("RECHECK_AFTER", time.Hour),
 	}
 	if l.err != nil {
 		return nil, l.err
 	}
 	return cfg, nil
+}
+
+// normalizeBasePath gives a path prefix its one form: "" for none, otherwise a
+// leading "/" and no trailing one ("orders/" and "/orders" both become "/orders").
+func normalizeBasePath(path string) string {
+	path = strings.Trim(strings.TrimSpace(path), "/")
+	if path == "" {
+		return ""
+	}
+	return "/" + path
 }
 
 // loader reads env vars, stopping at the first error so Load's field list

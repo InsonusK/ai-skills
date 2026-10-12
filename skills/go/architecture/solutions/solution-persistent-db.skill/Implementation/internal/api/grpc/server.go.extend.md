@@ -10,11 +10,13 @@ tags:
 ---
 
 # Implementation changes
-Applies only when [[skills/go/architecture/solutions/solution-grpc-api.skill/solution-grpc-api.skill.md|solution-grpc-api]] is also composed on the same plateau — `internal/api/grpc` does not exist otherwise. When it is, `proto/{service}/{service}.proto` (created by `solution-grpc-api`'s own `Repository.extend.md`) gains a new RPC and its messages — an ordinary proto extension, not a new proto file (an external contract like `solution-external-integration`'s would get its own file; this is the module's *own* contract growing):
+Applies only when [[skills/go/architecture/solutions/solution-grpc-api.skill/solution-grpc-api.skill.md|solution-grpc-api]] is also composed on the same plateau — `internal/api/grpc` does not exist otherwise. When it is, `docs/integration/api/{contract-name}/{file}.proto` (created by `solution-grpc-api`) gains a new RPC and its messages — an ordinary proto extension, not a new proto file (an external contract like `solution-external-integration`'s would get its own file; this is the module's *own* contract growing):
 ```protobuf
 service {Service} {
   // ... existing rpc ...
-  rpc {ReadMethod}({ReadMethod}Request) returns ({ReadMethod}Response);
+  rpc {ReadMethod}({ReadMethod}Request) returns ({ReadMethod}Response) {
+    option (google.api.http) = {get: "/v1/{records}/recent"};
+  }
 }
 
 message {ReadMethod}Request {
@@ -53,7 +55,7 @@ func (s *Server) {ReadMethod}(ctx context.Context, req *apiv1.{ReadMethod}Reques
 	return &apiv1.{ReadMethod}Response{Entries: out}, nil
 }
 ```
-This catalog's own runnable example concretizes `{ReadMethod}` as `RecentChecks` and `{Record}` as the proto message `HistoryEntry{normalized, flagged, reason, checked_at_unix}` — see `plateau-persistent-service`'s `example/proto/linkcheck/linkcheck.proto` and `example/internal/api/grpc/server.go`.
+This catalog's own runnable example concretizes `{ReadMethod}` as `RecentChecks` and `{Record}` as the proto message `HistoryEntry{normalized, flagged, reason, checked_at_unix}` — see `plateau-persistent-service`'s `examples/docs/integration/api/linkcheck/linkcheck.proto` and `examples/internal/api/grpc/server.go`.
 
 # Rule changes
 

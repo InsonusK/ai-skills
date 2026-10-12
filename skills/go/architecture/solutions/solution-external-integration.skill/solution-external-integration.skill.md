@@ -4,7 +4,7 @@ description: Calls out to another service through a narrow, business-named outbo
 whenToUse: when the module needs to call another service to do its job, or reviewing whether a domain service reaches for a concrete client library instead of a port it declares itself
 domain: skill
 type: architecture
-version: 20260917000000
+version: 20261012000000
 tags:
   - skill/architecture/solution
   - solution/external-integration
@@ -13,7 +13,9 @@ tags:
 creates:
   - "internal/domain/interfaces/{port}.go"
   - "internal/infrastructure/{adapter}/"
-  - "proto/{external}/{external}.proto"
+  - "docs/integration/client/{api-name}/{file}.proto"
+  - "buf.gen.client.yaml"
+  - "gen/client/{api-name}/"
 extends:
   - "internal/domain/services/{service}.go"
   - "internal/api/http/server.go"
@@ -21,6 +23,7 @@ extends:
   - "cmd/{service}/main.go"
   - "internal/config/config.go"
   - "Makefile"
+  - "buf.yaml"
 depends_on:
   - "[[skills/go/architecture/solutions/solution-go-domain-ports.skill/solution-go-domain-ports.skill.md|solution-go-domain-ports]]"
 built_on_plateau:
@@ -38,7 +41,7 @@ adr:
 # Core Principles
 - The port is named for what the domain needs (e.g. `ReputationChecker`), never for the technology or the external service's own name.
 - The adapter translates every technology-specific error (a gRPC "unavailable" status, a timeout) into the port's own sentinel errors — nothing outside `internal/infrastructure/{adapter}` ever sees a `google.golang.org/grpc` type.
-- This module's own exposed contract (if `solution-grpc-api` is also applied) and the external service's contract this solution calls are never generated into the same Go package — see that solution's own rule on this.
+- This module's own exposed contract and the external service's contract this solution calls are never generated into the same Go package: the consumed one is the provider's file, kept unchanged under `docs/integration/client/` as [[skills/common-workflow/develop/api-client-develop.skill.md|api-client-develop]] rules, and generated into `gen/client/`.
 
 # Requirements
 SOLUTION:
@@ -52,12 +55,12 @@ GO MODULES:
 
 # Template Skill Mutations
 FILES:
-- [[./Implementation/Repository.extend.md|Repository]] - extend - `proto/{external}/{external}.proto`, buf codegen config, `Makefile`'s `proto-gen` target
+- [[./Implementation/Repository.extend.md|Repository]] - extend - `docs/integration/client/{api-name}/{file}.proto`, the second module of `buf.yaml`, `buf.gen.client.yaml`, `Makefile`'s `proto-gen` target
 - [[./Implementation/internal/domain/interfaces/{port}.go.create.md|internal/domain/interfaces/{port}.go]] - create - the outbound port
 - [[./Implementation/internal/domain/services/{service}.go.extend.md|internal/domain/services/{service}.go]] - extend - the domain service depends on the new port
 - [[./Implementation/internal/infrastructure/{adapter}/Package.create.md|internal/infrastructure/{adapter}]] - create - the gRPC-client adapter package
 - [[./Implementation/internal/infrastructure/{adapter}/client.go.create.md|client.go]] - create - `Client` struct implementing the port
-- [[./Implementation/internal/api/http/server.go.extend.md|internal/api/http/server.go]] - extend - surface the port's result in the HTTP response, map its unavailable sentinel to `502`
+- [[./Implementation/internal/api/http/server.go.extend.md|internal/api/http/server.go]] - extend - surface the port's result in the HTTP response, map its unavailable sentinel to `UNAVAILABLE`, 503
 - [[./Implementation/internal/api/grpc/server.go.extend.md|internal/api/grpc/server.go]] - extend - the same, for gRPC, **only when [[skills/go/architecture/solutions/solution-grpc-api.skill/solution-grpc-api.skill.md|solution-grpc-api]] is also applied**
 - [[./Implementation/cmd/{service}/main.go.extend.md|cmd/{service}/main.go]] - extend - construct the client and pass it to the domain service
 - [[./Implementation/internal/config/config.go.extend.md|internal/config/config.go]] - extend - add the external service's host/port/TLS settings

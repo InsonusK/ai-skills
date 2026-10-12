@@ -136,5 +136,34 @@ while IFS= read -r f; do
 done < <(find "$SOL" -path '*/Implementation/*' -name '*.md')
 [ "$tmiss" -eq 0 ] && note "ok"
 
+section "10. API contracts (INVARIANTS.md §9, issue #206)"
+amiss=0
+# 10a. No statement of the previous layout or wire form outside the records of how it was.
+if git -C "$CAT" grep -nE 'proto/\{|proto/linkcheck|proto/reputation|buf/buf\.gen|buf/\{|buf/reputation|gen/reputation|gen/\{external\}|StatusBadGateway|go install [^ ]*protoc-gen|map\[string\]string\{"error"' \
+     -- solutions plateau feature variability-map.md ':!*/adr/*' ':!*/examples/go.sum' ':!*/examples/internal/taskbox/*' 2>/dev/null \
+     | grep -vE 'Violation:|at the time|before 2026-10-12|\(it was ' > /tmp/go_api_old.txt; then
+  fail=1; amiss=1; note "previous contract layout or wire form still stated:"; sed 's/^/    /' /tmp/go_api_old.txt | cut -c1-220
+fi
+# 10b. Every plateau example carries the contract, the docs switch, the feature, and no old folder.
+for ex in "$CAT"/plateau/*/*.skill/examples; do
+  rel="${ex#$CAT/}"
+  ls "$ex"/docs/integration/api/*/embed.go >/dev/null 2>&1 || { fail=1; amiss=1; note "$rel: no docs/integration/api/{contract}/embed.go"; }
+  for d in proto buf; do [ -e "$ex/$d" ] && { fail=1; amiss=1; note "$rel: $d/ still exists"; }; done
+  grep -q 'HTTP_API_DOCS_ENABLED' "$ex/internal/config/config.go" && grep -q 'HTTP_BASE_PATH' "$ex/internal/config/config.go" \
+    || { fail=1; amiss=1; note "$rel: config.go lacks HTTP_API_DOCS_ENABLED or HTTP_BASE_PATH"; }
+  grep -qs 'both have exactly the operations' "$ex"/internal/api/http/features/*.feature || { fail=1; amiss=1; note "$rel: no operations scenario in the HTTP API feature"; }
+  grep -qs 'contractRoutes()' "$ex/internal/api/http/server.go" || { fail=1; amiss=1; note "$rel: server.go has no contractRoutes()"; }
+  if ls "$ex"/docs/integration/api/*/*.proto >/dev/null 2>&1; then
+    for f in buf.yaml buf.lock buf.gen.yaml tools/testing/kinds/generated.sh; do [ -f "$ex/$f" ] || { fail=1; amiss=1; note "$rel: proto contract without $f"; }; done
+    ls "$ex"/docs/integration/api/*/openapi.json >/dev/null 2>&1 && { fail=1; amiss=1; note "$rel: hand-written openapi.json beside a proto contract"; }
+    head -1 "$ex"/docs/integration/api/*/*.proto | grep -qE '^// version: [0-9]+\.[0-9]+\.[0-9]+$' || { fail=1; amiss=1; note "$rel: proto file does not start with // version: x.y.z"; }
+    grep -q 'tool (' "$ex/go.mod" || grep -q '^tool ' "$ex/go.mod" || { fail=1; amiss=1; note "$rel: go.mod has no tool lines"; }
+  else
+    [ -f "$ex/tools/testing/kinds/generated.sh" ] && { fail=1; amiss=1; note "$rel: generated kind without a proto contract"; }
+  fi
+  if [ -d "$ex/docs/integration/client" ]; then [ -f "$ex/buf.gen.client.yaml" ] || { fail=1; amiss=1; note "$rel: consumed contract without buf.gen.client.yaml"; }; fi
+done
+[ "$amiss" -eq 0 ] && note "ok"
+
 section "RESULT"
 if [ "$fail" -eq 0 ]; then echo "PASS"; exit 0; else echo "FAIL"; exit 1; fi
