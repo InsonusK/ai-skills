@@ -36,6 +36,15 @@ Each row is one axis on which two Go web-services built on this family could leg
 | --- | --- | --- | --- | --- | --- | --- |
 | VP1 | **GrpcApi** — does the module expose a second inbound entry point over gRPC, alongside the common `HttpApi`? | Yes / No | — | Yes → [solution-grpc-api](skills/go/architecture/solutions/solution-grpc-api.skill/solution-grpc-api.skill) | — | No |
 
+### VP1 is to be revisited
+
+> **To revisit — deferred by the owner, 2026-10-12.** The VP1 row above and every statement in this catalog that `GrpcApi` is purely an addition describe the catalog before issue #206. Since then `solution-grpc-api` also replaces the baseline's hand-written `openapi.json` by the proto file and moves the HTTP handlers onto the generated messages, so:
+> - VP1's realization is no longer additive, and its `Realization depends on` cell is not `—` in substance: it changes `internal/api/http/` and `docs/integration/api/`.
+> - `{VP1, VP-C005}` and `{VP1, VP-C001}` intersect on `internal/api/http/server.go` as `FMC`. No resolver solution exists; `solution-external-integration` and `solution-persistent-db` state their HTTP delta in two forms, with and without VP1 — see [registry/internal-api-http-server-go.md](skills/go/architecture/registry/internal-api-http-server-go.md).
+> - Only the with-VP1 forms are verified: no plateau composes VP-C005 or VP-C001 without VP1.
+>
+> Ways out, none chosen: a contract-first baseline (the proto file from GW001.000, VP1 additive again, both pairs back to `FMN`); a resolver solution per pair; a Constraint that VP-C005 and VP-C001 require VP1. Until then this map, [plateau/plateau-repository.md](skills/go/architecture/plateau/plateau-repository.md), and `feature/feature-model.md`'s "Modeling choices" keep their earlier wording on VP1.
+
 ### The owner's outbox rule is now common
 
 This catalog's owner rule — *"если есть БД и публикация связана с изменением данных в БД, то делается через pattern outbox"* — is part of common VP-C010's concept for every stack; the Constraint is VP-C010's.
