@@ -4,7 +4,7 @@ description: plateau-cached-service plus a PostgreSQL-backed durable history of 
 whenToUse: when a Go web-service needs to durably record its own outcomes and reload them across a restart, or reviewing whether a solution that computes new domain data also exposes it through every applied inbound adapter
 domain: skill
 type: template
-version: 20261008170000
+version: 20261012000000
 tags:
   - skill/template/plateau
   - plateau/plateau-persistent-service
@@ -21,6 +21,7 @@ registry:
   - "[[skills/go/architecture/registry/internal-domain-services-service-go.md|internal-domain-services-service-go]]"
   - "[[skills/go/architecture/registry/internal-api-http-server-go.md|internal-api-http-server-go]]"
   - "[[skills/go/architecture/registry/internal-api-grpc-server-go.md|internal-api-grpc-server-go]]"
+  - "[[skills/go/architecture/registry/docs-integration-api-contract.md|docs-integration-api-contract]]"
 ---
 
 # Goal
@@ -43,7 +44,7 @@ A Go web-service with no database dependency for its core logic, a real domain l
 
 # Capabilities
 - api
-  - `GET /health` (liveness/readiness). `POST /v1/links/check` (HTTP) and `linkcheck.LinkCheckService/Check` (gRPC) both return `flagged`/`reason` alongside `url`/`normalized`; an unreachable reputation service maps to `502` (HTTP) / `codes.Unavailable` (gRPC), distinct from `400`/`codes.InvalidArgument` for a malformed URL.
+  - `GET /health` (liveness/readiness). `POST /v1/links/check` (HTTP) and `linkcheck.LinkCheckService/Check` (gRPC) both return `flagged`/`reason` alongside `url`/`normalized`; an unreachable reputation service maps to `503` (HTTP) / `codes.Unavailable` (gRPC), distinct from `400`/`codes.InvalidArgument` for a malformed URL.
 - domain
   - `LinkCheckService.Check`: parses a URL, accepts only `http`/`https` schemes, lowercases scheme+host, leaves the path unchanged, rejects everything else via `ErrInvalidURL` — then asks the cache (falling back to `ReputationChecker` on a miss) and records the outcome in history.
 - integration
@@ -54,7 +55,7 @@ A Go web-service with no database dependency for its core logic, a real domain l
   - `linkstore.Store` (PostgreSQL via `pgx`/`pgxpool`, table `link_checks`, schema ensured with `CREATE TABLE IF NOT EXISTS` at startup). Every successful `Check` call is recorded; `RecentChecks` reads the most recent entries back out, most-recent-first.
   - `GET /v1/links/recent?limit=N` (HTTP) and `RecentChecks` (gRPC) both expose the same recorded history, sourced from the same domain-service instance and the same `Store`.
 - testing
-  - `make test-kind-unit`/`test-kind-mutation`/`test-report`/`test-and-report` — godog scenarios in `internal/domain/services/features/check.feature`, `go test -cover`, `gremlins`, and a `$TEST_REPORT_DIR/` report site.
+  - `make test-kind-unit`/`test-kind-mutation`/`test-report`/`test-and-report` — godog scenarios in `internal/domain/services/features/check.feature` and `internal/api/http/features/http_api.feature`, `go test -cover`, `gremlins`, and a `$TEST_REPORT_DIR/` report site.
 
 # Usecases
 
@@ -80,7 +81,7 @@ sequenceDiagram
 `Check` returns `ErrInvalidURL` for anything that fails to parse, has no host, or uses a scheme other than `http`/`https`, before the cache, the reputation service, or the history store is ever touched; the HTTP adapter maps it to `400`, the gRPC adapter maps it to `codes.InvalidArgument`.
 
 ## A flagged URL, and a repeated check
-`reputationclient.Client.CheckReputation` returns `{flagged, reason}` on a cache miss; a repeated check of the same URL hits the Redis cache instead (see [[skills/go/architecture/registry/internal-domain-services-service-go.md|internal-domain-services-service-go]] for the cache-aside flow). Both outcomes are recorded to `linkstore.Store` either way. An unreachable reputation service maps to `502` (HTTP) / `codes.Unavailable` (gRPC), distinct from the `400`/`codes.InvalidArgument` an actually-malformed URL produces.
+`reputationclient.Client.CheckReputation` returns `{flagged, reason}` on a cache miss; a repeated check of the same URL hits the Redis cache instead (see [[skills/go/architecture/registry/internal-domain-services-service-go.md|internal-domain-services-service-go]] for the cache-aside flow). Both outcomes are recorded to `linkstore.Store` either way. An unreachable reputation service maps to `503` (HTTP) / `codes.Unavailable` (gRPC), distinct from the `400`/`codes.InvalidArgument` an actually-malformed URL produces.
 
 ## Record a check and read it back after a restart
 ```mermaid
@@ -121,6 +122,10 @@ See `structure/` — this plateau's own copy of every file:
 - [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--file-cmd-service-main.skill.md|file-cmd-service-main]] (extended: dial the PostgreSQL pool)
 - [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--file-config-config.skill.md|file-config-config]] (extended: `DatabaseDSN`)
 - [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--file-api-http-server.skill.md|file-api-http-server]] (extended: `GET /v1/links/recent`) — this and the next bullet close a gap found while building this plateau: `solution-persistent-db` originally had no adapter-extension files at all, the same class of omission `solution-external-integration` was fixed for earlier (see `agent/DECISIONS.md`)
+- [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--file-api-http-docs.skill.md|file-api-http-docs]] (the spec and Swagger UI routes)
+- [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--file-api-http-protojson.skill.md|file-api-http-protojson]] (proto-JSON in and out, the canonical status table)
+- [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--package-docs-integration-api.skill.md|package-docs-integration-api]] (the service's own contract: `linkcheck.proto`, its generated spec, `embed.go`)
+- [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--package-docs-integration-client.skill.md|package-docs-integration-client]] (the consumed reputation contract)
 - [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--file-api-grpc-server.skill.md|file-api-grpc-server]] (extended: `RecentChecks` RPC)
 - [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--repo-persistent-service.skill.md|repo-persistent-service]] (structure-table update only — `solution-persistent-db` adds no `Repository` content of its own, same as `solution-cached-db`)
 - Unchanged since `plateau-cached-service`: [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--package-domain-services.skill.md|package-domain-services]], [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--package-api-http.skill.md|package-api-http]], [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--package-api-grpc.skill.md|package-api-grpc]], [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--package-infrastructure-reputationclient.skill.md|package-infrastructure-reputationclient]], [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--package-infrastructure-reputationcache.skill.md|package-infrastructure-reputationcache]], [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--file-domain-interfaces-reputation.skill.md|file-domain-interfaces-reputation]], [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--file-domain-interfaces-reputation-cache.skill.md|file-domain-interfaces-reputation-cache]], [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--file-infrastructure-reputationclient-client.skill.md|file-infrastructure-reputationclient-client]], [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--file-infrastructure-reputationcache-store.skill.md|file-infrastructure-reputationcache-store]], [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--file-version-version.skill.md|file-version-version]], [[skills/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--file-logging-logger.skill.md|file-logging-logger]].
@@ -133,6 +138,8 @@ Six intersections — see `registry/`. Four canonical without further note; two 
 - [[skills/go/architecture/registry/internal-domain-services-service-go.md|internal-domain-services-service-go]] (N=4; confirms — by actually reading `Check`'s body, not assuming — that `persistent-db`'s append-only delta stays plain `FMN`, unlike the borderline `{external-integration, cached-db}` pairing recorded one plateau back)
 - [[skills/go/architecture/registry/internal-api-http-server-go.md|internal-api-http-server-go]] (N=3, **new element for the registry, written retroactively**: a catalog-wide grep found this element had already reached N=2 at `plateau-integrated-service` with no registry entry, so that omission was fixed at its own shallowest plateau before this plateau's N=3 entry was written — see that plateau's own registry folder)
 - [[skills/go/architecture/registry/internal-api-grpc-server-go.md|internal-api-grpc-server-go]] (N=3, same retroactive-discovery story as above, conditional on `solution-grpc-api`)
+- [[skills/go/architecture/registry/docs-integration-api-contract.md|docs-integration-api-contract]] (N=2: `solution-grpc-api` replaces the baseline's hand-written spec by the proto file)
+- [[skills/go/architecture/registry/internal-api-http-server-go.md|internal-api-http-server-go]] gained `solution-grpc-api` on 2026-10-12 — its two `FMC` pairings are resolved inside the extending solutions, see that entry.
 
 # Ground truth
 `examples/` evolved from `plateau-cached-service`'s, verified:
@@ -141,4 +148,9 @@ Six intersections — see `registry/`. Four canonical without further note; two 
 - `make test-kind-mutation`/`test-report` — clean runs.
 - **Full end-to-end runtime smoke test against a real PostgreSQL instance** (installed via `apt`, started manually — container init doesn't auto-start services), a real Redis instance, and a throwaway fake reputation gRPC server: two checks recorded via HTTP, read back identically via HTTP, gRPC, and a direct `psql` query — then **the service process was killed and restarted, and `GET /v1/links/recent` (no new checks made) returned the identical two entries**, the ground-truth proof this is genuine durable persistence, distinct in kind from `plateau-cached-service`'s Redis cache.
 
-To run it yourself: `cd example && go mod tidy && make proto-gen && make build && make test-kind-unit`. Running the full server needs a reachable PostgreSQL (`DATABASE_DSN`) in addition to Redis and the reputation service.
+API contract, verified 2026-10-12 after the move onto `api-develop` (issue #206):
+- `make test-and-report` — green: 31 tests, 20 scenarios; the `generated` kind up to date, including `RecentChecks`; mutation 28 killed / 0 lived / 40 not covered, score 41.2%.
+- `GET /v1/links/recent` now answers `{"entries": [{"normalized", "flagged", "reason", "checkedAtUnix"}]}` — the proto-JSON of `RecentChecksResponse` — where it answered a bare array with `checked_at` before; a `limit` that is not a number is answered `400`.
+- Not re-run after the move: the runs against a real PostgreSQL and Redis, including the kill-and-restart check. The stores are unchanged; the HTTP feature stubs them.
+
+To run it yourself: `cd examples && go mod tidy && make proto-gen && make build && make test-kind-unit`. Running the full server needs a reachable PostgreSQL (`DATABASE_DSN`) in addition to Redis and the reputation service.

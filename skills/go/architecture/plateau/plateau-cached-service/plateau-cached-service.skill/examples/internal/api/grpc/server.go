@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	apiv1 "github.com/example/linkcheck-service/gen/api"
+	apiv1 "github.com/example/linkcheck-service/gen/api/linkcheck"
 	"github.com/example/linkcheck-service/internal/domain/interfaces"
 	"github.com/example/linkcheck-service/internal/domain/services"
 )

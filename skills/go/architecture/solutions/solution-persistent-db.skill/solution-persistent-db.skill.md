@@ -4,7 +4,7 @@ description: A narrow, business-named outbound port backed by a durable system-o
 whenToUse: when the module needs to durably store and reload data across restarts, or reviewing whether domain code depends on a generic repository interface instead of a business-named one
 domain: skill
 type: architecture
-version: 20260917000000
+version: 20261012000000
 tags:
   - skill/architecture/solution
   - solution/persistent-db

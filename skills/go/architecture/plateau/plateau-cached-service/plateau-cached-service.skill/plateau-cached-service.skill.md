@@ -4,7 +4,7 @@ description: plateau-integrated-service plus a Redis-backed cache in front of th
 whenToUse: when a Go web-service needs to avoid repeating an expensive lookup or external call, or reviewing whether a cache-store failure incorrectly fails a request instead of degrading gracefully
 domain: skill
 type: template
-version: 20261008170000
+version: 20261012000000
 tags:
   - skill/template/plateau
   - plateau/plateau-cached-service
@@ -19,6 +19,7 @@ registry:
   - "[[skills/go/architecture/registry/internal-config-config-go.md|internal-config-config-go]]"
   - "[[skills/go/architecture/registry/repo-root.md|repo-root]]"
   - "[[skills/go/architecture/registry/internal-domain-services-service-go.md|internal-domain-services-service-go]]"
+  - "[[skills/go/architecture/registry/docs-integration-api-contract.md|docs-integration-api-contract]]"
 ---
 
 # Goal
@@ -38,7 +39,7 @@ A Go web-service with no database, a real domain layer, structured logging, the 
 
 # Capabilities
 - api
-  - `GET /health` (liveness/readiness). `POST /v1/links/check` (HTTP) and `linkcheck.LinkCheckService/Check` (gRPC) both return `flagged`/`reason` alongside `url`/`normalized`; an unreachable reputation service maps to `502` (HTTP) / `codes.Unavailable` (gRPC), distinct from `400`/`codes.InvalidArgument` for a malformed URL.
+  - `GET /health` (liveness/readiness). `POST /v1/links/check` (HTTP) and `linkcheck.LinkCheckService/Check` (gRPC) both return `flagged`/`reason` alongside `url`/`normalized`; an unreachable reputation service maps to `503` (HTTP) / `codes.Unavailable` (gRPC), distinct from `400`/`codes.InvalidArgument` for a malformed URL.
 - domain
   - `LinkCheckService.Check`: parses a URL, accepts only `http`/`https` schemes, lowercases scheme+host, leaves the path unchanged, rejects everything else via `ErrInvalidURL` — then asks the cache, falling back to `ReputationChecker` on a miss.
 - integration
@@ -46,7 +47,7 @@ A Go web-service with no database, a real domain layer, structured logging, the 
 - caching
   - `reputationcache.Store` (Redis, JSON-encoded `Reputation` values, keyed `reputation:{normalized-url}`, no TTL). A hit skips `reputationclient.Client.CheckReputation` entirely; a miss computes normally and writes the cache afterward.
 - testing
-  - `make test-kind-unit`/`test-kind-mutation`/`test-report`/`test-and-report` — godog scenarios in `internal/domain/services/features/check.feature`, `go test -cover`, `gremlins`, and a `$TEST_REPORT_DIR/` report site.
+  - `make test-kind-unit`/`test-kind-mutation`/`test-report`/`test-and-report` — godog scenarios in `internal/domain/services/features/check.feature` and `internal/api/http/features/http_api.feature`, `go test -cover`, `gremlins`, and a `$TEST_REPORT_DIR/` report site.
 
 # Usecases
 
@@ -72,7 +73,7 @@ sequenceDiagram
 `Check` returns `ErrInvalidURL` for anything that fails to parse, has no host, or uses a scheme other than `http`/`https`, before the cache or the reputation service is ever called; the HTTP adapter maps it to `400`, the gRPC adapter maps it to `codes.InvalidArgument`.
 
 ## A flagged URL
-`reputationclient.Client.CheckReputation` returns `{flagged, reason}` on a cache miss; both `internal/api/http` and `internal/api/grpc` surface `flagged`/`reason` alongside `url`/`normalized`. An unreachable reputation service maps to `502` (HTTP) / `codes.Unavailable` (gRPC), distinct from the `400`/`codes.InvalidArgument` an actually-malformed URL produces.
+`reputationclient.Client.CheckReputation` returns `{flagged, reason}` on a cache miss; both `internal/api/http` and `internal/api/grpc` surface `flagged`/`reason` alongside `url`/`normalized`. An unreachable reputation service maps to `503` (HTTP) / `codes.Unavailable` (gRPC), distinct from the `400`/`codes.InvalidArgument` an actually-malformed URL produces.
 
 ## Repeated checks of the same URL
 ```mermaid
@@ -108,6 +109,10 @@ See `structure/` — this plateau's own copy of every file:
 - [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--file-cmd-service-main.skill.md|file-cmd-service-main]] (extended: dial the Redis cache)
 - [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--file-config-config.skill.md|file-config-config]] (extended: `RedisHost`/`RedisPort`/`RedisPassword`/`RedisDB`)
 - [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--repo-cached-service.skill.md|repo-cached-service]] (structure-table update only — `solution-cached-db` adds no `Repository` content of its own)
+- [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--file-api-http-docs.skill.md|file-api-http-docs]] (the spec and Swagger UI routes)
+- [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--file-api-http-protojson.skill.md|file-api-http-protojson]] (proto-JSON in and out, the canonical status table)
+- [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--package-docs-integration-api.skill.md|package-docs-integration-api]] (the service's own contract: `linkcheck.proto`, its generated spec, `embed.go`)
+- [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--package-docs-integration-client.skill.md|package-docs-integration-client]] (the consumed reputation contract)
 - Unchanged since `plateau-integrated-service`: [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--package-domain-services.skill.md|package-domain-services]], [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--package-api-http.skill.md|package-api-http]], [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--package-api-grpc.skill.md|package-api-grpc]], [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--package-infrastructure-reputationclient.skill.md|package-infrastructure-reputationclient]], [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--file-domain-interfaces-reputation.skill.md|file-domain-interfaces-reputation]], [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--file-infrastructure-reputationclient-client.skill.md|file-infrastructure-reputationclient-client]], [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--file-api-http-server.skill.md|file-api-http-server]], [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--file-api-grpc-server.skill.md|file-api-grpc-server]], [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--file-version-version.skill.md|file-version-version]], [[skills/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--file-logging-logger.skill.md|file-logging-logger]].
 
 # Registry
@@ -116,6 +121,8 @@ Four intersections — see `registry/`. Three canonical without qualification; o
 - [[skills/go/architecture/registry/internal-config-config-go.md|internal-config-config-go]] (N=6, purely additive across four plateaus running)
 - [[skills/go/architecture/registry/repo-root.md|repo-root]] (N=4, unchanged — `solution-cached-db` contributes no `Repository` delta)
 - [[skills/go/architecture/registry/internal-domain-services-service-go.md|internal-domain-services-service-go]] (N=3; the `{external-integration, cached-db}` pairing is **borderline-`FMC`, defused not by a `depends_on` edge but by `solution-cached-db`'s own Implementation file explicitly naming `solution-external-integration` and stating the merge rule** — read this entry, it's the most interesting registry finding in this catalog so far)
+- [[skills/go/architecture/registry/docs-integration-api-contract.md|docs-integration-api-contract]] (N=2: `solution-grpc-api` replaces the baseline's hand-written spec by the proto file)
+- [[skills/go/architecture/registry/internal-api-http-server-go.md|internal-api-http-server-go]] gained `solution-grpc-api` on 2026-10-12 — its two `FMC` pairings are resolved inside the extending solutions, see that entry.
 
 # Ground truth
 `examples/` evolved from `plateau-integrated-service`'s, verified:
@@ -124,4 +131,8 @@ Four intersections — see `registry/`. Three canonical without qualification; o
 - `make test-kind-mutation`/`test-report` — clean runs.
 - **Full end-to-end runtime smoke test against a real Redis instance** (installed via `apt`, run manually — container init doesn't auto-start services) and a throwaway fake reputation gRPC server: 3 HTTP requests for the same URL → exactly 1 reputation-service call (confirmed by the fake server's own log and by `redis-cli get` returning the cached JSON) → a gRPC request for the same URL afterward also hit the cache.
 
-To run it yourself: `cd example && go mod tidy && make proto-gen && make build && make test-kind-unit`. Running the full server needs a reachable Redis (`REDIS_HOST`/`REDIS_PORT`) in addition to the reputation service.
+API contract, verified 2026-10-12 after the move onto `api-develop` (issue #206):
+- `make test-and-report` — green: 26 tests, 16 scenarios; the `generated` kind up to date; mutation 21 killed / 0 lived / 32 not covered, score 39.6%. The HTTP feature stubs the cache and the reputation port.
+- Not re-run after the move: the runs against a real Redis and a fake reputation server — this dev container has no Redis.
+
+To run it yourself: `cd examples && go mod tidy && make proto-gen && make build && make test-kind-unit`. Running the full server needs a reachable Redis (`REDIS_HOST`/`REDIS_PORT`) in addition to the reputation service.
