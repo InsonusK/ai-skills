@@ -1,0 +1,102 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Link check",
+    "version": "1.0.0"
+  },
+  "tags": [
+    {
+      "name": "LinkCheckService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/links/check": {
+      "post": {
+        "summary": "Check validates a URL and returns its normalized form.",
+        "operationId": "LinkCheckService_Check",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CheckResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CheckRequest"
+            }
+          }
+        ],
+        "tags": [
+          "LinkCheckService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1CheckRequest": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "v1CheckResponse": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "normalized": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

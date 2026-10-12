@@ -11,7 +11,7 @@ build:
 	go build -ldflags "$(LDFLAGS)" -o bin/linkcheck ./cmd/linkcheck
 
 proto-gen:
-	buf generate proto/linkcheck --template buf/buf.gen.yaml
+	go tool buf generate --template buf.gen.yaml
 
 run: build
 	./bin/linkcheck
