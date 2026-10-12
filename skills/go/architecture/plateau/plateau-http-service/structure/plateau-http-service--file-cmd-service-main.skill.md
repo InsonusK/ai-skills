@@ -5,7 +5,7 @@ whenToUse: when creating or editing cmd/{service}/main.go, or creating another c
 domain: skill
 type: template
 plateau: plateau-http-service
-version: 20260917000000
+version: 20261012000000
 tags:
   - skill/template/file
   - plateau/plateau-http-service
@@ -34,7 +34,7 @@ __Applied solutions:__
 ```go
 // Skill: file-cmd-service-main
 // Plateau: plateau-http-service
-// Version: 20260917000000
+// Version: 20261012000000
 
 package main
 
@@ -76,8 +76,11 @@ func run() error {
 	domainService := services.NewLinkCheckService()
 
 	httpServer := &http.Server{
-		Addr:    ":" + cfg.HTTPListenPort,
-		Handler: apihttp.New(domainService).Handler(),
+		Addr: ":" + cfg.HTTPListenPort,
+		Handler: apihttp.New(domainService, apihttp.Options{
+			DocsEnabled: cfg.HTTPAPIDocsEnabled,
+			BasePath:    cfg.HTTPBasePath,
+		}).Handler(),
 	}
 
 	go func() {
