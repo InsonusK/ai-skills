@@ -42,7 +42,7 @@ docs
 !docs/integration
 ```
 - Violation: a `.dockerignore` with `docs` alone, or one that re-includes a single file of a contract folder and not the files the build reads beside it.
-- Risk: the API contracts under `docs/integration` are embedded and generated from, as [[skills/devops/core/devops-ci-changes.skill.md|devops-ci-changes]] classifies them, so the image build fails on a missing source (in Go: `package {module}/docs/integration/api/openapi is not in std`) — and only in the delivery job, because tests and a local build run in the full checkout.
+- Risk: the API contracts under `docs/integration` are embedded and generated from, as [[skills/devops/core/devops-ci-changes.skill.md|devops-ci-changes]] classifies them, so the image build fails on a missing source (in Go: `package {module}/docs/integration/api/{contract-name} is not in std`) — and only in the delivery job, because tests and a local build run in the full checkout.
 - Fix: add the exception line; a `.dockerignore` that does not exclude `docs` needs none.
 
 ### Only for a project with a Dockerfile

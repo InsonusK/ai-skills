@@ -101,7 +101,7 @@ FILES:
 
 # Check list
 - [ ] `make test-kinds` lists `unit` and `mutation`; `make test-kind-unit`, `make test-kind-mutation`, `make test-report`, `make test-readme-check`, and `make test-and-report` all exist and match [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#report-contract|the parent solution's report contract]].
-- [ ] `COVERPKG` excludes `gen/` and `tools/`.
+- [ ] `COVERPKG` excludes `gen/`, `tools/`, and `test/`; the `gremlins` line excludes `gen/`, `tools/`, dot-directories, `test/`, and `testdata/`.
 - [ ] `$TEST_KIND_DIR/result/scenarios.json` is written on every `make test-kind-unit` run and the living doc includes every inventory entry with its tags, excluded reason, and status legend.
 - [ ] Every `.feature` file's scenarios follow [[skills/testing/go/cucumber-testing-in-go.skill.md|cucumber-testing-in-go]]'s check list.
 - [ ] `make test-kind-unit` writes godog's classic Cucumber JSON to `$TEST_KIND_DIR/report/tests/cucumber/` and renders `$TEST_KIND_DIR/report/tests/livingdoc/` per [[skills/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md#living-doc-report|the parent solution's living-doc report]].
