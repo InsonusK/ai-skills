@@ -5,7 +5,7 @@ whenToUse: when creating or editing cmd/{service}/main.go, or creating another c
 domain: skill
 type: template
 plateau: plateau-integrated-service
-version: 20260917020000
+version: 20261012000000
 tags:
   - skill/template/file
   - plateau/plateau-integrated-service
@@ -39,7 +39,7 @@ __Applied solutions:__
 ```go
 // Skill: file-cmd-service-main
 // Plateau: plateau-integrated-service
-// Version: 20260917020000
+// Version: 20261012000000
 
 package main
 
@@ -57,7 +57,7 @@ import (
 
 	"golang.org/x/sync/errgroup"
 
-	apiv1 "{module-path}/gen/api"
+	apiv1 "{module-path}/gen/api/linkcheck"
 	apigrpc "{module-path}/internal/api/grpc"
 	apihttp "{module-path}/internal/api/http"
 	"{module-path}/internal/config"
@@ -98,8 +98,11 @@ func run() error {
 	apiv1.RegisterLinkCheckServiceServer(grpcServer, apigrpc.New(domainService))
 
 	httpServer := &http.Server{
-		Addr:    ":" + cfg.HTTPListenPort,
-		Handler: apihttp.New(domainService).Handler(),
+		Addr: ":" + cfg.HTTPListenPort,
+		Handler: apihttp.New(domainService, apihttp.Options{
+			DocsEnabled: cfg.HTTPAPIDocsEnabled,
+			BasePath:    cfg.HTTPBasePath,
+		}).Handler(),
 	}
 
 	g, ctx := errgroup.WithContext(ctx)
@@ -131,7 +134,7 @@ func run() error {
 	return g.Wait()
 }
 ```
-Verified against this plateau's own `examples/cmd/linkcheck/main.go` — `go build`/`go vet` clean; HTTP and gRPC both smoke-tested against a real (throwaway, test-only) fake reputation gRPC server, including the reputation-service-unavailable path (stopped the fake server, confirmed `502`/`codes.Unavailable`).
+Verified against this plateau's own `examples/cmd/linkcheck/main.go` — `go build`/`go vet` clean; HTTP and gRPC both smoke-tested against a real (throwaway, test-only) fake reputation gRPC server, including the reputation-service-unavailable path (stopped the fake server, confirmed `codes.Unavailable`; its HTTP answer, 503 since the adapter follows the canonical table, is held by `http_api.feature`).
 
 __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]] - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/cmd/{service}/main.go.create.md|cmd/{service}/main.go]]

@@ -4,7 +4,7 @@ description: plateau-dual-api-service plus an outbound port/adapter to an extern
 whenToUse: when a Go web-service needs to call another service to do its job, or reviewing whether new domain data reaches every inbound adapter instead of being silently dropped
 domain: skill
 type: template
-version: 20261008170000
+version: 20261012000000
 tags:
   - skill/template/plateau
   - plateau/plateau-integrated-service
@@ -21,6 +21,7 @@ registry:
   - "[[skills/go/architecture/registry/internal-domain-services-service-go.md|internal-domain-services-service-go]]"
   - "[[skills/go/architecture/registry/internal-api-http-server-go.md|internal-api-http-server-go]]"
   - "[[skills/go/architecture/registry/internal-api-grpc-server-go.md|internal-api-grpc-server-go]]"
+  - "[[skills/go/architecture/registry/docs-integration-api-contract.md|docs-integration-api-contract]]"
 ---
 
 # Goal
@@ -32,21 +33,21 @@ A Go web-service with no database, a real domain layer, structured logging, the 
 - Every business rule is a Cucumber (godog) scenario, co-located with the package it tests — never a plain `_test.go` masquerading as the spec.
 - `internal/api/grpc` is exactly as thin as `internal/api/http` — no business logic, only decode/call/encode.
 - Two or more concurrent long-running servers in `run()` are run via `errgroup.Group`.
-- This module's own exposed contract (`proto/linkcheck/linkcheck.proto` → `gen/api`) stays in its own flat, unversioned path (verified, not hypothetical — see [[skills/go/architecture/solutions/solution-grpc-api.skill/solution-grpc-api.skill.md|solution-grpc-api]]'s own Rule).
+- This module's own exposed contract (`docs/integration/api/linkcheck/linkcheck.proto` → `gen/api/linkcheck/`) lies directly in its contract folder, no version folder (see [[skills/go/architecture/solutions/solution-grpc-api.skill/solution-grpc-api.skill.md|solution-grpc-api]]'s own Rule).
 - `internal/domain/interfaces` exists for the first time at this plateau (created by [[skills/go/architecture/solutions/solution-go-domain-ports.skill/solution-go-domain-ports.skill.md|solution-go-domain-ports]], a shared prerequisite) — the domain depends on `ReputationChecker`, never on `internal/infrastructure/reputationclient` or any `google.golang.org/grpc` type directly.
 - Validation happens before the external call — an invalid URL never reaches the reputation service.
 - Every field a port adds to the domain result must reach every inbound adapter present on the plateau — not computed and then silently dropped by one transport.
-- This module's own exposed contract (`gen/api`) and an external service's contract this module calls (`gen/reputation`) are always generated into separate Go packages, never merged.
+- This module's own exposed contract (`gen/api/linkcheck`) and an external service's contract this module calls (`gen/client/reputation`) are always generated into separate Go packages, never merged. The consumed contract is the provider's file, unchanged, under `docs/integration/client/reputation/`; `buf.gen.client.yaml` sets this module's `go_package` by managed mode.
 
 # Capabilities
 - api
-  - `GET /health` (liveness/readiness). `POST /v1/links/check` (HTTP) and `linkcheck.LinkCheckService/Check` (gRPC) both return `flagged`/`reason` alongside `url`/`normalized`; an unreachable reputation service maps to `502` (HTTP) / `codes.Unavailable` (gRPC), distinct from `400`/`codes.InvalidArgument` for a malformed URL.
+  - `GET /health` (liveness/readiness). `POST /v1/links/check` (HTTP) and `linkcheck.LinkCheckService/Check` (gRPC) both return `flagged`/`reason` alongside `url`/`normalized`; an unreachable reputation service maps to `503` (HTTP) / `codes.Unavailable` (gRPC), distinct from `400`/`codes.InvalidArgument` for a malformed URL.
 - domain
   - `LinkCheckService.Check`: parses a URL, accepts only `http`/`https` schemes, lowercases scheme+host, leaves the path unchanged, rejects everything else via `ErrInvalidURL` — then asks `ReputationChecker` whether the normalized URL is flagged.
 - integration
   - `ReputationChecker` port + `reputationclient.Client` gRPC adapter, translating `codes.Unavailable` into the domain's `ErrUnavailable` sentinel.
 - testing
-  - `make test-kind-unit`/`test-kind-mutation`/`test-report`/`test-and-report` — godog scenarios in `internal/domain/services/features/check.feature`, `go test -cover`, `gremlins`, and a `$TEST_REPORT_DIR/` report site.
+  - `make test-kind-unit`/`test-kind-mutation`/`test-report`/`test-and-report` — godog scenarios in `internal/domain/services/features/check.feature` and `internal/api/http/features/http_api.feature`, `go test -cover`, `gremlins`, and a `$TEST_REPORT_DIR/` report site.
 
 # Usecases
 
@@ -97,11 +98,11 @@ sequenceDiagram
 ```
 
 ## Reputation service unavailable
-`reputationclient.Client.CheckReputation` translates a gRPC `Unavailable` status into `interfaces.ErrUnavailable`; `LinkCheckService.Check` returns it unwrapped in kind; `internal/api/http` maps it to `502`, `internal/api/grpc` maps it to `codes.Unavailable` — both distinct from the `400`/`codes.InvalidArgument` an actually-malformed URL produces.
+`reputationclient.Client.CheckReputation` translates a gRPC `Unavailable` status into `interfaces.ErrUnavailable`; `LinkCheckService.Check` returns it unwrapped in kind; `internal/api/http` maps it to `UNAVAILABLE`, 503, `internal/api/grpc` maps it to `codes.Unavailable` — both distinct from the `400`/`codes.InvalidArgument` an actually-malformed URL produces.
 
 # Structure
 See `structure/` — this plateau's own copy of every file:
-- [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--repo-integrated-service.skill.md|repo-integrated-service]] (extended: `proto/reputation/`, `gen/reputation/`, second `proto-gen` line)
+- [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--repo-integrated-service.skill.md|repo-integrated-service]] (extended: `docs/integration/client/reputation/`, the second module of `buf.yaml`, `buf.gen.client.yaml`, `gen/client/reputation/`, second `proto-gen` line)
 - [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--package-domain-interfaces.skill.md|package-domain-interfaces]] (new)
 - [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--file-domain-interfaces-reputation.skill.md|file-domain-interfaces-reputation]] (new)
 - [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--package-infrastructure-reputationclient.skill.md|package-infrastructure-reputationclient]] (new)
@@ -109,7 +110,11 @@ See `structure/` — this plateau's own copy of every file:
 - [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--file-domain-services-linkcheck.skill.md|file-domain-services-linkcheck]] (extended: reputation port + 4 new godog scenarios)
 - [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--file-cmd-service-main.skill.md|file-cmd-service-main]] (extended: dial + pass reputation client)
 - [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--file-config-config.skill.md|file-config-config]] (extended: `ReputationAddr`)
-- [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--file-api-http-server.skill.md|file-api-http-server]] (extended: `flagged`/`reason`, `502` mapping)
+- [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--file-api-http-server.skill.md|file-api-http-server]] (extended: `flagged`/`reason`, `UNAVAILABLE` mapping)
+- [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--file-api-http-docs.skill.md|file-api-http-docs]] (the spec and Swagger UI routes)
+- [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--file-api-http-protojson.skill.md|file-api-http-protojson]] (proto-JSON in and out, the canonical status table)
+- [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--package-docs-integration-api.skill.md|package-docs-integration-api]] (the service's own contract: `linkcheck.proto`, its generated spec, `embed.go`)
+- [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--package-docs-integration-client.skill.md|package-docs-integration-client]] (the consumed reputation contract)
 - [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--file-api-grpc-server.skill.md|file-api-grpc-server]] (extended: `flagged`/`reason`, `codes.Unavailable` mapping)
 - Unchanged since `plateau-dual-api-service`: [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--package-domain-services.skill.md|package-domain-services]], [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--package-api-http.skill.md|package-api-http]], [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--package-api-grpc.skill.md|package-api-grpc]], [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--file-version-version.skill.md|file-version-version]], [[skills/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--file-logging-logger.skill.md|file-logging-logger]].
 
@@ -121,13 +126,19 @@ Six intersections, all canonical — see `registry/`:
 - [[skills/go/architecture/registry/internal-domain-services-service-go.md|internal-domain-services-service-go]] (new at this plateau, N=2 — `solution-cached-db`/`solution-persistent-db` are expected to grow this further, per the catalog-level prediction)
 - [[skills/go/architecture/registry/internal-api-http-server-go.md|internal-api-http-server-go]] (new at this plateau, N=2 — written retroactively during `plateau-persistent-service`'s build, after a catalog-wide grep found this element had reached N≥2 here without a registry entry)
 - [[skills/go/architecture/registry/internal-api-grpc-server-go.md|internal-api-grpc-server-go]] (new at this plateau, N=2, same retroactive discovery as above — conditional on `solution-grpc-api` being applied)
+- [[skills/go/architecture/registry/docs-integration-api-contract.md|docs-integration-api-contract]] (N=2: `solution-grpc-api` replaces the baseline's hand-written spec by the proto file)
+- [[skills/go/architecture/registry/internal-api-http-server-go.md|internal-api-http-server-go]] gained `solution-grpc-api` on 2026-10-12 — its two `FMC` pairings are resolved inside the extending solutions, see that entry.
 
 # Ground truth
 `examples/` evolved from `plateau-dual-api-service`'s, verified:
-- `buf generate proto/linkcheck` + `buf generate proto/reputation` (both via `make proto-gen`) — produce `gen/api/*.go` and `gen/reputation/*.go`, both flat.
+- `make proto-gen` — two `go tool buf generate` lines, one per template — produces `gen/api/linkcheck/*.go` with `linkcheck.swagger.json`, and `gen/client/reputation/*.go`.
 - `go build ./...`, `go vet ./...` — clean.
 - `make test-kind-unit` — 9/9 godog scenarios green (5 unchanged + 4 new: flagged, clean, validation-fails-before-reputation-call, reputation-unavailable), using a scenario-configurable stub `ReputationChecker` — no network call in the unit-test suite.
 - `make test-kind-mutation`/`test-report` — clean runs.
 - **Full end-to-end runtime smoke test** against a real (throwaway, test-only) fake reputation gRPC server (not committed — see `agent/DECISIONS.md`): both HTTP and gRPC, a clean URL, a flagged URL (fake server flags any URL containing "bad"), and the reputation-service-unavailable path (stopped the fake server mid-test) — all verified with real network calls, not just unit-test stubs.
 
-To run it yourself: `cd example && go mod tidy && make proto-gen && make build && make test-kind-unit`. Running the full server needs a real (or the same throwaway fake) reputation gRPC service reachable at `REPUTATION_ADDR`.
+API contract, verified 2026-10-12 after the move onto `api-develop` (issue #206):
+- `make test-and-report` — green: 24 tests, 14 scenarios (the HTTP feature adds a flagged URL and an unavailable reputation service answered `503` with `"code":14`); the `generated` kind up to date with both buf modules present; mutation 19 killed / 0 lived / 28 not covered, score 40.4%.
+- Not re-run after the move: the smoke tests against a fake reputation gRPC server. The client adapter changed only its import path and the proto package it dials (`reputation.v1.ReputationService`).
+
+To run it yourself: `cd examples && go mod tidy && make proto-gen && make build && make test-kind-unit`. Running the full server needs a real (or the same throwaway fake) reputation gRPC service reachable at `REPUTATION_ADDR`.
