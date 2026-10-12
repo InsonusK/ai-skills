@@ -5,7 +5,7 @@ whenToUse: when adding a new runtime setting, or creating or editing internal/co
 domain: skill
 type: template
 plateau: plateau-dual-api-service
-version: 20260917010000
+version: 20261012000000
 tags:
   - skill/template/file
   - plateau/plateau-dual-api-service
@@ -36,7 +36,7 @@ __Applied solutions:__
 ```go
 // Skill: file-config-config
 // Plateau: plateau-dual-api-service
-// Version: 20260917010000
+// Version: 20261012000000
 
 package config
 
@@ -50,15 +50,22 @@ import (
 type Config struct {
 	LogLevel       string
 	HTTPListenPort string
+	// HTTPAPIDocsEnabled registers the spec and Swagger UI routes; off unless set.
+	HTTPAPIDocsEnabled bool
+	// HTTPBasePath is the path prefix the service is published under: empty, or
+	// with a leading "/" and no trailing one.
+	HTTPBasePath   string
 	GRPCListenPort string
 }
 
 func Load() (*Config, error) {
 	l := &loader{}
 	cfg := &Config{
-		LogLevel:       l.get("LOG_LEVEL", "info"),
-		HTTPListenPort: l.get("HTTP_LISTEN_PORT", "8080"),
-		GRPCListenPort: l.get("GRPC_LISTEN_PORT", "50051"),
+		LogLevel:           l.get("LOG_LEVEL", "info"),
+		HTTPListenPort:     l.get("HTTP_LISTEN_PORT", "8080"),
+		HTTPAPIDocsEnabled: l.getBool("HTTP_API_DOCS_ENABLED", false),
+		HTTPBasePath:       normalizeBasePath(l.get("HTTP_BASE_PATH", "")),
+		GRPCListenPort:     l.get("GRPC_LISTEN_PORT", "50051"),
 	}
 	if l.err != nil {
 		return nil, l.err
@@ -66,12 +73,24 @@ func Load() (*Config, error) {
 	return cfg, nil
 }
 
+// normalizeBasePath gives a path prefix its one form: "" for none, otherwise a
+// leading "/" and no trailing one ("orders/" and "/orders" both become "/orders").
+func normalizeBasePath(path string) string {
+	path = strings.Trim(strings.TrimSpace(path), "/")
+	if path == "" {
+		return ""
+	}
+	return "/" + path
+}
+
 type loader struct{ err error }
 
-func (l *loader) get(key, def string) string { /* ... see solution-go-repository-structure's Implementation ... */ return def }
-func (l *loader) getInt(key string, def int) int { return def }
+func (l *loader) get(key, def string) string { /* ... see solution-go-repository-structure's Implementation ... */
+	return def
+}
+func (l *loader) getInt(key string, def int) int    { return def }
 func (l *loader) getBool(key string, def bool) bool { return def }
-func (l *loader) require(key string) string { return "" }
+func (l *loader) require(key string) string         { return "" }
 ```
 Verified against this plateau's own `examples/internal/config/config.go` (`go build`/`go vet` clean).
 
@@ -84,6 +103,7 @@ __Applied solutions:__
 # Rules
 MUST:
 - Never apply several plateau templates per file.
+- The docs switch is `HTTP_API_DOCS_ENABLED` and the prefix `HTTP_BASE_PATH` — the names `api-develop` fixes; the HTTP adapter gets both through `apihttp.Options` and reads no variable itself.
 - An extending solution adds its own field(s) to the same `Config{...}` literal — never a second `loader{}`/struct literal.
 - Never read `os.Getenv` directly outside this file.
 
@@ -91,6 +111,7 @@ __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]] - [[skills/go/architecture/solutions/solution-go-repository-structure.skill/Implementation/internal/config/config.go.create.md#MUST|internal/config/config.go]]
 
 # Check list
+- [ ] `HTTP_API_DOCS_ENABLED` defaults to `false`; `HTTP_BASE_PATH` values `orders`, `/orders`, and `/orders/` all load as `/orders`, unset as empty.
 - [ ] `LOG_LEVEL` defaults to `"info"`; `HTTP_LISTEN_PORT` defaults to `"8080"`; `GRPC_LISTEN_PORT` defaults to `"50051"`.
 
 __Applied solutions:__

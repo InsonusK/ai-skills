@@ -35,7 +35,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	apiv1 "{module-path}/gen/api"
+	apiv1 "{module-path}/gen/api/{contract-name}"
 	"{module-path}/internal/domain/services"
 )
 

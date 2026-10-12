@@ -5,7 +5,7 @@ whenToUse: when creating or editing internal/api/grpc/server.go, or adding a new
 domain: skill
 type: template
 plateau: plateau-dual-api-service
-version: 20260917010000
+version: 20261012000000
 tags:
   - skill/template/file
   - plateau/plateau-dual-api-service
@@ -28,7 +28,7 @@ __Applied solutions:__
 ```go
 // Skill: file-api-grpc-server
 // Plateau: plateau-dual-api-service
-// Version: 20260917010000
+// Version: 20261012000000
 
 package grpc
 
@@ -39,7 +39,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	apiv1 "{module-path}/gen/api"
+	apiv1 "{module-path}/gen/api/linkcheck"
 	"{module-path}/internal/domain/services"
 )
 

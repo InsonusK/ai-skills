@@ -5,7 +5,7 @@ whenToUse: when creating or editing cmd/{service}/main.go, or creating another c
 domain: skill
 type: template
 plateau: plateau-dual-api-service
-version: 20260917010000
+version: 20261012000000
 tags:
   - skill/template/file
   - plateau/plateau-dual-api-service
@@ -37,7 +37,7 @@ __Applied solutions:__
 ```go
 // Skill: file-cmd-service-main
 // Plateau: plateau-dual-api-service
-// Version: 20260917010000
+// Version: 20261012000000
 
 package main
 
@@ -55,7 +55,7 @@ import (
 
 	"golang.org/x/sync/errgroup"
 
-	apiv1 "{module-path}/gen/api"
+	apiv1 "{module-path}/gen/api/linkcheck"
 	apigrpc "{module-path}/internal/api/grpc"
 	apihttp "{module-path}/internal/api/http"
 	"{module-path}/internal/config"
@@ -89,8 +89,11 @@ func run() error {
 	apiv1.RegisterLinkCheckServiceServer(grpcServer, apigrpc.New(domainService))
 
 	httpServer := &http.Server{
-		Addr:    ":" + cfg.HTTPListenPort,
-		Handler: apihttp.New(domainService).Handler(),
+		Addr: ":" + cfg.HTTPListenPort,
+		Handler: apihttp.New(domainService, apihttp.Options{
+			DocsEnabled: cfg.HTTPAPIDocsEnabled,
+			BasePath:    cfg.HTTPBasePath,
+		}).Handler(),
 	}
 
 	g, ctx := errgroup.WithContext(ctx)
