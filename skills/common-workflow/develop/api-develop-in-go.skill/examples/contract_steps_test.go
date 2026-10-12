@@ -12,7 +12,7 @@ import (
 
 	"github.com/cucumber/godog"
 
-	"github.com/example/linkcheck/docs/integration/api/openapi"
+	"github.com/example/linkcheck/docs/integration/api/linkcheck"
 	apihttp "github.com/example/linkcheck/internal/api/http"
 )
 
@@ -28,7 +28,7 @@ func registerContractSteps(sc *godog.ScenarioContext) {
 			served := apihttp.New().ContractRoutes()
 			slices.Sort(served)
 
-			described, err := specOperations(openapi.Spec)
+			described, err := specOperations(linkcheck.Spec)
 			if err != nil {
 				return err
 			}

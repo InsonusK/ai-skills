@@ -2,7 +2,7 @@
 name: embed-package-beside-the-contract
 description: Decide how the OpenAPI spec kept under docs/integration/api reaches the running Go service.
 problem: The spec lives under docs/, the server code under internal/, and `//go:embed` cannot read a parent directory — how does the binary get the spec?
-decision: A Go file beside the spec, `docs/integration/api/openapi/embed.go`, embeds it; the HTTP server imports that package.
+decision: A Go file beside the spec, `docs/integration/api/{contract-name}/embed.go`, embeds it; the HTTP server imports that package.
 tags:
   - stack/go
   - concern/documentation
@@ -23,12 +23,12 @@ tags:
 **Selected.**
 
 ### Description
-`docs/integration/api/openapi/embed.go`, package `openapi`, holds `//go:embed {service}.swagger.json` and exports `Spec []byte`. The HTTP server imports it.
+`docs/integration/api/{contract-name}/embed.go` holds `//go:embed {file}.swagger.json` and exports `Spec []byte`. The HTTP server imports it.
 
 ### Benefits
 - One file is the published contract and the served one.
 - The service starts from the binary alone; a missing spec is a compile error.
-- When the spec is generated, the generator's output directory is this folder and nothing is copied.
+- When the spec is generated, the generator writes it into this folder and nothing is copied.
 
 ### Costs
 - A Go package lives under `docs/`, so `docs` is no longer documentation only: a `.dockerignore` that excludes it breaks the image build, and change detection must treat `docs/integration` as code.
