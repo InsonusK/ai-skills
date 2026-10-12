@@ -1,4 +1,7 @@
 version: v2
+# Only the service's own contracts: buf.yaml may also name a module of consumed ones.
+inputs:
+  - directory: docs/integration/api
 plugins:
   - local: ["go", "tool", "protoc-gen-go"]
     out: gen/api

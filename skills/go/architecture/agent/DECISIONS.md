@@ -371,3 +371,19 @@ mirror all updated to match. `MAY: Provide a Helm chart in addition to plain man
 — that framing was already inconsistent with the pre-existing `Kubernetes coverage` MUST rule, which
 had always accepted "manifests **or** Helm chart" as alternatives satisfying the same requirement,
 not one as an addition on top of the other.
+
+## API contracts — the catalog follows api-develop (2026-10-12, issue #206)
+
+Owner-decided, asked before the anchor was written:
+- ⚠️ The HTTP-only plateau keeps no proto file: its spec is a hand-written `openapi.json`. The baseline does not become contract-first.
+- ⚠️ The HTTP form is served by hand-written `net/http` handlers, not by grpc-gateway.
+- ⚠️ Swagger UI assets are embedded through a Go module.
+- ⚠️ One folder per contract (`docs/integration/api/{contract-name}/`), decided for issue #209.
+
+Agent decisions:
+- The baseline's hand-written JSON has the wire form `protojson` gives from VP1 on — lowerCamelCase keys, every field present, the `google.rpc.Status` error body, the canonical statuses. `api-develop` asks this only of the HTTP form of a grpc contract; the baseline takes it too, because otherwise composing VP1 would change the JSON every existing client reads. Verified: one feature file passes unchanged on both reference examples.
+- Ownership follows from the first owner decision: `solution-go-http-api` owns the hand-written spec, the docs routes and the error body; `solution-grpc-api` replaces the spec by the proto file and rewrites the HTTP adapter onto the generated messages. VP1 is therefore no longer purely additive — it extends `internal/api/http/`.
+- Swagger UI module: `github.com/swaggest/swgui` v1.8.9, package `v5emb`. Its `Config.BasePath` / `InternalBasePath` pair is exactly the external and the internal path a service behind a prefix-stripping ingress has. Measured on the HTTP-only example: the binary grows from 9.1 MB to 14.4 MB. Rejected: `flowchartsman/swaggerui` (last release 2022), `swaggo/files` (assets only, the page and its base path written by hand).
+- `protojson.MarshalOptions{EmitUnpopulated: true}`: a response names every field. `api-develop` allows an absent default; emitting keeps the baseline's `encoding/json` output and the generated one identical.
+- A consumed contract is generated through a second buf module and its own template with managed mode, into `gen/client/{api-name}/`: `api-client-develop` forbids editing the provider's file, and its `go_package` names the provider's module.
+- `/health/live` and `/health/ready` are left to a separate issue (see §9 "Not in this change"): a readiness that answers 200 without asking Redis or PostgreSQL would be a wrong answer, and a right one changes the adapters.

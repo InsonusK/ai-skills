@@ -31,20 +31,10 @@ Feature: HTTP API
       | POST   | /v1/links/check | {"url":               | 400    | code  | 3     |
 
   @category/happy
-  Scenario Outline: the health endpoints answer
-    When I send "GET" "<path>"
-    Then the response status should be 200
-
-    Examples:
-      | path          |
-      | /health       |
-      | /health/live  |
-      | /health/ready |
-
-  @category/happy
   Scenario: the health endpoint reports the running version
     When I send "GET" "/health"
-    Then the response body should have "version" equal to the binary's version
+    Then the response status should be 200
+    And the response body should have "version" equal to the binary's version
 
   Scenario Outline: the docs routes follow HTTP_API_DOCS_ENABLED and HTTP_BASE_PATH
     Given the service is started with docs "<docs>" under the base path "<base path>"

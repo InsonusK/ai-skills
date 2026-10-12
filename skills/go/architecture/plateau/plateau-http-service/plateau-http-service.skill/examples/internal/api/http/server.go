@@ -61,8 +61,6 @@ func (s *Server) Handler() http.Handler {
 		mux.HandleFunc(route.pattern, route.handler)
 	}
 	mux.HandleFunc("GET /health", handleHealth)
-	mux.HandleFunc("GET /health/live", handleProbe)
-	mux.HandleFunc("GET /health/ready", handleProbe)
 	if s.options.DocsEnabled {
 		registerDocs(mux, s.options.BasePath)
 	}
@@ -74,17 +72,11 @@ type healthResponse struct {
 	Version string `json:"version"`
 }
 
-// handleHealth reports the running binary's version, so a consumer can tell
-// which build it is talking to. It is for clients and people, never a probe.
+// handleHealth reports liveness and the running binary's version, so a
+// consumer can tell which build it is talking to.
 func handleHealth(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(healthResponse{Status: "ok", Version: version.Version})
-}
-
-// handleProbe answers the liveness and readiness probes. This service needs no
-// dependency to serve a request, so being ready is the same as being alive.
-func handleProbe(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
 }
 
 type checkRequest struct {
