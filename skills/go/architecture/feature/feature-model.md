@@ -21,7 +21,11 @@ internal/
     http/
       server.go                    — stdlib net/http, thin adapter translating requests into
                                        domain-service calls and domain sentinel errors back into
-                                       HTTP status codes
+                                       grpc codes and their HTTP statuses
+      docs.go                      — the OpenAPI spec and Swagger UI routes, switched by
+                                       HTTP_API_DOCS_ENABLED, prefix-safe under HTTP_BASE_PATH
+      errors.go                    — the google.rpc.Status error body
+      features/, test/             — the adapter's specification, @type/api/http
   config/
     config.go                      — flat struct sourced from env vars, each var also readable
                                        from a "<NAME>_FILE" path (container-secret convention)
@@ -29,6 +33,13 @@ internal/
     logger.go                      — log/slog, one process-wide default handler set at startup
   version/
     version.go                     — build-time version var, set via -ldflags
+docs/
+  integration/
+    api/
+      {contract-name}/
+        openapi.json               — the service's own HTTP contract, hand-written (a proto file and
+                                       its generated spec once GrpcApi is selected)
+        embed.go                   — embeds the spec into the binary
 tools/
   normalize_unittest/               — normalizes `go test -json` output into the unit kind's result/unit-test.json
   normalize_scenarios/              — .feature files + go test -json into the unit kind's result/scenarios.json

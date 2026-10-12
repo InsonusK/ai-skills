@@ -5,7 +5,7 @@ whenToUse: when adding or editing an RPC handler in internal/api/grpc, or decidi
 domain: skill
 type: template
 plateau: plateau-gw009-001
-version: 20260928120000
+version: 20261012000000
 tags:
   - skill/template/package
   - plateau/plateau-gw009-001
@@ -48,7 +48,7 @@ internal/api/grpc/
 
 # Allowed Dependencies
 - `internal/domain/services`
-- `gen/api` (this module's own generated stubs)
+- `gen/api/linkcheck` (this module's own generated stubs)
 - `google.golang.org/grpc`, `google.golang.org/grpc/codes`, `google.golang.org/grpc/status`
 
 # Rules

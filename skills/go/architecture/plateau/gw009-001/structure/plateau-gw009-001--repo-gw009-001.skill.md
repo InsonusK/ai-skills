@@ -5,7 +5,7 @@ whenToUse: when adding, removing, or relocating a top-level package under this p
 domain: skill
 type: template
 plateau: plateau-gw009-001
-version: 20261006000000
+version: 20261012000000
 tags:
   - skill/template/repo
   - plateau/plateau-gw009-001
@@ -28,17 +28,21 @@ Makefile
 .gitignore
 report-template/
   index.html
-proto/
-  linkcheck/
-    linkcheck.proto                ← this module's own exposed gRPC contract (extended: RecentChecks RPC)
-  reputation/
-    reputation.proto                ← the EXTERNAL reputation service's own contract, vendored
-buf/
-  buf.gen.yaml
-  reputation.gen.yaml
+buf.yaml                         ← the buf modules: docs/integration/api and docs/integration/client
+buf.lock
+buf.gen.yaml                     ← own contract → gen/api and the spec beside the proto file
+buf.gen.client.yaml              ← consumed contracts → gen/client (go_package by managed mode)
+docs/
+  integration/
+    api/
+      linkcheck/                 ← package tier, see plateau-gw009-001--package-docs-integration-api.skill.md
+    client/
+      reputation/                ← package tier, see plateau-gw009-001--package-docs-integration-client.skill.md
 gen/
-  api/                             (generated; committed, not gitignored)
-  reputation/                      (generated; committed, not gitignored)
+  api/
+    linkcheck/                   (generated; committed, not gitignored)
+  client/
+    reputation/                  (generated; committed, not gitignored)
 cmd/
   {service}/
     main.go                       ← file tier, see plateau-gw009-001--file-cmd-service-main.skill.md
@@ -63,6 +67,7 @@ internal/
     reputationcache/              ← package tier, see plateau-gw009-001--package-infrastructure-reputationcache.skill.md
     linkstore/                    ← package tier, see plateau-gw009-001--package-infrastructure-linkstore.skill.md (+ migrations/)
 tools/
+  testing/kinds/generated.sh      ← the generated test kind, copied unchanged from api-develop-in-go
   normalize_unittest/main.go
   normalize_scenarios/main.go
   normalize_mutation/main.go
@@ -86,6 +91,8 @@ __Applied solutions:__
 | internal/domain/interfaces | [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--package-domain-interfaces.skill.md]] | Outbound ports |
 | internal/domain/services | [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--package-domain-services.skill.md]] | Business logic |
 | internal/api/http | [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--package-api-http.skill.md]] | Inbound HTTP adapter |
+| docs/integration/api/linkcheck | [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--package-docs-integration-api.skill.md]] | The service's own API contract and its embed package |
+| docs/integration/client/reputation | [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--package-docs-integration-client.skill.md]] | The consumed reputation contract |
 | internal/api/grpc | [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--package-api-grpc.skill.md]] | Inbound gRPC adapter |
 | internal/infrastructure/reputationclient | [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--package-infrastructure-reputationclient.skill.md]] | Outbound gRPC-client adapter |
 | internal/infrastructure/reputationcache | [[skills/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--package-infrastructure-reputationcache.skill.md]] | Outbound Redis-backed cache adapter |
@@ -101,8 +108,9 @@ MUST:
 - `make test-kind-unit` writes `$TEST_KIND_DIR/result/scenarios.json` on every run, green or red; every scenario (or `Examples:` block) carries exactly one type tag.
 - `make test-kind-unit` writes godog's classic Cucumber JSON to `$TEST_KIND_DIR/report/tests/cucumber/` and renders `$TEST_KIND_DIR/report/tests/livingdoc/` via `tools/livingdoc/` (skipped, never failed, without `npm`).
 - `tools/testing/` (copied verbatim from `solution-conformance-testing`) defines the caller-facing targets — `make test-kinds`, `test-kind-{kind}`, `test-report`, `test-readme-check`, `test-and-report`; `README.md` carries one badge per declared badge.
-- `proto/linkcheck/linkcheck.proto` stays flat (no version subdirectory) — its path must match `go_package`'s flat `gen/api` exactly, or `buf generate` emits code at a different Go import path than every hand-written file expects (verified — this is the actual, observed failure mode, not a hypothetical). `buf/buf.gen.yaml` uses `local:` plugins (`protoc-gen-go`, `protoc-gen-go-grpc`, both `go install`ed), not `buf.build` remote plugins.
-- `proto/reputation/reputation.proto` (the external service's own contract) is generated into its own `gen/reputation` via its own `buf/reputation.gen.yaml` — never merged with `gen/api`. Its `buf generate` call was added as a second line inside the existing `proto-gen` target, not a second target declaration.
+- `docs/integration/api/linkcheck/linkcheck.proto` lies directly in its contract folder (no version folder): `paths=source_relative` mirrors its path into `gen/api/linkcheck/`, which is what `go_package` declares. `buf.gen.yaml` starts every plugin as `local: ["go", "tool", …]` — the generators are `tool` lines of `go.mod`, nothing is installed with `@latest`.
+- `make test-kinds` lists `generated - no badge`; `tools/testing/kinds/generated.sh` is an unchanged copy of the file of `api-develop-in-go`.
+- `docs/integration/client/reputation/reputation.proto` (the external service's own contract, the provider's copy unchanged) is generated into its own `gen/client/reputation/` through its own `buf.gen.client.yaml` — never merged with `gen/api/`. `buf.gen.yaml` and `buf.gen.client.yaml` each name their module under `inputs`, and `proto-gen` runs both as two lines of one target.
 - A new `internal/infrastructure/*` adapter package (like `linkstore`) never requires a `Repository.extend.md` of its own — it is ordinary content inside the `internal/infrastructure/` tree `solution-go-repository-structure` already established.
 
 __Applied solutions:__
@@ -114,5 +122,5 @@ __Applied solutions:__
 - [[skills/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]]
 
 # Check list
-- [ ] `make proto-gen` regenerates both `gen/api` and `gen/reputation` with no manual edits needed afterward, including the new `RecentChecks` RPC (verified against this plateau's own `examples/`).
+- [ ] `make proto-gen` regenerates `gen/api/linkcheck/`, `docs/integration/api/linkcheck/linkcheck.swagger.json`, and `gen/client/reputation/` with no manual edits needed afterward, including the `RecentChecks` RPC; `make test-kind-generated` passes (verified against this plateau's own `examples/`).
 - [ ] `TEST_DATABASE_DSN=postgres://postgres:postgres@localhost:5432/taskbox_test make test-kind-unit` passes (48 tests; 30 TaskBox scenarios on PostgreSQL).
