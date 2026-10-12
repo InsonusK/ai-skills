@@ -6,9 +6,10 @@
 set -euo pipefail
 source tools/testing/kind.sh
 
-# Packages coverage is measured against - generated code (gen/) and the reporting tools
-# themselves (tools/) are excluded, neither has product logic of its own to test.
-COVERPKG=$(go list ./... | grep -Ev '/(gen|tools)(/|$)' | tr '\n' ',' | sed 's/,$//')
+# Packages coverage is measured against - generated code (gen/), the reporting tools
+# themselves (tools/) and test code (test/) are excluded: none has product logic of its own
+# to test. The suites in test/ still run and still cover the product packages.
+COVERPKG=$(go list ./... | grep -Ev '/(gen|tools|test)(/|$)' | tr '\n' ',' | sed 's/,$//')
 
 if [ "$TEST_RUN_PURPOSE" = report ]; then kind_mode "every test with coverage reported"
 else kind_mode "every test - coverage not reported"; fi

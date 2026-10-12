@@ -83,13 +83,18 @@ require (
   - Violation: `gremlins unleash --diff origin/main .` in a module at `services/api/` of a larger repository.
   - Risk: git names changed files from the repository root, `gremlins` compares them with module-relative paths — nothing matches, every mutant is `SKIPPED`, and the run is green over nothing.
   - Fix: keep the three variables on the `gremlins` line of `tools/testing/kinds/mutation.sh`; they change nothing when `go.mod` is in the repository root.
-- `COVERPKG` must exclude `gen/` and `tools/` from both `test-kind-unit` and `test-kind-mutation`.
-  - Risk: mutating generated protobuf/gRPC code or this solution's own reporting tools produces meaningless surviving-mutant noise with no product logic behind it.
-  - Fix: keep the `grep -Ev '/(gen|tools)(/|$)'` filter on `COVERPKG` and pass it to both `go test -coverpkg` and `gremlins --coverpkg`.
+- `COVERPKG` must exclude `gen/`, `tools/`, and every `test/` package from both `test-kind-unit` and `test-kind-mutation`.
+  - Violation: a filter for `gen/` and `tools/` only, in a project whose suites share a plain helper package such as `internal/test/testkit/`.
+  - Risk: generated protobuf/gRPC code, this solution's own reporting tools, and test helpers have no product logic behind them, and the coverage percentage is then measured over a different set of packages than the mutation score.
+  - Fix: keep the `grep -Ev '/(gen|tools|test)(/|$)'` filter on `COVERPKG` and pass it to both `go test -coverpkg` and `gremlins --coverpkg`. The filter only chooses what is measured: the suites in `{package}/test` still run and still cover the product packages.
 - `test-kind-mutation` must exclude every dot-directory from mutation, beside `gen/` and `tools/`.
   - Violation: `--exclude-files` for `gen/` and `tools/` only, in a project with skills synced into `.agents/` or `.claude/`.
   - Risk: `gremlins` walks the file tree, not the module's packages — the Go files of the synced skills' assets and examples are reported as mutants no test covers, and mutant coverage drops over code that is not the project's.
   - Fix: keep `--exclude-files='(^|/)\.[^/]+/.*'` on the `gremlins` line of `tools/testing/kinds/mutation.sh`.
+- `test-kind-mutation` must exclude every `test/` and `testdata/` directory from mutation.
+  - Violation: no `--exclude-files` for `test/`, in a project that keeps step logging and table comparators in a plain package below `test/`, as [[skills/testing/go/cucumber-testing-in-go.skill.md|cucumber-testing-in-go]] asks of a larger suite.
+  - Risk: `gremlins` skips `*_test.go` and mutates every other Go file, so the helpers count as product code — measured on this skill's example with one comparator in `internal/test/testkit/`: 4 of its mutants lived and 4 were not covered, and the score was 81.8% against 100% without them. No scenario can kill such a mutant short of a test written for the test helper, and each change of a helper adds survivors to explain.
+  - Fix: keep `--exclude-files='(^|/)test/.*'` and `--exclude-files='(^|/)testdata/.*'` on the `gremlins` line of `tools/testing/kinds/mutation.sh`; put every helper used only by tests below a `test/` directory.
 - `test-kind-unit` must run `go test` with `CUCUMBER_JSON_DIR=$TEST_KIND_DIR/report/tests/cucumber` (the runner adds its `cucumber:` output per `cucumber-testing-in-go`), then render `$TEST_KIND_DIR/report/tests/livingdoc/` with the base's `tools/livingdoc/`, exactly as `tools/testing/kinds/unit.sh` does.
   - Risk: without it the Go project has no living-doc view, or renders one with a Go-specific tool.
   - Fix: copy `tools/testing/kinds/unit.sh` and `tools/livingdoc/` unchanged.

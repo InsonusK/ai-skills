@@ -20,7 +20,7 @@ fi
 
 GREMLINS_VERSION=v0.6.0
 GREMLINS="$(go env GOPATH)/bin/gremlins"
-COVERPKG=$(go list ./... | grep -Ev '/(gen|tools)(/|$)' | tr '\n' ',' | sed 's/,$//')
+COVERPKG=$(go list ./... | grep -Ev '/(gen|tools|test)(/|$)' | tr '\n' ',' | sed 's/,$//')
 
 [ -x "$GREMLINS" ] || go install "github.com/go-gremlins/gremlins/cmd/gremlins@$GREMLINS_VERSION"
 mkdir -p "$REPORT_DIR/mutation"
@@ -38,6 +38,9 @@ mkdir -p "$REPORT_DIR/mutation"
 # --exclude-files: generated code, the reporting tools, and every dot-directory - gremlins
 # walks the file tree, not the module's packages, so Go files of skills synced into
 # .agents/ or .claude/ would be reported as mutants no test covers.
+# test/ and testdata/ are excluded as well: gremlins skips *_test.go itself and mutates any
+# other Go file, so a helper package shared by the suites (step logging, table comparators)
+# would count in the score as product code - and no scenario exists to kill its mutants.
 # diff.relative makes git name changed files from this directory: gremlins compares them
 # with module-relative paths, so without it --diff matches nothing in a module that sits
 # below the repository root.
@@ -45,7 +48,8 @@ code=0
 GOFLAGS="${GOFLAGS:+$GOFLAGS }-count=1" \
 GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=diff.relative GIT_CONFIG_VALUE_0=true \
 "$GREMLINS" unleash --integration --timeout-coefficient "${MUTATION_TIMEOUT_COEFFICIENT:-10}" --coverpkg="$COVERPKG" \
-  --exclude-files='gen/.*' --exclude-files='tools/.*' --exclude-files='(^|/)\.[^/]+/.*' "${run_args[@]}" \
+  --exclude-files='gen/.*' --exclude-files='tools/.*' --exclude-files='(^|/)\.[^/]+/.*' \
+  --exclude-files='(^|/)test/.*' --exclude-files='(^|/)testdata/.*' "${run_args[@]}" \
   --output "$REPORT_DIR/mutation/gremlins.json" . || code=$?
 go run ./tools/normalize_mutation "$REPORT_DIR/mutation/gremlins.json"
 kind_badge_percent mutation "mutation score" "$(jq '.score' "$RESULT_DIR/mutation-test.json")"
