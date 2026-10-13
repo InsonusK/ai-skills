@@ -10,5 +10,7 @@ if ! command -v aism >/dev/null 2>&1; then
     exit 1
 fi
 
+bash ./check-link-direction.sh
+
 aism --version
 aism sync

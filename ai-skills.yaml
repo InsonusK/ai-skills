@@ -9,6 +9,7 @@ sources:
       - library/common-workflow/bulk-authoring-harness.skill/bulk-authoring-harness.skill.md
       - library/common-workflow/documentation
       - library/design
+      - skills                          # this repository's own skills
       
   - path: https://github.com/InsonusK/ai-skill-graph-draw.git
     type: github
