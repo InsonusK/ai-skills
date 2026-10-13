@@ -2,15 +2,15 @@ sources:
   - path: ./..
     type: local
     subpath:
-      - skills/python
-      - skills/dotnet
-      - skills/devops
-      - skills/common-workflow
-      - skills/angular
-      - skills/go
-      - skills/design
-      - skills/testing
-      - skills/devops
+      - library/python
+      - library/dotnet
+      - library/devops
+      - library/common-workflow
+      - library/angular
+      - library/go
+      - library/design
+      - library/testing
+      - library/devops
 
 target:
   default:

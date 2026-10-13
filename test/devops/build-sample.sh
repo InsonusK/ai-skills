@@ -9,10 +9,10 @@ set -euo pipefail
 root=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
 out=${1:?usage: build-sample.sh OUT-DIR [RELEASE-SKILL]}
 release=${2:-devops-release-tag-only}
-D=$root/skills/devops
+D=$root/library/devops
 
 rm -rf "$out"; mkdir -p "$out"
-cp -R "$root/skills/testing/go/solution-conformance-testing-in-go.skill/examples/." "$out/"
+cp -R "$root/library/testing/go/solution-conformance-testing-in-go.skill/examples/." "$out/"
 rm -rf "$out/tmp"
 
 # devops-project-version + -in-go

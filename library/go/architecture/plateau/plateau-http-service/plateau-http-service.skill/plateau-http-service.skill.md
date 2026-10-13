@@ -1,0 +1,100 @@
+---
+name: plateau-http-service
+description: The base Go web-service plateau — no DB, domain-logic separation, one inbound HTTP API, full conformance-testing gate
+whenToUse: when starting a new Go web-service from scratch with no database and no alternative API yet, or reviewing whether a change follows this family's ports-and-adapters/config/logging/testing conventions
+domain: skill
+type: template
+version: 20261012000000
+tags:
+  - skill/template/plateau
+  - plateau/plateau-http-service
+  - stack/go
+parent_plateaus:
+created_by:
+  - "[[library/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]]"
+  - "[[library/go/architecture/solutions/solution-go-domain-logic.skill/solution-go-domain-logic.skill.md|solution-go-domain-logic]]"
+  - "[[library/go/architecture/solutions/solution-go-http-api.skill/solution-go-http-api.skill.md|solution-go-http-api]]"
+  - "[[library/go/architecture/solutions/solution-go-app-logging.skill/solution-go-app-logging.skill.md|solution-go-app-logging]]"
+  - "[[library/testing/go/solution-conformance-testing-in-go.skill/solution-conformance-testing-in-go.skill.md|solution-conformance-testing-in-go]]"
+standalone: true
+registry:
+  - "[[library/go/architecture/registry/cmd-service-main-go.md|cmd-service-main-go]]"
+  - "[[library/go/architecture/registry/internal-config-config-go.md|internal-config-config-go]]"
+  - "[[library/go/architecture/registry/repo-root.md|repo-root]]"
+---
+
+# Goal
+The foundation every other plateau in this catalog composes from: a Go web-service with no database, a real domain layer, one inbound HTTP API, structured logging, and the full godog/coverage/mutation conformance gate. No `parent_plateaus` — this is where the catalog's lineage starts.
+
+# Core Principles
+- Ports-and-adapters: outbound dependencies (once any exist) are interfaces the domain declares; inbound adapters call the domain service's concrete type directly. At this plateau there are no outbound dependencies at all — `LinkCheckService` is pure computation.
+- `cmd/linkcheck/main.go` is the single composition root; reading it alone tells a reader everything the service does.
+- Every business rule is a Cucumber (godog) scenario, co-located with the package it tests — never a plain `_test.go` masquerading as the spec.
+
+# Capabilities
+- api
+  - `GET /health` (liveness/readiness) and `POST /v1/links/check` (validate + normalize a URL), both thin translations over `LinkCheckService`.
+  - The contract `docs/integration/api/linkcheck/openapi.json` (hand-written, version 1.0.0), embedded in the binary; `GET /openapi.json` and Swagger UI at `GET /swagger/` when `HTTP_API_DOCS_ENABLED=true`, prefix-safe under `HTTP_BASE_PATH`.
+  - One wire form for every plateau built on this one: lowerCamelCase JSON, `google.rpc.Status` error bodies, statuses from the canonical gRPC-to-HTTP table.
+- domain
+  - `LinkCheckService.Check`: parses a URL, accepts only `http`/`https` schemes, lowercases scheme+host, leaves the path unchanged; rejects everything else via `ErrInvalidURL`.
+- testing
+  - `make test-kind-unit`/`test-kind-mutation`/`test-report`/`test-and-report` — godog scenarios in `internal/domain/services/features/check.feature` and `internal/api/http/features/http_api.feature`, `go test -cover`, `gremlins`, and a `$TEST_REPORT_DIR/` report site.
+
+# Usecases
+
+## Check a URL over HTTP
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Client
+    participant srv as Server (http)
+    participant svc as LinkCheckService
+
+    Client->>srv: POST /v1/links/check {"url": "HTTPS://Example.com/Foo"}
+    activate srv
+    srv->>svc: Check(ctx, "HTTPS://Example.com/Foo")
+    activate svc
+    svc-->>srv: Result{Normalized: "https://example.com/Foo"}
+    deactivate svc
+    srv-->>Client: 200 {"url": "...", "normalized": "https://example.com/Foo"}
+    deactivate srv
+```
+
+## Invalid URL
+`Check` returns `ErrInvalidURL` for anything that fails to parse, has no host, or uses a scheme other than `http`/`https`; the HTTP adapter maps it to `INVALID_ARGUMENT` — `400` with a `google.rpc.Status` body, `{"code": 3, "message": "…", "details": []}`. Any other domain error would map to `INTERNAL`, `500`, but none is reachable at this plateau (no outbound dependency can fail yet).
+
+# Structure
+See `structure/`:
+- [[library/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--repo-http-service.skill.md|repo-http-service]]
+- [[library/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--package-domain-services.skill.md|package-domain-services]]
+- [[library/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--package-api-http.skill.md|package-api-http]]
+- [[library/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--file-cmd-service-main.skill.md|file-cmd-service-main]]
+- [[library/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--file-config-config.skill.md|file-config-config]]
+- [[library/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--file-version-version.skill.md|file-version-version]]
+- [[library/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--file-logging-logger.skill.md|file-logging-logger]]
+- [[library/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--file-domain-services-linkcheck.skill.md|file-domain-services-linkcheck]]
+- [[library/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--file-api-http-server.skill.md|file-api-http-server]]
+- [[library/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--file-api-http-docs.skill.md|file-api-http-docs]] (the spec and Swagger UI routes)
+- [[library/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--file-api-http-errors.skill.md|file-api-http-errors]] (the `google.rpc.Status` error body)
+- [[library/go/architecture/plateau/plateau-http-service/structure/plateau-http-service--package-docs-integration-api.skill.md|package-docs-integration-api]] (the service's own contract: the hand-written `openapi.json`, `embed.go`)
+
+# Registry
+Three intersections found at this plateau (all canonical `FMN`, no resolver) — see `registry/`:
+- [[library/go/architecture/registry/cmd-service-main-go.md|cmd-service-main-go]] (N=3, architectural signal noted)
+- [[library/go/architecture/registry/internal-config-config-go.md|internal-config-config-go]] (N=3, architectural signal noted)
+- [[library/go/architecture/registry/repo-root.md|repo-root]] (N=2)
+
+# Ground truth
+`examples/` is a real, runnable Go module (`github.com/example/linkcheck-service`), verified:
+- `go build ./...` and `go vet ./...` — clean.
+- `make test-kind-unit` — 5/5 godog scenarios green (`internal/domain/services/test`), `TestFeatures` the only test function.
+- `make test-kind-mutation` — at this plateau's first build `gremlins` reported 3 killed / 4 survived / 20 not covered, the HTTP adapter having no scenario then; see the 2026-10-12 figures below.
+- `make test-report` — `$TEST_REPORT_DIR/` assembled with `index.html` + three badge files.
+- Runtime smoke test: built binary started, `GET /health` → `200`; `POST /v1/links/check` with a valid/invalid URL → `200`/`400` as designed.
+
+API contract, verified 2026-10-12 after the move onto `api-develop` (issue #206):
+- `make test-and-report` — green: 21 tests, 9 scenarios (5 domain, 4 of the new `http_api.feature` with 12 example rows); mutation 15 killed / 0 lived / 21 not covered (`cmd/` and `internal/config` have no scenario), score 41.7%.
+- The built binary, started with `HTTP_API_DOCS_ENABLED=true HTTP_BASE_PATH=/lc`: `/swagger` → `301` to `/lc/swagger/`; `/swagger/` names `/lc/openapi.json` and its assets under `/lc/swagger/`; a Swagger UI asset → `200`; `/openapi.json` carries the prefix; with no variable set both routes → `404` (the last by the feature).
+
+To run it yourself: `cd examples && go mod tidy && make build && make test-kind-unit && make run`.

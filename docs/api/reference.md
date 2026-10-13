@@ -129,8 +129,8 @@ sources:
     type: github
     tree: master
     subpath:
-      - skills/common-workflow/work-in-git-tree.skill.md
-      - skills/common-workflow/mermaid-diagram.skill.md
+      - library/common-workflow/work-in-git-tree.skill.md
+      - library/common-workflow/mermaid-diagram.skill.md
 
 settings:
   target:
