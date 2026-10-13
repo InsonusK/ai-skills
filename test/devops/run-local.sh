@@ -29,6 +29,6 @@ done
 for channel in check snapshot release; do
   echo; echo "== release action, channel $channel"
   GITHUB_OUTPUT=$(mktemp) GITHUB_REPOSITORY=Org/Sample INPUT_CHANNEL=$channel INPUT_VERSION=$(make -s version) INPUT_TIMESTAMP=20261010120000 \
-    bash -c 'node "$0/skills/devops/agent/run-action-step.mjs" .github/actions/release/action.yml names | bash -e && cat "$GITHUB_OUTPUT"' "$ROOT"
+    bash -c 'node "$0/library/devops/agent/run-action-step.mjs" .github/actions/release/action.yml names | bash -e && cat "$GITHUB_OUTPUT"' "$ROOT"
 done
 echo; echo "run-local: every make call of the workflows passed"

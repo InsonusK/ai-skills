@@ -6,7 +6,7 @@ on:
       - master
       - develop
     paths:
-      - 'skills/**'
+      - 'library/**'
       - 'test/**'
       - '.github/workflows/skills-sync-validation.yml'
 

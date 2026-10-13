@@ -18,4 +18,4 @@ venv/
 # Ignore diagram-renderer cache directory.
 .cache/
 tmp/
-/skills/**/*.rdb
+/library/**/*.rdb

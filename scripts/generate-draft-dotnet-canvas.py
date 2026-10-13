@@ -17,10 +17,10 @@ import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
-SOLUTION_GLOB = "skills/dotnet/architecture/draft/solutions/**/*.skill.md"
-PLATEAU_GLOB = "skills/dotnet/architecture/draft/plateau/*/plateau-*.skill/plateau-*.skill.md"
+SOLUTION_GLOB = "library/dotnet/architecture/draft/solutions/**/*.skill.md"
+PLATEAU_GLOB = "library/dotnet/architecture/draft/plateau/*/plateau-*.skill/plateau-*.skill.md"
 
-CANVAS_REL_PATH = "skills/dotnet/architecture/draft/dotnet-architecture-overview.canvas"
+CANVAS_REL_PATH = "library/dotnet/architecture/draft/dotnet-architecture-overview.canvas"
 
 # Layout constants
 PLATEAU_GROUP_WIDTH = 2600

@@ -1,0 +1,57 @@
+---
+name: registry-cmd-service-main-go
+description: Conflict Detection result for the `cmd-service-main-go` element
+tags:
+  - concern/architecture
+  - stack/go
+  - element/cmd-service-main-go
+---
+
+# Element
+`cmd-service-main-go`
+
+# Involved solutions
+- [[library/go/architecture/solutions/solution-go-repository-structure.skill/solution-go-repository-structure.skill.md|solution-go-repository-structure]] (`.create`)
+- [[library/go/architecture/solutions/solution-go-app-logging.skill/solution-go-app-logging.skill.md|solution-go-app-logging]] (`.extend`)
+- [[library/go/architecture/solutions/solution-go-http-api.skill/solution-go-http-api.skill.md|solution-go-http-api]] (`.extend`)
+- [[library/go/architecture/solutions/solution-grpc-api.skill/solution-grpc-api.skill.md|solution-grpc-api]] (`.extend`)
+- [[library/go/architecture/solutions/solution-external-integration.skill/solution-external-integration.skill.md|solution-external-integration]] (`.extend`)
+- [[library/go/architecture/solutions/solution-cached-db.skill/solution-cached-db.skill.md|solution-cached-db]] (`.extend`)
+- [[library/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]] (`.extend`)
+- [[library/go/architecture/solutions/solution-go-db-migrations.skill/solution-go-db-migrations.skill.md|solution-go-db-migrations]] (`.extend`)
+- [[library/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]] (`.extend`)
+
+# Classification
+Five pairings inside this one group, read from the actual `.extend.md` files side by side rather than assumed uniform:
+- `{repository-structure, app-logging, http-api}` — `FMN`. **F**: no Constraint between these three (all common-baseline). **M**: each changes `run()`'s body. **N**: independent — `app-logging` only inserts one call at a stated position; `http-api` only adds the single-server construct/serve/shutdown block after it.
+- `{http-api, grpc-api}` — `TMN`. **T**: a real constraint — `solution-grpc-api`'s frontmatter `depends_on: solution-go-http-api`, because `grpc-api`'s delta does not just append: it **restructures** `http-api`'s single-server block into one `g.Go` closure inside a new `errgroup.Group`. **M**: code change. **N**: independent in the sense the classifier means — the resulting `run()` is fully specified by `grpc-api`'s own Implementation file, so applying it is deterministic, not an ambiguous merge.
+- `{*, external-integration}` — `FMN`. **F**: no Constraint — `solution-external-integration`'s `depends_on` is only `solution-go-domain-ports`. **M**: inserts a `Dial`+`defer Close`+constructor-argument block. **N**: independent — inserts before `domainService := services.NewLinkCheckService(...)`, only changes what argument that one constructor call receives.
+- `{*, cached-db}` — `FMN`. **F**: no Constraint — `solution-cached-db`'s `depends_on` is only `solution-go-domain-ports`. **M**: inserts a `New`+`defer Close`+constructor-argument block, the same shape as `external-integration`'s. **N**: independent — also inserts before `domainService := services.NewLinkCheckService(...)`, only appends its own argument, no restructuring.
+- `{*, persistent-db}` — `FMN`. **F**: no Constraint — `solution-persistent-db`'s `depends_on` is only `solution-go-domain-ports`. **M**: inserts a `linkstore.New`+`defer store.Close()`+constructor-argument block, the exact same shape as `external-integration`'s and `cached-db`'s. **N**: independent — also inserts before construction, no restructuring of the two already-applied inserts.
+
+**GW009.001:** [[library/go/architecture/solutions/solution-go-db-migrations.skill/solution-go-db-migrations.skill.md|solution-go-db-migrations]] inserts the `MigrateOnStart`-guarded `Migrate` call before the store is built — `FMN` with every other delta. [[library/go/architecture/solutions/solution-taskbox-in-go.skill/solution-taskbox-in-go.skill.md|solution-taskbox-in-go]] replaces the store construction `[[library/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]]` and `solution-go-db-migrations` left (one `pgxpool.Pool` shared by the store and `pgstore`) and adds the worker to the errgroup — `TMN`: VP-C003 requires a store, `solution-taskbox-in-go` declares `depends_on` both, and its `main.go.extend.md` is written against their combined TO BE as its AS IS, so no other order exists and no resolver is needed.
+
+# Ordering
+- `{repository-structure, app-logging, http-api}`: `source: ordering-only` — `logging.Init` must precede anything that logs; stated in `app-logging`'s own Rule, not backed by a `depends_on` edge.
+- `{http-api, grpc-api}`: `source: constraint` — `solution-grpc-api`'s own `depends_on: solution-go-http-api` frontmatter edge is the ordering's source.
+- `{*, external-integration}`: `source: ordering-only` — `reputationclient.Dial` must run before `services.NewLinkCheckService` is called, a positional requirement stated in `external-integration`'s own Rule.
+- `{*, cached-db}`: `source: ordering-only` — `reputationcache.New` (and `reputationclient.Dial`) must both run before `services.NewLinkCheckService`; no `depends_on` edge exists between `cached-db` and `external-integration` (VP-C002/VP-C005 are independent).
+- `{*, persistent-db}`: `source: ordering-only` — `linkstore.New` must run before `services.NewLinkCheckService`; no `depends_on` edge exists between `persistent-db` and either `external-integration` or `cached-db` (VP-C001 is independent of VP-C005 and VP-C002 per the Variability Map).
+
+# Resolution
+Canonical — no resolver needed, for all five pairings. Verified at every plateau by actually building and running that plateau's own `examples/cmd/linkcheck/main.go` (`go build`/`go vet`, real HTTP+gRPC smoke tests) — see Growth history below for what each plateau specifically verified.
+
+# Architectural signal
+N=7 at the deepest plateau — every VP-realizing solution this catalog fully authored now extends this element (`solution-go-kafka-consumer` remains the one aspirational, skeleton-only contributor not yet composed here). The pattern has held for three VP-realizing solutions in a row (`external-integration`, `cached-db`, `persistent-db`): insert-before-construction, append-constructor-argument, no restructuring beyond `grpc-api`'s original `errgroup` conversion. This is strong, repeated evidence that `cmd-service-main-go`'s composition-root shape is stable under this catalog's whole VP set — any future VP realized the same way (a new outbound port, dialed once and passed into `NewLinkCheckService`) should compose identically; a future VP that does NOT fit this shape (e.g. one needing a second concurrent server, the way `grpc-api` did) is the one worth watching for.
+
+At GW009.001 (N=9) the shape the paragraph above said to watch for arrived: `solution-taskbox-in-go` adds a second long-running component (the TaskBox worker) to the errgroup and replaces the store construction with one shared pool — ordered by `depends_on`, so still canonical, but the first VP since `grpc-api` that restructures rather than inserts.
+
+# Growth history
+| Plateau | N | What changed | Verified |
+| --- | --- | --- | --- |
+| `plateau-http-service` | 3 | First real: `solution-go-repository-structure` (create) + `solution-go-app-logging` + `solution-go-http-api` | `go build`/`go vet` clean; base HTTP server smoke-tested |
+| `plateau-dual-api-service` | 4 | `solution-grpc-api` joins — first restructuring: single-server `run()` converted to an `errgroup.Group` | `go build`/`go vet` clean; HTTP+gRPC both smoke-tested |
+| `plateau-integrated-service` | 5 | `solution-external-integration` joins — plain insertion before construction, no second restructuring, confirming the prediction from `plateau-dual-api-service` | HTTP+gRPC smoke-tested against a real (throwaway) reputation server, including the reputation-service-unavailable path |
+| `plateau-cached-service` | 6 | `solution-cached-db` joins — same insert-before-construction shape | Smoke-tested against a real Redis instance and a throwaway fake reputation server |
+| `plateau-persistent-service` | 7 | `solution-persistent-db` joins — same shape a third time, catalog-wide N=7 prediction confirmed exactly | Smoke-tested against a real PostgreSQL instance, a real Redis instance, and a throwaway fake reputation server, including a full process kill-and-restart confirming the PostgreSQL-backed data survives independently of the process |
+| `gw009-001` (GW009.001) | 9 | `solution-go-db-migrations` (guarded `Migrate`) and `solution-taskbox-in-go` (shared pool, `pgstore`, task handlers, worker in the errgroup) join — the second restructuring of the store construction, ordered by `depends_on` | Smoke-tested: `cmd/migrate`, then the service with a real PostgreSQL, Redis, and a throwaway reputation server; a flagged check's re-check task ran, retried a `503`, and survived a restart |

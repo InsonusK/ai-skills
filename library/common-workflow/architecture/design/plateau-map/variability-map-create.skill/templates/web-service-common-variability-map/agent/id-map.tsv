@@ -1,0 +1,13 @@
+# stack-root<TAB>old-ID<TAB>new-ID — one line per stack VP re-IDed to a common VP
+library/go/architecture	VP7	VP-C001
+library/go/architecture	VP6	VP-C002
+library/dotnet/architecture	VP2	VP-C001
+library/go/architecture	VP2	VP-C005
+library/dotnet/architecture	VP10	VP-C004
+library/dotnet/architecture	VP11	VP-C005
+library/go/architecture	VP3	VP-C006
+library/go/architecture	VP5	VP-C007
+library/dotnet/architecture	VP13	VP-C006
+library/dotnet/architecture	VP12	VP-C007
+library/go/architecture	VP4	VP-C010
+library/dotnet/architecture	VP14	VP-C010
