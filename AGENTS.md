@@ -11,6 +11,7 @@ The following skills MUST be applied to all work in this project:
 ## General rules
 
 - `library/` is the source of truth for every skill in this repository. Always edit a skill under `library/` (e.g. `library/design/skill-design.skill/skill-design.skill.md`). Never hand-edit a skill under `.claude/skills/` or `.agents/skill/` — those are local, generated copies that `ai-skill-manager sync` regenerates from `library/`; an edit made there is silently overwritten (or drifts unnoticed) on the next sync.
+- `skills/` holds this repository's own skills — rules that are true only here, written as extensions of `library/` skills. A file under `library/` never links a file under `skills/`; other repositories sync `library/` and never receive `skills/`. When you create, move, or link a skill, apply [library-layout](skills/design/library-layout.skill/library-layout.skill.md) together with `skill-design`.
 - Apply all mandatory skills before starting any task.
 - Prefer referencing skills over duplicating their content.
 - When a task will produce or migrate more interdependent artifacts than the user can review file-by-file (a skill/solution catalog, a plateau tree, a large doc set, a wide code migration), apply [bulk-authoring-harness](.agents/skills/bulk-authoring-harness/SKILL.md) — an anchor document, a mechanical check script, per-wave fresh-eyes audits and commits, and a decisions log that gates only real forks — instead of handing the whole batch to the user for review.
