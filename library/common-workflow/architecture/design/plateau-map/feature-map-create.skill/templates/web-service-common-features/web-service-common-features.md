@@ -1,0 +1,27 @@
+# Web-service common features (stack-agnostic reference)
+
+This is a candidate menu, not a ready-made Feature Model. It lists the questions that recur across essentially every backend web-service Program Family (regardless of stack — dotnet, go, python, ...), typed the same way [[library/common-workflow/architecture/design/plateau-map/feature-map-create.skill/feature-map-create.skill.md|feature-map-create]] types a real one, so a new stack catalog does not have to rediscover them from scratch and does not silently miss one (the go catalog's outbox durability question is a real case this would have caught). It carries no `Realized by`, no solutions, no `IsCommon` verdicts — those are per-stack and per-catalog by construction (see [[library/common-workflow/architecture/design/plateau-map/feature-map-create.skill/glossary/program-families|program-families]]). When building a real catalog's own `{catalog}/feature/feature-model.md`, copy the nodes that apply, rename the root to the real product, and re-run every `IsCommon` verdict against that catalog's own concrete baseline per `feature-map-create`'s Core Principle — nothing here is common or variable until that check has run for the specific family being built.
+
+## Feature diagram
+
+@import "./diagrams/feature-diagram.mmd" {as="mermaid"}
+
+## What each part means
+
+- **Common** — `{Service}` (rename to the real product), `DomainLogic`, `AppLogging`, and the bundled `TestConformance` group (Cucumber/coverage/mutation/reports) are the baseline every family member has. Confirm this with the family's owner before assuming it — in the dotnet catalog, `AppLogging` and `TestConformance` were both nearly excluded as "just infrastructure" before being tracked explicitly (see [[library/common-workflow/architecture/design/plateau-map/feature-map-create.skill/examples/example-dotnet-feature-model|example-dotnet-feature-model]]).
+- **Storage** — `Persistent` (`PostgreSQL`/`SQLite` as `Alternative (realization)`) and `Cache` (`Redis`/`InMemory`) are independent `At least one (kind)` choices: a service can have neither, one, or both.
+- **Inbound** — `InboundSync` (HTTP/gRPC, `At least one (protocol)`) and `InboundAsync` (a message consumer).
+- **`TaskBox`** — deferred execution: a task stored now and run later by a background worker, in a store the service has (`Requires` `Storage`). Not an inbound surface — it is the service's own work queue.
+- **Outbound** — `OutboundSync` (HTTP/gRPC/Kafka/RabbitMQ clients, `At least one (protocol)`) and `Outbox` (outbound calls enqueued as TaskBox tasks instead of made directly, so `Outbox` `Requires` `TaskBox`). Note what `OutboundSync`'s protocol list actually means here: making a Kafka/RabbitMQ call is itself always a synchronous API call — what makes a publish *asynchronous* is buffering it in a store first (`Outbox`), not the wire protocol. `Outbox` therefore `Requires` `OutboundSync` (it needs a protocol to eventually dispatch through) rather than owning a second, duplicate protocol list.
+- **Task criticality** — a per-task-type property, not one property of the service: `NonCritical` and `Critical` are combinable (`At least one (criticality)`), because one service routinely has both. `Critical` `Requires` `Persistent` — a critical task lives only in the persistent store; `NonCritical` may live in either store (`Requires (any of storage)`).
+- **`Metric`** — a stub leaf today; expand it once a real catalog needs to track observability variability explicitly rather than assuming it away.
+
+## Two things this baseline exists to prevent
+
+1. **Silently conflating two different `Outbox` guarantees.** A cache-backed and a persistence-backed "outbox" are not two realizations of one VP — they are different mechanisms with different guarantees, and the guarantee only exists when the outbox lives in the *same* store as the guarded write. Encode this as a `Realization depends on` relation in the catalog's own `variability-map.md` once this reaches that stage (see [[library/common-workflow/architecture/design/plateau-map/variability-map-create.skill/variability-map-create.skill|variability-map-create]]'s Orthogonal Variability Model), not as a free combination.
+2. **Forking a plateau per dispatch target.** Kafka vs. RabbitMQ vs. a webhook (an `HttpClient` call) are interchangeable protocol adapters behind one port — classified `FDN` once a real catalog reaches [[library/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md|delta-conflict-detection]]'s classifier. See that skill's [FDN never forks the plateau tree](../../delta-conflict-detection.skill/delta-conflict-detection.skill.md#fdn-never-forks-the-plateau-tree) — none of these protocol choices ever earns its own plateau.
+
+## Out of scope
+- No `Realized by`, no solutions, no ADRs — this file stops at the Feature Model layer; `variability-map-create` and `delta-conflict-detection` still run per catalog, per stack.
+- No `IsCommon` verdict is final here — every one must be re-checked against the real catalog's own baseline structure before being copied into `{catalog}/feature/feature-model.md`.
+- Does not cover a CLI/batch/worker-only Program Family — this baseline assumes at least the *option* of an inbound transport; a family with no inbound surface at all (pure CLI) needs its own baseline, not this one reused with `Inbound` forced to `false`.

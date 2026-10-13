@@ -3,12 +3,12 @@ sources:
     type: github
     tree: master
     subpath:
-      - skills/common-workflow/work-in-git-tree.skill.md
-      - skills/common-workflow/mermaid-diagram.skill.md
-      - skills/common-workflow/architecture/design
-      - skills/common-workflow/bulk-authoring-harness.skill/bulk-authoring-harness.skill.md
-      - skills/common-workflow/documentation
-      - skills/design
+      - library/common-workflow/work-in-git-tree.skill.md
+      - library/common-workflow/mermaid-diagram.skill.md
+      - library/common-workflow/architecture/design
+      - library/common-workflow/bulk-authoring-harness.skill/bulk-authoring-harness.skill.md
+      - library/common-workflow/documentation
+      - library/design
       
   - path: https://github.com/InsonusK/ai-skill-graph-draw.git
     type: github

@@ -58,14 +58,14 @@ After the sync finishes, the configured skills appear under `.agents/skills/` an
 ```
 .
 ├── ai-skills.yaml          # Sync configuration for ai-skills-manager
-├── skills/                 # Source skill files organized by stack/domain
+├── library/                # Source skill files organized by stack/domain
 ├── scripts/ai-skills/        # Helper scripts for local setup and sync
 ├── templates/                # Skill templates
 ├── test/                     # Validation scripts for the sync pipeline
 └── docs/                     # Human-readable documentation
 ```
 
-- `skills/` — the actual skill library. Each skill is a markdown file with frontmatter describing when and how an agent should use it.
+- `library/` — the actual skill library. Each skill is a markdown file with frontmatter describing when and how an agent should use it.
 - `scripts/ai-skills/` — convenience wrappers for `ai-skills-manager`.
 - `ai-skills.yaml` — declares where skills come from, where they should be copied, and how conflicts are handled.
 - `test/` — PowerShell and Bash scripts that run the sync in a clean environment to verify the configuration.
