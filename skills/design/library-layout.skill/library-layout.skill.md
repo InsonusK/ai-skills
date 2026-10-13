@@ -1,6 +1,6 @@
 ---
 name: library-layout
-description: Where a skill lives in the ai-skills repository — the published catalog in library/ versus this repository's own skills in skills/, testing and DevOps skills each in one directory, and links running only from skills/ into library/
+description: Where a skill lives in the ai-skills repository — the published catalog in library/ versus this repository's own skills in skills/, testing and DevOps skills each in one directory, and no link between the two folders
 whenToUse: when you create, move, rename, or link a skill in the ai-skills repository — under library/ or under skills/
 updated: 20261013
 tags:
@@ -18,7 +18,7 @@ adr:
 - Every testing skill under `library/testing/` and every DevOps skill under `library/devops/`, each linking outside its directory only where its rule allows.
 
 # Core Principle
-- **Local skills extend the library** - A skill under `skills/` adds this repository's rules on top of [[library/design/skill-design.skill/skill-design.skill.md|skill-design]]; it replaces none of them, and the library does not know it exists.
+- **Local skills extend the library** - A skill under `skills/` adds this repository's rules on top of `skill-design`; it replaces none of them, and the library does not know it exists.
 - **The library ships, skills/ stays** - Other repositories sync `library/` through `ai-skill-manager`, which also installs every skill a selected skill links; `skills/` is synced only here.
 
 # Rule
@@ -26,10 +26,16 @@ adr:
 ## MUST
 
 ### Library never links skills/
-Never link from a file under `library/` to a file under `skills/`; a skill under `skills/` links into `library/` freely. Decision recorded in [[./adr/local-rules-outside-library.md|local-rules-outside-library]].
+Never link from a file under `library/` to a file under `skills/`. Decision recorded in [[./adr/local-rules-outside-library.md|local-rules-outside-library]].
 - Violation: `skill-design` linking `library-layout` "for where the skill goes in this repository".
 - Risk: a repository that syncs `library/` gets a link whose target it does not have, and `ai-skill-manager` fails its sync on the missing target.
 - Fix: state the repository-specific rule in the local skill and trigger it by `whenToUse`; name a local skill in `library/` only as plain backticked text, never as a link.
+
+### Name library skills, never link them
+Refer from a file under `skills/` to a library skill by its name in backticks, never by a link to its file under `library/`.
+- Violation: a wikilink or markdown link whose target starts with `library/` inside a skill under `skills/`.
+- Risk: `ai-skills.yaml` reads `skills/` as its own source rooted at that folder, so the link leaves the source root and `aism sync` fails; reading both folders as one source instead makes the linked library skills collide with the copies synced from `master`.
+- Fix: write `skill-design`; the library skill reaches the agent through the library source, not through a relation of the local skill.
 
 ### Repository-only rules go to skills/
 Put a rule into a skill under `skills/` when it names this repository's directories, its catalogs, or its tooling setup; keep under `library/` only what another repository can apply unchanged.
@@ -56,7 +62,8 @@ Place a local skill under `skills/{topic}/` using the topic folder name its base
 
 # Check list
 - [ ] The skill is under `library/` only if another repository can apply it unchanged; otherwise it is under `skills/`.
+- [ ] No file under `skills/` links a file under `library/`; library skills are named in backticks.
 - [ ] `bash test/check-link-direction.sh` exits 0 — no file under `library/` links a file under `skills/`.
 - [ ] A testing skill lives in `library/testing/core/` (stack-agnostic) or `library/testing/{stack}/` (named `{skill-name}-in-{stack}`), and links only inside `library/testing/`.
 - [ ] A DevOps skill lives in `library/devops/core/` (stack-agnostic) or `library/devops/{stack}/` (named `{skill-name}-in-{stack}`), and links outside `library/devops/` only to `library/testing/` and `library/design/`.
-- [ ] [[library/design/skill-design.skill/skill-design.skill.md|skill-design]]'s `# Check list` passes for the skill.
+- [ ] `skill-design`'s `# Check list` passes for the skill.

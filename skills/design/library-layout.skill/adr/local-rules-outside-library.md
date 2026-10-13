@@ -1,8 +1,8 @@
 ---
 name: local-rules-outside-library
-description: Rules that hold only in the ai-skills repository live in local skills under skills/, apart from the published catalog under library/, and links run only from skills/ into library/
+description: Rules that hold only in the ai-skills repository live in local skills under skills/, apart from the published catalog under library/, with no link between the two folders
 problem: The portable skill-writing standards under the published catalog carried rules about this repository's own directories, so every repository that synced the standards loaded rules about directories it does not have
-decision: The published catalog is library/; this repository's own rules are local skills under skills/ that extend library skills; no file under library/ links a file under skills/, checked by test/check-link-direction.sh
+decision: The published catalog is library/; this repository's own rules are local skills under skills/ that extend library skills; no file under library/ links a file under skills/ (checked by test/check-link-direction.sh), and a local skill names a library skill in plain text because skills/ is synced as its own source root
 tags:
   - stack
   - concern/documentation
@@ -23,7 +23,7 @@ tags:
 **Selected.**
 
 ### Description
-The published catalog moves to `library/`. Rules true only of this repository are written as skills under `skills/` that extend a library skill. A file under `library/` never links a file under `skills/`; `test/check-link-direction.sh` fails on such a link.
+The published catalog moves to `library/`. Rules true only of this repository are written as skills under `skills/` that extend a library skill. A file under `library/` never links a file under `skills/`; `test/check-link-direction.sh` fails on such a link. A local skill names a library skill in backticks instead of linking it: `ai-skills.yaml` reads `skills/` as a local source rooted at that folder while the library comes from `master`, so a link into `library/` leaves the source root.
 
 ### Benefits
 - `skills/` means "this project's own skills" in every repository, this one included.
@@ -33,6 +33,7 @@ The published catalog moves to `library/`. Rules true only of this repository ar
 ### Costs
 - Every repository-root link and every consumer's `ai-skills.yaml` changed from `skills/...` to `library/...`.
 - An agent writing a skill here must load the local skill in addition to `skill-design`; nothing in `skill-design` points to it.
+- A library skill named in a local skill is not a checked link: renaming the library skill leaves the name stale until someone notices.
 
 ## Local skills in a new folder beside skills/
 

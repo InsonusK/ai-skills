@@ -10,7 +10,8 @@ sources:
       - library/go
       - library/design
       - library/testing
-      - skills
+  - path: ./../skills
+    type: local
 
 target:
   default:
