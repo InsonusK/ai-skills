@@ -10,6 +10,8 @@ sources:
       - library/go
       - library/design
       - library/testing
+      - library/architecture
+      - library/develop
   - path: ./../skills
     type: local
 
