@@ -29,7 +29,7 @@ So the conversion `HandlerFunc[string, string](myFunc)` produces a value that ha
 
 ```mermaid
 flowchart LR
-    F["func(ctx, cmd) (res, err)<br/>an anonymous function"] -->|"convert:<br/>HandlerFunc[TCommand, TResult](f)"| HF["HandlerFunc value"]
+    F["func(ctx, cmd) (res, err)<br/>an anonymous function"] -->|"convert f to<br/>HandlerFunc[TCommand, TResult]"| HF["HandlerFunc value"]
     HF -->|"has method Handle,<br/>which calls f"| H{{"Handler[TCommand, TResult]"}}
 ```
 
