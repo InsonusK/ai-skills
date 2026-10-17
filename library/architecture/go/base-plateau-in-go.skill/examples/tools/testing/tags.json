@@ -1,0 +1,27 @@
+{
+  "type": [
+    { "tag": "domain", "meaning": "a business rule of an entity, a value object, a validator or a pure function - no I/O" },
+    { "tag": "service", "meaning": "a use case: one operation end to end, its collaborators replaced at their ports" },
+    { "tag": "api", "detail": "transport", "values": ["http", "grpc", "cli", "message", "schedule"],
+      "meaning": "an inbound adapter: how what arrives over that transport becomes a call" },
+    { "tag": "infrastructure/db", "detail": "engine", "values": ["postgresql", "redis", "sqlite"],
+      "meaning": "an outbound adapter to a store or a cache, against the real engine or its emulator" },
+    { "tag": "infrastructure/queue", "detail": "broker", "values": ["kafka", "rabbitmq"],
+      "meaning": "an outbound adapter that publishes to a broker, real or emulated" },
+    { "tag": "infrastructure/client", "detail": "protocol", "values": ["http", "grpc"],
+      "meaning": "a client of another service, against that service or its emulator" },
+    { "tag": "infrastructure/file", "meaning": "an outbound adapter that reads and writes files" },
+    { "tag": "mapping", "meaning": "the translation between two representations of the same data, no I/O" },
+    { "tag": "contract", "meaning": "the shape other code depends on: commands, events, a published schema" },
+    { "tag": "tech-check", "meaning": "a technical check of the plumbing, not of a business capability: logging, configuration, packaging" }
+  ],
+  "category": [
+    { "tag": "happy", "meaning": "valid input, the expected result" },
+    { "tag": "boundary", "meaning": "an edge of what is allowed: empty, zero, the largest, the first, the last" },
+    { "tag": "negative", "meaning": "invalid input is rejected with its error" },
+    { "tag": "error", "meaning": "a dependency or the environment fails, and the program says so" },
+    { "tag": "concurrency", "meaning": "several actors at the same time" },
+    { "tag": "security", "meaning": "access, secrets, hostile input" },
+    { "tag": "regression", "meaning": "a defect found once, kept fixed" }
+  ]
+}

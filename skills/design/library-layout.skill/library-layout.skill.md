@@ -2,7 +2,7 @@
 name: library-layout
 description: Where a skill lives in the ai-skills repository — the published catalog in library/ versus this repository's own skills in skills/, testing and DevOps skills each in one directory, and no link between the two folders
 whenToUse: when you create, move, rename, or link a skill in the ai-skills repository — under library/ or under skills/
-updated: 20261013
+updated: 20261017
 tags:
   - stack
   - concern/documentation
@@ -10,6 +10,7 @@ adr:
   - adr/local-rules-outside-library.md
   - adr/testing-skills-in-one-directory.md
   - adr/devops-skills-in-one-directory.md
+  - adr/architecture-catalog-in-one-directory.md
 ---
 
 # Goal
@@ -55,6 +56,12 @@ Place every DevOps skill under `library/devops/` — a stack-agnostic `{skill-na
 - Risk: one CI process is read across stack directories again, and a link into a catalog makes `ai-skill-manager` load it with every DevOps skill.
 - Fix: move the skill into `library/devops/core/` or `library/devops/{stack}/`; name an outside skill as plain backticked text.
 
+### Keep the architecture catalog together
+Place every skill of the new architecture catalog under `library/architecture/` — a stack-agnostic `{skill-name}` in `spec/`, its `{skill-name}-in-{stack}` in `{stack}/` — and never add one to the old catalogs in `library/{stack}/architecture/` or `library/common-workflow/architecture/design/`. Decision recorded in [[./adr/architecture-catalog-in-one-directory.md|architecture-catalog-in-one-directory]].
+- Violation: `base-plateau-in-go` under `library/go/architecture/`, or a new variation point added to an old plateau catalog.
+- Risk: the rework mixes into the catalogs projects still use, and a half-built approach breaks them before it can replace them.
+- Fix: move the skill to `library/architecture/spec/` or `library/architecture/{stack}/`; the old catalogs change only when the new one replaces them.
+
 ## SHOULD
 
 ### Mirror the library's topic folders
@@ -66,4 +73,5 @@ Place a local skill under `skills/{topic}/` using the topic folder name its base
 - [ ] `bash test/check-link-direction.sh` exits 0 — no file under `library/` links a file under `skills/`.
 - [ ] A testing skill lives in `library/testing/core/` (stack-agnostic) or `library/testing/{stack}/` (named `{skill-name}-in-{stack}`), and links only inside `library/testing/`.
 - [ ] A DevOps skill lives in `library/devops/core/` (stack-agnostic) or `library/devops/{stack}/` (named `{skill-name}-in-{stack}`), and links outside `library/devops/` only to `library/testing/` and `library/design/`.
+- [ ] A skill of the new architecture catalog lives in `library/architecture/spec/` (stack-agnostic) or `library/architecture/{stack}/` (named `{skill-name}-in-{stack}`); none was added to the old catalogs.
 - [ ] `skill-design`'s `# Check list` passes for the skill.
