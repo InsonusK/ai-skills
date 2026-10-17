@@ -3,6 +3,13 @@
 // Package startup is the base plateau's only entry point: the process runs one
 // command when it starts. Like every entry point, it knows the command
 // package (commands and the Handler contract) and nothing below it.
+//
+// It exists only in the base plateau. When an API variation point is attached
+// (HTTP, gRPC, CLI, a listener), its entry replaces the startup lines in the
+// "// [entries]" section of cmd/{app}/main.go and this package is deleted.
+// It stays only in an application whose whole job is one command per run
+// (a job started by a scheduler), or, rarely, beside a server that must run
+// one command once at start.
 package startup
 
 import (

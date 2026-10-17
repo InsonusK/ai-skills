@@ -8,6 +8,17 @@ A base plateau with no entry at all could not be run or tested end to end. One c
 
 It is a package rather than lines in `main.go` because it has behaviour worth testing — the output format and the exit codes — and because every entry point lives in `internal/api/`, where it obeys the same rule: it imports only `internal/command`.
 
+## What happens to it later
+
+It exists only in the base plateau. When an API variation point is attached, its entry replaces the startup lines in `// [entries]` of `main.go`, and the `startup` package is deleted.
+
+| Application | Startup entry |
+|---|---|
+| Only the base (a job run by a scheduler) | stays — it is the only way in |
+| + HTTP or gRPC (a service) | replaced by starting the server; package deleted |
+| + CLI | replaced by the CLI entry, which chooses among many commands by its arguments |
+| A service that must run one command once at start | stays beside the server — rare |
+
 ## How it works
 
 ```mermaid
