@@ -111,12 +111,13 @@ Test each layer with the layer directly below it replaced by a fake, and test in
 - Risk: a test that fakes a layer further down breaks every time that layer's contract changes, though the behaviour under test did not.
 - Fix: fake only the interface directly below; build domain services for a command's test with their own services faked.
 
-## SHOULD
+### Surface every possible inconsistency
+Whenever a command — new or changed — writes to more than one place, or creates or changes data in another system, design it per [workflow-consistency-design](library/common-workflow/architecture/core/workflow-consistency-design.skill/workflow-consistency-design.skill.md) and show the user, before writing the code, at which points a failure leaves which inconsistency and how each is closed.
+- Violation: a command that saves locally and then calls another service, with the partial-failure case neither handled nor mentioned to the user.
+- Risk: a rollback of this application's data does not undo a change already made in another system, and the user learns of the gap from an incident.
+- Fix: present the consistency table; close each gap (outbox, idempotency, compensation) or record the user's explicit acceptance.
 
-### Irreversible external changes go through a workflow
-Never change another system irreversibly from inside a command; send the change through an outbox task, or design the workflow so the change can be compensated.
-- Risk: a rollback of this application's own data does not undo a change already made in another system, so a failure after the external call leaves the systems inconsistent.
-- Fix: send the external change as an outbox task saved together with the command's data, or pair it with a compensating step.
+## SHOULD
 
 ### Identity resolved in the command layer
 Let api authenticate the transport and pass the caller's identity as plain values; resolve it into the application's user and check access in the command factory or the command.
@@ -138,4 +139,4 @@ Use a package with no I/O and no business rule — formatting, layout, conversio
 - [ ] Each business rule touched by the change lives in one entity or domain-service method.
 - [ ] Callers of services and services calling infrastructure depend on interfaces; entities and domain services are called directly.
 - [ ] Each layer's tests fake only the layer directly below it.
-- [ ] No command changes another system irreversibly; such a change goes through an outbox task or has a compensating step.
+- [ ] Every command writing to more than one place, or to another system, has its consistency table shown to the user, each gap closed or accepted.
