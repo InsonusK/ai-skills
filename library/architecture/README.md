@@ -37,6 +37,8 @@ variation points add entries above and services below.
 | `spec/` | what a plateau or variation point is and what it guarantees — stack-agnostic; names its stack skills in plain text |
 | `{stack}/` | how it is built in that stack, with a runnable example and tests; links its `spec/` skill |
 
+Every `{stack}/vp-*` skill holds `attach.allow`: the base example it attaches to and the base files it may change or delete. `test/check-vp-attach.sh` (run by `test/test.sh`) compares the examples and fails on any other edit.
+
 A project takes one stack with a single `subpath` in `ai-skills.yaml` (`library/architecture/go`);
 the `spec/` skills come along because every stack skill links its spec.
 
@@ -67,7 +69,8 @@ the `spec/` skills come along because every stack skill links its spec.
 | Step | Content | Go | dotnet | Python |
 |---|---|:-:|:-:|:-:|
 | 1a | base plateau (on `app-layers`) | ✅ | | |
-| 1b–d | API: HTTP, gRPC, CLI | | | |
+| 1b | API: HTTP (`vp-http-api`) | ✅ | | |
+| 1c–d | API: gRPC, CLI | | | |
 | 2 | clients: HTTP, gRPC | | | |
 | 3 | DB | | | |
 | 4 | TaskBox, Inbox, Outbox | | | |
@@ -80,6 +83,7 @@ To be reviewed with the owner before any is created.
 | Candidate | Where it lives now | Why a library |
 |---|---|---|
 | Go handler contract + startup entry (`Handler[TCommand, TResult]`, `HandlerFunc`, `WithLogging`, `startup.Run`, `ExitCode`) | templates of `base-plateau-in-go` | identical in every Go application; a variation point's decorator or entry point would import one stable package |
+| Go HTTP entry point (`Endpoint`, `Server` with health and graceful stop, `LoadConfig`, docs routes) | templates of `vp-http-api-in-go` | identical in every Go HTTP service except the module path and the contract's name; the docs routes could take the embedded spec as a parameter |
 | Testing tooling (`tools/testing`, `tools/normalize_*`, `tools/livingdoc`, `report-template`) | copied verbatim into every example | ~1,200 lines repeated per example; a version bump would update every project at once |
 | TaskBox | `taskbox-spec` published; `taskbox-go` code proven, not yet packaged | already decided as a library (ADR `contract-vp-realized-by-libraries`) |
 
@@ -98,3 +102,4 @@ Agreed with the owner; written into the variation point's skill and ADR when it 
 |---|---|
 | Rename Client → Service and Integration → Infrastructure in `solution-integration-client-layering` (old Client = today's service, old Integration = today's infrastructure) | after the API variation points are designed |
 | Move `library/common-workflow/develop/*` to `library/develop/{core,stack}` | later pass |
+| Health endpoints for a service with no HTTP entry point (gRPC- or listener-only): who serves `/health/live` and `/health/ready` | with the gRPC and listener variation points |
