@@ -81,3 +81,19 @@ To be reviewed with the owner before any is created.
 | Go handler contract + startup entry (`Handler[TCommand, TResult]`, `HandlerFunc`, `WithLogging`, `startup.Run`, `ExitCode`) | templates of `base-plateau-in-go` | identical in every Go application; a variation point's decorator or entry point would import one stable package |
 | Testing tooling (`tools/testing`, `tools/normalize_*`, `tools/livingdoc`, `report-template`) | copied verbatim into every example | ~1,200 lines repeated per example; a version bump would update every project at once |
 | TaskBox | `taskbox-spec` published; `taskbox-go` code proven, not yet packaged | already decided as a library (ADR `contract-vp-realized-by-libraries`) |
+
+## Decisions waiting for their variation point
+
+Agreed with the owner; written into the variation point's skill and ADR when it is built.
+
+| Decision | Goes to | Agreed |
+|---|---|---|
+| **Unit of work at the command.** Optional, available once the DB variation point is attached; the outermost command opens it, nested commands and notification handlers join, services never commit. A simple service may skip it; once any command changes data in several places at once (nested commands, notification handlers, outbox task), every command is wrapped. Rejected: each service method owning its transaction (breaks atomicity across handlers); mandatory for every application. dotnet: pipeline behavior + EF change tracking (one short transaction at the end). Go: handler decorator, unit of work in `context.Context`, transaction opened on the first write, every storage method takes its executor from the context. | DB (step 3) | 2026-10-17 |
+| **In-process notifications in Go** (the counterpart of MediatR notifications), joining the command's unit of work. | DB (step 3) | 2026-10-17 |
+
+## Backlog
+
+| Task | When |
+|---|---|
+| Rename Client → Service and Integration → Infrastructure in `solution-integration-client-layering` (old Client = today's service, old Integration = today's infrastructure) | after the API variation points are designed |
+| Move `library/common-workflow/develop/*` to `library/develop/{core,stack}` | later pass |

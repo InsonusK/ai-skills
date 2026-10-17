@@ -1,6 +1,6 @@
 ---
 name: app-layers-in-go
-description: The application layers in Go — one package per layer under internal/, interfaces declared by their consumer so that only cmd/{app}/main.go imports both sides, entities with unexported fields, hand-written fakes for the layer below, and the unit of work carried in the context
+description: The application layers in Go — one package per layer under internal/, interfaces declared by their consumer so that only cmd/{app}/main.go imports both sides, entities with unexported fields, and hand-written fakes for the layer below
 whenToUse: when you design a Go application or feature, when you add or change a Go entry point, command, entity, domain service, service, or infrastructure adapter, or when you review such a change
 updated: 20261017
 tags:
@@ -72,17 +72,9 @@ Write the fake of the layer below as a small struct in the test package that imp
 - Risk: the test depends on two layers' contracts and breaks on a change below the service.
 - Fix: `type fakeUsers struct{ exists bool; added []string }` implementing the command's `users` interface.
 
-## SHOULD
-
-### Unit of work travels in the context
-When the application uses a unit of work, open it in a decorator over the command handler, carry it in `context.Context`, let a nested handler join the one already in the context, and let every storage method take its query executor from the context.
-- Risk: a storage method holding its own connection writes outside the transaction of the command around it.
-- Fix: the storage method calls the unit of work's accessor with its `ctx` before every statement.
-
 # Check list
 - [ ] Every layer is in its package per [One package per layer](#one-package-per-layer).
 - [ ] Every interface to a service or an infrastructure adapter is declared in its consumer's package and lists only the methods that consumer calls.
 - [ ] `internal/service` is imported only by `main.go`; `internal/infrastructure/{kind}` only by `main.go` and the one service over it.
 - [ ] Entities have unexported fields, a validating constructor, and guarded state-change methods.
 - [ ] Tests fake the layer below with hand-written structs implementing the consumer's interface.
-- [ ] With a unit of work in use, it travels in the context and every storage method takes its executor from it.

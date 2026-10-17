@@ -1,6 +1,6 @@
 ---
 name: app-layers
-description: How an application's code is split into layers — api, command (with an optional command factory), domain (entities and domain services), service, and infrastructure — what each layer owns, what it may call, where an interface stands between them, how each is tested, and who owns the transaction
+description: How an application's code is split into layers — api, command (with an optional command factory), domain (entities and domain services), service, and infrastructure — what each layer owns, what it may call, where an interface stands between them, how each is tested
 whenToUse: when you design an application or a feature, when you add or change an entry point, a command or command factory, an entity or domain service, a service, or an infrastructure adapter, or when you review such a change — in any stack
 updated: 20261017
 tags:
@@ -11,7 +11,6 @@ tags:
   - app-type/cli
 adr:
   - adr/service-wraps-one-infrastructure.md
-  - adr/unit-of-work-at-the-command.md
 ---
 
 # Goal
@@ -82,7 +81,7 @@ Let a command reach storage and other systems only through services, never throu
 
 ### One service per infrastructure, in the application's language
 Wrap each infrastructure adapter in exactly one service whose methods name what the application wants and hide how it is done.
-- Violation: `UserService.PostUsersV2(body)`, or a transaction opened by the command around three calls of a service.
+- Violation: `UserService.PostUsersV2(body)`, or a command that opens a database transaction itself around three calls of a service.
 - Risk: the technique leaks into commands, and replacing the infrastructure changes the callers too.
 - Fix: `UserService.Add(name)` hides the HTTP calls; `StorageService.UpdateXYZ` hides the statements it runs.
 
@@ -112,23 +111,12 @@ Test each layer with the layer directly below it replaced by a fake, and test in
 - Risk: a test that fakes a layer further down breaks every time that layer's contract changes, though the behaviour under test did not.
 - Fix: fake only the interface directly below; build domain services for a command's test with their own services faked.
 
-### The transaction belongs to the command
-Once the application has a database, let a unit of work opened around the outermost command own the transaction: nested commands and their notification handlers join it, and no service ever commits. Decision recorded in [unit-of-work-at-the-command](./adr/unit-of-work-at-the-command.md).
-- Violation: a storage-service method that commits its own transaction while the command around it is not finished.
-- Risk: a failure after that commit leaves half the operation's changes in the database.
-- Fix: services write through the current unit of work; the unit of work commits once, after the outermost command.
-
 ## SHOULD
-
-### Wrap every command once commands get complex
-Leave the unit of work off in a simple service, and wrap every command with it as soon as one command changes data in several places at once — through nested commands, notification handlers, or an outbox task.
-- Risk: once some commands need it, a command left unwrapped commits partway through and nobody notices until it fails halfway.
-- Fix: apply the unit of work to all commands in the composition root, not command by command.
 
 ### Irreversible external changes go through a workflow
 Never change another system irreversibly from inside a command; send the change through an outbox task, or design the workflow so the change can be compensated.
-- Risk: the unit of work rolls back only this application's database, so a failure after an external call leaves the systems inconsistent.
-- Fix: enqueue the external call as an outbox task in the same unit of work, or pair it with a compensating step.
+- Risk: a rollback of this application's own data does not undo a change already made in another system, so a failure after the external call leaves the systems inconsistent.
+- Fix: send the external change as an outbox task saved together with the command's data, or pair it with a compensating step.
 
 ### Identity resolved in the command layer
 Let api authenticate the transport and pass the caller's identity as plain values; resolve it into the application's user and check access in the command factory or the command.
@@ -150,4 +138,4 @@ Use a package with no I/O and no business rule — formatting, layout, conversio
 - [ ] Each business rule touched by the change lives in one entity or domain-service method.
 - [ ] Callers of services and services calling infrastructure depend on interfaces; entities and domain services are called directly.
 - [ ] Each layer's tests fake only the layer directly below it.
-- [ ] With a unit of work in use, no service commits; with any complex command, every command is wrapped.
+- [ ] No command changes another system irreversibly; such a change goes through an outbox task or has a compensating step.
