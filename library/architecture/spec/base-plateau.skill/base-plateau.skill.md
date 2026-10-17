@@ -58,7 +58,7 @@ Make every business-rule error identifiable as one "invalid" kind exposed by the
 ### Startup command reports through the process interface
 Run the startup command once, write its result to standard output as one machine-readable line, write logs to standard error, and exit `0` on success, `2` when the command is rejected as invalid, and `1` on any other failure.
 - Risk: a script or a scheduler starting the process cannot tell its outcome apart, and logs mixed into the output break whoever reads the result.
-- Fix: the startup entry encodes the result and maps the error kind to the exit code; the composition root names the command and builds its input from the base settings.
+- Fix: the startup entry encodes the result and maps the error kind to the exit code; the composition root names the command and builds its input from a setting the startup entry reads itself, so the setting goes away with the entry.
 
 ### Concrete types built only in the composition root
 Construct every concrete type — handlers, decorators, entry points, services — only in the composition root, in its three marked sections `services`, `handlers`, and `entries`.

@@ -1,18 +1,17 @@
 // Package config reads the base plateau's own settings from the environment.
-// A variation point never adds fields here: it reads its settings in its own package.
+// A variation point or an entry point never adds fields here: each reads its
+// settings in its own package, so removing it removes its settings too.
 package config
 
 import (
 	"fmt"
 	"log/slog"
 	"os"
-	"strings"
 )
 
 type Config struct {
+	// LogLevel is LOG_LEVEL: debug, info (default), warn, or error.
 	LogLevel slog.Level
-	// StartupTitles is the input of the startup command: STARTUP_TITLES, comma-separated.
-	StartupTitles []string
 }
 
 func Load() (Config, error) {
@@ -21,9 +20,6 @@ func Load() (Config, error) {
 		if err := cfg.LogLevel.UnmarshalText([]byte(raw)); err != nil {
 			return Config{}, fmt.Errorf("config: LOG_LEVEL: %w", err)
 		}
-	}
-	if raw := os.Getenv("STARTUP_TITLES"); raw != "" {
-		cfg.StartupTitles = strings.Split(raw, ",")
 	}
 	return cfg, nil
 }

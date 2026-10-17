@@ -17,6 +17,8 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"os"
+	"strings"
 
 	"github.com/example/todo/internal/command"
 )
@@ -28,6 +30,18 @@ const (
 	ExitFailure  = 1 // the command failed for a reason other than its input
 	ExitRejected = 2 // the command broke a business rule (command.ErrInvalid)
 )
+
+// EnvList reads the comma-separated environment variable name as a list -
+// the way the startup command's input is given, since the process has no other
+// input. Unset or empty is nil. The startup entry owns this setting, so it
+// disappears together with the entry.
+func EnvList(name string) []string {
+	raw := os.Getenv(name)
+	if raw == "" {
+		return nil
+	}
+	return strings.Split(raw, ",")
+}
 
 // Run executes cmd once through handler and writes the result to out as one
 // JSON line. It works with any command: TCommand and TResult are taken from

@@ -32,7 +32,8 @@ Create the packages [app-layers-in-go](library/develop/go/app-layers-in-go.skill
 | entities, `ErrInvalid` and the rule errors | `internal/domain/entity` |
 | domain services | `internal/domain/service` |
 | composition root | `cmd/{app}/main.go` |
-| base settings | `internal/config` |
+| base settings (`LOG_LEVEL` only) | `internal/config` |
+| version of the build | `internal/version` — `var Version`, per `devops-project-version-in-go` |
 
 - Risk: a part in a package of its own choosing breaks every variation point's instruction that names the file to edit.
 - Fix: move the code to the package in the table.
@@ -53,7 +54,7 @@ Write a command, its result types, and its handler in `internal/command/{command
 - Fix: match the method to the contract; take every service the handler uses as a constructor parameter typed by an interface declared in `internal/command`.
 
 ### Compose in the three marked sections
-Build every concrete type in `run` of `cmd/{app}/main.go` under the comments `// [services]`, `// [handlers]`, and `// [entries]`, in this order, with `main` doing nothing but `os.Exit(run(context.Background(), os.Stdout, os.Stderr))`.
+Build every concrete type in `run` of `cmd/{app}/main.go` under the comments `// [services]`, `// [handlers]`, and `// [entries]`, in this order, with `main` only creating a context cancelled on `SIGINT`/`SIGTERM` (`signal.NotifyContext`) and exiting with `run(ctx, os.Stdout, os.Stderr)`.
 - Risk: a variation point whose instruction says "add after `// [handlers]`" finds no such line and guesses where its code goes.
 - Fix: keep the three comments even when a section is empty; type each handler variable as `command.Handler[TCommand, TResult]` so a [decorator](./glossary/handler-decorator.md) can rewrap it.
 

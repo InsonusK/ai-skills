@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"os"
 
 	"github.com/cucumber/godog"
 )
@@ -18,9 +19,13 @@ func logf(format string, args ...any) {
 type World struct {
 	out      bytes.Buffer
 	exitCode int
+	input    []string
 }
 
-func (w *World) reset() { *w = World{} }
+func (w *World) reset() {
+	*w = World{}
+	_ = os.Unsetenv("STARTUP_TITLES")
+}
 
 func registerWorldHooks(sc *godog.ScenarioContext, w *World) {
 	sc.Before(func(ctx context.Context, _ *godog.Scenario) (context.Context, error) {

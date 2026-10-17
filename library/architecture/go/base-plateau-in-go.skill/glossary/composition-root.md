@@ -23,7 +23,7 @@ flowchart TB
 2. **handlers** — one per command, receiving the services through its constructor, then wrapped by [decorators](./handler-decorator.md).
 3. **entries** — the entry points that call the handlers.
 
-`main` only calls `os.Exit(run(context.Background(), os.Stdout, os.Stderr))`, so `run` can be called with any output streams.
+`main` only creates a context that is cancelled on `SIGINT`/`SIGTERM` and calls `run(ctx, os.Stdout, os.Stderr)`, so a long-running entry point stops gracefully and `run` can be called with any output streams.
 
 ## How it is structured
 
@@ -41,7 +41,7 @@ var planItems command.Handler[command.PlanItems, command.PlanItemsResult] = comm
 planItems = command.WithLogging("PlanItems", logger, planItems)
 
 // [entries] - every entry point; the base plateau has only the startup command.
-err = startup.Run(ctx, planItems, command.PlanItems{Titles: cfg.StartupTitles}, stdout)
+err = startup.Run(ctx, planItems, command.PlanItems{Titles: startup.EnvList("STARTUP_TITLES")}, stdout)
 ```
 
 ## Related concepts

@@ -26,7 +26,7 @@ sequenceDiagram
     participant M as main.go (composition root)
     participant S as startup.Run
     participant H as Handler (PlanItems)
-    M->>S: Run(ctx, handler, PlanItems{Titles from STARTUP_TITLES}, stdout)
+    M->>S: Run(ctx, handler, PlanItems{Titles: EnvList("STARTUP_TITLES")}, stdout)
     S->>H: Handle(ctx, cmd)
     alt success
         H-->>S: result
@@ -47,6 +47,7 @@ sequenceDiagram
 | `Run[TCommand, TResult]` | calls any handler once, encodes the result as one JSON line |
 | `ExitCode(err)` | error kind → exit code |
 | `ExitOK`, `ExitFailure`, `ExitRejected` | the three exit codes |
+| `EnvList(name)` | reads the command's input from a comma-separated environment variable; the setting belongs to the entry, so it goes away with it |
 
 ## Example
 

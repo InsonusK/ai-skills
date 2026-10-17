@@ -17,7 +17,7 @@ func logf(format string, args ...any) {
 }
 
 // variables are the environment variables a scenario may set; each scenario starts with none.
-var variables = []string{"LOG_LEVEL", "STARTUP_TITLES"}
+var variables = []string{"LOG_LEVEL"}
 
 // World holds per-scenario state, reset before every scenario.
 type World struct {

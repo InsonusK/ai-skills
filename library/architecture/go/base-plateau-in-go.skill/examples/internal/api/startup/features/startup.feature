@@ -21,3 +21,14 @@ Feature: Startup command
     When the process starts with a command whose handler fails with "store unavailable"
     Then the output should be empty
     And the exit code should be 1
+
+  @category/happy
+  Scenario: The startup input is a comma-separated environment variable
+    Given the environment variable "STARTUP_TITLES" is "buy milk,walk the dog"
+    When the startup input is read from "STARTUP_TITLES"
+    Then the startup input should be "buy milk|walk the dog"
+
+  @category/boundary
+  Scenario: An unset startup input is empty
+    When the startup input is read from "STARTUP_TITLES"
+    Then the startup input should be empty
