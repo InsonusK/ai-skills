@@ -6,7 +6,7 @@ The **startup entry** (`internal/api/startup`) is the base plateau's only way in
 
 A base plateau with no entry at all could not be run or tested end to end. One command at start is the smallest entry that makes the program useful — a job a script or a Kubernetes CronJob can run — without choosing a transport.
 
-It is a package rather than lines in `main.go` because it has behaviour worth testing — the output format and the exit codes — and because every entry point lives in `internal/api/`, where it obeys the same rule: it imports only `internal/application`.
+It is a package rather than lines in `main.go` because it has behaviour worth testing — the output format and the exit codes — and because every entry point lives in `internal/api/`, where it obeys the same rule: it imports only `internal/command`.
 
 ## How it works
 

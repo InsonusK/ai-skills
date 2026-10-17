@@ -36,13 +36,13 @@ the `spec/` skills come along because every stack skill links its spec.
 
 ## Layer names per stack
 
-| Layer | Go | dotnet | Python |
+| Layer | Go | Python (draft) | dotnet |
 |---|---|---|---|
-| Domain | `internal/domain` | `{Module}.Domain` | `domain/` |
-| Application | `internal/application` | `{Module}.Application` | `application/` |
-| API (entries) | `internal/api/{transport}` | `App.Host/Api/{Transport}` | `api/{transport}/` |
-| Infrastructure (services) | `internal/infrastructure/{kind}` | `Infrastructure/{Kind}` | `infrastructure/{kind}/` |
-| Composition root | `cmd/{app}/main.go` | `Program.cs` | `main.py` |
+| Domain | `internal/domain` | `src/{package}/domain` | `src/Modules/{Module}/{Module}.Domain` |
+| Commands + handlers | `internal/command` | `src/{package}/command` | `src/Modules/{Module}/{Module}.Application` (command types in `{Module}.Interfaces`) |
+| API (entries) | `internal/api/{transport}` | `src/{package}/api/{transport}` | `src/App/App.Host/Api/{Transport}` |
+| Infrastructure (services) | `internal/infrastructure/{kind}` | `src/{package}/infrastructure/{kind}` | `src/Infrastructure/{Kind}` |
+| Composition root | `cmd/{app}/main.go` | `src/{package}/main.py` | `src/App/App.Host/Program.cs` |
 
 ## Variation points by application type
 

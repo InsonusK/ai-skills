@@ -37,11 +37,11 @@ flowchart TB
 
 ```go
 // [handlers] - one per command, wrapped by its decorators.
-var planItems application.Handler[application.PlanItems, application.PlanItemsResult] = application.NewPlanItemsHandler()
-planItems = application.WithLogging("PlanItems", logger, planItems)
+var planItems command.Handler[command.PlanItems, command.PlanItemsResult] = command.NewPlanItemsHandler()
+planItems = command.WithLogging("PlanItems", logger, planItems)
 
 // [entries] - every entry point; the base plateau has only the startup command.
-err = startup.Run(ctx, planItems, application.PlanItems{Titles: cfg.StartupTitles}, stdout)
+err = startup.Run(ctx, planItems, command.PlanItems{Titles: cfg.StartupTitles}, stdout)
 ```
 
 ## Related concepts

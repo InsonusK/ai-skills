@@ -7,7 +7,7 @@ import (
 
 	"github.com/cucumber/godog"
 
-	"github.com/example/todo/internal/application"
+	"github.com/example/todo/internal/command"
 )
 
 // logf logs a step's action or observation through stdout, so the line stays
@@ -18,11 +18,11 @@ func logf(format string, args ...any) {
 
 // World holds per-scenario state, reset before every scenario.
 type World struct {
-	result application.PlanItemsResult
+	result command.PlanItemsResult
 	err    error
 
 	logs    bytes.Buffer
-	wrapped application.Handler[string, string]
+	wrapped command.Handler[string, string]
 }
 
 func (w *World) reset() { *w = World{} }

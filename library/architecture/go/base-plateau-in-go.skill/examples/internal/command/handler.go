@@ -1,20 +1,20 @@
 // Source: skill base-plateau-in-go
 
-// Package application holds the commands and their handlers: the only surface
+// Package command holds the commands and their handlers: the only surface
 // an entry point (internal/api/...) calls. An entry point never imports domain.
-package application
+package command
 
 import (
 	"context"
 	"log/slog"
 	"time"
 
-	"{module-path}/internal/domain"
+	"github.com/example/todo/internal/domain"
 )
 
 // ErrInvalid is the error kind of a command rejected for breaking a business
 // rule. Every business-rule error wraps it, so an entry point checks
-// errors.Is(err, application.ErrInvalid) and answers with its own "bad request"
+// errors.Is(err, command.ErrInvalid) and answers with its own "bad request"
 // (exit code 2, HTTP 400, ...) without knowing the individual rules.
 // It is the domain's sentinel re-exported, so entry points never import domain.
 var ErrInvalid = domain.ErrInvalid

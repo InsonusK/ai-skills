@@ -1,6 +1,6 @@
 # Handler decorator
 
-A **handler decorator** is a function that takes a handler and returns a new handler of the same type, which does something extra around the call — logs it, times it, opens and commits a transaction. In the base plateau it is `application.WithLogging`.
+A **handler decorator** is a function that takes a handler and returns a new handler of the same type, which does something extra around the call — logs it, times it, opens and commits a transaction. In the base plateau it is `command.WithLogging`.
 
 ## Why it exists
 
@@ -52,8 +52,8 @@ sequenceDiagram
 
 ```go
 // cmd/todo/main.go
-var planItems application.Handler[application.PlanItems, application.PlanItemsResult] = application.NewPlanItemsHandler()
-planItems = application.WithLogging("PlanItems", logger, planItems)
+var planItems command.Handler[command.PlanItems, command.PlanItemsResult] = command.NewPlanItemsHandler()
+planItems = command.WithLogging("PlanItems", logger, planItems)
 ```
 
 This is the Go counterpart of a MediatR pipeline behavior in the dotnet catalog.
@@ -67,4 +67,4 @@ This is the Go counterpart of a MediatR pipeline behavior in the dotnet catalog.
 ## Sources
 
 - Decorator pattern: https://refactoring.guru/design-patterns/decorator
-- [handler.go](../templates/internal/application/handler.go)
+- [handler.go](../templates/internal/command/handler.go)

@@ -8,7 +8,7 @@ import (
 
 	"github.com/cucumber/godog"
 
-	"github.com/example/todo/internal/application"
+	"github.com/example/todo/internal/command"
 )
 
 func registerPlanItemsSteps(sc *godog.ScenarioContext, w *World) {
@@ -18,8 +18,8 @@ func registerPlanItemsSteps(sc *godog.ScenarioContext, w *World) {
 }
 
 func (w *World) iSendPlanItems(ctx context.Context, titles string) error {
-	cmd := application.PlanItems{Titles: strings.Split(titles, "|")}
-	w.result, w.err = application.NewPlanItemsHandler().Handle(ctx, cmd)
+	cmd := command.PlanItems{Titles: strings.Split(titles, "|")}
+	w.result, w.err = command.NewPlanItemsHandler().Handle(ctx, cmd)
 	logf("when: PlanItems(%q) -> %+v err=%v", cmd.Titles, w.result, w.err)
 	return nil
 }
@@ -42,8 +42,8 @@ func (w *World) theResultShouldList(ctx context.Context, titles string) error {
 
 func (w *World) theCommandShouldBeRejected(ctx context.Context) error {
 	logf("then: err=%v", w.err)
-	if !errors.Is(w.err, application.ErrInvalid) {
-		return fmt.Errorf("error: got %v, want one wrapping application.ErrInvalid", w.err)
+	if !errors.Is(w.err, command.ErrInvalid) {
+		return fmt.Errorf("error: got %v, want one wrapping command.ErrInvalid", w.err)
 	}
 	return nil
 }

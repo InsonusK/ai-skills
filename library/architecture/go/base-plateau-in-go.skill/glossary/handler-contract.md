@@ -1,6 +1,6 @@
 # Handler contract
 
-The **handler contract** is the one Go interface every command handler of the application satisfies: `Handler[TCommand, TResult]` in `internal/application/handler.go`. It says "give me a context and a command of type `TCommand`, I give you back a result of type `TResult` or an error".
+The **handler contract** is the one Go interface every command handler of the application satisfies: `Handler[TCommand, TResult]` in `internal/command/handler.go`. It says "give me a context and a command of type `TCommand`, I give you back a result of type `TResult` or an error".
 
 ## Why it exists
 
@@ -33,19 +33,19 @@ flowchart LR
 
 | Part | Where | Role |
 |---|---|---|
-| `Handler[TCommand, TResult]` | `internal/application/handler.go` | the contract |
-| `{Command}` struct | `internal/application/{command}.go` | the input — fills `TCommand` |
+| `Handler[TCommand, TResult]` | `internal/command/handler.go` | the contract |
+| `{Command}` struct | `internal/command/{command}.go` | the input — fills `TCommand` |
 | `{Command}Result` struct | same file | the output — fills `TResult` |
 | `{Command}Handler` struct + `New{Command}Handler` | same file | the implementation, with its dependencies as constructor parameters |
 
 ## Example
 
 ```go
-// internal/application/plan_items.go
+// internal/command/plan_items.go
 func (h *PlanItemsHandler) Handle(_ context.Context, cmd PlanItems) (PlanItemsResult, error)
 
 // cmd/todo/main.go - the variable is typed by the contract, so a decorator can rewrap it
-var planItems application.Handler[application.PlanItems, application.PlanItemsResult] = application.NewPlanItemsHandler()
+var planItems command.Handler[command.PlanItems, command.PlanItemsResult] = command.NewPlanItemsHandler()
 ```
 
 ## Related concepts
@@ -58,4 +58,4 @@ var planItems application.Handler[application.PlanItems, application.PlanItemsRe
 
 - Go specification, type parameters: https://go.dev/ref/spec#Type_parameter_declarations
 - Go tutorial, getting started with generics: https://go.dev/doc/tutorial/generics
-- [handler.go](../templates/internal/application/handler.go)
+- [handler.go](../templates/internal/command/handler.go)

@@ -13,14 +13,14 @@ With one kind, every rule error carries the same marker, and the entry point che
 1. The domain declares the sentinel: `var ErrInvalid = errors.New("invalid")`.
 2. Each rule error wraps it with `%w`: `ErrEmptyTitle = fmt.Errorf("%w: item title is empty", ErrInvalid)`.
 3. `errors.Is(err, ErrInvalid)` walks the wrap chain, so it is true for every rule error — and for a rule error wrapped again later.
-4. The application re-exports it — `application.ErrInvalid = domain.ErrInvalid` — so entry points use it without importing the domain.
+4. The `command` package re-exports it — `command.ErrInvalid = domain.ErrInvalid` — so entry points use it without importing the domain.
 
 ```mermaid
 flowchart LR
     R1["ErrEmptyTitle"] -->|wraps| K(("ErrInvalid"))
     R2["ErrDuplicateTitle"] -->|wraps| K
-    K -. re-exported as .-> A["application.ErrInvalid"]
-    S["startup.ExitCode"] -->|"errors.Is(err, application.ErrInvalid)"| A
+    K -. re-exported as .-> A["command.ErrInvalid"]
+    S["startup.ExitCode"] -->|"errors.Is(err, command.ErrInvalid)"| A
     S --> X2["exit 2"]
     S --> X1["any other error: exit 1"]
 ```
@@ -31,14 +31,14 @@ flowchart LR
 |---|---|
 | `ErrInvalid` sentinel | `internal/domain/errors.go` |
 | one error per business rule, wrapping `ErrInvalid` | `internal/domain/errors.go` |
-| `application.ErrInvalid` re-export | `internal/application/handler.go` |
+| `command.ErrInvalid` re-export | `internal/command/handler.go` |
 | mapping kind → response | each entry point (`startup.ExitCode`; later the HTTP status mapper) |
 
 ## Example
 
 ```go
 // internal/api/startup/startup.go
-case errors.Is(err, application.ErrInvalid):
+case errors.Is(err, command.ErrInvalid):
     return ExitRejected // 2
 ```
 

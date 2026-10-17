@@ -10,7 +10,7 @@ import (
 
 	"github.com/cucumber/godog"
 
-	"github.com/example/todo/internal/application"
+	"github.com/example/todo/internal/command"
 )
 
 func registerLoggingSteps(sc *godog.ScenarioContext, w *World) {
@@ -21,9 +21,9 @@ func registerLoggingSteps(sc *godog.ScenarioContext, w *World) {
 	sc.Step(`^one "([^"]*)" record "([^"]*)" should be logged for "([^"]*)"$`, w.oneRecordShouldBeLogged)
 }
 
-func (w *World) wrap(name string, inner application.HandlerFunc[string, string]) {
+func (w *World) wrap(name string, inner command.HandlerFunc[string, string]) {
 	logger := slog.New(slog.NewJSONHandler(&w.logs, nil))
-	w.wrapped = application.WithLogging[string, string](name, logger, inner)
+	w.wrapped = command.WithLogging[string, string](name, logger, inner)
 }
 
 func (w *World) aSucceedingHandler(ctx context.Context, name string) error {
