@@ -9,15 +9,15 @@ import (
 	"log/slog"
 	"time"
 
-	"{module-path}/internal/domain"
+	"{module-path}/internal/domain/entity"
 )
 
 // ErrInvalid is the error kind of a command rejected for breaking a business
 // rule. Every business-rule error wraps it, so an entry point checks
 // errors.Is(err, command.ErrInvalid) and answers with its own "bad request"
 // (exit code 2, HTTP 400, ...) without knowing the individual rules.
-// It is the domain's sentinel re-exported, so entry points never import domain.
-var ErrInvalid = domain.ErrInvalid
+// It is the entity package's sentinel re-exported, so entry points never import domain.
+var ErrInvalid = entity.ErrInvalid
 
 // Handler is the one contract every command handler satisfies.
 //

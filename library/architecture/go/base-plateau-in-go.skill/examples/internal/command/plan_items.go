@@ -3,7 +3,7 @@ package command
 import (
 	"context"
 
-	"github.com/example/todo/internal/domain"
+	domainservice "github.com/example/todo/internal/domain/service"
 )
 
 // PlanItems asks to plan one open to-do item per title.
@@ -24,11 +24,11 @@ type ItemView struct {
 
 // PlanItemsHandler handles PlanItems.
 type PlanItemsHandler struct {
-	planner domain.Planner
+	planner domainservice.Planner
 }
 
 func NewPlanItemsHandler() *PlanItemsHandler {
-	return &PlanItemsHandler{planner: domain.NewPlanner()}
+	return &PlanItemsHandler{planner: domainservice.NewPlanner()}
 }
 
 func (h *PlanItemsHandler) Handle(_ context.Context, cmd PlanItems) (PlanItemsResult, error) {

@@ -29,7 +29,8 @@ Create the packages [app-layers-in-go](library/develop/go/app-layers-in-go.skill
 |---|---|
 | startup entry | `internal/api/startup` |
 | commands, handler contract, decorators | `internal/command` |
-| entities, domain services, `ErrInvalid` | `internal/domain` |
+| entities, `ErrInvalid` and the rule errors | `internal/domain/entity` |
+| domain services | `internal/domain/service` |
 | composition root | `cmd/{app}/main.go` |
 | base settings | `internal/config` |
 
@@ -41,8 +42,8 @@ Fill and copy [handler.go](./templates/internal/command/handler.go) to `internal
 - Risk: a retyped contract drifts from the one every variation point's decorator and entry point is written against.
 - Fix: copy the templates; after filling, searching both files for `{module-path}` returns nothing.
 
-### Rule errors wrap domain.ErrInvalid
-Make `ErrInvalid` the [error kind](./glossary/error-kind.md) of every business-rule error: declare `var ErrInvalid = errors.New("invalid")` in `internal/domain`, declare every business-rule error as `fmt.Errorf("%w: {what broke}", ErrInvalid)`, and check the kind with `errors.Is(err, command.ErrInvalid)` outside the domain.
+### Rule errors wrap entity.ErrInvalid
+Make `ErrInvalid` the [error kind](./glossary/error-kind.md) of every business-rule error: declare `var ErrInvalid = errors.New("invalid")` in `internal/domain/entity`, declare every business-rule error as `fmt.Errorf("%w: {what broke}", ErrInvalid)`, and check the kind with `errors.Is(err, command.ErrInvalid)` outside the domain.
 - Risk: an entry point comparing individual errors must change with every new rule.
 - Fix: wrap the kind in each rule error; the template re-exports it as `command.ErrInvalid`.
 
@@ -57,7 +58,7 @@ Build every concrete type in `run` of `cmd/{app}/main.go` under the comments `//
 - Fix: keep the three comments even when a section is empty; type each handler variable as `command.Handler[TCommand, TResult]` so a [decorator](./glossary/handler-decorator.md) can rewrap it.
 
 ### Cover each layer with scenarios
-Cover `internal/domain`, `internal/command`, `internal/api/startup`, and `internal/config` with Cucumber scenarios per [cucumber-testing-in-go](library/testing/go/cucumber-testing-in-go.skill.md), tagged `@type/domain`, `@type/service` (commands), `@type/tech-check` (decorators, settings), and `@type/api/cli` (startup entry), with the project's testing contract per [solution-conformance-testing-in-go](library/testing/go/solution-conformance-testing-in-go.skill/solution-conformance-testing-in-go.skill.md).
+Cover `internal/domain/entity`, `internal/domain/service`, `internal/command`, `internal/api/startup`, and `internal/config` with Cucumber scenarios per [cucumber-testing-in-go](library/testing/go/cucumber-testing-in-go.skill.md), tagged `@type/domain`, `@type/service` (commands), `@type/tech-check` (decorators, settings), and `@type/api/cli` (startup entry), with the project's testing contract per [solution-conformance-testing-in-go](library/testing/go/solution-conformance-testing-in-go.skill/solution-conformance-testing-in-go.skill.md).
 - Risk: a layer without scenarios lets a variation point break it unnoticed, since the variation point's example reruns the base scenarios as its regression check.
 - Fix: one `features/` and `test/` pair per package; `make test-kind-unit` passes.
 
@@ -74,7 +75,7 @@ Read the base settings from environment variables in `config.Load() (Config, err
 # Check list
 - [ ] Packages follow [Base packages](#base-packages) and [app-layers-in-go](library/develop/go/app-layers-in-go.skill.md).
 - [ ] `internal/command/handler.go` and `internal/api/startup/startup.go` are filled copies of the templates; neither contains `{module-path}`.
-- [ ] Every business-rule error wraps `domain.ErrInvalid`; code outside the domain checks `errors.Is(err, command.ErrInvalid)`.
+- [ ] Every business-rule error wraps `entity.ErrInvalid`; code outside the domain checks `errors.Is(err, command.ErrInvalid)`.
 - [ ] Every command lives in its own file in `internal/command` with a handler matching `Handler[TCommand, TResult]`.
 - [ ] `run` in `cmd/{app}/main.go` has the `// [services]`, `// [handlers]`, `// [entries]` sections in this order.
 - [ ] Type parameters are named by role, and every exported generic type or function has a comment explaining them.

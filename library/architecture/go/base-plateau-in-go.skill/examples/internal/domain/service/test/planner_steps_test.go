@@ -7,7 +7,7 @@ import (
 
 	"github.com/cucumber/godog"
 
-	"github.com/example/todo/internal/domain"
+	domainservice "github.com/example/todo/internal/domain/service"
 )
 
 func registerPlannerSteps(sc *godog.ScenarioContext, w *World) {
@@ -18,7 +18,7 @@ func registerPlannerSteps(sc *godog.ScenarioContext, w *World) {
 }
 
 func (w *World) plan(titles []string) {
-	w.planned, w.planErr = domain.NewPlanner().Plan(titles)
+	w.planned, w.planErr = domainservice.NewPlanner().Plan(titles)
 	logf("when: Plan(%q) -> %d items err=%v", titles, len(w.planned), w.planErr)
 }
 

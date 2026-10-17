@@ -29,13 +29,15 @@ Place each layer of [app-layers](library/develop/core/app-layers.skill/app-layer
 |---|---|
 | api | `internal/api/{transport}` (`http`, `grpc`, `cli`, `kafka`, ...) |
 | command, command factory | `internal/command` — a factory in `{input}_command_factory.go` |
-| entity, domain service | `internal/domain` |
+| entity | `internal/domain/entity` |
+| domain service | `internal/domain/service`, imported as `domainservice` |
 | service | `internal/service` |
 | infrastructure | `internal/infrastructure/{kind}` (`postgres`, `userapi`, ...) |
 | composition root | `cmd/{app}/main.go` |
 
-- Risk: a layer in a package of its own choosing hides which rules apply to it, and an import check cannot tell a downward call from an upward one.
-- Fix: move the code into the package of its layer.
+- Violation: entities and domain services in one `internal/domain` package, or `internal/domain/service` imported without the `domainservice` name.
+- Risk: a layer in a package of its own choosing hides which rules apply to it, and an import check cannot tell a downward call from an upward one; in one package, an entity can reach a domain service's interface to a service unnoticed; an unaliased import reads as `internal/service`.
+- Fix: move the code into the package of its layer, and import the domain-service package as `domainservice "{module-path}/internal/domain/service"`.
 
 ### Declare an interface in the consumer's package
 Declare the interface a command, factory, or domain service uses to reach a service in that consumer's package, and the interface a service uses to reach its infrastructure in `internal/service`, each listing only the methods that consumer calls.

@@ -7,7 +7,7 @@ import (
 
 	"github.com/cucumber/godog"
 
-	"github.com/example/todo/internal/domain"
+	"github.com/example/todo/internal/domain/entity"
 )
 
 func registerItemSteps(sc *godog.ScenarioContext, w *World) {
@@ -23,7 +23,7 @@ func registerItemSteps(sc *godog.ScenarioContext, w *World) {
 }
 
 func (w *World) iCreateAnItemTitled(ctx context.Context, title string) error {
-	w.item, w.itemErr = domain.NewItem(title)
+	w.item, w.itemErr = entity.NewItem(title)
 	logf("when: NewItem(%q) -> title=%q err=%v", title, w.item.Title(), w.itemErr)
 	return nil
 }
@@ -52,7 +52,7 @@ func (w *World) theItemTitleShouldBe(ctx context.Context, want string) error {
 }
 
 func (w *World) anOpenItemTitled(ctx context.Context, title string) error {
-	item, err := domain.NewItem(title)
+	item, err := entity.NewItem(title)
 	if err != nil {
 		return fmt.Errorf("given item: %w", err)
 	}

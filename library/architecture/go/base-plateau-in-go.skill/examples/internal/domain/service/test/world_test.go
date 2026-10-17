@@ -6,7 +6,7 @@ import (
 
 	"github.com/cucumber/godog"
 
-	"github.com/example/todo/internal/domain"
+	"github.com/example/todo/internal/domain/entity"
 )
 
 // logf logs a step's action or observation through stdout, so the line stays
@@ -17,12 +17,7 @@ func logf(format string, args ...any) {
 
 // World holds per-scenario state, reset before every scenario.
 type World struct {
-	item    domain.Item
-	itemErr error
-
-	completeErr error
-
-	planned []domain.Item
+	planned []entity.Item
 	planErr error
 }
 
@@ -37,11 +32,9 @@ func registerWorldHooks(sc *godog.ScenarioContext, w *World) {
 
 // reasons names each business-rule error the way the features word it.
 var reasons = map[string]error{
-	"empty title":     domain.ErrEmptyTitle,
-	"title too long":  domain.ErrTitleTooLong,
-	"already done":    domain.ErrAlreadyDone,
-	"no items":        domain.ErrNoItems,
-	"duplicate title": domain.ErrDuplicateTitle,
+	"empty title":     entity.ErrEmptyTitle,
+	"no items":        entity.ErrNoItems,
+	"duplicate title": entity.ErrDuplicateTitle,
 }
 
 func expectReason(got error, reason string) error {

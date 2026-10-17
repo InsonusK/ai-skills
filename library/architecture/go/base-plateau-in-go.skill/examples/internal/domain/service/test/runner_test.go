@@ -22,7 +22,6 @@ func TestFeatures(t *testing.T) {
 	suite := godog.TestSuite{
 		ScenarioInitializer: func(sc *godog.ScenarioContext) {
 			registerWorldHooks(sc, w)
-			registerItemSteps(sc, w)
 			registerPlannerSteps(sc, w)
 		},
 		Options: &godog.Options{
