@@ -1,0 +1,88 @@
+---
+name: app-layers-in-go
+description: The application layers in Go — one package per layer under internal/, interfaces declared by their consumer so that only cmd/{app}/main.go imports both sides, entities with unexported fields, hand-written fakes for the layer below, and the unit of work carried in the context
+whenToUse: when you design a Go application or feature, when you add or change a Go entry point, command, entity, domain service, service, or infrastructure adapter, or when you review such a change
+updated: 20261017
+tags:
+  - stack/go
+  - concern/architecture
+  - concern/coding
+  - app-type/service
+  - app-type/cli
+---
+
+# Goal
+- **Layers in Go packages** - A Go module that keeps every rule of [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md); this skill details that skill's implementation for Go and restates none of its rules.
+- **Layers joined only in main** - A consumer never constructs what it calls through an interface; `cmd/{app}/main.go` builds every implementation and passes it in.
+
+# Core Principle
+- **The consumer owns the interface** - In Go an interface is declared where it is used and lists only the methods used there; the implementing struct declares none for itself.
+
+# Rule
+
+## MUST
+
+### One package per layer
+Place each layer of [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md) in its package.
+
+| Layer | Package |
+|---|---|
+| api | `internal/api/{transport}` (`http`, `grpc`, `cli`, `kafka`, ...) |
+| command, command factory | `internal/command` — a factory in `{input}_command_factory.go` |
+| entity, domain service | `internal/domain` |
+| service | `internal/service` |
+| infrastructure | `internal/infrastructure/{kind}` (`postgres`, `userapi`, ...) |
+| composition root | `cmd/{app}/main.go` |
+
+- Risk: a layer in a package of its own choosing hides which rules apply to it, and an import check cannot tell a downward call from an upward one.
+- Fix: move the code into the package of its layer.
+
+### Declare an interface in the consumer's package
+Declare the interface a command, factory, or domain service uses to reach a service in that consumer's package, and the interface a service uses to reach its infrastructure in `internal/service`, each listing only the methods that consumer calls.
+
+```go
+// internal/command/add_user.go - the command declares what it needs
+type users interface {
+	Exists(ctx context.Context, name string) (bool, error)
+	Add(ctx context.Context, name string) (domain.UserID, error)
+}
+
+// internal/service/user_service.go - a struct; no interface declared for itself
+type UserService struct{ api userAPI } // userAPI: declared here, implemented in internal/infrastructure/userapi
+```
+
+- Violation: `internal/service` declaring `type UserServiceInterface interface {...}` next to `UserService`, imported by commands.
+- Risk: an interface declared by the implementation grows to every method any caller uses, and the caller's package must import the implementation's package.
+- Fix: one small interface per consumer; the struct satisfies it implicitly.
+
+### Wire implementations only in main
+Import `internal/service` only from `cmd/{app}/main.go`, and `internal/infrastructure/{kind}` only from `main.go` and from the one service over it — for the types its methods return — and pass each implementation to its consumer's constructor in `main.go`.
+- Violation: `internal/command` importing `internal/service` to construct a `UserService`, or a service constructing its HTTP client itself.
+- Risk: the consumer depends on the concrete implementation, so it cannot be tested with a fake or given another implementation without editing it.
+- Fix: the consumer's constructor takes the interface; `main.go` builds the struct and passes it.
+
+### Entities guard their fields
+Give an entity unexported fields, a `New{Entity}` constructor that rejects an invalid entity, and a method for each allowed state change that returns its rule error.
+- Risk: an exported field can be set past every rule, from any package.
+- Fix: unexport the field and add a getter for what results must show.
+
+### Fake the layer below by hand
+Write the fake of the layer below as a small struct in the test package that implements the consumer's interface, recording calls and returning what the scenario sets.
+- Violation: a command test that starts the real service with an HTTP stub server behind it.
+- Risk: the test depends on two layers' contracts and breaks on a change below the service.
+- Fix: `type fakeUsers struct{ exists bool; added []string }` implementing the command's `users` interface.
+
+## SHOULD
+
+### Unit of work travels in the context
+When the application uses a unit of work, open it in a decorator over the command handler, carry it in `context.Context`, let a nested handler join the one already in the context, and let every storage method take its query executor from the context.
+- Risk: a storage method holding its own connection writes outside the transaction of the command around it.
+- Fix: the storage method calls the unit of work's accessor with its `ctx` before every statement.
+
+# Check list
+- [ ] Every layer is in its package per [One package per layer](#one-package-per-layer).
+- [ ] Every interface to a service or an infrastructure adapter is declared in its consumer's package and lists only the methods that consumer calls.
+- [ ] `internal/service` is imported only by `main.go`; `internal/infrastructure/{kind}` only by `main.go` and the one service over it.
+- [ ] Entities have unexported fields, a validating constructor, and guarded state-change methods.
+- [ ] Tests fake the layer below with hand-written structs implementing the consumer's interface.
+- [ ] With a unit of work in use, it travels in the context and every storage method takes its executor from it.

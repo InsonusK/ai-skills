@@ -11,6 +11,7 @@ adr:
   - adr/testing-skills-in-one-directory.md
   - adr/devops-skills-in-one-directory.md
   - adr/architecture-catalog-in-one-directory.md
+  - adr/develop-skills-in-one-directory.md
 ---
 
 # Goal
@@ -62,6 +63,12 @@ Place every skill of the new architecture catalog under `library/architecture/` 
 - Risk: the rework mixes into the catalogs projects still use, and a half-built approach breaks them before it can replace them.
 - Fix: move the skill to `library/architecture/spec/` or `library/architecture/{stack}/`; the old catalogs change only when the new one replaces them.
 
+### Keep development skills together
+Place every new skill about writing application code — layers, decomposition, logging, API and client rules — under `library/develop/`: a stack-agnostic `{skill-name}` in `core/`, a stack-specific `{skill-name}-in-{stack}` in `{stack}/`. Decision recorded in [[./adr/develop-skills-in-one-directory.md|develop-skills-in-one-directory]].
+- Violation: `app-layers` added to `library/common-workflow/develop/` or to `library/architecture/spec/`.
+- Risk: development rules end up split between the old folder and the new one, and a project cannot take them with one `subpath`.
+- Fix: create the skill in `library/develop/core/` or `library/develop/{stack}/`; the skills still in `library/common-workflow/develop/` move there in a later pass.
+
 ## SHOULD
 
 ### Mirror the library's topic folders
@@ -74,4 +81,5 @@ Place a local skill under `skills/{topic}/` using the topic folder name its base
 - [ ] A testing skill lives in `library/testing/core/` (stack-agnostic) or `library/testing/{stack}/` (named `{skill-name}-in-{stack}`), and links only inside `library/testing/`.
 - [ ] A DevOps skill lives in `library/devops/core/` (stack-agnostic) or `library/devops/{stack}/` (named `{skill-name}-in-{stack}`), and links outside `library/devops/` only to `library/testing/` and `library/design/`.
 - [ ] A skill of the new architecture catalog lives in `library/architecture/spec/` (stack-agnostic) or `library/architecture/{stack}/` (named `{skill-name}-in-{stack}`); none was added to the old catalogs.
+- [ ] A new skill about writing application code lives in `library/develop/core/` or `library/develop/{stack}/`.
 - [ ] `skill-design`'s `# Check list` passes for the skill.

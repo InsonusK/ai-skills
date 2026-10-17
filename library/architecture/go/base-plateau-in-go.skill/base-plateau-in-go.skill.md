@@ -15,25 +15,26 @@ tags:
 - **Same shape in every Go application** - The [handler contract](./glossary/handler-contract.md), the [startup entry](./glossary/startup-entry.md), and the [composition-root](./glossary/composition-root.md) sections are identical across Go applications, so a variation point's instructions name the same file and the same section everywhere.
 
 # Core Principle
-- **Interfaces belong to their consumer** - A handler declares the interface it needs from a service in its own package, as Go code does; a variation point implements it.
+- **Layers per app-layers-in-go** - Packages, interfaces, entities, and fakes follow [app-layers-in-go](library/develop/go/app-layers-in-go.skill.md); this skill adds only what the base plateau itself contains.
 - **Delivered, not retyped** - The fixed code (handler contract, startup entry) is copied from templates; only the domain, the commands, and the composition-root lines are written per application.
 
 # Rule
 
 ## MUST
 
-### Lay out the packages
-Place each layer of [base-plateau](library/architecture/spec/base-plateau.skill/base-plateau.skill.md) in its package.
+### Base packages
+Create the packages [app-layers-in-go](library/develop/go/app-layers-in-go.skill.md) assigns to the api, command, and domain layers, with the startup entry as the only api package and the base settings in their own package.
 
-| Layer | Package |
+| Part | Package |
 |---|---|
-| Domain | `internal/domain` |
-| Application | `internal/command` |
-| Entry point | `internal/api/startup` — each API variation point adds `internal/api/{transport}` |
-| Composition root | `cmd/{app}/main.go`; the base settings in `internal/config` |
+| startup entry | `internal/api/startup` |
+| commands, handler contract, decorators | `internal/command` |
+| entities, domain services, `ErrInvalid` | `internal/domain` |
+| composition root | `cmd/{app}/main.go` |
+| base settings | `internal/config` |
 
-- Risk: a layer in a package of its own choosing breaks every variation point's instruction that names the file to edit.
-- Fix: move the code to the package in the table; a service variation point adds `internal/infrastructure/{kind}`.
+- Risk: a part in a package of its own choosing breaks every variation point's instruction that names the file to edit.
+- Fix: move the code to the package in the table.
 
 ### Copy the handler contract and the startup entry
 Fill and copy [handler.go](./templates/internal/command/handler.go) to `internal/command/handler.go` and [startup.go](./templates/internal/api/startup/startup.go) to `internal/api/startup/startup.go`, replacing `{module-path}` with the module path from `go.mod`.
@@ -44,11 +45,6 @@ Fill and copy [handler.go](./templates/internal/command/handler.go) to `internal
 Make `ErrInvalid` the [error kind](./glossary/error-kind.md) of every business-rule error: declare `var ErrInvalid = errors.New("invalid")` in `internal/domain`, declare every business-rule error as `fmt.Errorf("%w: {what broke}", ErrInvalid)`, and check the kind with `errors.Is(err, command.ErrInvalid)` outside the domain.
 - Risk: an entry point comparing individual errors must change with every new rule.
 - Fix: wrap the kind in each rule error; the template re-exports it as `command.ErrInvalid`.
-
-### Entities guard their fields
-Give an entity unexported fields, a `New{Entity}` constructor that rejects an invalid entity, and a method for each allowed state change that returns its rule error.
-- Risk: an exported field can be set past every rule, from any package.
-- Fix: unexport the field; add a getter for what results must show.
 
 ### One file per command
 Write a command, its result types, and its handler in `internal/command/{command_name}.go`: the command and result as structs (results with `json` tags), the handler as a struct with a `New{Command}Handler` constructor and a `Handle(ctx context.Context, cmd {Command}) ({Command}Result, error)` method.
@@ -76,10 +72,9 @@ Name a type parameter after what it stands for (`TCommand`, `TResult`, `TEntity`
 Read the base settings from environment variables in `config.Load() (Config, error)`, returning an error that names the variable it could not parse.
 
 # Check list
-- [ ] Packages follow [Lay out the packages](#lay-out-the-packages).
+- [ ] Packages follow [Base packages](#base-packages) and [app-layers-in-go](library/develop/go/app-layers-in-go.skill.md).
 - [ ] `internal/command/handler.go` and `internal/api/startup/startup.go` are filled copies of the templates; neither contains `{module-path}`.
 - [ ] Every business-rule error wraps `domain.ErrInvalid`; code outside the domain checks `errors.Is(err, command.ErrInvalid)`.
-- [ ] Entities have unexported fields, a validating constructor, and guarded state-change methods.
 - [ ] Every command lives in its own file in `internal/command` with a handler matching `Handler[TCommand, TResult]`.
 - [ ] `run` in `cmd/{app}/main.go` has the `// [services]`, `// [handlers]`, `// [entries]` sections in this order.
 - [ ] Type parameters are named by role, and every exported generic type or function has a comment explaining them.

@@ -7,21 +7,27 @@ which stay untouched until this one replaces them.
 
 ## Model
 
+The layers and who may call whom are defined once in `library/develop/core/app-layers`
+(Go: `library/develop/go/app-layers-in-go`). The base plateau fills api, command and domain;
+variation points add entries above and services below.
+
 ```
           ┌──────────── API variation points (entries) ─────────────┐
           │ Startup* │ CLI │ HTTP │ gRPC │ Kafka/RabbitMQ listener    │
           └────┬─────────────────────────────────────────────────────┘
-               │ only commands
+               │ plain parameters → command
                ▼
 ┌──────────────────────── Base plateau ─────────────────────────────┐
-│ Application: commands + handlers ──► Domain: entities, services   │
-│      │ a handler uses a service through an interface              │
-└──────┼────────────────────────────────────────────────────────────┘
-       ▼
+│ command (handlers, optional factory) ──► domain: entities,        │
+│      │                                     domain services        │
+│      │ through interfaces                       │                 │
+└──────┼──────────────────────────────────────────┼─────────────────┘
+       ▼                                          ▼
           ┌──────────── Service variation points ───────────────────┐
+          │ service (business language) ──► infrastructure (technique)│
           │ DB │ HTTP/gRPC client │ Kafka/RabbitMQ producer │ TaskBox │
           └─────────────────────────────────────────────────────────┘
-  * Startup is part of the base plateau: it runs one command and exits.
+  * Startup is part of the base plateau only: an API variation point replaces it.
 ```
 
 ## Layout
@@ -41,7 +47,8 @@ the `spec/` skills come along because every stack skill links its spec.
 | Domain | `internal/domain` | `src/{package}/domain` | `src/Modules/{Module}/{Module}.Domain` |
 | Commands + handlers | `internal/command` | `src/{package}/command` | `src/Modules/{Module}/{Module}.Application` (command types in `{Module}.Interfaces`) |
 | API (entries) | `internal/api/{transport}` | `src/{package}/api/{transport}` | `src/App/App.Host/Api/{Transport}` |
-| Infrastructure (services) | `internal/infrastructure/{kind}` | `src/{package}/infrastructure/{kind}` | `src/Infrastructure/{Kind}` |
+| Service | `internal/service` | `src/{package}/service` | to be decided with the dotnet base |
+| Infrastructure | `internal/infrastructure/{kind}` | `src/{package}/infrastructure/{kind}` | `src/Infrastructure/{Kind}` |
 | Composition root | `cmd/{app}/main.go` | `src/{package}/main.py` | `src/App/App.Host/Program.cs` |
 
 ## Variation points by application type
@@ -58,7 +65,7 @@ the `spec/` skills come along because every stack skill links its spec.
 
 | Step | Content | Go | dotnet | Python |
 |---|---|:-:|:-:|:-:|
-| 1a | base plateau | ✅ | | |
+| 1a | base plateau (on `app-layers`) | ✅ | | |
 | 1b–d | API: HTTP, gRPC, CLI | | | |
 | 2 | clients: HTTP, gRPC | | | |
 | 3 | DB | | | |
