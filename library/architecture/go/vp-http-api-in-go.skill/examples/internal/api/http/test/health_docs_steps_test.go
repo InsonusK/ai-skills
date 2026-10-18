@@ -10,7 +10,7 @@ import (
 	"github.com/cucumber/godog"
 
 	"github.com/example/todo/docs/integration/api/todo"
-	httpapi "github.com/example/todo/internal/api/http"
+	"github.com/example/todo/internal/api/health"
 )
 
 func registerHealthDocsSteps(sc *godog.ScenarioContext, w *World) {
@@ -28,7 +28,7 @@ func (w *World) aReadinessCheck(ctx context.Context, name, outcome string) error
 	if outcome == "fails" {
 		result = errors.New(name + " is down")
 	}
-	w.checks = append(w.checks, httpapi.ReadinessCheck{Name: name, Check: func(context.Context) error { return result }})
+	w.checks = append(w.checks, health.Check{Name: name, Check: func(context.Context) error { return result }})
 	return nil
 }
 

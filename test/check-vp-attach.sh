@@ -3,7 +3,9 @@
 # base without editing it: for each library/architecture/*/*.skill/attach.allow,
 # the skill's examples/ may add any file, but may change or delete a file of the
 # base example only when attach.allow names it (`change <glob>`, `delete <glob>`).
-# Prints what each variation point adds, changes, and deletes.
+# Prints what each variation point adds, changes, and deletes. A file two
+# variation points of one base both add (internal/api/health/health.go) must be
+# the same in both, or attaching both to one application conflicts.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -28,6 +30,7 @@ allowed() {
 }
 
 status=0
+declare -A first_adder=()
 for allow in library/architecture/*/*.skill/attach.allow; do
     [ -e "$allow" ] || continue
     skill=$(dirname "$allow")
@@ -37,6 +40,13 @@ for allow in library/architecture/*/*.skill/attach.allow; do
     while read -r f; do
         if [ ! -e "$base/$f" ]; then
             added+=("$f")
+            key="$base|$f"
+            if [ -n "${first_adder[$key]:-}" ]; then
+                cmp -s "${first_adder[$key]}/examples/$f" "$skill/examples/$f" \
+                    || bad+=("added differently by $(basename "${first_adder[$key]}" .skill): $f")
+            else
+                first_adder[$key]=$skill
+            fi
         elif ! cmp -s "$base/$f" "$skill/examples/$f"; then
             changed+=("$f")
             allowed change "$f" "$allow" || bad+=("changed, not allowed: $f")
@@ -55,5 +65,5 @@ for allow in library/architecture/*/*.skill/attach.allow; do
         [ -n "$b" ] && { echo "   ERROR $b" >&2; status=1; }
     done
 done
-[ "$status" = 0 ] && echo "vp attach ok: no variation point edits its base beyond attach.allow"
+[ "$status" = 0 ] && echo "vp attach ok: no variation point edits its base beyond attach.allow; shared files are identical"
 exit "$status"

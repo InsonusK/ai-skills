@@ -7,6 +7,7 @@ import (
 	"errors"
 	"net/http"
 
+	"{module-path}/internal/api/rpcstatus"
 	"{module-path}/internal/command/pipeline"
 )
 
@@ -32,7 +33,7 @@ func Endpoint[TCommand, TResult any](
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		cmd, err := decode(r)
 		if err != nil {
-			writeStatus(w, codeInvalidArgument, err.Error())
+			writeStatus(w, rpcstatus.InvalidArgument, err.Error())
 			return
 		}
 		result, err := handler.Handle(r.Context(), cmd)
@@ -55,20 +56,6 @@ func DecodeJSON[TBody any](r *http.Request) (TBody, error) {
 	return body, nil
 }
 
-// The grpc status codes this entry point answers with. The numbers are those
-// of google.rpc.Code, so an error body reads the same as in a service with a
-// grpc contract.
-const (
-	codeInvalidArgument = 3
-	codeInternal        = 13
-)
-
-// httpStatusOf is the canonical gRPC-to-HTTP mapping for the codes above.
-var httpStatusOf = map[int]int{
-	codeInvalidArgument: http.StatusBadRequest,
-	codeInternal:        http.StatusInternalServerError,
-}
-
 // statusBody is google.rpc.Status in proto-JSON, the body of every error.
 type statusBody struct {
 	Code    int    `json:"code"`
@@ -76,19 +63,16 @@ type statusBody struct {
 	Details []any  `json:"details"`
 }
 
-// writeError answers an error by its kind: a command rejected by a business
-// rule (pipeline.ErrInvalid) is 400 INVALID_ARGUMENT with the rule's message;
-// any other error is 500 INTERNAL, without the internal message.
+// writeError answers an error by its kind through the one table of
+// rpcstatus: a kind's code and message, or INTERNAL "internal error" for an
+// error with no kind.
 func writeError(w http.ResponseWriter, err error) {
-	if errors.Is(err, pipeline.ErrInvalid) {
-		writeStatus(w, codeInvalidArgument, err.Error())
-		return
-	}
-	writeStatus(w, codeInternal, "internal error")
+	code, message := rpcstatus.Of(err)
+	writeStatus(w, code, message)
 }
 
-func writeStatus(w http.ResponseWriter, code int, message string) {
-	writeJSON(w, httpStatusOf[code], statusBody{Code: code, Message: message, Details: []any{}})
+func writeStatus(w http.ResponseWriter, code rpcstatus.Code, message string) {
+	writeJSON(w, code.HTTPStatus(), statusBody{Code: int(code), Message: message, Details: []any{}})
 }
 
 func writeJSON(w http.ResponseWriter, status int, body any) {

@@ -2,7 +2,7 @@
 name: vp-http-api
 description: The HTTP API variation point — an entry point attached to the base plateau that serves commands as versioned HTTP routes, answers errors by their kind, publishes its OpenAPI contract and Swagger UI, serves the health endpoints, stops gracefully, and replaces the startup entry without editing any other base file
 whenToUse: when an application built on the base plateau must be reachable over HTTP — adding the HTTP entry point, serving a new command over HTTP, or reviewing the HTTP entry point of such an application
-updated: 20261017
+updated: 20261018
 tags:
   - stack
   - concern/architecture
@@ -53,9 +53,9 @@ Declare the request and response bodies as types of the HTTP entry point and map
 - Fix: a request type and a response type per route, with the mapping beside the route.
 
 ### Answer errors by their kind
-Answer a request that cannot be decoded with 400 `INVALID_ARGUMENT` without calling the command, a command rejected by a business rule (the base plateau's invalid error kind) with 400 `INVALID_ARGUMENT` carrying the rule's message, and any other error with 500 `INTERNAL` carrying no internal message.
-- Risk: a client cannot tell its own mistake from the service's, and a 500 that carries the internal error leaks connection strings and stack details.
-- Fix: one error mapping shared by every route; the failure itself is logged by the handler's logging decorator, not written to the client.
+Answer a request that cannot be decoded with 400 `INVALID_ARGUMENT` without calling the command, and every error of a command by [error-kinds](library/develop/core/error-kinds.skill/error-kinds.skill.md)' table — its kind's status and code with the error's message, or 500 `INTERNAL` with no internal message for an error with no kind.
+- Risk: a client cannot tell its own mistake from the service's, the HTTP and gRPC forms of a service answer one outcome differently, and a 500 that carries the internal error leaks connection strings and stack details.
+- Fix: one table shared by every entry point of the application; the failure itself is logged by the handler's logging decorator, not written to the client.
 
 ### Serve the health endpoints
 Serve `/health/live`, `/health/ready`, and `/health` as [devops-service-deploy](library/devops/core/devops-service-deploy.skill/devops-service-deploy.skill.md) defines them, outside the contract's routes, with `/health/ready` answering 503 and naming every readiness check that fails.
@@ -63,9 +63,9 @@ Serve `/health/live`, `/health/ready`, and `/health` as [devops-service-deploy](
 - Fix: liveness checks nothing; readiness runs the checks registered at the readiness extension point.
 
 ### Open the readiness extension point
-Accept readiness checks — a name and a check function — from the composition root, so that a service variation point adds its dependency's check without editing the HTTP entry point.
-- Risk: a readiness endpoint that knows its dependencies must be edited by every service variation point.
-- Fix: the entry point takes a list of checks; the composition root passes one per dependency.
+Accept readiness checks — a name and a check function — from the composition root in the one shape every entry point of the application accepts, so that a service variation point adds its dependency's check once, without editing any entry point.
+- Risk: a readiness endpoint that knows its dependencies must be edited by every service variation point; a check type of each entry point's own makes it write the same check once per entry point.
+- Fix: the entry point takes a list of checks from one shared health package; the composition root passes one per dependency.
 
 ### Stop gracefully
 On termination (`SIGTERM`), stop accepting connections, let requests in flight finish within a bounded time, and return without an error.
@@ -89,7 +89,7 @@ Test the HTTP entry point with the command handlers replaced by fakes, covering 
 
 # Check list
 - [ ] Every exposed command has one `/v{major}/...` route whose request and response types belong to the HTTP entry point.
-- [ ] An undecodable request is 400 without calling the command; a rejected command is 400 with the rule's message; any other error is 500 without the internal message; every error body is `google.rpc.Status`.
+- [ ] An undecodable request is 400 without calling the command; every error of a command is answered by error-kinds' table, an error with no kind as 500 without its message; every error body is `google.rpc.Status`.
 - [ ] The contract, Swagger UI, docs switch, and base path follow api-develop's check list; a scenario holds the served routes against the contract.
 - [ ] `/health/live`, `/health/ready`, and `/health` exist outside the contract; readiness checks are passed in by the composition root.
 - [ ] The server stops gracefully on termination.

@@ -27,6 +27,13 @@ Feature: Command endpoint
     And the error body should have code 3 and a message containing "item titles repeat"
 
   @category/negative
+  Scenario: Every other kind is answered by the error-kinds table
+    Given the command fails with the kind conflict and "the name is taken"
+    When I POST "/v1/echo" with the body '{"text":"a"}'
+    Then the response status should be 409
+    And the error body should have code 6 and a message containing "the name is taken"
+
+  @category/negative
   Scenario: A body that is not JSON is 400 and never reaches the command
     When I POST "/v1/echo" with the body 'not json'
     Then the response status should be 400

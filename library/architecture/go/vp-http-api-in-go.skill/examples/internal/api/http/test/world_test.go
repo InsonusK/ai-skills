@@ -13,6 +13,7 @@ import (
 
 	"github.com/cucumber/godog"
 
+	"github.com/example/todo/internal/api/health"
 	httpapi "github.com/example/todo/internal/api/http"
 	"github.com/example/todo/internal/command/pipeline"
 )
@@ -37,7 +38,7 @@ type World struct {
 
 	cfg     httpapi.Config
 	version string
-	checks  []httpapi.ReadinessCheck
+	checks  []health.Check
 
 	response *httptest.ResponseRecorder
 

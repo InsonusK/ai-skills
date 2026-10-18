@@ -2,7 +2,7 @@
 name: vp-http-api-in-go
 description: The HTTP API variation point in Go — the internal/api/http package copied from templates (settings, the generic Endpoint, the server with health endpoints and graceful stop, the docs), the routes and their request and response types written per application, the hand-written OpenAPI contract, and the startup entry replaced in the entries section of main.go
 whenToUse: when a Go application built on the base plateau must be served over HTTP, when you serve a new command over HTTP in such an application, or when you review its internal/api/http package
-updated: 20261017
+updated: 20261018
 tags:
   - stack/go
   - concern/architecture
@@ -17,6 +17,8 @@ tags:
 - **Copied once, written per command** - `internal/api/http/` holds only code copied from templates — settings, the generic `Endpoint`, the server with `Run`, the docs routes — and is never edited; everything that grows with the API lives in `internal/api/http/endpoint/`, where per command the application writes, in its resource's file, a handler field, a route line, a request and a response type, and their two mappings.
 
 ```
+internal/api/health/health.go  copied; the same file the gRPC variation point copies
+internal/api/rpcstatus/        copied from error-kinds-in-go; the same in every network entry point
 internal/api/http/            copied from templates, never edited
 ├── config.go  endpoint.go  server.go  docs.go
 ├── features/  test/          the fixed code's scenarios, with a test command of their own
@@ -31,7 +33,7 @@ internal/api/http/            copied from templates, never edited
 ## MUST
 
 ### Copy the entry point from templates
-Fill and copy [config.go](./templates/internal/api/http/config.go), [endpoint.go](./templates/internal/api/http/endpoint.go), [server.go](./templates/internal/api/http/server.go), and [docs.go](./templates/internal/api/http/docs.go) to `internal/api/http/`, replacing:
+Fill and copy [config.go](./templates/internal/api/http/config.go), [endpoint.go](./templates/internal/api/http/endpoint.go), [server.go](./templates/internal/api/http/server.go), and [docs.go](./templates/internal/api/http/docs.go) to `internal/api/http/`, [health.go](./templates/internal/api/health/health.go) to `internal/api/health/` unless the gRPC variation point already put the same file there, and `rpcstatus.go` of [error-kinds-in-go](library/develop/go/error-kinds-in-go.skill/error-kinds-in-go.skill.md) with its scenarios (the example's `internal/api/rpcstatus/`) unless another entry point already put them there, replacing:
 
 | Placeholder | Substitute |
 |---|---|
@@ -41,7 +43,7 @@ Fill and copy [config.go](./templates/internal/api/http/config.go), [endpoint.go
 | `{api-title}` | the title shown in Swagger UI |
 
 - Risk: a retyped endpoint or server drifts in its error mapping, health endpoints, or shutdown from every other Go service of the catalog.
-- Fix: copy the four files; after filling, searching them for `{module-path}`, `{contract-name}`, `{contract-package}`, and `{api-title}` returns nothing.
+- Fix: copy the five files; after filling, searching them for `{module-path}`, `{contract-name}`, `{contract-package}`, and `{api-title}` returns nothing.
 
 ### One file per resource in the endpoint package
 Write each resource of the API — the first path segment after the version, with its collection and item paths together (`/v1/users` and `/v1/users/{id}` in `users.go`) — in its own file `internal/api/http/endpoint/{resource}.go`, the counterpart of an ASP.NET controller: an exported `{Resource}Handlers` struct with one `pipeline.Handler[TCommand, TResult]` field per command, an `{resource}Routes(h {Resource}Handlers) []httpapi.Route` returning one `{Pattern: "METHOD /v1/...", Handler: httpapi.Endpoint(handler, decode, encode, status)}` per command, and per route its request and response types with a `decode` and an `encode` function. Keep in `endpoint/routes.go` only `Handlers`, one field per resource, and `Routes`, which concatenates the resources' routes.
@@ -69,7 +71,7 @@ return 0
 
 - Violation: the settings loaded or the server built in `main.go`, the server started outside the `// [entries]` section, or the startup entry kept beside it.
 - Risk: every line of the entry point's start in `main.go` is a line each later variation point's instruction must step around; a kept startup entry runs a command on every start.
-- Fix: import `httpapi "{module-path}/internal/api/http"` and `"{module-path}/internal/api/http/endpoint"`; `Run` reads the settings, builds the server, and serves until `ctx` is cancelled; a service variation point adds its readiness checks as the last arguments of `Run`.
+- Fix: import `httpapi "{module-path}/internal/api/http"` and `"{module-path}/internal/api/http/endpoint"`; `Run` reads the settings, builds the server, and serves until `ctx` is cancelled; a service variation point adds its `health.Check` values as the last arguments of `Run`.
 
 ### Add the Swagger UI module
 Add `github.com/swaggest/swgui` at `v1.8.9` with `go get` and run `go mod tidy`.
@@ -87,7 +89,7 @@ Copy the example's `internal/api/http/features/` and `test/` unchanged but for t
 Serve a further command of an existing resource by adding its field, its route line, and its request and response types with `decode` and `encode` to the resource's file in `endpoint/`, its path to `openapi.json`, its scenario to the resource's feature, and its handler to `endpoint.Handlers` in `main.go`; a new resource adds its file and feature, one field of `Handlers`, and one line of `Routes`.
 
 # Check list
-- [ ] `internal/api/http/{config,endpoint,server,docs}.go` are filled copies of the templates; no placeholder is left.
+- [ ] `internal/api/http/{config,endpoint,server,docs}.go`, `internal/api/health/health.go`, and `internal/api/rpcstatus/rpcstatus.go` are filled copies of the templates; no placeholder is left.
 - [ ] `internal/api/http/` holds only filled template files and their copied scenarios; each resource has its own file in `endpoint/` with its handlers struct, its routes, and per route its request and response types with `decode` and `encode`; `endpoint/routes.go` holds only `Handlers` and `Routes`.
 - [ ] `docs/integration/api/{contract-name}/openapi.json` and `embed.go` exist; the contract scenario passes.
 - [ ] The `// [entries]` section of `main.go` is one `httpapi.Run` call; `internal/api/startup/` is deleted.

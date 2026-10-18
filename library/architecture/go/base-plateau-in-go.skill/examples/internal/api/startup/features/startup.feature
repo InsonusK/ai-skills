@@ -22,6 +22,25 @@ Feature: Startup command
     Then the output should be empty
     And the exit code should be 1
 
+  @category/negative
+  Scenario Outline: The exit code follows the error kind: 1 when a retry may help, 2 otherwise
+    When the process starts with a command rejected with the kind "<kind>"
+    Then the output should be empty
+    And the exit code should be <code>
+
+    Examples:
+      | kind                | code |
+      | invalid             | 2    |
+      | not found           | 2    |
+      | conflict            | 2    |
+      | concurrent change   | 2    |
+      | failed precondition | 2    |
+      | unauthenticated     | 2    |
+      | permission denied   | 2    |
+      | resource exhausted  | 2    |
+      | unimplemented       | 2    |
+      | unavailable         | 1    |
+
   @category/happy
   Scenario: The startup input is a comma-separated environment variable
     Given the environment variable "STARTUP_TITLES" is "buy milk,walk the dog"

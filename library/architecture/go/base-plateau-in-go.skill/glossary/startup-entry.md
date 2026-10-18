@@ -38,7 +38,7 @@ sequenceDiagram
     M->>M: os.Exit(startup.ExitCode(err))
 ```
 
-`ExitCode` maps the [error kind](./error-kind.md): `nil` → `0`, `ErrInvalid` → `2`, anything else → `1`. Logs go to standard error, so standard output holds only the result.
+`ExitCode` maps the [error kind](./error-kind.md): `nil` → `0`, a kind other than unavailable → `2`, unavailable or no kind → `1`. Logs go to standard error, so standard output holds only the result.
 
 ## How it is structured
 
