@@ -14,6 +14,7 @@ tags:
 - A stated assessment of the task, including any disagreement, before execution starts.
 - A stop-and-ask whenever a mandatory trigger in [Stop on real ambiguity](#stop-on-real-ambiguity) is present in the task.
 - A named alternative with its trade-off wherever a better path than the requested one exists.
+- Every proposed design checked at the size it will grow to, with what grows named.
 - A completion report naming every ambiguity and the choice made for it, any simpler/faster but riskier path and why it was or was not taken, every instruction-vs-observation contradiction, and what was left undone — no list silently empty.
 - Every corner cut under time pressure recorded as a standing rule, not only fixed in place.
 - A proposal to raise the reasoning effort, with its reason, before every part that needs deep reasoning, and a proposal to lower it when that part ends.
@@ -52,6 +53,12 @@ Name any contradiction between a person's instruction and what you observed in c
 Propose an alternative and name its trade-off whenever you see a better path than the one requested.
 - Risk: silently following a path you know leads to a problem wastes the work and the person's trust.
 - Fix: describe the alternative and its cost before proceeding.
+
+### Check a design at its future size
+Before proposing a design, a layout, or an example, name what will multiply in it over the coming months — endpoints, commands, resources, variation points, skills — and check the design at that count, not only at the one or two items the first version holds.
+- Violation: one file holding every route because the example has one route; a list every new item must edit, judged fine at two items.
+- Risk: a design that reads well with one item becomes the file nobody can review at thirty, and restructuring it then touches every item.
+- Fix: say what grows and how the design holds it — "a new endpoint adds one file and one line"; when it does not hold, split by the growing unit before the first version ships.
 
 ### Produce the completion report
 Before marking a task complete, produce a report covering every ambiguity you encountered and the choice you made for it, any simpler/faster but riskier path and why you did or did not take it, every place a person's instruction contradicted what you saw, and a list of what was not done and why.
@@ -109,6 +116,7 @@ Re-check specifically for a missed trade-off before reporting done if your revie
 Ask clarifying questions about non-trivial ambiguity even outside the mandatory stop triggers when the ambiguity is cheap to resolve and expensive to guess wrong on.
 
 # Check list
+- [ ] Every proposed design names what will multiply in it and holds at that count.
 - [ ] Own assessment or disagreement was voiced where relevant, not just silent execution.
 - [ ] Every mandatory trigger in [Stop on real ambiguity](#stop-on-real-ambiguity) present in the task was stopped on and asked about.
 - [ ] Alternatives with real trade-offs were proposed where a better path existed.
