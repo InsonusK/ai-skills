@@ -1,0 +1,43 @@
+#!/bin/bash
+# Checks that every code template of the architecture and develop catalogs is
+# the same as the file of a runnable example once its placeholders are filled:
+# a template is copied into real projects, an example is what the scenarios
+# test, and the two must not drift. A template is compared with the file at the
+# same path under its own skill's examples/, or, for a skill with no example
+# (error-kinds-in-go), under the first example of the catalog that has it.
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+
+# The values the examples use for every placeholder.
+fill() {
+    sed -e 's#{module-path}#github.com/example/todo#g' \
+        -e 's#{contract-name}#todo#g' \
+        -e 's#{contract-package}#todo#g' \
+        -e 's#{api-title}#Todo#g' "$1"
+}
+
+status=0 checked=0
+for templates in library/architecture/*/*.skill/templates library/develop/*/*.skill/templates; do
+    [ -d "$templates" ] || continue
+    skill=$(dirname "$templates")
+    while read -r f; do
+        example="$skill/examples/$f"
+        if [ ! -f "$example" ]; then
+            example=$(ls library/architecture/*/*.skill/examples/"$f" 2>/dev/null | head -1 || true)
+        fi
+        if [ -z "$example" ] || [ ! -f "$example" ]; then
+            echo "ERROR $templates/$f: no example has this file" >&2
+            status=1
+            continue
+        fi
+        checked=$((checked + 1))
+        if ! fill "$templates/$f" | cmp -s - "$example"; then
+            echo "ERROR $templates/$f differs from $example once filled" >&2
+            status=1
+        fi
+    done < <(cd "$templates" && find . -type f -name '*.go' | sed 's#^\./##' | sort)
+done
+[ "$status" = 0 ] && echo "templates ok: $checked Go templates match their examples"
+exit "$status"

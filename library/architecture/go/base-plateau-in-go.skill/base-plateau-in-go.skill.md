@@ -1,8 +1,8 @@
 ---
 name: base-plateau-in-go
-description: The base plateau in Go — the package layout of its four layers, the generic Handler contract with its decorators, the invalid error kind, the startup entry and its exit codes, the composition root with its three marked sections, and the scenarios that cover each layer
+description: The base plateau in Go — the package layout of its four layers, the generic Handler contract with its decorators, the error kinds, the startup entry and its exit codes, the composition root with its three marked sections, and the scenarios that cover each layer
 whenToUse: when you create a new Go service or Go CLI application from the architecture catalog, or when you attach a variation point to, or review, a Go application built on the base plateau
-updated: 20261017
+updated: 20261018
 tags:
   - stack/go
   - concern/architecture
@@ -29,9 +29,9 @@ Create the packages [app-layers-in-go](library/develop/go/app-layers-in-go.skill
 |---|---|
 | startup entry | `internal/api/startup` |
 | commands — one file each, nothing else | `internal/command` |
-| [pipeline](./glossary/pipeline.md): handler contract, `HandlerFunc`, decorators, `ErrInvalid` | `internal/command/pipeline` |
+| [pipeline](./glossary/pipeline.md): handler contract, `HandlerFunc`, decorators, the error kinds re-exported | `internal/command/pipeline` |
 | command factories, when an input needs one | `internal/command/factory` |
-| entities, `ErrInvalid` and the rule errors | `internal/domain/entity` |
+| entities, the error kinds (`kinds.go`) and the rule errors | `internal/domain/entity` |
 | domain services | `internal/domain/service` |
 | composition root | `cmd/{app}/main.go` |
 | base settings (`LOG_LEVEL` only) | `internal/config` |
@@ -51,10 +51,10 @@ Put each decorator in its own file of `internal/command/pipeline` — `logging.g
 - Risk: a variation point that brings a decorator edits a base file, and two such variation points edit the same one.
 - Fix: the variation point adds `internal/command/pipeline/{step}.go` and wraps the handlers in the `// [handlers]` section.
 
-### Rule errors wrap entity.ErrInvalid
-Make `ErrInvalid` the [error kind](./glossary/error-kind.md) of every business-rule error: declare `var ErrInvalid = errors.New("invalid")` in `internal/domain/entity`, declare every business-rule error as `fmt.Errorf("%w: {what broke}", ErrInvalid)`, and check the kind with `errors.Is(err, pipeline.ErrInvalid)` outside the domain.
-- Risk: an entry point comparing individual errors must change with every new rule.
-- Fix: wrap the kind in each rule error; the template re-exports it as `pipeline.ErrInvalid`.
+### Errors carry a kind of error-kinds
+Copy `kinds.go` and `pipeline/errors.go` from the templates of [error-kinds-in-go](library/develop/go/error-kinds-in-go.skill/error-kinds-in-go.skill.md), and declare every business-rule error in `internal/domain/entity/errors.go` as `fmt.Errorf("%w: {what broke}", Err{Kind})`, the kind chosen by [error-kinds](library/develop/core/error-kinds.skill/error-kinds.skill.md)'s table — see the [error kind](./glossary/error-kind.md).
+- Risk: an entry point comparing individual errors must change with every new rule; a rule error with the wrong kind tells the caller to fix an input that is correct.
+- Fix: the example's `ErrAlreadyDone` wraps `ErrFailedPrecondition` (the input is valid, the item's state forbids it); the others wrap `ErrInvalid`.
 
 ### One file per command
 Write a command, its result types, and its handler in `internal/command/{command_name}.go`: the command and result as structs (results with `json` tags), the handler as a struct with a `New{Command}Handler` constructor and a `Handle(ctx context.Context, cmd {Command}) ({Command}Result, error)` method.
@@ -89,7 +89,7 @@ Read the base settings from environment variables in `config.Load() (Config, err
 # Check list
 - [ ] Packages follow [Base packages](#base-packages) and [app-layers-in-go](library/develop/go/app-layers-in-go.skill.md).
 - [ ] `internal/command/pipeline/{handler,logging}.go` and `internal/api/startup/startup.go` are filled copies of the templates; none contains `{module-path}`.
-- [ ] Every business-rule error wraps `entity.ErrInvalid`; code outside the domain checks `errors.Is(err, pipeline.ErrInvalid)`.
+- [ ] Every business-rule error wraps one kind of `kinds.go`; code outside the domain checks kinds only through `pipeline`.
 - [ ] Every command lives in its own file in `internal/command` with a handler matching `Handler[TCommand, TResult]`.
 - [ ] Each decorator is in its own file of `internal/command/pipeline`.
 - [ ] `run` in `cmd/{app}/main.go` has the `// [services]`, `// [handlers]`, `// [entries]` sections in this order.

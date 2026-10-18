@@ -18,6 +18,7 @@ func registerCallSteps(sc *godog.ScenarioContext, w *World) {
 	sc.Step(`^the command answers "([^"]*)"$`, w.commandAnswers)
 	sc.Step(`^the command is rejected with "([^"]*)"$`, w.commandRejected)
 	sc.Step(`^the command fails with "([^"]*)"$`, w.commandFails)
+	sc.Step(`^the command fails with the kind conflict and "([^"]*)"$`, w.commandConflicts)
 	sc.Step(`^the command panics$`, w.commandPanics)
 	sc.Step(`^the command takes (\d+) milliseconds and answers "([^"]*)"$`, w.commandTakes)
 	sc.Step(`^I call the test method with "([^"]*)"$`, w.iCall)
@@ -40,6 +41,11 @@ func (w *World) commandRejected(ctx context.Context, message string) error {
 
 func (w *World) commandFails(ctx context.Context, message string) error {
 	w.echoErr = errors.New(message)
+	return nil
+}
+
+func (w *World) commandConflicts(ctx context.Context, message string) error {
+	w.echoErr = fmt.Errorf("%w: %s", pipeline.ErrConflict, message)
 	return nil
 }
 

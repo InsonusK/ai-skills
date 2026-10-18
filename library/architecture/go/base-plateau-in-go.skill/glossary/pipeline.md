@@ -27,7 +27,7 @@ The fittings are added in the composition root's `// [handlers]` section; the en
 | `Handler[TCommand, TResult]` | the contract | every handler (implements), every entry point and decorator (calls) |
 | `HandlerFunc` | a function as a handler | decorators, test stubs |
 | `WithLogging`, later more `With...` — one file each (`logging.go`, ...) | decorators | the composition root |
-| `ErrInvalid` | the error kind | entry points, to choose their response |
+| `ErrInvalid`, `ErrNotFound`, ..., `KindOf` | the error kinds | entry points, to choose their response |
 
 ## Example
 

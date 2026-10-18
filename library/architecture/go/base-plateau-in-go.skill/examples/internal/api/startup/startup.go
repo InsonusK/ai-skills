@@ -16,7 +16,6 @@ package startup
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"io"
 	"os"
 	"strings"
@@ -28,8 +27,8 @@ import (
 // scheduler that started the process reads them to tell the outcomes apart.
 const (
 	ExitOK       = 0 // the command succeeded; its result is on standard output
-	ExitFailure  = 1 // the command failed for a reason other than its input
-	ExitRejected = 2 // the command broke a business rule (pipeline.ErrInvalid)
+	ExitFailure  = 1 // the service failed, or a dependency is unavailable
+	ExitRejected = 2 // the command was rejected: its error has a kind other than unavailable
 )
 
 // EnvList reads the comma-separated environment variable name as a list -
@@ -55,16 +54,17 @@ func Run[TCommand, TResult any](ctx context.Context, handler pipeline.Handler[TC
 	return json.NewEncoder(out).Encode(res)
 }
 
-// ExitCode maps the error Run returned to the process exit code: nil is
-// ExitOK, a command rejected by a business rule is ExitRejected, any other
-// error ExitFailure.
+// ExitCode maps the error Run returned to the process exit code by its kind
+// (skill error-kinds): nil is ExitOK; an error the request caused - any kind
+// but unavailable - is ExitRejected; unavailable, and an error with no kind,
+// are ExitFailure, the outcomes a retry of the same request may change.
 func ExitCode(err error) int {
-	switch {
+	switch kind := pipeline.KindOf(err); {
 	case err == nil:
 		return ExitOK
-	case errors.Is(err, pipeline.ErrInvalid):
-		return ExitRejected
-	default:
+	case kind == nil, kind == pipeline.ErrUnavailable:
 		return ExitFailure
+	default:
+		return ExitRejected
 	}
 }

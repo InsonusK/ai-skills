@@ -2,7 +2,7 @@
 name: base-plateau
 description: The base plateau every application of the architecture catalog starts from — a program that starts, runs exactly one command, reports its result and exits — with its four layers, the direction of their dependencies, and the extension points a variation point attaches to without editing the base
 whenToUse: when you create a new service or CLI application from the architecture catalog, when you write or review a variation point (an API, a client, a store, TaskBox, ...) that attaches to the base plateau, or when you check whether an application still keeps the base plateau's layer and dependency rules
-updated: 20261017
+updated: 20261018
 tags:
   - stack
   - concern/architecture
@@ -37,7 +37,7 @@ Build the base plateau following [app-layers](library/develop/core/app-layers.sk
 | Layer | In the base plateau |
 |---|---|
 | api | the startup entry only; every API variation point adds an entry beside it |
-| command | the commands, their results and handlers, the handler contract, handler decorators, the error kind |
+| command | the commands, their results and handlers, the handler contract, handler decorators, the error kinds |
 | domain | the entities and domain services |
 | service, infrastructure | empty — each arrives with a service variation point |
 | composition root | construction of every concrete type, the base settings |
@@ -50,10 +50,10 @@ Give every command exactly one handler, and give every handler the same contract
 - Risk: a handler with its own shape cannot be wrapped by a decorator or served by an entry point without code written for it alone.
 - Fix: define the contract once in the command layer and make every handler satisfy it.
 
-### Business-rule errors carry one kind
-Make every business-rule error identifiable as one "invalid" kind exposed by the command layer, distinct from any other error.
+### Errors carry a kind of error-kinds
+Give every error a caller can act on one kind of [error-kinds](library/develop/core/error-kinds.skill/error-kinds.skill.md), exposed by the command layer, and leave a failure of the service with none.
 - Risk: an entry point that cannot tell a rejected command from a failure answers a typo with a server error, or a crash with a validation message.
-- Fix: every domain error wraps the invalid kind; an entry point checks the kind, never an individual error.
+- Fix: every such error wraps its kind; an entry point answers the kind through error-kinds' table, never an individual error.
 
 ### Startup command reports through the process interface
 Run the startup command once, write its result to standard output as one machine-readable line, write logs to standard error, and exit `0` on success, `2` when the command is rejected as invalid, and `1` on any other failure.
@@ -98,7 +98,7 @@ Add a cross-cutting step (logging, a unit of work, a metric) as a decorator over
 - [ ] The application starts, runs its one startup command, writes the result as one line to standard output, logs to standard error, and exits `0`, `2`, or `1`.
 - [ ] The api, command, and domain layers exist and follow [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md)'s check list.
 - [ ] Every command has one handler; every handler satisfies the one handler contract.
-- [ ] Every business-rule error carries the command layer's invalid kind.
+- [ ] Every error a caller can act on carries one kind of error-kinds.
 - [ ] Every concrete type is constructed in the composition root, in the `services`, `handlers`, or `entries` section.
 - [ ] The base settings hold only the base plateau's own settings.
 - [ ] A variation point attached to the application changed no base file other than the composition root.

@@ -18,6 +18,7 @@ tags:
 
 ```
 internal/api/health/health.go  copied; the same file the gRPC variation point copies
+internal/api/rpcstatus/        copied from error-kinds-in-go; the same in every network entry point
 internal/api/http/            copied from templates, never edited
 ├── config.go  endpoint.go  server.go  docs.go
 ├── features/  test/          the fixed code's scenarios, with a test command of their own
@@ -32,7 +33,7 @@ internal/api/http/            copied from templates, never edited
 ## MUST
 
 ### Copy the entry point from templates
-Fill and copy [config.go](./templates/internal/api/http/config.go), [endpoint.go](./templates/internal/api/http/endpoint.go), [server.go](./templates/internal/api/http/server.go), and [docs.go](./templates/internal/api/http/docs.go) to `internal/api/http/`, and [health.go](./templates/internal/api/health/health.go) to `internal/api/health/` unless the gRPC variation point already put the same file there, replacing:
+Fill and copy [config.go](./templates/internal/api/http/config.go), [endpoint.go](./templates/internal/api/http/endpoint.go), [server.go](./templates/internal/api/http/server.go), and [docs.go](./templates/internal/api/http/docs.go) to `internal/api/http/`, [health.go](./templates/internal/api/health/health.go) to `internal/api/health/` unless the gRPC variation point already put the same file there, and `rpcstatus.go` of [error-kinds-in-go](library/develop/go/error-kinds-in-go.skill/error-kinds-in-go.skill.md) with its scenarios (the example's `internal/api/rpcstatus/`) unless another entry point already put them there, replacing:
 
 | Placeholder | Substitute |
 |---|---|
@@ -88,7 +89,7 @@ Copy the example's `internal/api/http/features/` and `test/` unchanged but for t
 Serve a further command of an existing resource by adding its field, its route line, and its request and response types with `decode` and `encode` to the resource's file in `endpoint/`, its path to `openapi.json`, its scenario to the resource's feature, and its handler to `endpoint.Handlers` in `main.go`; a new resource adds its file and feature, one field of `Handlers`, and one line of `Routes`.
 
 # Check list
-- [ ] `internal/api/http/{config,endpoint,server,docs}.go` and `internal/api/health/health.go` are filled copies of the templates; no placeholder is left.
+- [ ] `internal/api/http/{config,endpoint,server,docs}.go`, `internal/api/health/health.go`, and `internal/api/rpcstatus/rpcstatus.go` are filled copies of the templates; no placeholder is left.
 - [ ] `internal/api/http/` holds only filled template files and their copied scenarios; each resource has its own file in `endpoint/` with its handlers struct, its routes, and per route its request and response types with `decode` and `encode`; `endpoint/routes.go` holds only `Handlers` and `Routes`.
 - [ ] `docs/integration/api/{contract-name}/openapi.json` and `embed.go` exist; the contract scenario passes.
 - [ ] The `// [entries]` section of `main.go` is one `httpapi.Run` call; `internal/api/startup/` is deleted.
