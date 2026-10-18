@@ -14,6 +14,7 @@ import (
 
 	httpapi "github.com/example/todo/internal/api/http"
 	"github.com/example/todo/internal/command"
+	"github.com/example/todo/internal/command/pipeline"
 )
 
 // logf logs a step's action or observation through stdout, so the line stays
@@ -73,8 +74,8 @@ func registerWorldHooks(sc *godog.ScenarioContext, w *World) {
 }
 
 // planItems is the fake handler: it records the command and answers what the scenario set.
-func (w *World) planItems() command.Handler[command.PlanItems, command.PlanItemsResult] {
-	return command.HandlerFunc[command.PlanItems, command.PlanItemsResult](
+func (w *World) planItems() pipeline.Handler[command.PlanItems, command.PlanItemsResult] {
+	return pipeline.HandlerFunc[command.PlanItems, command.PlanItemsResult](
 		func(_ context.Context, cmd command.PlanItems) (command.PlanItemsResult, error) {
 			w.planCalled = true
 			w.planGot = cmd
@@ -96,5 +97,5 @@ func (w *World) send(method, path, body string) {
 
 // errRejected is a business-rule error as the command layer returns it.
 func errRejected(message string) error {
-	return fmt.Errorf("%w: %s", command.ErrInvalid, message)
+	return fmt.Errorf("%w: %s", pipeline.ErrInvalid, message)
 }

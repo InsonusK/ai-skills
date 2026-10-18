@@ -13,6 +13,7 @@ import (
 
 	httpapi "github.com/example/todo/internal/api/http"
 	"github.com/example/todo/internal/command"
+	"github.com/example/todo/internal/command/pipeline"
 	"github.com/example/todo/internal/config"
 	"github.com/example/todo/internal/version"
 )
@@ -38,8 +39,8 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 	// [services] - infrastructure and the services over it; none in the base plateau.
 
 	// [handlers] - one per command, wrapped by its decorators.
-	var planItems command.Handler[command.PlanItems, command.PlanItemsResult] = command.NewPlanItemsHandler()
-	planItems = command.WithLogging("PlanItems", logger, planItems)
+	var planItems pipeline.Handler[command.PlanItems, command.PlanItemsResult] = command.NewPlanItemsHandler()
+	planItems = pipeline.WithLogging("PlanItems", logger, planItems)
 
 	// [entries] - every entry point.
 	httpConfig, err := httpapi.LoadConfig()

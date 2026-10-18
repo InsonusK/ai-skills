@@ -1,7 +1,6 @@
 package test
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 
@@ -20,9 +19,6 @@ func logf(format string, args ...any) {
 type World struct {
 	result command.PlanItemsResult
 	err    error
-
-	logs    bytes.Buffer
-	wrapped command.Handler[string, string]
 }
 
 func (w *World) reset() { *w = World{} }

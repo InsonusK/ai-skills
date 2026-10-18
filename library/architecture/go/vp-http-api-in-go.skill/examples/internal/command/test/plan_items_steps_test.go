@@ -9,6 +9,7 @@ import (
 	"github.com/cucumber/godog"
 
 	"github.com/example/todo/internal/command"
+	"github.com/example/todo/internal/command/pipeline"
 )
 
 func registerPlanItemsSteps(sc *godog.ScenarioContext, w *World) {
@@ -42,8 +43,8 @@ func (w *World) theResultShouldList(ctx context.Context, titles string) error {
 
 func (w *World) theCommandShouldBeRejected(ctx context.Context) error {
 	logf("then: err=%v", w.err)
-	if !errors.Is(w.err, command.ErrInvalid) {
-		return fmt.Errorf("error: got %v, want one wrapping command.ErrInvalid", w.err)
+	if !errors.Is(w.err, pipeline.ErrInvalid) {
+		return fmt.Errorf("error: got %v, want one wrapping pipeline.ErrInvalid", w.err)
 	}
 	return nil
 }

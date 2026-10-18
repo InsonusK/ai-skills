@@ -7,7 +7,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/example/todo/internal/command"
+	"github.com/example/todo/internal/command/pipeline"
 )
 
 // Endpoint turns one command handler into an HTTP handler. It is written once
@@ -23,7 +23,7 @@ import (
 // decode and encode belong to the route (routes.go): the request and response
 // shapes are the HTTP contract, owned by this package, never the command's types.
 func Endpoint[TCommand, TResult any](
-	handler command.Handler[TCommand, TResult],
+	handler pipeline.Handler[TCommand, TResult],
 	decode func(r *http.Request) (TCommand, error),
 	encode func(result TResult) any,
 	successStatus int,
@@ -76,10 +76,10 @@ type statusBody struct {
 }
 
 // writeError answers an error by its kind: a command rejected by a business
-// rule (command.ErrInvalid) is 400 INVALID_ARGUMENT with the rule's message;
+// rule (pipeline.ErrInvalid) is 400 INVALID_ARGUMENT with the rule's message;
 // any other error is 500 INTERNAL, without the internal message.
 func writeError(w http.ResponseWriter, err error) {
-	if errors.Is(err, command.ErrInvalid) {
+	if errors.Is(err, pipeline.ErrInvalid) {
 		writeStatus(w, codeInvalidArgument, err.Error())
 		return
 	}

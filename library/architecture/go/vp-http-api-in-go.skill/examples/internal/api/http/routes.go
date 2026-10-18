@@ -4,12 +4,13 @@ import (
 	"net/http"
 
 	"github.com/example/todo/internal/command"
+	"github.com/example/todo/internal/command/pipeline"
 )
 
 // Handlers are the command handlers this API serves; the composition root
 // fills them. A new command served over HTTP adds a field here.
 type Handlers struct {
-	PlanItems command.Handler[command.PlanItems, command.PlanItemsResult]
+	PlanItems pipeline.Handler[command.PlanItems, command.PlanItemsResult]
 }
 
 // contractRoutes are the operations of the published contract

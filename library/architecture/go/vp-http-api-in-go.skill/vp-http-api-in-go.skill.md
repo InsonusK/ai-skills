@@ -34,7 +34,7 @@ Fill and copy [config.go](./templates/internal/api/http/config.go), [endpoint.go
 - Fix: copy the four files; after filling, searching them for `{module-path}`, `{contract-name}`, `{contract-package}`, and `{api-title}` returns nothing.
 
 ### Write the routes in routes.go
-Write `internal/api/http/routes.go` with a `Handlers` struct holding one `command.Handler[TCommand, TResult]` field per served command, a `contractRoutes(h Handlers) []Route` returning one `{"METHOD /v1/...", Endpoint(handler, decode, encode, status)}` per command, and, per route, its request and response types with a `decode` and an `encode` function.
+Write `internal/api/http/routes.go` with a `Handlers` struct holding one `pipeline.Handler[TCommand, TResult]` field per served command, a `contractRoutes(h Handlers) []Route` returning one `{"METHOD /v1/...", Endpoint(handler, decode, encode, status)}` per command, and, per route, its request and response types with a `decode` and an `encode` function.
 - Violation: a route registered outside `contractRoutes`, or a command's result type encoded as the response.
 - Risk: a route outside the list escapes the contract scenario; an encoded command type ties the published contract to the command layer.
 - Fix: follow the shape of the example's [routes.go](./examples/internal/api/http/routes.go); decode a JSON body with `DecodeJSON[TBody](r)`.
@@ -72,7 +72,7 @@ Add `github.com/swaggest/swgui` at `v1.8.9` with `go get` and run `go mod tidy`.
 - Fix: commit `go.mod` and `go.sum` with the version above.
 
 ### Cover the entry point with scenarios
-Cover `internal/api/http` with the five features of the example — the API with faked handlers (`command.HandlerFunc`), the health endpoints, the docs under a prefix and switched off, the settings, and the graceful stop — tagged `@type/api/http` and `@type/tech-check`, plus the contract scenario of api-develop-in-go.
+Cover `internal/api/http` with the five features of the example — the API with faked handlers (`pipeline.HandlerFunc`), the health endpoints, the docs under a prefix and switched off, the settings, and the graceful stop — tagged `@type/api/http` and `@type/tech-check`, plus the contract scenario of api-develop-in-go.
 - Risk: a variation point without scenarios lets a change in the error mapping or the shutdown reach production unnoticed.
 - Fix: copy the example's `features/` and `test/` and adapt the API feature to the application's routes; `make test-kind-unit` passes.
 
