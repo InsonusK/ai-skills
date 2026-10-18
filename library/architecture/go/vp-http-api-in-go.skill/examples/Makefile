@@ -1,12 +1,10 @@
 SHELL := /bin/bash
 
-.PHONY: init build run lint
+.PHONY: init build run test lint
 
-# Run once after cloning: the module's dependencies, and the mutation tool the mutation
-# kind would otherwise install on its first run.
+# Run once after cloning: the module's dependencies.
 init:
 	go mod download
-	go install github.com/go-gremlins/gremlins/cmd/gremlins@v0.6.0
 
 build:
 	go build -o bin/todo ./cmd/todo
@@ -15,9 +13,11 @@ build:
 run: build
 	HTTP_API_DOCS_ENABLED=true ./bin/todo
 
+# Every Cucumber scenario of every package (godog runs inside go test).
+# A real project adds its testing contract (kinds, reports, mutation) per
+# solution-conformance-testing-in-go; this example leaves it out.
+test:
+	go test ./...
+
 lint:
 	go vet ./...
-
-# Testing contract: test-kinds, test-kind-<kind>, test-report, test-readme-check, test-and-report.
-# The kinds are the scripts in tools/testing/kinds/ - see solution-conformance-testing.
-include tools/testing/testing.mk

@@ -74,7 +74,7 @@ Add `github.com/swaggest/swgui` at `v1.8.9` with `go get` and run `go mod tidy`.
 ### Cover the entry point with scenarios
 Cover `internal/api/http` with the five features of the example — the API with faked handlers (`pipeline.HandlerFunc`), the health endpoints, the docs under a prefix and switched off, the settings, and the graceful stop — tagged `@type/api/http` and `@type/tech-check`, plus the contract scenario of api-develop-in-go.
 - Risk: a variation point without scenarios lets a change in the error mapping or the shutdown reach production unnoticed.
-- Fix: copy the example's `features/` and `test/` and adapt the API feature to the application's routes; `make test-kind-unit` passes.
+- Fix: copy the example's `features/` and `test/` and adapt the API feature to the application's routes; `make test` passes.
 
 ## SHOULD
 
@@ -87,8 +87,8 @@ Serve a further command by adding its field to `Handlers`, its line to `contract
 - [ ] `docs/integration/api/{contract-name}/openapi.json` and `embed.go` exist; the contract scenario passes.
 - [ ] The `// [entries]` section of `main.go` starts the server; `internal/api/startup/` is deleted.
 - [ ] `github.com/swaggest/swgui` is pinned at `v1.8.9`.
-- [ ] `make test-kind-unit` passes with the five HTTP features.
+- [ ] `make test` passes with the five HTTP features.
 - [ ] `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).
 
 # Example
-- [examples/](./examples/README.md) — the base plateau's to-do planner with the HTTP API attached: `make run`, `make test-kind-unit`.
+- [examples/](./examples/README.md) — the base plateau's to-do planner with the HTTP API attached: `make run`, `make test`.
