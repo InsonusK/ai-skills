@@ -9,40 +9,35 @@ import (
 	"strings"
 
 	"github.com/cucumber/godog"
-
-	"github.com/example/todo/internal/command"
 )
 
 func registerAPISteps(sc *godog.ScenarioContext, w *World) {
-	sc.Step(`^the PlanItems handler returns the items "([^"]*)"$`, w.planReturns)
-	sc.Step(`^the PlanItems handler rejects the command with "([^"]*)"$`, w.planRejects)
-	sc.Step(`^the PlanItems handler fails with "([^"]*)"$`, w.planFails)
+	sc.Step(`^the command answers "([^"]*)"$`, w.commandAnswers)
+	sc.Step(`^the command is rejected with "([^"]*)"$`, w.commandRejected)
+	sc.Step(`^the command fails with "([^"]*)"$`, w.commandFails)
 	sc.Step(`^I POST "([^"]*)" with the body '([^']*)'$`, w.iPOST)
 	sc.Step(`^I GET "([^"]*)"$`, w.iGET)
 	sc.Step(`^the response status should be (\d+)$`, w.theResponseStatusShouldBe)
 	sc.Step(`^the response body should be '([^']*)'$`, w.theResponseBodyShouldBe)
 	sc.Step(`^the response body should mention "([^"]*)"$`, w.theResponseBodyShouldMention)
-	sc.Step(`^the PlanItems handler should have received the titles "([^"]*)"$`, w.planShouldHaveReceived)
-	sc.Step(`^the PlanItems handler should not have been called$`, w.planShouldNotHaveBeenCalled)
+	sc.Step(`^the command should have received "([^"]*)"$`, w.commandShouldHaveReceived)
+	sc.Step(`^the command should not have been called$`, w.commandShouldNotHaveBeenCalled)
 	sc.Step(`^the error body should have code (\d+) and a message containing "([^"]*)"$`, w.errorBodyContaining)
 	sc.Step(`^the error body should have code (\d+) and the message "([^"]*)"$`, w.errorBodyExactly)
 }
 
-func (w *World) planReturns(ctx context.Context, titles string) error {
-	w.planResult = command.PlanItemsResult{}
-	for _, title := range strings.Split(titles, "|") {
-		w.planResult.Items = append(w.planResult.Items, command.ItemView{Title: title})
-	}
+func (w *World) commandAnswers(ctx context.Context, text string) error {
+	w.echoAnswer = text
 	return nil
 }
 
-func (w *World) planRejects(ctx context.Context, message string) error {
-	w.planErr = errRejected(message)
+func (w *World) commandRejected(ctx context.Context, message string) error {
+	w.echoErr = errRejected(message)
 	return nil
 }
 
-func (w *World) planFails(ctx context.Context, message string) error {
-	w.planErr = errors.New(message)
+func (w *World) commandFails(ctx context.Context, message string) error {
+	w.echoErr = errors.New(message)
 	return nil
 }
 
@@ -77,16 +72,16 @@ func (w *World) theResponseBodyShouldMention(ctx context.Context, text string) e
 	return nil
 }
 
-func (w *World) planShouldHaveReceived(ctx context.Context, titles string) error {
-	if got := strings.Join(w.planGot.Titles, "|"); !w.planCalled || got != titles {
-		return fmt.Errorf("handler received %q (called=%v), want %q", got, w.planCalled, titles)
+func (w *World) commandShouldHaveReceived(ctx context.Context, text string) error {
+	if !w.echoCalled || w.echoGot.Text != text {
+		return fmt.Errorf("handler received %q (called=%v), want %q", w.echoGot.Text, w.echoCalled, text)
 	}
 	return nil
 }
 
-func (w *World) planShouldNotHaveBeenCalled(ctx context.Context) error {
-	if w.planCalled {
-		return fmt.Errorf("handler was called with %+v", w.planGot)
+func (w *World) commandShouldNotHaveBeenCalled(ctx context.Context) error {
+	if w.echoCalled {
+		return fmt.Errorf("handler was called with %+v", w.echoGot)
 	}
 	return nil
 }

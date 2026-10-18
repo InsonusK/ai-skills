@@ -41,10 +41,10 @@ Serve each exposed command at exactly one route, whose handler decodes the reque
 - Fix: one command per route; a choice that depends on state goes to a command factory per app-layers.
 
 ### Group routes by resource
-Keep the routes of each resource — the first path segment after the version — together with their request and response types and mappings in one unit of the entry point (a file, a controller), and keep the list of all routes to one line per resource.
+Keep the routes of each resource — the first path segment after the version, its collection and item paths together — with their request and response types and mappings in one unit (a file, a controller), keep the list of all routes to one line per resource, and keep these units apart from the entry point's fixed code, which is the same in every application.
 - Violation: every route of the API in one file or class.
 - Risk: the unit holding every route grows with each command until it cannot be read or reviewed, and two changes to different resources conflict in it.
-- Fix: one unit per resource; adding a command to a resource changes only that unit, the contract, and the composition root.
+- Fix: one unit per resource in a folder of its own; adding a command to a resource changes only that unit, the contract, and the composition root.
 
 ### Request and response types belong to the entry point
 Declare the request and response bodies as types of the HTTP entry point and map them to and from the command and its result.

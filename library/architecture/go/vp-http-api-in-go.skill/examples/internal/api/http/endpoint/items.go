@@ -1,8 +1,9 @@
-package http
+package endpoint
 
 import (
 	"net/http"
 
+	httpapi "github.com/example/todo/internal/api/http"
 	"github.com/example/todo/internal/command"
 	"github.com/example/todo/internal/command/pipeline"
 )
@@ -18,10 +19,10 @@ type ItemHandlers struct {
 }
 
 // itemRoutes are the items operations of the published contract.
-func itemRoutes(h ItemHandlers) []Route {
-	return []Route{
+func itemRoutes(h ItemHandlers) []httpapi.Route {
+	return []httpapi.Route{
 		// 200: planning creates nothing that is kept, and its work is done.
-		{"POST /v1/items/plan", Endpoint(h.PlanItems, decodePlanItems, encodePlanItems, http.StatusOK)},
+		{Pattern: "POST /v1/items/plan", Handler: httpapi.Endpoint(h.PlanItems, decodePlanItems, encodePlanItems, http.StatusOK)},
 	}
 }
 
@@ -41,7 +42,7 @@ type itemResponse struct {
 }
 
 func decodePlanItems(r *http.Request) (command.PlanItems, error) {
-	body, err := DecodeJSON[planItemsRequest](r)
+	body, err := httpapi.DecodeJSON[planItemsRequest](r)
 	if err != nil {
 		return command.PlanItems{}, err
 	}

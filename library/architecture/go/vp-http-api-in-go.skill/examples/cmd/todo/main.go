@@ -12,6 +12,7 @@ import (
 	"syscall"
 
 	httpapi "github.com/example/todo/internal/api/http"
+	"github.com/example/todo/internal/api/http/endpoint"
 	"github.com/example/todo/internal/command"
 	"github.com/example/todo/internal/command/pipeline"
 	"github.com/example/todo/internal/config"
@@ -43,8 +44,8 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 	planItems = pipeline.WithLogging("PlanItems", logger, planItems)
 
 	// [entries] - every entry point.
-	handlers := httpapi.Handlers{Items: httpapi.ItemHandlers{PlanItems: planItems}}
-	if err := httpapi.Run(ctx, handlers, logger); err != nil {
+	routes := endpoint.Routes(endpoint.Handlers{Items: endpoint.ItemHandlers{PlanItems: planItems}})
+	if err := httpapi.Run(ctx, routes, logger); err != nil {
 		logger.Error("http api stopped", "error", err)
 		return 1
 	}

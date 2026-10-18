@@ -41,30 +41,21 @@ type Server struct {
 // Run is the HTTP entry point's one call from the composition root: it reads
 // the settings, builds the server, and serves until ctx is cancelled. It
 // returns nil after a graceful stop, or the error that stopped the entry
-// point. checks are the readiness checks a service variation point adds.
-func Run(ctx context.Context, handlers Handlers, logger *slog.Logger, checks ...ReadinessCheck) error {
+// point. routes are the contract's operations - endpoint.Routes in the
+// application's endpoint package; checks are the readiness checks a service
+// variation point adds.
+func Run(ctx context.Context, routes []Route, logger *slog.Logger, checks ...ReadinessCheck) error {
 	cfg, err := LoadConfig()
 	if err != nil {
 		return err
 	}
-	return NewServer(cfg, version.Version, handlers, logger, checks...).Serve(ctx)
+	return NewServer(cfg, version.Version, routes, logger, checks...).Serve(ctx)
 }
 
-// NewServer builds the server for the command handlers in handlers; the routes
-// come from contractRoutes (routes.go). Tests build it directly; the
-// composition root calls Run.
-func NewServer(cfg Config, version string, handlers Handlers, logger *slog.Logger, checks ...ReadinessCheck) *Server {
-	return &Server{cfg: cfg, version: version, routes: contractRoutes(handlers), checks: checks, logger: logger}
-}
-
-// ContractRoutes lists the served operations of the published contract as
-// "METHOD /path" patterns, for the scenario that holds them against the spec.
-func (s *Server) ContractRoutes() []string {
-	patterns := make([]string, len(s.routes))
-	for i, route := range s.routes {
-		patterns[i] = route.Pattern
-	}
-	return patterns
+// NewServer builds the server for the contract routes. Tests build it
+// directly; the composition root calls Run.
+func NewServer(cfg Config, version string, routes []Route, logger *slog.Logger, checks ...ReadinessCheck) *Server {
+	return &Server{cfg: cfg, version: version, routes: routes, checks: checks, logger: logger}
 }
 
 // Handler registers every route on one ServeMux: the contract routes, then the

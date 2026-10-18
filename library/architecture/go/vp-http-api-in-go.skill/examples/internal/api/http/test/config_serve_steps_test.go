@@ -81,8 +81,8 @@ func (w *World) startServing(port string) {
 	w.stop = cancel
 	w.served = make(chan error, 1)
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
-	handlers := httpapi.Handlers{Items: httpapi.ItemHandlers{PlanItems: w.planItems()}}
-	go func() { w.served <- httpapi.Run(ctx, handlers, logger) }()
+	routes := w.routes()
+	go func() { w.served <- httpapi.Run(ctx, routes, logger) }()
 }
 
 func (w *World) theServerIsServing(ctx context.Context) error {
