@@ -11,6 +11,7 @@ import (
 
 	"github.com/example/todo/internal/api/startup"
 	"github.com/example/todo/internal/command"
+	"github.com/example/todo/internal/command/pipeline"
 )
 
 func registerStartupSteps(sc *godog.ScenarioContext, w *World) {
@@ -34,7 +35,7 @@ func (w *World) theProcessStartsWithPlanItems(ctx context.Context, titles string
 }
 
 func (w *World) theProcessStartsWithFailingHandler(ctx context.Context, message string) error {
-	failing := command.HandlerFunc[string, string](func(context.Context, string) (string, error) {
+	failing := pipeline.HandlerFunc[string, string](func(context.Context, string) (string, error) {
 		return "", errors.New(message)
 	})
 	err := startup.Run(ctx, failing, "cmd", &w.out)

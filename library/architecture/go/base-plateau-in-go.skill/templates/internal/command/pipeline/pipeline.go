@@ -1,8 +1,15 @@
 // Source: skill base-plateau-in-go
 
-// Package command holds the commands and their handlers: the only surface
-// an entry point (internal/api/...) calls. An entry point never imports domain.
-package command
+// Package pipeline is the path every command takes from an entry point to its
+// handler: the one Handler contract all handlers satisfy, the decorators that
+// wrap a handler with a cross-cutting step (logging now; a unit of work or a
+// metric later), and the error kind an entry point maps to its response.
+//
+// It holds no command. The commands live one level up, in package command;
+// entry points import both - command for the command types, pipeline for the
+// contract and the error kind. (In dotnet the same role is played by MediatR's
+// IRequestHandler and its pipeline behaviors.)
+package pipeline
 
 import (
 	"context"
@@ -14,7 +21,7 @@ import (
 
 // ErrInvalid is the error kind of a command rejected for breaking a business
 // rule. Every business-rule error wraps it, so an entry point checks
-// errors.Is(err, command.ErrInvalid) and answers with its own "bad request"
+// errors.Is(err, pipeline.ErrInvalid) and answers with its own "bad request"
 // (exit code 2, HTTP 400, ...) without knowing the individual rules.
 // It is the entity package's sentinel re-exported, so entry points never import domain.
 var ErrInvalid = entity.ErrInvalid

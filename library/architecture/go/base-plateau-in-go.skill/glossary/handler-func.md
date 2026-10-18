@@ -45,7 +45,7 @@ flowchart LR
 
 ```go
 // internal/api/startup/test/startup_steps_test.go - a stub handler in one line
-failing := command.HandlerFunc[string, string](func(context.Context, string) (string, error) {
+failing := pipeline.HandlerFunc[string, string](func(context.Context, string) (string, error) {
     return "", errors.New(message)
 })
 ```

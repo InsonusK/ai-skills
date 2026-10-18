@@ -46,7 +46,7 @@ the `spec/` skills come along because every stack skill links its spec.
 |---|---|---|---|
 | Entity | `internal/domain/entity` | `src/{package}/domain/entity` | `src/Modules/{Module}/{Module}.Domain/Entities` |
 | Domain service | `internal/domain/service` | `src/{package}/domain/service` | `src/Modules/{Module}/{Module}.Domain/Services` |
-| Commands + handlers | `internal/command` | `src/{package}/command` | `src/Modules/{Module}/{Module}.Application` (command types in `{Module}.Interfaces`) |
+| Commands + handlers | `internal/command` (contract and decorators in `internal/command/pipeline`) | `src/{package}/command` | `src/Modules/{Module}/{Module}.Application` (command types in `{Module}.Interfaces`) |
 | API (entries) | `internal/api/{transport}` | `src/{package}/api/{transport}` | `src/App/App.Host/Api/{Transport}` |
 | Service | `internal/service` | `src/{package}/service` | to be decided with the dotnet base |
 | Infrastructure | `internal/infrastructure/{kind}` | `src/{package}/infrastructure/{kind}` | `src/Infrastructure/{Kind}` |

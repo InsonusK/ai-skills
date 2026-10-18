@@ -28,7 +28,9 @@ Place each layer of [app-layers](library/develop/core/app-layers.skill/app-layer
 | Layer | Package |
 |---|---|
 | api | `internal/api/{transport}` (`http`, `grpc`, `cli`, `kafka`, ...) |
-| command, command factory | `internal/command` — a factory in `{input}_command_factory.go` |
+| command | `internal/command` — one file per command, nothing else |
+| command pipeline (handler contract, decorators, error kind) | `internal/command/pipeline` |
+| command factory | `internal/command/factory` |
 | entity | `internal/domain/entity` |
 | domain service | `internal/domain/service`, imported as `domainservice` |
 | service | `internal/service` |

@@ -2,7 +2,8 @@
 
 // Package startup is the base plateau's only entry point: the process runs one
 // command when it starts. Like every entry point, it knows the command
-// package (commands and the Handler contract) and nothing below it.
+// package (the command types) and the pipeline package (the Handler contract
+// and the error kind), and nothing below them.
 //
 // It exists only in the base plateau. When an API variation point is attached
 // (HTTP, gRPC, CLI, a listener), its entry replaces the startup lines in the
@@ -20,7 +21,7 @@ import (
 	"os"
 	"strings"
 
-	"{module-path}/internal/command"
+	"{module-path}/internal/command/pipeline"
 )
 
 // Exit codes of a process whose work is the startup command. A script or a
@@ -28,7 +29,7 @@ import (
 const (
 	ExitOK       = 0 // the command succeeded; its result is on standard output
 	ExitFailure  = 1 // the command failed for a reason other than its input
-	ExitRejected = 2 // the command broke a business rule (command.ErrInvalid)
+	ExitRejected = 2 // the command broke a business rule (pipeline.ErrInvalid)
 )
 
 // EnvList reads the comma-separated environment variable name as a list -
@@ -46,7 +47,7 @@ func EnvList(name string) []string {
 // Run executes cmd once through handler and writes the result to out as one
 // JSON line. It works with any command: TCommand and TResult are taken from
 // the handler it is given. On error nothing is written and the error is returned.
-func Run[TCommand, TResult any](ctx context.Context, handler command.Handler[TCommand, TResult], cmd TCommand, out io.Writer) error {
+func Run[TCommand, TResult any](ctx context.Context, handler pipeline.Handler[TCommand, TResult], cmd TCommand, out io.Writer) error {
 	res, err := handler.Handle(ctx, cmd)
 	if err != nil {
 		return err
@@ -61,7 +62,7 @@ func ExitCode(err error) int {
 	switch {
 	case err == nil:
 		return ExitOK
-	case errors.Is(err, command.ErrInvalid):
+	case errors.Is(err, pipeline.ErrInvalid):
 		return ExitRejected
 	default:
 		return ExitFailure
