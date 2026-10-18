@@ -43,14 +43,9 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 	planItems = pipeline.WithLogging("PlanItems", logger, planItems)
 
 	// [entries] - every entry point.
-	httpConfig, err := httpapi.LoadConfig()
-	if err != nil {
-		logger.Error("startup failed", "error", err)
-		return 1
-	}
-	server := httpapi.NewServer(httpConfig, version.Version, httpapi.Handlers{PlanItems: planItems}, logger)
-	if err := server.Serve(ctx); err != nil {
-		logger.Error("http server failed", "error", err)
+	handlers := httpapi.Handlers{Items: httpapi.ItemHandlers{PlanItems: planItems}}
+	if err := httpapi.Run(ctx, handlers, logger); err != nil {
+		logger.Error("http api stopped", "error", err)
 		return 1
 	}
 	return 0

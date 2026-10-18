@@ -20,7 +20,7 @@ import (
 //  4. encode turns the result (TResult) into the response body, written as
 //     JSON with successStatus (201 created, 202 accepted, 200 otherwise).
 //
-// decode and encode belong to the route (routes.go): the request and response
+// decode and encode belong to the route (its resource file, e.g. items.go): the request and response
 // shapes are the HTTP contract, owned by this package, never the command's types.
 func Endpoint[TCommand, TResult any](
 	handler pipeline.Handler[TCommand, TResult],

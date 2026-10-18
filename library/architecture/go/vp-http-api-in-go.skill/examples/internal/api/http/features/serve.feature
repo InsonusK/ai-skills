@@ -15,3 +15,8 @@ Feature: Server lifecycle
     Given the port the server wants is already taken
     When the server starts
     Then the server should stop with an error
+
+  @category/negative
+  Scenario: An unusable setting stops the server before it listens
+    When the server starts with the port "http"
+    Then the server should stop with an error mentioning "HTTP_LISTEN_PORT"

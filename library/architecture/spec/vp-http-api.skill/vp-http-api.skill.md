@@ -40,6 +40,12 @@ Serve each exposed command at exactly one route, whose handler decodes the reque
 - Risk: business logic moves into the HTTP layer and every other entry point must repeat it.
 - Fix: one command per route; a choice that depends on state goes to a command factory per app-layers.
 
+### Group routes by resource
+Keep the routes of each resource — the first path segment after the version — together with their request and response types and mappings in one unit of the entry point (a file, a controller), and keep the list of all routes to one line per resource.
+- Violation: every route of the API in one file or class.
+- Risk: the unit holding every route grows with each command until it cannot be read or reviewed, and two changes to different resources conflict in it.
+- Fix: one unit per resource; adding a command to a resource changes only that unit, the contract, and the composition root.
+
 ### Request and response types belong to the entry point
 Declare the request and response bodies as types of the HTTP entry point and map them to and from the command and its result.
 - Violation: the command's result type encoded directly as the response.
@@ -72,7 +78,7 @@ Read `HTTP_LISTEN_PORT` (default `8080`), `HTTP_BASE_PATH`, and `HTTP_API_DOCS_E
 - Fix: a settings loader in the entry point, called from the composition root's `entries` section.
 
 ### Attach by replacing the startup entry
-Attach the entry point by adding its package and the contract folder, replacing the startup lines in the composition root's `entries` section with starting the server, deleting the startup entry, and changing no other base file than the composition root and the module's dependency, build, and readme files.
+Attach the entry point by adding its package and the contract folder, replacing the startup lines in the composition root's `entries` section with one call that reads the entry point's settings, builds it, and serves until termination, deleting the startup entry, and changing no other base file than the composition root and the module's dependency, build, and readme files.
 - Risk: any other base file changed by the HTTP variation point must be described together with every variation point that touches it.
 - Fix: the stack extension lists the base files it changes; a check compares its example with the base example against that list.
 
@@ -88,4 +94,5 @@ Test the HTTP entry point with the command handlers replaced by fakes, covering 
 - [ ] `/health/live`, `/health/ready`, and `/health` exist outside the contract; readiness checks are passed in by the composition root.
 - [ ] The server stops gracefully on termination.
 - [ ] The entry point reads its own three settings; the base settings gained nothing.
-- [ ] The startup entry is gone; no base file changed but the composition root and the module's dependency, build, and readme files.
+- [ ] Routes are grouped by resource, one unit each.
+- [ ] The `entries` section starts the entry point with one call; the startup entry is gone; no base file changed but the composition root and the module's dependency, build, and readme files.

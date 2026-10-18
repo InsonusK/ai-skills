@@ -9,6 +9,8 @@ import (
 	"net"
 	"net/http"
 	"time"
+
+	"{module-path}/internal/version"
 )
 
 // Route is one operation of the published contract: a "METHOD /path" pattern
@@ -36,8 +38,21 @@ type Server struct {
 	logger  *slog.Logger
 }
 
+// Run is the HTTP entry point's one call from the composition root: it reads
+// the settings, builds the server, and serves until ctx is cancelled. It
+// returns nil after a graceful stop, or the error that stopped the entry
+// point. checks are the readiness checks a service variation point adds.
+func Run(ctx context.Context, handlers Handlers, logger *slog.Logger, checks ...ReadinessCheck) error {
+	cfg, err := LoadConfig()
+	if err != nil {
+		return err
+	}
+	return NewServer(cfg, version.Version, handlers, logger, checks...).Serve(ctx)
+}
+
 // NewServer builds the server for the command handlers in handlers; the routes
-// come from contractRoutes (routes.go).
+// come from contractRoutes (routes.go). Tests build it directly; the
+// composition root calls Run.
 func NewServer(cfg Config, version string, handlers Handlers, logger *slog.Logger, checks ...ReadinessCheck) *Server {
 	return &Server{cfg: cfg, version: version, routes: contractRoutes(handlers), checks: checks, logger: logger}
 }

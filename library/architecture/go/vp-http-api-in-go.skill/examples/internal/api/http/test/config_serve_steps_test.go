@@ -29,6 +29,8 @@ func registerConfigServeSteps(sc *godog.ScenarioContext, w *World) {
 	sc.Step(`^the port the server wants is already taken$`, w.thePortIsTaken)
 	sc.Step(`^the server starts$`, w.theServerStarts)
 	sc.Step(`^the server should stop with an error$`, w.theServerShouldStopWithAnError)
+	sc.Step(`^the server starts with the port "([^"]*)"$`, w.theServerStartsWithThePort)
+	sc.Step(`^the server should stop with an error mentioning "([^"]*)"$`, w.theServerShouldStopWithAnErrorMentioning)
 }
 
 func (w *World) theEnvironmentVariableIs(ctx context.Context, name, value string) error {
@@ -69,14 +71,18 @@ func (w *World) loadingShouldFailMentioning(ctx context.Context, text string) er
 	return nil
 }
 
-// startServing runs Serve in the background with a cancellable context.
+// startServing runs Run - the composition root's one call - in the background
+// with a cancellable context, the port set through its environment variable.
 func (w *World) startServing(port string) {
+	if err := os.Setenv("HTTP_LISTEN_PORT", port); err != nil {
+		panic(err)
+	}
 	ctx, cancel := context.WithCancel(context.Background())
 	w.stop = cancel
 	w.served = make(chan error, 1)
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
-	server := httpapi.NewServer(httpapi.Config{ListenPort: port}, w.version, httpapi.Handlers{PlanItems: w.planItems()}, logger)
-	go func() { w.served <- server.Serve(ctx) }()
+	handlers := httpapi.Handlers{Items: httpapi.ItemHandlers{PlanItems: w.planItems()}}
+	go func() { w.served <- httpapi.Run(ctx, handlers, logger) }()
 }
 
 func (w *World) theServerIsServing(ctx context.Context) error {
@@ -139,6 +145,20 @@ func (w *World) theServerShouldStopWithAnError(ctx context.Context) error {
 	logf("then: stopped=%v err=%v", stopped, err)
 	if !stopped || err == nil {
 		return fmt.Errorf("server: stopped=%v err=%v, want a stop with an error", stopped, err)
+	}
+	return nil
+}
+
+func (w *World) theServerStartsWithThePort(ctx context.Context, port string) error {
+	w.startServing(port)
+	return nil
+}
+
+func (w *World) theServerShouldStopWithAnErrorMentioning(ctx context.Context, text string) error {
+	err, stopped := w.result()
+	logf("then: stopped=%v err=%v", stopped, err)
+	if !stopped || err == nil || !strings.Contains(err.Error(), text) {
+		return fmt.Errorf("server: stopped=%v err=%v, want an error mentioning %q", stopped, err, text)
 	}
 	return nil
 }

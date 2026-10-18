@@ -1,5 +1,5 @@
 @type/api/http
-Feature: HTTP API
+Feature: Items API
   As a client of the service
   I want each operation of the contract to call its command
   So that I reach the application over HTTP and can tell a rejected request from a failure

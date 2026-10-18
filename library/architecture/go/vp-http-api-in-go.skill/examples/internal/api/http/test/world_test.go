@@ -85,7 +85,7 @@ func (w *World) planItems() pipeline.Handler[command.PlanItems, command.PlanItem
 
 func (w *World) server() *httpapi.Server {
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
-	return httpapi.NewServer(w.cfg, w.version, httpapi.Handlers{PlanItems: w.planItems()}, logger, w.checks...)
+	return httpapi.NewServer(w.cfg, w.version, httpapi.Handlers{Items: httpapi.ItemHandlers{PlanItems: w.planItems()}}, logger, w.checks...)
 }
 
 func (w *World) send(method, path, body string) {
