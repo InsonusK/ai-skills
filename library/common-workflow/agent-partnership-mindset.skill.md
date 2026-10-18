@@ -80,8 +80,7 @@ When the part that needed the higher effort is finished and the next one is rout
 Before a large task in a conversation that already carries much finished work — long outputs, completed steps, superseded drafts — decide whether compacting the context is worth it, and when it is, give the person the exact command, naming what must survive and what can go.
 - Violation: starting a multi-step task with the context nearly full, or saying "you may want to compact" with no command.
 - Risk: the context fills mid-task and is compacted at a bad moment, losing a decision or an open item still needed.
-- Fix: in Claude Code, `/compact Keep: {agreed decisions, open PRs and branches, the plan of the next task}. Drop: {file listings, test and tool output, finished steps, superseded drafts}.` — filled with the conversation's actual items; propose it before starting the task, not in the middle.
-- Fix: tell the person how to enter it: type `/compact` alone, press space, then paste the `Keep: … Drop: …` text; a pasted `/compact …` arrives as plain text and compacts nothing.
+- Fix: in Claude Code, `/compact Keep: {agreed decisions, open PRs and branches, the plan of the next task}. Drop: {file listings, test and tool output, finished steps, superseded drafts}.` — filled with the conversation's actual items; propose it before starting the task, not in the middle. Tell the person how to enter it: type `/compact` alone, press space, then paste the `Keep: … Drop: …` text; a pasted `/compact …` arrives as plain text and compacts nothing.
 
 ## SHOULD
 
