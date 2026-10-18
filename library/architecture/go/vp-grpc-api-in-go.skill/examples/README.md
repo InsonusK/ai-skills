@@ -1,12 +1,11 @@
 # todo
 
 The base plateau in Go with the gRPC API variation point attached: the PlanItems command is
-served as `todo.v1.ItemsService/PlanItems`, with the standard health service and, when
-switched on, server reflection.
+served as `todo.v1.ItemsService/PlanItems`, with server reflection when switched on. Health
+endpoints come from the health variation point (`vp-health-in-go`), not from gRPC.
 
 ```bash
 grpcurl -plaintext -d '{"titles":["buy milk","walk the dog"]}' localhost:9090 todo.v1.ItemsService/PlanItems
-grpcurl -plaintext -d '{"service":"readiness"}' localhost:9090 grpc.health.v1.Health/Check
 ```
 
 ```bash

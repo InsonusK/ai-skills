@@ -11,6 +11,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/example/todo/internal/api/entry"
 	httpapi "github.com/example/todo/internal/api/http"
 	"github.com/example/todo/internal/api/http/endpoint"
 	"github.com/example/todo/internal/command"
@@ -43,11 +44,14 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 	var planItems pipeline.Handler[command.PlanItems, command.PlanItemsResult] = command.NewPlanItemsHandler()
 	planItems = pipeline.WithLogging("PlanItems", logger, planItems)
 
-	// [entries] - every entry point.
+	// [entries] - every entry point, one Entry each, run together by
+	// entry.RunAll until the first one ends. The HTTP variation point replaced
+	// the startup Entry with its own; the health variation point adds one.
 	routes := endpoint.Routes(endpoint.Handlers{Items: endpoint.ItemHandlers{PlanItems: planItems}})
-	if err := httpapi.Run(ctx, routes, logger); err != nil {
-		logger.Error("http api stopped", "error", err)
-		return 1
-	}
-	return 0
+	err = entry.RunAll(ctx, logger,
+		entry.Entry{Name: "http", Run: func(ctx context.Context) error {
+			return httpapi.Run(ctx, routes, logger)
+		}},
+	)
+	return entry.ExitCode(err)
 }

@@ -16,12 +16,12 @@ Go has no dependency-injection container by default; the composition root is pla
 flowchart TB
     C["config.Load + logger"] --> S["// [services]<br/>stores, clients, TaskBox<br/>(none in the base)"]
     S --> H["// [handlers]<br/>New{Command}Handler(services...)<br/>+ decorators"]
-    H --> E["// [entries]<br/>startup.Run(...)<br/>later: HTTP server, listener"]
+    H --> E["// [entries]<br/>entry.RunAll(startup Entry)<br/>later: HTTP, gRPC, health, listener"]
 ```
 
 1. **services** — infrastructure objects (a DB variation point adds its repository here).
 2. **handlers** — one per command, receiving the services through its constructor, then wrapped by [decorators](./handler-decorator.md).
-3. **entries** — the entry points that call the handlers.
+3. **entries** — the entry points that call the handlers, one `Entry` each, run together by the [entry runner](./entry-runner.md).
 
 `main` only creates a context that is cancelled on `SIGINT`/`SIGTERM` and calls `run(ctx, os.Stdout, os.Stderr)`, so a long-running entry point stops gracefully and `run` can be called with any output streams.
 
@@ -31,7 +31,7 @@ flowchart TB
 |---|---|
 | `// [services]` | service variation points: DB, HTTP/gRPC client, producer, TaskBox |
 | `// [handlers]` | every new command; decorator variation points |
-| `// [entries]` | API variation points: HTTP, gRPC, CLI, listener |
+| `// [entries]` | API variation points (HTTP, gRPC, CLI, listener) replace the startup `Entry`; the health variation point adds its own |
 
 ## Example
 
@@ -40,14 +40,20 @@ flowchart TB
 var planItems pipeline.Handler[command.PlanItems, command.PlanItemsResult] = command.NewPlanItemsHandler()
 planItems = pipeline.WithLogging("PlanItems", logger, planItems)
 
-// [entries] - every entry point; the base plateau has only the startup command.
-err = startup.Run(ctx, planItems, command.PlanItems{Titles: startup.EnvList("STARTUP_TITLES")}, stdout)
+// [entries] - every entry point, one Entry each; the base plateau has only the startup command.
+err = entry.RunAll(ctx, logger,
+	entry.Entry{Name: "startup", Run: func(ctx context.Context) error {
+		return startup.Run(ctx, planItems, command.PlanItems{Titles: startup.EnvList("STARTUP_TITLES")}, stdout)
+	}},
+)
+return entry.ExitCode(err)
 ```
 
 ## Related concepts
 
 - [Handler decorator](./handler-decorator.md)
 - [Startup entry](./startup-entry.md)
+- [Entry runner](./entry-runner.md)
 
 ## Sources
 

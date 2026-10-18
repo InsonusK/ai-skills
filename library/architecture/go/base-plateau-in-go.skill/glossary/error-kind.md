@@ -21,7 +21,7 @@ flowchart LR
     R2["ErrAlreadyDone"] -->|wraps| K2(("ErrFailedPrecondition"))
     K1 -. re-exported .-> P["pipeline.KindOf"]
     K2 -. re-exported .-> P
-    S["startup.ExitCode"] --> P
+    S["entry.ExitCode"] --> P
     S --> X2["a kind other than unavailable: exit 2"]
     S --> X1["unavailable or no kind: exit 1"]
 ```
@@ -33,12 +33,12 @@ flowchart LR
 | one sentinel per kind | `internal/domain/entity/kinds.go` (template of `error-kinds-in-go`) |
 | one error per business rule, wrapping its kind | `internal/domain/entity/errors.go` |
 | the kinds re-exported, `Kinds`, `KindOf` | `internal/command/pipeline/errors.go` (template of `error-kinds-in-go`) |
-| mapping kind → answer | each entry point: `startup.ExitCode`; HTTP and gRPC through `internal/api/rpcstatus` |
+| mapping kind → answer | the exit code: `entry.ExitCode`; HTTP and gRPC: `internal/api/rpcstatus` |
 
 ## Example
 
 ```go
-// internal/api/startup/startup.go
+// internal/api/entry/entry.go
 switch kind := pipeline.KindOf(err); {
 case err == nil:
     return ExitOK
@@ -51,7 +51,7 @@ default:
 
 ## Related concepts
 
-- [Startup entry](./startup-entry.md) — maps the kind to an exit code.
+- [Entry runner](./entry-runner.md) — maps the kind to an exit code.
 - [Handler contract](./handler-contract.md) — handlers return these errors.
 
 ## Sources

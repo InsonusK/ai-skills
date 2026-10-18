@@ -13,7 +13,6 @@ import (
 
 	"github.com/cucumber/godog"
 
-	"github.com/example/todo/internal/api/health"
 	httpapi "github.com/example/todo/internal/api/http"
 	"github.com/example/todo/internal/command/pipeline"
 )
@@ -36,9 +35,7 @@ type World struct {
 	echoCalled bool
 	echoGot    echoCommand
 
-	cfg     httpapi.Config
-	version string
-	checks  []health.Check
+	cfg httpapi.Config
 
 	response *httptest.ResponseRecorder
 
@@ -57,7 +54,7 @@ func (w *World) reset() error {
 	if w.occupied != nil {
 		_ = w.occupied.Close()
 	}
-	*w = World{version: "0.0.0-test"}
+	*w = World{}
 	for _, name := range variables {
 		if err := os.Unsetenv(name); err != nil {
 			return err
@@ -104,7 +101,7 @@ func (w *World) routes() []httpapi.Route {
 
 func (w *World) server() *httpapi.Server {
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
-	return httpapi.NewServer(w.cfg, w.version, w.routes(), logger, w.checks...)
+	return httpapi.NewServer(w.cfg, w.routes(), logger)
 }
 
 func (w *World) send(method, path, body string) {

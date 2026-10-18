@@ -11,6 +11,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/example/todo/internal/api/entry"
 	"github.com/example/todo/internal/api/startup"
 	"github.com/example/todo/internal/command"
 	"github.com/example/todo/internal/command/pipeline"
@@ -42,8 +43,14 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 	var planItems pipeline.Handler[command.PlanItems, command.PlanItemsResult] = command.NewPlanItemsHandler()
 	planItems = pipeline.WithLogging("PlanItems", logger, planItems)
 
-	// [entries] - every entry point. The base plateau has only the startup
-	// command; an API variation point replaces these lines with its own.
-	err = startup.Run(ctx, planItems, command.PlanItems{Titles: startup.EnvList("STARTUP_TITLES")}, stdout)
-	return startup.ExitCode(err)
+	// [entries] - every entry point, one Entry each, run together by
+	// entry.RunAll until the first one ends. The base plateau has only the
+	// startup command; an API variation point replaces its Entry, the health
+	// variation point adds one.
+	err = entry.RunAll(ctx, logger,
+		entry.Entry{Name: "startup", Run: func(ctx context.Context) error {
+			return startup.Run(ctx, planItems, command.PlanItems{Titles: startup.EnvList("STARTUP_TITLES")}, stdout)
+		}},
+	)
+	return entry.ExitCode(err)
 }

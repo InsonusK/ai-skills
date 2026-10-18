@@ -1,4 +1,4 @@
-@type/api/http
+@type/tech-check
 Feature: Health endpoints
   As the orchestrator that runs the service
   I want separate liveness and readiness endpoints

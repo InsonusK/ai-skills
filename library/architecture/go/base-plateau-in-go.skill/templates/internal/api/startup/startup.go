@@ -6,8 +6,9 @@
 // and the error kind), and nothing below them.
 //
 // It exists only in the base plateau. When an API variation point is attached
-// (HTTP, gRPC, CLI, a listener), its entry replaces the startup lines in the
+// (HTTP, gRPC, CLI, a listener), its Entry replaces the startup Entry in the
 // "// [entries]" section of cmd/{app}/main.go and this package is deleted.
+// The exit code of the process is package entry's, which stays.
 // It stays only in an application whose whole job is one command per run
 // (a job started by a scheduler), or, rarely, beside a server that must run
 // one command once at start.
@@ -21,14 +22,6 @@ import (
 	"strings"
 
 	"{module-path}/internal/command/pipeline"
-)
-
-// Exit codes of a process whose work is the startup command. A script or a
-// scheduler that started the process reads them to tell the outcomes apart.
-const (
-	ExitOK       = 0 // the command succeeded; its result is on standard output
-	ExitFailure  = 1 // the service failed, or a dependency is unavailable
-	ExitRejected = 2 // the command was rejected: its error has a kind other than unavailable
 )
 
 // EnvList reads the comma-separated environment variable name as a list -
@@ -52,19 +45,4 @@ func Run[TCommand, TResult any](ctx context.Context, handler pipeline.Handler[TC
 		return err
 	}
 	return json.NewEncoder(out).Encode(res)
-}
-
-// ExitCode maps the error Run returned to the process exit code by its kind
-// (skill error-kinds): nil is ExitOK; an error the request caused - any kind
-// but unavailable - is ExitRejected; unavailable, and an error with no kind,
-// are ExitFailure, the outcomes a retry of the same request may change.
-func ExitCode(err error) int {
-	switch kind := pipeline.KindOf(err); {
-	case err == nil:
-		return ExitOK
-	case kind == nil, kind == pipeline.ErrUnavailable:
-		return ExitFailure
-	default:
-		return ExitRejected
-	}
 }

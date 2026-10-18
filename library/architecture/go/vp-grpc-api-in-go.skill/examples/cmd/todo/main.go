@@ -11,6 +11,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/example/todo/internal/api/entry"
 	grpcapi "github.com/example/todo/internal/api/grpc"
 	"github.com/example/todo/internal/api/grpc/endpoint"
 	"github.com/example/todo/internal/command"
@@ -43,11 +44,14 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 	var planItems pipeline.Handler[command.PlanItems, command.PlanItemsResult] = command.NewPlanItemsHandler()
 	planItems = pipeline.WithLogging("PlanItems", logger, planItems)
 
-	// [entries] - every entry point.
+	// [entries] - every entry point, one Entry each, run together by
+	// entry.RunAll until the first one ends. The gRPC variation point replaced
+	// the startup Entry with its own; the health variation point adds one.
 	services := endpoint.Services(endpoint.Handlers{Items: endpoint.ItemHandlers{PlanItems: planItems}})
-	if err := grpcapi.Run(ctx, services, logger); err != nil {
-		logger.Error("grpc api stopped", "error", err)
-		return 1
-	}
-	return 0
+	err = entry.RunAll(ctx, logger,
+		entry.Entry{Name: "grpc", Run: func(ctx context.Context) error {
+			return grpcapi.Run(ctx, services, logger)
+		}},
+	)
+	return entry.ExitCode(err)
 }

@@ -1,6 +1,6 @@
 ---
 name: vp-http-api
-description: The HTTP API variation point — an entry point attached to the base plateau that serves commands as versioned HTTP routes, answers errors by their kind, publishes its OpenAPI contract and Swagger UI, serves the health endpoints, stops gracefully, and replaces the startup entry without editing any other base file
+description: The HTTP API variation point — an entry point attached to the base plateau that serves commands as versioned HTTP routes, answers errors by their kind, publishes its OpenAPI contract and Swagger UI, stops gracefully, and replaces the startup entry without editing any other base file
 whenToUse: when an application built on the base plateau must be reachable over HTTP — adding the HTTP entry point, serving a new command over HTTP, or reviewing the HTTP entry point of such an application
 updated: 20261018
 tags:
@@ -13,7 +13,6 @@ tags:
 - **Commands reachable over HTTP** - Every command the service exposes has one versioned route; the route turns the request into the command's plain parameters and the result into its response.
 - **Rejected told from failed** - A client tells a request rejected by a business rule or by its shape (400) from a failure of the service (500) by status and by one error body.
 - **Contract published** - The service's OpenAPI contract, Swagger UI, and every URL they emit follow [api-develop](library/common-workflow/develop/api-develop.skill/api-develop.skill.md), and the served routes match the contract's operations.
-- **Probe-ready** - An orchestrator probes liveness and readiness separately, and a dependency added later by a service variation point counts toward readiness.
 - **Attached, not edited** - The entry point joins the [base plateau](library/architecture/spec/base-plateau.skill/base-plateau.skill.md) through its extension points: it replaces the startup entry and changes no other base file but the composition root and the module's dependency files.
 
 # Core Principle
@@ -23,6 +22,7 @@ tags:
 
 # Scope
 - Covers an HTTP API whose contract is written by hand in OpenAPI; an HTTP form generated from a proto contract belongs to the gRPC API variation point.
+- Serves no health endpoints: they come from [vp-health](library/architecture/spec/vp-health.skill/vp-health.skill.md) on a port of their own, the same in every service, and never published through the ingress.
 - The implementation for each stack is described in its stack-specialized extension: `vp-http-api-in-go`; `vp-http-api-in-dotnet` and `vp-http-api-in-python` are planned.
 
 # Rule
@@ -57,16 +57,6 @@ Answer a request that cannot be decoded with 400 `INVALID_ARGUMENT` without call
 - Risk: a client cannot tell its own mistake from the service's, the HTTP and gRPC forms of a service answer one outcome differently, and a 500 that carries the internal error leaks connection strings and stack details.
 - Fix: one table shared by every entry point of the application; the failure itself is logged by the handler's logging decorator, not written to the client.
 
-### Serve the health endpoints
-Serve `/health/live`, `/health/ready`, and `/health` as [devops-service-deploy](library/devops/core/devops-service-deploy.skill/devops-service-deploy.skill.md) defines them, outside the contract's routes, with `/health/ready` answering 503 and naming every readiness check that fails.
-- Risk: without separate probes an orchestrator restarts a healthy process during a database outage or sends traffic to a replica that is not ready.
-- Fix: liveness checks nothing; readiness runs the checks registered at the readiness extension point.
-
-### Open the readiness extension point
-Accept readiness checks — a name and a check function — from the composition root in the one shape every entry point of the application accepts, so that a service variation point adds its dependency's check once, without editing any entry point.
-- Risk: a readiness endpoint that knows its dependencies must be edited by every service variation point; a check type of each entry point's own makes it write the same check once per entry point.
-- Fix: the entry point takes a list of checks from one shared health package; the composition root passes one per dependency.
-
 ### Stop gracefully
 On termination (`SIGTERM`), stop accepting connections, let requests in flight finish within a bounded time, and return without an error.
 - Risk: a rolling update cuts requests off mid-way and reports every stop as a failure.
@@ -78,12 +68,12 @@ Read `HTTP_LISTEN_PORT` (default `8080`), `HTTP_BASE_PATH`, and `HTTP_API_DOCS_E
 - Fix: a settings loader in the entry point, called from the composition root's `entries` section.
 
 ### Attach by replacing the startup entry
-Attach the entry point by adding its package and the contract folder, replacing the startup lines in the composition root's `entries` section with one call that reads the entry point's settings, builds it, and serves until termination, deleting the startup entry, and changing no other base file than the composition root and the module's dependency, build, and readme files.
+Attach the entry point by adding its package and the contract folder, replacing the startup entry in the composition root's `entries` list with one entry whose start reads the entry point's settings, builds it, and serves until termination, deleting the startup entry, and changing no other base file than the composition root and the module's dependency, build, and readme files.
 - Risk: any other base file changed by the HTTP variation point must be described together with every variation point that touches it.
 - Fix: the stack extension lists the base files it changes; a check compares its example with the base example against that list.
 
 ### Test with the commands faked
-Test the HTTP entry point with the command handlers replaced by fakes, covering a success, a rejected command, an undecodable request, a failure, the health endpoints, the docs switch under a prefix, the settings, and the graceful stop, plus one scenario holding the served routes against the contract's operations.
+Test the HTTP entry point with the command handlers replaced by fakes, covering a success, a rejected command, an undecodable request, a failure, the docs switch under a prefix, the settings, and the graceful stop, plus one scenario holding the served routes against the contract's operations.
 - Risk: a test through the real command tests the domain again and breaks on every business change; a missing contract scenario lets Swagger UI describe a route that answers 404.
 - Fix: one fake handler per command, setting what the scenario needs.
 
@@ -91,8 +81,7 @@ Test the HTTP entry point with the command handlers replaced by fakes, covering 
 - [ ] Every exposed command has one `/v{major}/...` route whose request and response types belong to the HTTP entry point.
 - [ ] An undecodable request is 400 without calling the command; every error of a command is answered by error-kinds' table, an error with no kind as 500 without its message; every error body is `google.rpc.Status`.
 - [ ] The contract, Swagger UI, docs switch, and base path follow api-develop's check list; a scenario holds the served routes against the contract.
-- [ ] `/health/live`, `/health/ready`, and `/health` exist outside the contract; readiness checks are passed in by the composition root.
 - [ ] The server stops gracefully on termination.
 - [ ] The entry point reads its own three settings; the base settings gained nothing.
 - [ ] Routes are grouped by resource, one unit each.
-- [ ] The `entries` section starts the entry point with one call; the startup entry is gone; no base file changed but the composition root and the module's dependency, build, and readme files.
+- [ ] The entry point is one entry of the `entries` list; the startup entry is gone; no base file changed but the composition root and the module's dependency, build, and readme files.

@@ -51,21 +51,22 @@ Write each service of the proto contract in its own file `internal/api/grpc/endp
 - Fix: follow the example's [items.go](./examples/internal/api/grpc/endpoint/items.go) and [services.go](./examples/internal/api/grpc/endpoint/services.go); the assertion fails the build when a method is missing.
 
 ### Replace the startup entry in main.go
-Replace the lines of the `// [entries]` section of `cmd/{app}/main.go` with one call of `grpcapi.Run` given `endpoint.Services`, filling `endpoint.Handlers` with the handlers built in `// [handlers]`, and delete `internal/api/startup/`.
+Replace the startup `entry.Entry` in the `// [entries]` list of `cmd/{app}/main.go` with a `grpc` one calling `grpcapi.Run` with `endpoint.Services`, filling `endpoint.Handlers` with the handlers built in `// [handlers]`, and delete `internal/api/startup/`.
 
 ```go
-// [entries] - every entry point.
+// [entries] - every entry point, one Entry each, run together by entry.RunAll.
 services := endpoint.Services(endpoint.Handlers{Items: endpoint.ItemHandlers{PlanItems: planItems}})
-if err := grpcapi.Run(ctx, services, logger); err != nil {
-	logger.Error("grpc api stopped", "error", err)
-	return 1
-}
-return 0
+err = entry.RunAll(ctx, logger,
+	entry.Entry{Name: "grpc", Run: func(ctx context.Context) error {
+		return grpcapi.Run(ctx, services, logger)
+	}},
+)
+return entry.ExitCode(err)
 ```
 
-- Violation: the settings loaded or the server built in `main.go`, or the startup entry kept beside it.
-- Risk: every line of the entry point's start in `main.go` is a line each later variation point's instruction must step around; a kept startup entry runs a command on every start.
-- Fix: import `grpcapi "{module-path}/internal/api/grpc"` and `"{module-path}/internal/api/grpc/endpoint"`.
+- Violation: the settings loaded or the server built in `main.go`, `grpcapi.Run` called outside `entry.RunAll`, or the startup entry kept beside it.
+- Risk: every line of the entry point's start in `main.go` is a line each later variation point's instruction must step around; a server started outside the list is not stopped when another entry point fails.
+- Fix: import `grpcapi "{module-path}/internal/api/grpc"` and `"{module-path}/internal/api/grpc/endpoint"`; other entries of the list (health, HTTP) stay as they are.
 
 ### Add the gRPC modules
 Add `google.golang.org/grpc` at `v1.84.0` and `google.golang.org/protobuf` at `v1.36.12`, and the generators as tools: `go get -tool github.com/bufbuild/buf/cmd/buf@v1.73.0 google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.12 google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.6.2`; then `go mod tidy`.
@@ -86,7 +87,7 @@ Serve a further command of an existing service by adding its rpc and messages to
 - [ ] `internal/api/grpc/{config,call,server}.go` and `internal/api/rpcstatus/rpcstatus.go` are filled copies of the templates; no placeholder is left.
 - [ ] `docs/integration/api/{contract-name}/{file}.proto` is versioned per api-develop; `make proto-gen` leaves no diff; the generators are `tool` lines of `go.mod`.
 - [ ] Each proto service has its own file in `endpoint/` with its handlers struct, a server embedding `Unsafe{Service}Server` with the interface assertion, and per method its `decode` and `encode`; `endpoint/services.go` holds only `Handlers` and `Services`.
-- [ ] The `// [entries]` section of `main.go` is one `grpcapi.Run` call; `internal/api/startup/` is deleted.
+- [ ] The `// [entries]` list of `main.go` has a `grpc` entry calling `grpcapi.Run`; `internal/api/startup/` is deleted.
 - [ ] `make test` passes with the fixed code's features, one feature per service, and the contract scenario.
 - [ ] `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).
 

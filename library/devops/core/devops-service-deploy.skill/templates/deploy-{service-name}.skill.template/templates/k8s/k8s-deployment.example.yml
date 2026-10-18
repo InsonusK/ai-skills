@@ -21,6 +21,10 @@ spec:
           ports:
             - containerPort: 8080
               name: http
+            # The port of the health endpoints, never routed by the ingress.
+            # Delete these two lines when the service serves them on 8080.
+            - containerPort: {health-port}
+              name: management
           envFrom:
             - configMapRef:
                 name: {service-name}-config
@@ -40,12 +44,12 @@ spec:
           livenessProbe:
             httpGet:
               path: /health/live
-              port: 8080
+              port: {health-port}
             initialDelaySeconds: 10
             periodSeconds: 30
           readinessProbe:
             httpGet:
               path: /health/ready
-              port: 8080
+              port: {health-port}
             initialDelaySeconds: 5
             periodSeconds: 10

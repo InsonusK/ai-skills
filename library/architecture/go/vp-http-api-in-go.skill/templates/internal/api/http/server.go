@@ -9,9 +9,6 @@ import (
 	"net"
 	"net/http"
 	"time"
-
-	"{module-path}/internal/api/health"
-	"{module-path}/internal/version"
 )
 
 // Route is one operation of the published contract: a "METHOD /path" pattern
@@ -21,46 +18,41 @@ type Route struct {
 	Handler http.Handler
 }
 
-// Server serves the contract routes, the health endpoints and, when enabled,
-// the OpenAPI spec and Swagger UI.
+// Server serves the contract routes and, when enabled, the OpenAPI spec and
+// Swagger UI. The health endpoints are not here: the management entry point
+// serves them on a port of its own (skill vp-health-in-go).
 type Server struct {
-	cfg     Config
-	version string
-	routes  []Route
-	checks  []health.Check
-	logger  *slog.Logger
+	cfg    Config
+	routes []Route
+	logger *slog.Logger
 }
 
 // Run is the HTTP entry point's one call from the composition root: it reads
 // the settings, builds the server, and serves until ctx is cancelled. It
 // returns nil after a graceful stop, or the error that stopped the entry
 // point. routes are the contract's operations - endpoint.Routes in the
-// application's endpoint package; checks are the readiness checks a service
-// variation point adds.
-func Run(ctx context.Context, routes []Route, logger *slog.Logger, checks ...health.Check) error {
+// application's endpoint package.
+func Run(ctx context.Context, routes []Route, logger *slog.Logger) error {
 	cfg, err := LoadConfig()
 	if err != nil {
 		return err
 	}
-	return NewServer(cfg, version.Version, routes, logger, checks...).Serve(ctx)
+	return NewServer(cfg, routes, logger).Serve(ctx)
 }
 
 // NewServer builds the server for the contract routes. Tests build it
 // directly; the composition root calls Run.
-func NewServer(cfg Config, version string, routes []Route, logger *slog.Logger, checks ...health.Check) *Server {
-	return &Server{cfg: cfg, version: version, routes: routes, checks: checks, logger: logger}
+func NewServer(cfg Config, routes []Route, logger *slog.Logger) *Server {
+	return &Server{cfg: cfg, routes: routes, logger: logger}
 }
 
-// Handler registers every route on one ServeMux: the contract routes, then the
-// routes outside the contract (health, docs).
+// Handler registers every route on one ServeMux: the contract routes, then,
+// when enabled, the docs routes outside the contract.
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
 	for _, route := range s.routes {
 		mux.Handle(route.Pattern, route.Handler)
 	}
-	mux.HandleFunc("GET /health/live", s.handleLive)
-	mux.HandleFunc("GET /health/ready", s.handleReady)
-	mux.HandleFunc("GET /health", s.handleHealth)
 	if s.cfg.DocsEnabled {
 		registerDocs(mux, s.cfg.BasePath)
 	}
@@ -95,26 +87,4 @@ func (s *Server) Serve(ctx context.Context) error {
 		s.logger.Info("http server stopped")
 		return nil
 	}
-}
-
-// handleLive answers whether the process answers at all; it checks no
-// dependency, so an outage of a dependency never restarts the service.
-func (s *Server) handleLive(w http.ResponseWriter, _ *http.Request) {
-	writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
-}
-
-// handleReady answers 200 when every readiness check passes, 503 otherwise,
-// naming the checks that failed.
-func (s *Server) handleReady(w http.ResponseWriter, r *http.Request) {
-	if failed := health.Failed(r.Context(), s.checks, s.logger); len(failed) > 0 {
-		writeJSON(w, http.StatusServiceUnavailable, map[string]any{"status": "unavailable", "failed": failed})
-		return
-	}
-	writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
-}
-
-// handleHealth is for people and clients, never for a probe: the status and
-// the version of the running binary.
-func (s *Server) handleHealth(w http.ResponseWriter, _ *http.Request) {
-	writeJSON(w, http.StatusOK, map[string]string{"status": "ok", "version": s.version})
 }

@@ -22,7 +22,7 @@ tags:
 # Scope
 - Covers a gRPC API with unary methods. Streaming methods are not covered yet.
 - The HTTP form of the gRPC contract — the same operations over HTTP with proto-JSON, as [api-develop](library/common-workflow/develop/api-develop.skill/api-develop.skill.md) recommends — comes from attaching [vp-http-api](library/architecture/spec/vp-http-api.skill/vp-http-api.skill.md) as well; how the two combine is not covered yet.
-- Serves no health check: the probes of every service, whatever its entry points, go to the same HTTP health endpoints, which a variation point of their own brings (planned). The standard gRPC health service (`grpc.health.v1`) is left out on purpose — a Docker `healthcheck` cannot call it, and two kinds of health check across the services of one system is one kind too many.
+- Serves no health check: the probes of every service, whatever its entry points, go to the same HTTP health endpoints of [vp-health](library/architecture/spec/vp-health.skill/vp-health.skill.md). The standard gRPC health service (`grpc.health.v1`) is left out on purpose — a Docker `healthcheck` cannot call it, and two kinds of health check across the services of one system is one kind too many.
 - The implementation for each stack is described in its stack-specialized extension: `vp-grpc-api-in-go`; `vp-grpc-api-in-dotnet` and `vp-grpc-api-in-python` are planned.
 
 # Rule
@@ -78,7 +78,7 @@ Keep the methods of each service of the contract together with their mappings in
 - Fix: one unit per proto service in a folder of its own; adding a method to a service changes only that unit, the contract, and the composition root.
 
 ### Attach by replacing the startup entry
-Attach the entry point by adding its packages, the contract folder, and the generated code, replacing the startup lines in the composition root's `entries` section with one call that reads the entry point's settings, builds it, and serves until termination, deleting the startup entry, and changing no other base file than the composition root and the module's dependency, build, and readme files.
+Attach the entry point by adding its packages, the contract folder, and the generated code, replacing the startup entry in the composition root's `entries` list with one entry whose start reads the entry point's settings, builds it, and serves until termination, deleting the startup entry, and changing no other base file than the composition root and the module's dependency, build, and readme files.
 - Risk: any other base file changed by the gRPC variation point must be described together with every variation point that touches it.
 - Fix: the stack extension lists the base files it changes; a check compares its example with the base example against that list.
 
@@ -95,5 +95,5 @@ Test the fixed code once through a test service of its own — a success, a reje
 - [ ] The server stops gracefully within a bounded time on termination.
 - [ ] The entry point reads its own two settings; the base settings gained nothing.
 - [ ] Methods are grouped by service, one unit each, apart from the fixed code.
-- [ ] The `entries` section starts the entry point with one call; the startup entry is gone; no base file changed but the composition root and the module's dependency, build, and readme files.
+- [ ] The entry point is one entry of the `entries` list; the startup entry is gone; no base file changed but the composition root and the module's dependency, build, and readme files.
 - [ ] A scenario holds the served services against the contract's services.

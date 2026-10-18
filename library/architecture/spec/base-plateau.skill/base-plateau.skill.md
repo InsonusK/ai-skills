@@ -58,7 +58,13 @@ Give every error a caller can act on one kind of [error-kinds](library/develop/c
 ### Startup command reports through the process interface
 Run the startup command once, write its result to standard output as one machine-readable line, write logs to standard error, and exit `0` on success, `2` when the command is rejected as invalid, and `1` on any other failure.
 - Risk: a script or a scheduler starting the process cannot tell its outcome apart, and logs mixed into the output break whoever reads the result.
-- Fix: the startup entry encodes the result and maps the error kind to the exit code; the composition root names the command and builds its input from a setting the startup entry reads itself, so the setting goes away with the entry.
+- Fix: the startup entry encodes the result; the exit code comes from the error kind through the runner of the entry points, which stays when the startup entry goes; the composition root names the command and builds its input from a setting the startup entry reads itself, so the setting goes away with the entry.
+
+### Run every entry point through one runner
+Start the entry points in the composition root's `entries` section as a list run together by one runner of the base plateau: it runs them at once, stops all when the first ends — its work done, its failure, or termination — and turns the outcome into the exit code by the error kind.
+- Violation: two entry points started one after the other, the second never reached; a variation point that writes its own concurrent start beside another's.
+- Risk: every pair of variation points becomes a combination someone has to describe and code, which is what the base plateau exists to prevent; a process with one failed entry point and one live one looks healthy and serves half its API.
+- Fix: a variation point adds its entry point to the list, or replaces the startup entry with it; it never starts one itself.
 
 ### Concrete types built only in the composition root
 Construct every concrete type — handlers, decorators, entry points, services — only in the composition root, in its three marked sections `services`, `handlers`, and `entries`.
@@ -73,7 +79,7 @@ Attach a variation point through its own package plus lines at these extension p
 |---|---|
 | Composition root, `services` section | constructs its infrastructure and the service over it |
 | Composition root, `handlers` section | wraps handlers with its decorator (a unit of work, a metric, ...) |
-| Composition root, `entries` section | starts its entry point (HTTP server, listener, ...); replaces the startup entry |
+| Composition root, `entries` section | adds its entry point (HTTP server, gRPC server, health endpoints, listener) to the list the runner starts; an API variation point replaces the startup entry with it |
 | Handler constructor | a new interface parameter, through which the handler uses the service the variation point brings |
 | Command-layer error kinds | an entry point maps each kind to its own response — a status code, an exit code |
 | Its own package's settings | reads its settings itself; the base settings never grow a field for it |
@@ -100,6 +106,7 @@ Add a cross-cutting step (logging, a unit of work, a metric) as a decorator over
 - [ ] Every command has one handler; every handler satisfies the one handler contract.
 - [ ] Every error a caller can act on carries one kind of error-kinds.
 - [ ] Every concrete type is constructed in the composition root, in the `services`, `handlers`, or `entries` section.
+- [ ] The `entries` section lists every entry point for the one runner; no entry point is started on its own.
 - [ ] The base settings hold only the base plateau's own settings.
 - [ ] A variation point attached to the application changed no base file other than the composition root.
 - [ ] The examples hold scenarios and one command to run them, no testing tooling.

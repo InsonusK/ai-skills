@@ -57,7 +57,7 @@ func (w *World) handlers() endpoint.Handlers {
 
 func (w *World) send(method, path, body string) {
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
-	server := httpapi.NewServer(httpapi.Config{}, "", endpoint.Routes(w.handlers()), logger)
+	server := httpapi.NewServer(httpapi.Config{}, endpoint.Routes(w.handlers()), logger)
 	req := httptest.NewRequest(method, path, strings.NewReader(body))
 	w.response = httptest.NewRecorder()
 	server.Handler().ServeHTTP(w.response, req)

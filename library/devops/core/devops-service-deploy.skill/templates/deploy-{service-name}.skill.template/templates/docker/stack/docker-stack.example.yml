@@ -15,7 +15,7 @@ services:
     healthcheck:
       # /health/live, not /health/ready: Swarm kills and replaces an unhealthy
       # task, so a check that fails with a dependency restarts every replica.
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health/live"]
+      test: ["CMD", "curl", "-f", "http://localhost:{health-port}/health/live"]
       interval: 30s
       timeout: 5s
       retries: 3

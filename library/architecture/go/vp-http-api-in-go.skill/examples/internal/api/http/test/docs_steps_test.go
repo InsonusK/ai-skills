@@ -4,37 +4,19 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 
 	"github.com/cucumber/godog"
 
 	"github.com/example/todo/docs/integration/api/todo"
-	"github.com/example/todo/internal/api/health"
 )
 
-func registerHealthDocsSteps(sc *godog.ScenarioContext, w *World) {
-	sc.Step(`^a readiness check "([^"]*)" that (passes|fails)$`, w.aReadinessCheck)
-	sc.Step(`^the service version is "([^"]*)"$`, w.theServiceVersionIs)
+func registerDocsSteps(sc *godog.ScenarioContext, w *World) {
 	sc.Step(`^the docs are enabled$`, w.theDocsAreEnabled)
 	sc.Step(`^the service is published under "([^"]*)"$`, w.theServiceIsPublishedUnder)
 	sc.Step(`^the spec's server URL should be "([^"]*)"$`, w.theSpecServerURLShouldBe)
 	sc.Step(`^the response should redirect to "([^"]*)"$`, w.theResponseShouldRedirectTo)
 	sc.Step(`^the response should be the embedded spec$`, w.theResponseShouldBeTheEmbeddedSpec)
-}
-
-func (w *World) aReadinessCheck(ctx context.Context, name, outcome string) error {
-	var result error
-	if outcome == "fails" {
-		result = errors.New(name + " is down")
-	}
-	w.checks = append(w.checks, health.Check{Name: name, Check: func(context.Context) error { return result }})
-	return nil
-}
-
-func (w *World) theServiceVersionIs(ctx context.Context, version string) error {
-	w.version = version
-	return nil
 }
 
 func (w *World) theDocsAreEnabled(ctx context.Context) error {
