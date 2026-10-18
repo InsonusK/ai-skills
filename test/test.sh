@@ -11,6 +11,7 @@ if ! command -v aism >/dev/null 2>&1; then
 fi
 
 bash ./check-link-direction.sh
+bash ./check-vp-attach.sh
 
 aism --version
 aism sync
