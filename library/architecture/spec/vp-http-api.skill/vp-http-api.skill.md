@@ -2,7 +2,7 @@
 name: vp-http-api
 description: The HTTP API variation point — an entry point attached to the base plateau that serves commands as versioned HTTP routes, answers errors by their kind, publishes its OpenAPI contract and Swagger UI, serves the health endpoints, stops gracefully, and replaces the startup entry without editing any other base file
 whenToUse: when an application built on the base plateau must be reachable over HTTP — adding the HTTP entry point, serving a new command over HTTP, or reviewing the HTTP entry point of such an application
-updated: 20261017
+updated: 20261018
 tags:
   - stack
   - concern/architecture
@@ -63,9 +63,9 @@ Serve `/health/live`, `/health/ready`, and `/health` as [devops-service-deploy](
 - Fix: liveness checks nothing; readiness runs the checks registered at the readiness extension point.
 
 ### Open the readiness extension point
-Accept readiness checks — a name and a check function — from the composition root, so that a service variation point adds its dependency's check without editing the HTTP entry point.
-- Risk: a readiness endpoint that knows its dependencies must be edited by every service variation point.
-- Fix: the entry point takes a list of checks; the composition root passes one per dependency.
+Accept readiness checks — a name and a check function — from the composition root in the one shape every entry point of the application accepts, so that a service variation point adds its dependency's check once, without editing any entry point.
+- Risk: a readiness endpoint that knows its dependencies must be edited by every service variation point; a check type of each entry point's own makes it write the same check once per entry point.
+- Fix: the entry point takes a list of checks from one shared health package; the composition root passes one per dependency.
 
 ### Stop gracefully
 On termination (`SIGTERM`), stop accepting connections, let requests in flight finish within a bounded time, and return without an error.

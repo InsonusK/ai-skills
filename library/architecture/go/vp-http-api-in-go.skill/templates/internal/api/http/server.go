@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"time"
 
+	"{module-path}/internal/api/health"
 	"{module-path}/internal/version"
 )
 
@@ -20,21 +21,13 @@ type Route struct {
 	Handler http.Handler
 }
 
-// ReadinessCheck is one dependency /health/ready waits for. The HTTP entry
-// point has none of its own: a service variation point (a database, a client)
-// adds its check in the composition root.
-type ReadinessCheck struct {
-	Name  string
-	Check func(ctx context.Context) error
-}
-
 // Server serves the contract routes, the health endpoints and, when enabled,
 // the OpenAPI spec and Swagger UI.
 type Server struct {
 	cfg     Config
 	version string
 	routes  []Route
-	checks  []ReadinessCheck
+	checks  []health.Check
 	logger  *slog.Logger
 }
 
@@ -44,7 +37,7 @@ type Server struct {
 // point. routes are the contract's operations - endpoint.Routes in the
 // application's endpoint package; checks are the readiness checks a service
 // variation point adds.
-func Run(ctx context.Context, routes []Route, logger *slog.Logger, checks ...ReadinessCheck) error {
+func Run(ctx context.Context, routes []Route, logger *slog.Logger, checks ...health.Check) error {
 	cfg, err := LoadConfig()
 	if err != nil {
 		return err
@@ -54,7 +47,7 @@ func Run(ctx context.Context, routes []Route, logger *slog.Logger, checks ...Rea
 
 // NewServer builds the server for the contract routes. Tests build it
 // directly; the composition root calls Run.
-func NewServer(cfg Config, version string, routes []Route, logger *slog.Logger, checks ...ReadinessCheck) *Server {
+func NewServer(cfg Config, version string, routes []Route, logger *slog.Logger, checks ...health.Check) *Server {
 	return &Server{cfg: cfg, version: version, routes: routes, checks: checks, logger: logger}
 }
 
@@ -113,14 +106,7 @@ func (s *Server) handleLive(w http.ResponseWriter, _ *http.Request) {
 // handleReady answers 200 when every readiness check passes, 503 otherwise,
 // naming the checks that failed.
 func (s *Server) handleReady(w http.ResponseWriter, r *http.Request) {
-	failed := []string{}
-	for _, check := range s.checks {
-		if err := check.Check(r.Context()); err != nil {
-			s.logger.WarnContext(r.Context(), "readiness check failed", "check", check.Name, "error", err)
-			failed = append(failed, check.Name)
-		}
-	}
-	if len(failed) > 0 {
+	if failed := health.Failed(r.Context(), s.checks, s.logger); len(failed) > 0 {
 		writeJSON(w, http.StatusServiceUnavailable, map[string]any{"status": "unavailable", "failed": failed})
 		return
 	}
