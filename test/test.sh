@@ -12,6 +12,7 @@ fi
 
 bash ./check-link-direction.sh
 bash ./check-vp-attach.sh
+bash ./check-templates.sh
 
 aism --version
 aism sync

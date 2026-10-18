@@ -1,45 +1,52 @@
 # Error kind
 
-An **error kind** is one sentinel error that a whole family of errors wraps, so a caller asks "is this a *kind* of error?" instead of "is this *exactly* that error?". The base plateau has one kind: `ErrInvalid` — the command broke a business rule.
+An **error kind** is one sentinel error that a whole family of errors wraps, so a caller asks "is this a *kind* of error?" instead of "is this *exactly* that error?". The application has the eleven kinds of [error-kinds](library/develop/core/error-kinds.skill/error-kinds.skill.md) — `ErrInvalid`, `ErrNotFound`, `ErrConflict`, … — and "no kind" for a failure of the service.
 
 ## Why it exists
 
-An entry point has to answer differently to "your input is wrong" and "something broke": exit code `2` vs `1` for the startup command, later HTTP `400` vs `500`. But an entry point must not import the domain, and must not list every rule error (`ErrEmptyTitle`, `ErrDuplicateTitle`, ...) — that list would change with every new rule.
+An entry point has to answer differently to "your input is wrong", "this does not exist", and "something broke": exit code `2` vs `1` for the startup command, HTTP `400` / `404` / `500`, gRPC `INVALID_ARGUMENT` / `NOT_FOUND` / `INTERNAL`. But an entry point must not import the domain, and must not list every rule error (`ErrEmptyTitle`, `ErrDuplicateTitle`, ...) — that list would change with every new rule.
 
-With one kind, every rule error carries the same marker, and the entry point checks only the marker.
+With kinds, every rule error carries one marker, and the entry point checks only the marker.
 
 ## How it works
 
-1. The entity package declares the sentinel: `var ErrInvalid = errors.New("invalid")`.
-2. Each rule error wraps it with `%w`: `ErrEmptyTitle = fmt.Errorf("%w: item title is empty", ErrInvalid)`.
-3. `errors.Is(err, ErrInvalid)` walks the wrap chain, so it is true for every rule error — and for a rule error wrapped again later.
-4. The `pipeline` package re-exports it — `pipeline.ErrInvalid = entity.ErrInvalid` — so entry points use it without importing the domain.
+1. `internal/domain/entity/kinds.go` declares one sentinel per kind: `var ErrInvalid = errors.New("invalid")`, `var ErrNotFound = errors.New("not found")`, ...
+2. Each rule error wraps its kind with `%w`: `ErrEmptyTitle = fmt.Errorf("%w: item title is empty", ErrInvalid)`, `ErrAlreadyDone = fmt.Errorf("%w: item is already done", ErrFailedPrecondition)`.
+3. `errors.Is(err, ErrInvalid)` walks the wrap chain, so it is true for every rule error of that kind — and for a rule error wrapped again later.
+4. The `pipeline` package re-exports the kinds — `pipeline.ErrInvalid = entity.ErrInvalid`, ... — and offers `KindOf(err)`, so entry points use them without importing the domain.
 
 ```mermaid
 flowchart LR
-    R1["ErrEmptyTitle"] -->|wraps| K(("ErrInvalid"))
-    R2["ErrDuplicateTitle"] -->|wraps| K
-    K -. re-exported as .-> A["pipeline.ErrInvalid"]
-    S["startup.ExitCode"] -->|"errors.Is(err, pipeline.ErrInvalid)"| A
-    S --> X2["exit 2"]
-    S --> X1["any other error: exit 1"]
+    R1["ErrEmptyTitle"] -->|wraps| K1(("ErrInvalid"))
+    R2["ErrAlreadyDone"] -->|wraps| K2(("ErrFailedPrecondition"))
+    K1 -. re-exported .-> P["pipeline.KindOf"]
+    K2 -. re-exported .-> P
+    S["startup.ExitCode"] --> P
+    S --> X2["a kind other than unavailable: exit 2"]
+    S --> X1["unavailable or no kind: exit 1"]
 ```
 
 ## How it is structured
 
 | Part | Where |
 |---|---|
-| `ErrInvalid` sentinel | `internal/domain/entity/errors.go` |
-| one error per business rule, wrapping `ErrInvalid` | `internal/domain/entity/errors.go` |
-| `pipeline.ErrInvalid` re-export | `internal/command/pipeline/handler.go` |
-| mapping kind → response | each entry point (`startup.ExitCode`; later the HTTP status mapper) |
+| one sentinel per kind | `internal/domain/entity/kinds.go` (template of `error-kinds-in-go`) |
+| one error per business rule, wrapping its kind | `internal/domain/entity/errors.go` |
+| the kinds re-exported, `Kinds`, `KindOf` | `internal/command/pipeline/errors.go` (template of `error-kinds-in-go`) |
+| mapping kind → answer | each entry point: `startup.ExitCode`; HTTP and gRPC through `internal/api/rpcstatus` |
 
 ## Example
 
 ```go
 // internal/api/startup/startup.go
-case errors.Is(err, pipeline.ErrInvalid):
-    return ExitRejected // 2
+switch kind := pipeline.KindOf(err); {
+case err == nil:
+    return ExitOK
+case kind == nil, kind == pipeline.ErrUnavailable:
+    return ExitFailure // 1: a retry may change the outcome
+default:
+    return ExitRejected // 2: the request was rejected
+}
 ```
 
 ## Related concepts
@@ -51,3 +58,4 @@ case errors.Is(err, pipeline.ErrInvalid):
 
 - `errors.Is`: https://pkg.go.dev/errors#Is
 - Go blog, working with errors in Go 1.13 (wrapping with `%w`): https://go.dev/blog/go1.13-errors
+- Google API design guide, errors (the codes of the kinds): https://cloud.google.com/apis/design/errors

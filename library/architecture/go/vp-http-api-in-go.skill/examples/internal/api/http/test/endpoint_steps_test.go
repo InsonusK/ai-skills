@@ -9,12 +9,15 @@ import (
 	"strings"
 
 	"github.com/cucumber/godog"
+
+	"github.com/example/todo/internal/command/pipeline"
 )
 
 func registerAPISteps(sc *godog.ScenarioContext, w *World) {
 	sc.Step(`^the command answers "([^"]*)"$`, w.commandAnswers)
 	sc.Step(`^the command is rejected with "([^"]*)"$`, w.commandRejected)
 	sc.Step(`^the command fails with "([^"]*)"$`, w.commandFails)
+	sc.Step(`^the command fails with the kind conflict and "([^"]*)"$`, w.commandConflicts)
 	sc.Step(`^I POST "([^"]*)" with the body '([^']*)'$`, w.iPOST)
 	sc.Step(`^I GET "([^"]*)"$`, w.iGET)
 	sc.Step(`^the response status should be (\d+)$`, w.theResponseStatusShouldBe)
@@ -38,6 +41,11 @@ func (w *World) commandRejected(ctx context.Context, message string) error {
 
 func (w *World) commandFails(ctx context.Context, message string) error {
 	w.echoErr = errors.New(message)
+	return nil
+}
+
+func (w *World) commandConflicts(ctx context.Context, message string) error {
+	w.echoErr = fmt.Errorf("%w: %s", pipeline.ErrConflict, message)
 	return nil
 }
 

@@ -4,11 +4,11 @@ package grpc
 
 import (
 	"context"
-	"errors"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"{module-path}/internal/api/rpcstatus"
 	"{module-path}/internal/command/pipeline"
 )
 
@@ -46,13 +46,10 @@ func Call[TRequest, TCommand, TResult, TResponse any](
 	return encode(result), nil
 }
 
-// statusOf answers an error by its kind: a command rejected by a business
-// rule (pipeline.ErrInvalid) is INVALID_ARGUMENT with the rule's message; any
-// other error is INTERNAL, without the internal message. The failure itself
-// is logged by the handler's logging decorator.
+// statusOf answers an error by its kind through the one table of rpcstatus:
+// a kind's code and message, or INTERNAL "internal error" for an error with
+// no kind. The failure itself is logged by the handler's logging decorator.
 func statusOf(err error) error {
-	if errors.Is(err, pipeline.ErrInvalid) {
-		return status.Error(codes.InvalidArgument, err.Error())
-	}
-	return status.Error(codes.Internal, "internal error")
+	code, message := rpcstatus.Of(err)
+	return status.Error(codes.Code(code), message)
 }

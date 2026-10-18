@@ -47,9 +47,9 @@ Map the generated request message to the command and the command's result to the
 - Fix: a `decode` and an `encode` per method, beside the method.
 
 ### Answer errors by their kind
-Answer a request that cannot become the command with `INVALID_ARGUMENT` without calling the command, a command rejected by a business rule (the base plateau's invalid error kind) with `INVALID_ARGUMENT` carrying the rule's message, and any other error with `INTERNAL` carrying no internal message.
-- Risk: a client cannot tell its own mistake from the service's, and an `INTERNAL` that carries the internal error leaks connection strings and stack details.
-- Fix: one error mapping shared by every method; the failure itself is logged by the handler's logging decorator.
+Answer a request that cannot become the command with `INVALID_ARGUMENT` without calling the command, and every error of a command by [error-kinds](library/develop/core/error-kinds.skill/error-kinds.skill.md)' table — its kind's code with the error's message, or `INTERNAL` with no internal message for an error with no kind.
+- Risk: a client cannot tell its own mistake from the service's, the HTTP and gRPC forms of a service answer one outcome differently, and an `INTERNAL` that carries the internal error leaks connection strings and stack details.
+- Fix: one table shared by every entry point of the application; the failure itself is logged by the handler's logging decorator.
 
 ### Survive a panicking method
 Answer a method that panics with `INTERNAL`, log the panic, and keep serving.
@@ -90,7 +90,7 @@ Test the fixed code once through a test service of its own — a success, a reje
 # Check list
 - [ ] The proto contract carries its major in the package and its full version in the first-line comment, under `docs/integration/api/{contract-name}/`.
 - [ ] Every exposed command is one method; its messages are generated and mapped to and from the command in the entry point.
-- [ ] An undecodable request and a rejected command are `INVALID_ARGUMENT`; any other error and a panic are `INTERNAL` without the internal message.
+- [ ] An undecodable request is `INVALID_ARGUMENT`; every error of a command is answered by error-kinds' table; an error with no kind and a panic are `INTERNAL` without the internal message.
 - [ ] Reflection is served only with `GRPC_REFLECTION_ENABLED=true`.
 - [ ] The server stops gracefully within a bounded time on termination.
 - [ ] The entry point reads its own two settings; the base settings gained nothing.
