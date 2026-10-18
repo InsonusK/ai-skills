@@ -82,6 +82,11 @@ Attach a variation point through its own package plus lines at these extension p
 - Risk: two variation points editing the same base file must be described together, and every combination becomes a separate project description.
 - Fix: the variation point reads its settings in its own package and joins at the extension points above; a handler gaining a service parameter is using the variation point, not attaching it.
 
+### Examples show the build, not the testing contract
+Give the base plateau's example and every variation point's example the scenarios that prove their code and one command that runs them, and no testing tooling — test kinds, reports, badges, mutation testing.
+- Risk: a change of the testing skills must be repeated in every example of the catalog, and the examples drift from them.
+- Fix: the project's testing contract comes from the stack's conformance-testing skill; the stack extension names it.
+
 ## SHOULD
 
 ### Decorators wrap, handlers stay plain
@@ -97,3 +102,4 @@ Add a cross-cutting step (logging, a unit of work, a metric) as a decorator over
 - [ ] Every concrete type is constructed in the composition root, in the `services`, `handlers`, or `entries` section.
 - [ ] The base settings hold only the base plateau's own settings.
 - [ ] A variation point attached to the application changed no base file other than the composition root.
+- [ ] The examples hold scenarios and one command to run them, no testing tooling.

@@ -67,9 +67,14 @@ Build every concrete type in `run` of `cmd/{app}/main.go` under the comments `//
 - Fix: keep the three comments even when a section is empty; type each handler variable as `pipeline.Handler[TCommand, TResult]` so a [decorator](./glossary/handler-decorator.md) can rewrap it.
 
 ### Cover each layer with scenarios
-Cover `internal/domain/entity`, `internal/domain/service`, `internal/command`, `internal/command/pipeline`, `internal/api/startup`, and `internal/config` with Cucumber scenarios per [cucumber-testing-in-go](library/testing/go/cucumber-testing-in-go.skill.md), tagged `@type/domain`, `@type/service` (commands), `@type/tech-check` (decorators, settings), and `@type/api/cli` (startup entry), with the project's testing contract per [solution-conformance-testing-in-go](library/testing/go/solution-conformance-testing-in-go.skill/solution-conformance-testing-in-go.skill.md).
+Cover `internal/domain/entity`, `internal/domain/service`, `internal/command`, `internal/command/pipeline`, `internal/api/startup`, and `internal/config` with Cucumber scenarios per [cucumber-testing-in-go](library/testing/go/cucumber-testing-in-go.skill.md), tagged `@type/domain`, `@type/service` (commands), `@type/tech-check` (decorators, settings), and `@type/api/cli` (startup entry), run by `go test ./...`.
 - Risk: a layer without scenarios lets a variation point break it unnoticed, since the variation point's example reruns the base scenarios as its regression check.
-- Fix: one `features/` and `test/` pair per package; `make test-kind-unit` passes.
+- Fix: one `features/` and `test/` pair per package; `make test` passes.
+
+### Run the scenarios with make test
+Give the example's `Makefile` a `test` target running `go test ./...`, and leave the testing contract (kinds, reports, mutation) to [solution-conformance-testing-in-go](library/testing/go/solution-conformance-testing-in-go.skill/solution-conformance-testing-in-go.skill.md), as base-plateau's "Examples show the build, not the testing contract" requires.
+- Risk: a copied `tools/testing` must be updated in every example whenever the testing skills change.
+- Fix: no `tools/`, `report-template/`, or mutation tool in the example.
 
 ## SHOULD
 
@@ -88,9 +93,10 @@ Read the base settings from environment variables in `config.Load() (Config, err
 - [ ] Every command lives in its own file in `internal/command` with a handler matching `Handler[TCommand, TResult]`.
 - [ ] Each decorator is in its own file of `internal/command/pipeline`.
 - [ ] `run` in `cmd/{app}/main.go` has the `// [services]`, `// [handlers]`, `// [entries]` sections in this order.
+- [ ] The example holds no testing tooling; its `Makefile` runs `go test ./...`.
 - [ ] Type parameters are named by role, and every exported generic type or function has a comment explaining them.
-- [ ] `make test-kind-unit` passes, with scenarios in every package listed in [Cover each layer with scenarios](#cover-each-layer-with-scenarios).
+- [ ] `make test` passes, with scenarios in every package listed in [Cover each layer with scenarios](#cover-each-layer-with-scenarios).
 
 # Example
-- [examples/](./examples/README.md) — the base plateau as a runnable to-do planner: `make run`, `make test-kind-unit`.
+- [examples/](./examples/README.md) — the base plateau as a runnable to-do planner: `make run`, `make test`.
 - [glossary/](./glossary/README.md) — how the handler contract, `HandlerFunc`, decorators, the error kind, the composition root, and the startup entry work.
