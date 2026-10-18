@@ -17,7 +17,6 @@ import (
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
 	grpcapi "github.com/example/todo/internal/api/grpc"
-	"github.com/example/todo/internal/api/health"
 	"github.com/example/todo/internal/command/pipeline"
 )
 
@@ -42,8 +41,7 @@ type World struct {
 	echoGot     echoCommand
 	echoStarted chan struct{}
 
-	cfg    grpcapi.Config
-	checks []health.Check
+	cfg grpcapi.Config
 
 	// the in-memory server, started by the first call of a scenario
 	stopInMemory context.CancelFunc
@@ -169,7 +167,7 @@ func discard() *slog.Logger {
 }
 
 // client starts the in-memory server on the scenario's first call, with the
-// settings and checks its Given steps set, and returns a connection to it.
+// settings its Given steps set, and returns a connection to it.
 func (w *World) client() (*grpc.ClientConn, error) {
 	if w.conn != nil {
 		return w.conn, nil
@@ -177,7 +175,7 @@ func (w *World) client() (*grpc.ClientConn, error) {
 	listener := bufconn.Listen(1 << 20)
 	ctx, cancel := context.WithCancel(context.Background())
 	w.stopInMemory = cancel
-	server := grpcapi.NewServer(w.cfg, w.services(), discard(), w.checks...)
+	server := grpcapi.NewServer(w.cfg, w.services(), discard())
 	go func() { _ = server.ServeListener(ctx, listener) }()
 	conn, err := grpc.NewClient("passthrough:///in-memory",
 		grpc.WithContextDialer(func(ctx context.Context, _ string) (net.Conn, error) { return listener.DialContext(ctx) }),

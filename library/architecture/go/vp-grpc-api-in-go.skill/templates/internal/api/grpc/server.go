@@ -10,11 +10,8 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-	healthpb "google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
-
-	"{module-path}/internal/api/health"
 )
 
 // Service is one service of the published contract: its generated descriptor
@@ -26,19 +23,12 @@ type Service struct {
 	Impl any
 }
 
-// The health service names a probe asks for: a Kubernetes grpc probe names
-// one in its `service` field. "" (the whole server) answers like liveness.
-const (
-	LivenessService  = "liveness"
-	ReadinessService = "readiness"
-)
-
-// Server serves the contract's services, the standard health service
-// (grpc.health.v1) and, when enabled, server reflection.
+// Server serves the contract's services and, when enabled, server reflection.
+// It serves no health service: the probes of every service, whatever its
+// entry points, go to the same HTTP health endpoints.
 type Server struct {
 	cfg      Config
 	services []Service
-	checks   []health.Check
 	logger   *slog.Logger
 }
 
@@ -46,20 +36,19 @@ type Server struct {
 // the settings, builds the server, and serves until ctx is cancelled. It
 // returns nil after a graceful stop, or the error that stopped the entry
 // point. services are the contract's services - endpoint.Services in the
-// application's endpoint package; checks are the readiness checks a service
-// variation point adds.
-func Run(ctx context.Context, services []Service, logger *slog.Logger, checks ...health.Check) error {
+// application's endpoint package.
+func Run(ctx context.Context, services []Service, logger *slog.Logger) error {
 	cfg, err := LoadConfig()
 	if err != nil {
 		return err
 	}
-	return NewServer(cfg, services, logger, checks...).Serve(ctx)
+	return NewServer(cfg, services, logger).Serve(ctx)
 }
 
 // NewServer builds the server for the contract's services. Tests build it
 // directly; the composition root calls Run.
-func NewServer(cfg Config, services []Service, logger *slog.Logger, checks ...health.Check) *Server {
-	return &Server{cfg: cfg, services: services, checks: checks, logger: logger}
+func NewServer(cfg Config, services []Service, logger *slog.Logger) *Server {
+	return &Server{cfg: cfg, services: services, logger: logger}
 }
 
 // Serve listens on the configured port until ctx is cancelled (SIGTERM).
@@ -101,14 +90,13 @@ func (s *Server) ServeListener(ctx context.Context, listener net.Listener) error
 	}
 }
 
-// build registers the contract's services, the health service and, when
-// enabled, reflection on one grpc.Server.
+// build registers the contract's services and, when enabled, reflection on
+// one grpc.Server.
 func (s *Server) build() *grpc.Server {
 	server := grpc.NewServer(grpc.ChainUnaryInterceptor(recoverPanics(s.logger)))
 	for _, service := range s.services {
 		server.RegisterService(service.Desc, service.Impl)
 	}
-	healthpb.RegisterHealthServer(server, &healthServer{checks: s.checks, logger: s.logger})
 	if s.cfg.ReflectionEnabled {
 		reflection.Register(server)
 	}
@@ -127,28 +115,5 @@ func recoverPanics(logger *slog.Logger) grpc.UnaryServerInterceptor {
 			}
 		}()
 		return handler(ctx, req)
-	}
-}
-
-// healthServer answers the standard health service: liveness checks nothing,
-// so an outage of a dependency never restarts the service; readiness runs the
-// checks a service variation point registered.
-type healthServer struct {
-	healthpb.UnimplementedHealthServer
-	checks []health.Check
-	logger *slog.Logger
-}
-
-func (h *healthServer) Check(ctx context.Context, req *healthpb.HealthCheckRequest) (*healthpb.HealthCheckResponse, error) {
-	switch req.GetService() {
-	case "", LivenessService:
-		return &healthpb.HealthCheckResponse{Status: healthpb.HealthCheckResponse_SERVING}, nil
-	case ReadinessService:
-		if len(health.Failed(ctx, h.checks, h.logger)) > 0 {
-			return &healthpb.HealthCheckResponse{Status: healthpb.HealthCheckResponse_NOT_SERVING}, nil
-		}
-		return &healthpb.HealthCheckResponse{Status: healthpb.HealthCheckResponse_SERVING}, nil
-	default:
-		return nil, status.Errorf(codes.NotFound, "unknown health service %q", req.GetService())
 	}
 }

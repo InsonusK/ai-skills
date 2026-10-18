@@ -1,6 +1,6 @@
 ---
 name: vp-grpc-api
-description: The gRPC API variation point — an entry point attached to the base plateau that serves commands as methods of a versioned proto contract, answers errors by their kind, survives a panicking method, answers liveness and readiness through the standard gRPC health service, offers server reflection behind a switch, stops gracefully, and replaces the startup entry without editing any other base file
+description: The gRPC API variation point — an entry point attached to the base plateau that serves commands as methods of a versioned proto contract, answers errors by their kind, survives a panicking method, offers server reflection behind a switch, stops gracefully, and replaces the startup entry without editing any other base file
 whenToUse: when an application built on the base plateau must be reachable over gRPC — adding the gRPC entry point, serving a new command over gRPC, or reviewing the gRPC entry point of such an application
 updated: 20261018
 tags:
@@ -12,18 +12,17 @@ tags:
 # Goal
 - **Commands reachable over gRPC** - Every command the service exposes is one method of a versioned proto contract; the method turns the request message into the command's plain parameters and the result into the response message.
 - **Rejected told from failed** - A client tells a call rejected by a business rule or by its shape (`INVALID_ARGUMENT`) from a failure of the service (`INTERNAL`) by its status code.
-- **Probe-ready without HTTP** - An orchestrator probes liveness and readiness through the standard gRPC health service, and a dependency added later by a service variation point counts toward readiness of every entry point at once.
 - **Attached, not edited** - The entry point joins the [base plateau](library/architecture/spec/base-plateau.skill/base-plateau.skill.md) through its extension points: it replaces the startup entry and changes no other base file but the composition root and the module's dependency, build, and readme files.
 
 # Core Principle
 - **A thin translation** - The gRPC entry point decodes, calls, and encodes; it makes no business decision, as [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md) requires of every api layer.
 - **The messages are the contract's own** - Request and response messages are generated from the proto file and mapped to and from the command's types, so a change of a command's result does not change the published contract unnoticed.
-- **Written once for every method** - Mapping errors to status codes, recovering panics, health, reflection, and shutdown are one piece of code the same in every application; serving a command adds a method, its two mappings, and its lines in the proto file.
+- **Written once for every method** - Mapping errors to status codes, recovering panics, reflection, and shutdown are one piece of code the same in every application; serving a command adds a method, its two mappings, and its lines in the proto file.
 
 # Scope
 - Covers a gRPC API with unary methods. Streaming methods are not covered yet.
 - The HTTP form of the gRPC contract — the same operations over HTTP with proto-JSON, as [api-develop](library/common-workflow/develop/api-develop.skill/api-develop.skill.md) recommends — comes from attaching [vp-http-api](library/architecture/spec/vp-http-api.skill/vp-http-api.skill.md) as well; how the two combine is not covered yet.
-- A Docker Stack `healthcheck` cannot call the gRPC health service by itself; a gRPC-only service deployed to Docker Stack is not covered yet.
+- Serves no health check: the probes of every service, whatever its entry points, go to the same HTTP health endpoints, which a variation point of their own brings (planned). The standard gRPC health service (`grpc.health.v1`) is left out on purpose — a Docker `healthcheck` cannot call it, and two kinds of health check across the services of one system is one kind too many.
 - The implementation for each stack is described in its stack-specialized extension: `vp-grpc-api-in-go`; `vp-grpc-api-in-dotnet` and `vp-grpc-api-in-python` are planned.
 
 # Rule
@@ -57,16 +56,6 @@ Answer a method that panics with `INTERNAL`, log the panic, and keep serving.
 - Risk: in a runtime that does not recover a panic in a call (grpc-go), one bad request stops the process and every call in flight with it.
 - Fix: a server interceptor that recovers, registered once for every method.
 
-### Serve the standard health service
-Serve `grpc.health.v1.Health` with three names: `liveness` and the empty name answer `SERVING` without checking any dependency; `readiness` answers `NOT_SERVING` when a readiness check fails; any other name answers `NOT_FOUND`.
-- Risk: without separate names an orchestrator restarts a healthy process during a database outage, or sends traffic to a replica that is not ready.
-- Fix: point the Kubernetes probes at the gRPC port with `grpc.service: liveness` and `grpc.service: readiness`.
-
-### Share the readiness checks with every entry point
-Take the readiness checks — a name and a check function — from the composition root in the one shape every entry point of the application accepts, so that a service variation point adds its dependency's check once.
-- Risk: a check type of each entry point's own makes a service variation point write the same check once per entry point, and the copies drift.
-- Fix: one shared health package, the same file in every API variation point that brings it.
-
 ### Offer server reflection behind a switch
 Serve gRPC server reflection only when `GRPC_REFLECTION_ENABLED` is `true`; it is off by default.
 - Risk: without reflection a developer needs the proto file to call the service with grpcurl or Postman; with reflection always on, production publishes its full API surface to anyone who reaches the port.
@@ -94,7 +83,7 @@ Attach the entry point by adding its packages, the contract folder, and the gene
 - Fix: the stack extension lists the base files it changes; a check compares its example with the base example against that list.
 
 ### Test with the commands faked
-Test the fixed code once through a test service of its own — a success, a rejected command, an undecodable request, a failure, a panic, the health names, reflection on and off, the settings, and the graceful stop with a call in flight — and each service of the contract with its command handlers replaced by fakes, plus one scenario holding the served services against the contract's services.
+Test the fixed code once through a test service of its own — a success, a rejected command, an undecodable request, a failure, a panic, reflection on and off, the settings, and the graceful stop with a call in flight — and each service of the contract with its command handlers replaced by fakes, plus one scenario holding the served services against the contract's services.
 - Risk: a test through the real command tests the domain again and breaks on every business change; a service left out of the served list answers every call `UNIMPLEMENTED` while all other scenarios pass.
 - Fix: one fake handler per command; a service's scenarios check only its own mappings.
 
@@ -102,7 +91,6 @@ Test the fixed code once through a test service of its own — a success, a reje
 - [ ] The proto contract carries its major in the package and its full version in the first-line comment, under `docs/integration/api/{contract-name}/`.
 - [ ] Every exposed command is one method; its messages are generated and mapped to and from the command in the entry point.
 - [ ] An undecodable request and a rejected command are `INVALID_ARGUMENT`; any other error and a panic are `INTERNAL` without the internal message.
-- [ ] `grpc.health.v1.Health` answers `liveness`, `readiness`, and the empty name; readiness runs the checks shared with every entry point.
 - [ ] Reflection is served only with `GRPC_REFLECTION_ENABLED=true`.
 - [ ] The server stops gracefully within a bounded time on termination.
 - [ ] The entry point reads its own two settings; the base settings gained nothing.

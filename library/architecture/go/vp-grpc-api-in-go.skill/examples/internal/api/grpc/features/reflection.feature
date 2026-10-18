@@ -9,7 +9,6 @@ Feature: Server reflection
     Given reflection is enabled
     When I list the services by reflection
     Then the listed services should include "test.v1.EchoService"
-    And the listed services should include "grpc.health.v1.Health"
 
   @category/boundary
   Scenario: Reflection is off by default
