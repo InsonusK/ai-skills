@@ -81,6 +81,7 @@ Before a large task in a conversation that already carries much finished work �
 - Violation: starting a multi-step task with the context nearly full, or saying "you may want to compact" with no command.
 - Risk: the context fills mid-task and is compacted at a bad moment, losing a decision or an open item still needed.
 - Fix: in Claude Code, `/compact Keep: {agreed decisions, open PRs and branches, the plan of the next task}. Drop: {file listings, test and tool output, finished steps, superseded drafts}.` — filled with the conversation's actual items; propose it before starting the task, not in the middle.
+- Fix: tell the person how to enter it: type `/compact` alone, press space, then paste the `Keep: … Drop: …` text; a pasted `/compact …` arrives as plain text and compacts nothing.
 
 ## SHOULD
 
@@ -116,4 +117,4 @@ Ask clarifying questions about non-trivial ambiguity even outside the mandatory 
 - [ ] No report list (ambiguities, trade-offs, not-done) was left silently empty without a re-check.
 - [ ] Any corner cut under time pressure was converted into a recorded rule, not just silently fixed.
 - [ ] Before each part that needs deep reasoning, a higher effort was proposed with its reason (current level checked, or assumed `medium`); after it, lowering was proposed.
-- [ ] Before a large task in a long conversation, compacting was decided, and when proposed, the exact `/compact` command named what to keep and what to drop.
+- [ ] Before a large task in a long conversation, compacting was decided, and when proposed, the exact `/compact` command named what to keep and what to drop, with how to enter it: `/compact` typed, a space, then the text pasted.
