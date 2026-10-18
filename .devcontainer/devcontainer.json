@@ -18,7 +18,8 @@
 	"customizations": {
 		"vscode": {
 			"extensions": [
-				"CucumberOpen.cucumber-official"
+				"CucumberOpen.cucumber-official",
+				"DrBlury.protobuf-vsc"
 			]
 		}
 	},
