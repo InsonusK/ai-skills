@@ -67,4 +67,4 @@ This is the Go counterpart of a MediatR pipeline behavior in the dotnet catalog.
 ## Sources
 
 - Decorator pattern: https://refactoring.guru/design-patterns/decorator
-- [pipeline.go](../templates/internal/command/pipeline/pipeline.go)
+- [logging.go](../templates/internal/command/pipeline/logging.go)

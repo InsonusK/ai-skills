@@ -2,8 +2,9 @@
 
 // Package pipeline is the path every command takes from an entry point to its
 // handler: the one Handler contract all handlers satisfy, the decorators that
-// wrap a handler with a cross-cutting step (logging now; a unit of work or a
-// metric later), and the error kind an entry point maps to its response.
+// wrap a handler with a cross-cutting step - one file per decorator: logging
+// now, a unit of work or a metric later - and the error kind an entry point
+// maps to its response.
 //
 // It holds no command. The commands live one level up, in package command;
 // entry points import both - command for the command types, pipeline for the
@@ -13,8 +14,6 @@ package pipeline
 
 import (
 	"context"
-	"log/slog"
-	"time"
 
 	"{module-path}/internal/domain/entity"
 )
@@ -52,24 +51,4 @@ type HandlerFunc[TCommand, TResult any] func(ctx context.Context, cmd TCommand) 
 // Handle calls the function itself, which makes HandlerFunc satisfy Handler.
 func (f HandlerFunc[TCommand, TResult]) Handle(ctx context.Context, cmd TCommand) (TResult, error) {
 	return f(ctx, cmd)
-}
-
-// WithLogging is a decorator: it returns a Handler that calls next and writes
-// one log record per call - "command handled" at info level, or "command
-// failed" at warn level with the error. name is the command's name in the log.
-//
-// Every cross-cutting step (a transaction, a metric, ...) follows the same
-// pattern: take a Handler, return a Handler of the same TCommand and TResult.
-// The composition root wraps a handler with as many decorators as it needs.
-func WithLogging[TCommand, TResult any](name string, logger *slog.Logger, next Handler[TCommand, TResult]) Handler[TCommand, TResult] {
-	return HandlerFunc[TCommand, TResult](func(ctx context.Context, cmd TCommand) (TResult, error) {
-		start := time.Now()
-		res, err := next.Handle(ctx, cmd)
-		if err != nil {
-			logger.WarnContext(ctx, "command failed", "command", name, "duration", time.Since(start), "error", err)
-			return res, err
-		}
-		logger.InfoContext(ctx, "command handled", "command", name, "duration", time.Since(start))
-		return res, nil
-	})
 }

@@ -26,7 +26,7 @@ The fittings are added in the composition root's `// [handlers]` section; the en
 |---|---|---|
 | `Handler[TCommand, TResult]` | the contract | every handler (implements), every entry point and decorator (calls) |
 | `HandlerFunc` | a function as a handler | decorators, test stubs |
-| `WithLogging`, later more `With...` | decorators | the composition root |
+| `WithLogging`, later more `With...` — one file each (`logging.go`, ...) | decorators | the composition root |
 | `ErrInvalid` | the error kind | entry points, to choose their response |
 
 ## Example
@@ -47,5 +47,5 @@ In dotnet the same role is played by MediatR: `IRequestHandler<TRequest, TRespon
 
 ## Sources
 
-- [pipeline.go](../templates/internal/command/pipeline/pipeline.go)
+- [handler.go](../templates/internal/command/pipeline/handler.go), [logging.go](../templates/internal/command/pipeline/logging.go)
 - MediatR pipeline behaviors: https://github.com/jbogard/MediatR/wiki/Behaviors

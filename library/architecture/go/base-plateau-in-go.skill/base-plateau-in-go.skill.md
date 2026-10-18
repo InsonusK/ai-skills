@@ -41,9 +41,15 @@ Create the packages [app-layers-in-go](library/develop/go/app-layers-in-go.skill
 - Fix: move the code to the package in the table.
 
 ### Copy the handler contract and the startup entry
-Fill and copy [pipeline.go](./templates/internal/command/pipeline/pipeline.go) to `internal/command/pipeline/pipeline.go` and [startup.go](./templates/internal/api/startup/startup.go) to `internal/api/startup/startup.go`, replacing `{module-path}` with the module path from `go.mod`.
+Fill and copy [handler.go](./templates/internal/command/pipeline/handler.go) and [logging.go](./templates/internal/command/pipeline/logging.go) to `internal/command/pipeline/`, and [startup.go](./templates/internal/api/startup/startup.go) to `internal/api/startup/startup.go`, replacing `{module-path}` with the module path from `go.mod`.
 - Risk: a retyped contract drifts from the one every variation point's decorator and entry point is written against.
-- Fix: copy the templates; after filling, searching both files for `{module-path}` returns nothing.
+- Fix: copy the templates; after filling, searching the copied files for `{module-path}` returns nothing.
+
+### One file per decorator
+Put each decorator in its own file of `internal/command/pipeline` — `logging.go` for `WithLogging`, `{step}.go` for `With{Step}` — and never add one to `handler.go` or to another decorator's file.
+- Violation: `WithUnitOfWork` appended to `logging.go` or to `handler.go`.
+- Risk: a variation point that brings a decorator edits a base file, and two such variation points edit the same one.
+- Fix: the variation point adds `internal/command/pipeline/{step}.go` and wraps the handlers in the `// [handlers]` section.
 
 ### Rule errors wrap entity.ErrInvalid
 Make `ErrInvalid` the [error kind](./glossary/error-kind.md) of every business-rule error: declare `var ErrInvalid = errors.New("invalid")` in `internal/domain/entity`, declare every business-rule error as `fmt.Errorf("%w: {what broke}", ErrInvalid)`, and check the kind with `errors.Is(err, pipeline.ErrInvalid)` outside the domain.
@@ -77,9 +83,10 @@ Read the base settings from environment variables in `config.Load() (Config, err
 
 # Check list
 - [ ] Packages follow [Base packages](#base-packages) and [app-layers-in-go](library/develop/go/app-layers-in-go.skill.md).
-- [ ] `internal/command/pipeline/pipeline.go` and `internal/api/startup/startup.go` are filled copies of the templates; neither contains `{module-path}`.
+- [ ] `internal/command/pipeline/{handler,logging}.go` and `internal/api/startup/startup.go` are filled copies of the templates; none contains `{module-path}`.
 - [ ] Every business-rule error wraps `entity.ErrInvalid`; code outside the domain checks `errors.Is(err, pipeline.ErrInvalid)`.
 - [ ] Every command lives in its own file in `internal/command` with a handler matching `Handler[TCommand, TResult]`.
+- [ ] Each decorator is in its own file of `internal/command/pipeline`.
 - [ ] `run` in `cmd/{app}/main.go` has the `// [services]`, `// [handlers]`, `// [entries]` sections in this order.
 - [ ] Type parameters are named by role, and every exported generic type or function has a comment explaining them.
 - [ ] `make test-kind-unit` passes, with scenarios in every package listed in [Cover each layer with scenarios](#cover-each-layer-with-scenarios).

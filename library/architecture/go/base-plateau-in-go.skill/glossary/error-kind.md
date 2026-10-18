@@ -31,7 +31,7 @@ flowchart LR
 |---|---|
 | `ErrInvalid` sentinel | `internal/domain/entity/errors.go` |
 | one error per business rule, wrapping `ErrInvalid` | `internal/domain/entity/errors.go` |
-| `pipeline.ErrInvalid` re-export | `internal/command/pipeline/pipeline.go` |
+| `pipeline.ErrInvalid` re-export | `internal/command/pipeline/handler.go` |
 | mapping kind → response | each entry point (`startup.ExitCode`; later the HTTP status mapper) |
 
 ## Example
