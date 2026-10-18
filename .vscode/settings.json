@@ -5,5 +5,7 @@
     // Необходимо, чтобы shd101wyy.markdown-preview-enhanced 
     // вставки вида `@import "./diagrams/feature-diagram.mmd" {as="mermaid"}`
     // отображал корректно используя путь как file relative path
-    "markdown-preview-enhanced.wikiLinkResolution": "relative"
+    "markdown-preview-enhanced.wikiLinkResolution": "relative",
+    "cucumber.glue": ["**/*_steps_test.go", "**/*_test.go"],
+    "cucumber.features": ["**/*.feature"]
 }

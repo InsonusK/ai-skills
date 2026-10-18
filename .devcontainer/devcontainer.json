@@ -15,6 +15,13 @@
 
 	// Angular CLI globally; psql / redis-cli to inspect the databases the conformance runs use.
 	"postCreateCommand": "bash .devcontainer/post_command.sh",
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"CucumberOpen.cucumber-official"
+			]
+		}
+	},
 
 	// PostgreSQL / Redis for local conformance runs are started with Docker, e.g.
 	//   docker run -d --name pg -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgres:18
