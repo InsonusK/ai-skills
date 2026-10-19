@@ -29,14 +29,24 @@ func (w *World) theServiceIsPublishedUnder(ctx context.Context, basePath string)
 	return nil
 }
 
+// theSpecServerURLShouldBe reads the prefix where the spec's version keeps
+// it: servers[0].url in OpenAPI 3, basePath in OpenAPI 2.
 func (w *World) theSpecServerURLShouldBe(ctx context.Context, want string) error {
 	var doc struct {
-		Servers []struct {
+		Swagger  string `json:"swagger"`
+		BasePath string `json:"basePath"`
+		Servers  []struct {
 			URL string `json:"url"`
 		} `json:"servers"`
 	}
 	if err := json.Unmarshal(w.response.Body.Bytes(), &doc); err != nil {
 		return fmt.Errorf("spec is not JSON: %w", err)
+	}
+	if doc.Swagger != "" {
+		if doc.BasePath != want {
+			return fmt.Errorf("basePath: got %q, want %q", doc.BasePath, want)
+		}
+		return nil
 	}
 	if len(doc.Servers) != 1 || doc.Servers[0].URL != want {
 		return fmt.Errorf("servers: got %+v, want one with url %q", doc.Servers, want)

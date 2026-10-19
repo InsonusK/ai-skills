@@ -3,8 +3,9 @@
 # the same as the file of a runnable example once its placeholders are filled:
 # a template is copied into real projects, an example is what the scenarios
 # test, and the two must not drift. A template is compared with the file at the
-# same path under its own skill's examples/, or, for a skill with no example
-# (error-kinds-in-go), under the first example of the catalog that has it.
+# same path under its own skill's examples*/ (examples-proto/ for a file of the
+# proto mode), or, for a skill with no example (error-kinds-in-go), under the
+# first example of the catalog that has it.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -23,21 +24,24 @@ for templates in library/architecture/*/*.skill/templates library/develop/*/*.sk
     [ -d "$templates" ] || continue
     skill=$(dirname "$templates")
     while read -r f; do
-        example="$skill/examples/$f"
-        if [ ! -f "$example" ]; then
-            example=$(ls library/architecture/*/*.skill/examples/"$f" 2>/dev/null | head -1 || true)
+        # every example of the skill that has the file; else the first of the catalog
+        examples=$(ls "$skill"/examples*/"$f" 2>/dev/null || true)
+        if [ -z "$examples" ]; then
+            examples=$(ls library/architecture/*/*.skill/examples*/"$f" 2>/dev/null | head -1 || true)
         fi
-        if [ -z "$example" ] || [ ! -f "$example" ]; then
+        if [ -z "$examples" ]; then
             echo "ERROR $templates/$f: no example has this file" >&2
             status=1
             continue
         fi
-        checked=$((checked + 1))
-        if ! fill "$templates/$f" | cmp -s - "$example"; then
-            echo "ERROR $templates/$f differs from $example once filled" >&2
-            status=1
-        fi
+        for example in $examples; do
+            checked=$((checked + 1))
+            if ! fill "$templates/$f" | cmp -s - "$example"; then
+                echo "ERROR $templates/$f differs from $example once filled" >&2
+                status=1
+            fi
+        done
     done < <(cd "$templates" && find . -type f -name '*.go' | sed 's#^\./##' | sort)
 done
-[ "$status" = 0 ] && echo "templates ok: $checked Go templates match their examples"
+[ "$status" = 0 ] && echo "templates ok: $checked template-example pairs match"
 exit "$status"

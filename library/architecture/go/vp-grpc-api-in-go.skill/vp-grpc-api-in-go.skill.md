@@ -2,7 +2,7 @@
 name: vp-grpc-api-in-go
 description: The gRPC API variation point in Go — the internal/api/grpc package copied from templates (settings, the generic Call, the server with reflection, panic recovery, and graceful stop), one file per proto service written in internal/api/grpc/endpoint, the proto contract with buf generation, and the startup entry replaced by one grpcapi.Run call in main.go
 whenToUse: when a Go application built on the base plateau must be served over gRPC, when you serve a new command over gRPC in such an application, or when you review its internal/api/grpc package
-updated: 20261018
+updated: 20261019
 tags:
   - stack/go
   - concern/architecture
@@ -82,6 +82,9 @@ Copy the example's `internal/api/grpc/features/` and `test/` unchanged but for t
 
 ### Serve a new command in its service's file
 Serve a further command of an existing service by adding its rpc and messages to the proto file, running `make proto-gen`, and adding its field, its method, and its `decode` and `encode` to the service's file in `endpoint/`, its scenario to the service's feature, and its handler to `endpoint.Handlers` in `main.go`; a new service adds its file and feature, one field of `Handlers`, one line of `Services`, and one row of the contract scenario.
+
+### Answer a deprecated rpc with grpcapi.Unimplemented
+Return `grpcapi.Unimplemented("{Rpc} is deprecated since {version}")` from the method of an rpc marked `option deprecated = true`, calling no command; its HTTP form answers 501 with the same message.
 
 # Check list
 - [ ] `internal/api/grpc/{config,call,server}.go` and `internal/api/rpcstatus/rpcstatus.go` are filled copies of the templates; no placeholder is left.
