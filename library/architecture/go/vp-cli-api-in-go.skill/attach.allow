@@ -1,0 +1,9 @@
+# The CLI API variation point attaches to the base plateau: it adds its packages
+# and changes only these base files; its Entry replaces the startup entry.
+base library/architecture/go/base-plateau-in-go.skill/examples
+change cmd/todo/main.go
+change go.mod
+change go.sum
+change Makefile
+change README.md
+delete internal/api/startup/*
