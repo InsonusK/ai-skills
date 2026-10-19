@@ -34,7 +34,7 @@ Fill and copy [config.go](./templates/internal/api/management/config.go) and [se
 - Fix: copy the files; after filling, searching them for `{module-path}` returns nothing; `make test` passes.
 
 ### Add the management entry in main.go
-Add a `management` `entry.Entry` calling `management.Run` to the `// [entries]` list of `cmd/{app}/main.go`, beside the entries already there.
+Add a `management` `entry.Entry` calling `management.Run` to the `// [entries]` list of `cmd/{app}/main.go`, beside the entries already there; how the list runs is the base plateau's [entry runner](library/architecture/go/base-plateau-in-go.skill/glossary/entry-runner.md).
 
 ```go
 // [entries] - every entry point, one Entry each, run together by entry.RunAll.
@@ -54,7 +54,7 @@ return entry.ExitCode(err)
 - Fix: import `"{module-path}/internal/api/management"`; one entry, nothing else in `main.go`.
 
 ### Add a readiness check as one argument
-Pass a dependency's readiness check as a `management.Check{Name, Check}` argument of `management.Run`, built in `// [services]` by the service variation point that brings the dependency.
+Pass a dependency's [readiness check](./glossary/readiness-check.md) as a `management.Check{Name, Check}` argument of `management.Run`, built in `// [services]` by the service variation point that brings the dependency.
 
 ```go
 return management.Run(ctx, logger,
@@ -79,4 +79,5 @@ Fill the deployment templates of [devops-service-deploy](library/devops/core/dev
 - [ ] `make test` passes; `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).
 
 # Example
-- [examples/](./examples/README.md) — the base plateau's to-do planner with the health endpoints attached: `make run`, `make test`.
+- [examples/](./examples/README.md) — the base plateau's to-do planner with the health endpoints attached: `make run`, `make test`; `main.go` shows where readiness checks go.
+- [glossary/](./glossary/README.md) — how the three [health endpoints](./glossary/health-endpoints.md) differ, and how a [readiness check](./glossary/readiness-check.md) works.

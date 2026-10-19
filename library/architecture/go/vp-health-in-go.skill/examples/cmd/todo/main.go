@@ -53,6 +53,16 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 			return startup.Run(ctx, planItems, command.PlanItems{Titles: startup.EnvList("STARTUP_TITLES")}, stdout)
 		}},
 		entry.Entry{Name: "management", Run: func(ctx context.Context) error {
+			// Readiness checks go here, one argument per dependency the service
+			// needs before it takes traffic. The base plateau has none; a service
+			// variation point adds its own, built in [services], e.g.
+			//
+			//	return management.Run(ctx, logger,
+			//		management.Check{Name: "database", Check: database.Ping},
+			//		management.Check{Name: "user-api", Check: userAPI.Ping},
+			//	)
+			//
+			// /health/ready answers 503 and names a check while it returns an error.
 			return management.Run(ctx, logger)
 		}},
 	)
