@@ -1,8 +1,10 @@
 #!/bin/bash
 # Checks that every variation point of the architecture catalog attaches to its
-# base without editing it: for each library/architecture/*/*.skill/attach.allow,
-# the skill's examples/ may add any file, but may change or delete a file of the
-# base example only when attach.allow names it (`change <glob>`, `delete <glob>`).
+# base without editing it: for each library/architecture/*/*.skill/*.allow, the
+# example it names (`examples <dir>`, default examples/) may add any file, but
+# may change or delete a file of the base example only when the allow file
+# names it (`change <glob>`, `delete <glob>`). A skill with a second mode has a
+# second allow file for its second example (attach-proto.allow).
 # Prints what each variation point adds, changes, and deletes. A file two
 # variation points of one base both add (internal/api/health/health.go) must be
 # the same in both, or attaching both to one application conflicts.
@@ -31,29 +33,31 @@ allowed() {
 
 status=0
 declare -A first_adder=()
-for allow in library/architecture/*/*.skill/attach.allow; do
+for allow in library/architecture/*/*.skill/*.allow; do
     [ -e "$allow" ] || continue
     skill=$(dirname "$allow")
     base=$(awk '$1 == "base" {print $2}' "$allow")
-    echo "== $(basename "$skill" .skill) attaches to $base"
+    examples="$skill/$(awk '$1 == "examples" {print $2}' "$allow")"
+    [ "$examples" = "$skill/" ] && examples="$skill/examples"
+    echo "== $(basename "$skill" .skill) ($(basename "$examples")) attaches to $base"
     added=() changed=() deleted=() bad=()
     while read -r f; do
         if [ ! -e "$base/$f" ]; then
             added+=("$f")
             key="$base|$f"
             if [ -n "${first_adder[$key]:-}" ]; then
-                cmp -s "${first_adder[$key]}/examples/$f" "$skill/examples/$f" \
-                    || bad+=("added differently by $(basename "${first_adder[$key]}" .skill): $f")
+                cmp -s "${first_adder[$key]}/$f" "$examples/$f" \
+                    || bad+=("added differently by ${first_adder[$key]}: $f")
             else
-                first_adder[$key]=$skill
+                first_adder[$key]=$examples
             fi
-        elif ! cmp -s "$base/$f" "$skill/examples/$f"; then
+        elif ! cmp -s "$base/$f" "$examples/$f"; then
             changed+=("$f")
             allowed change "$f" "$allow" || bad+=("changed, not allowed: $f")
         fi
-    done < <(files "$skill/examples")
+    done < <(files "$examples")
     while read -r f; do
-        if [ ! -e "$skill/examples/$f" ]; then
+        if [ ! -e "$examples/$f" ]; then
             deleted+=("$f")
             allowed delete "$f" "$allow" || bad+=("deleted, not allowed: $f")
         fi

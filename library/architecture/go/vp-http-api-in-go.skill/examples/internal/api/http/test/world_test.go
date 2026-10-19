@@ -96,8 +96,17 @@ func (w *World) routes() []httpapi.Route {
 		return echoCommand{Text: b.Text}, err
 	}
 	encode := func(result echoResult) any { return body{Text: result.Text} }
-	return []httpapi.Route{{Pattern: "POST /v1/echo", Handler: httpapi.Endpoint(w.echoHandler(), decode, encode, http.StatusCreated)}}
+	routes := []httpapi.Route{{Pattern: "POST /v1/echo", Handler: httpapi.Endpoint(w.echoHandler(), decode, encode, http.StatusCreated)}}
+	if moreRoutes != nil {
+		routes = append(routes, moreRoutes(w)...)
+	}
+	return routes
 }
+
+// moreRoutes adds the test routes of a file only some services copy: when the
+// contract is a proto file, proto_steps_test.go sets it to the routes over
+// proto.go. Nil otherwise.
+var moreRoutes func(w *World) []httpapi.Route
 
 func (w *World) server() *httpapi.Server {
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))

@@ -53,3 +53,10 @@ func statusOf(err error) error {
 	code, message := rpcstatus.Of(err)
 	return status.Error(codes.Code(code), message)
 }
+
+// Unimplemented is the answer of a method the contract keeps but no longer
+// serves - deprecated and switched off: UNIMPLEMENTED with message, the way
+// the HTTP form of the method answers 501.
+func Unimplemented(message string) error {
+	return status.Error(codes.Unimplemented, message)
+}

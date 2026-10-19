@@ -2,7 +2,7 @@
 name: vp-http-api
 description: The HTTP API variation point — an entry point attached to the base plateau that serves commands as versioned HTTP routes, answers errors by their kind, publishes its OpenAPI contract and Swagger UI, stops gracefully, and replaces the startup entry without editing any other base file
 whenToUse: when an application built on the base plateau must be reachable over HTTP — adding the HTTP entry point, serving a new command over HTTP, or reviewing the HTTP entry point of such an application
-updated: 20261018
+updated: 20261019
 tags:
   - stack
   - concern/architecture
@@ -21,7 +21,7 @@ tags:
 - **Written once for every command** - Decoding errors, mapping errors to statuses, and writing JSON are one generic piece of code; serving a command adds a route, its two types, and its two mappings.
 
 # Scope
-- Covers an HTTP API whose contract is written by hand in OpenAPI; an HTTP form generated from a proto contract belongs to the gRPC API variation point.
+- Covers an HTTP API whose contract is written by hand in OpenAPI, and the HTTP form of a gRPC contract — the same proto file served over HTTP, as [api-develop](library/common-workflow/develop/api-develop.skill/api-develop.skill.md) recommends — in a service that also has [vp-grpc-api](library/architecture/spec/vp-grpc-api.skill/vp-grpc-api.skill.md).
 - Serves no health endpoints: they come from [vp-health](library/architecture/spec/vp-health.skill/vp-health.skill.md) on a port of their own, the same in every service, and never published through the ingress.
 - The implementation for each stack is described in its stack-specialized extension: `vp-http-api-in-go`; `vp-http-api-in-dotnet` and `vp-http-api-in-python` are planned.
 
@@ -33,6 +33,12 @@ tags:
 Version, document, and publish the HTTP API per [api-develop](library/common-workflow/develop/api-develop.skill/api-develop.skill.md): the major version in every route (`/v1/...`), the contract file under `docs/integration/api/{contract-name}/`, Swagger UI and the spec behind `HTTP_API_DOCS_ENABLED`, every emitted URL under `HTTP_BASE_PATH`, success status 201/202/200 by what the command did, and `google.rpc.Status` as every error body.
 - Risk: an HTTP API that departs from the shared rules answers differently from every other service of the system and breaks behind an ingress prefix.
 - Fix: check the entry point against api-develop's check list.
+
+### Serve the HTTP form of a proto contract from the proto file
+When the service has a gRPC contract, take the HTTP routes, the request and response shapes, and the spec from the proto file: one route per `google.api.http` annotation, the generated messages in standard proto-JSON, and the spec generated from the annotations with every success and error status listed.
+- Violation: a hand-written OpenAPI spec or request types of the entry point's own beside a proto contract.
+- Risk: two descriptions of one API drift, and the HTTP form answers in a shape the gRPC form does not have.
+- Fix: the proto file is the only contract; a scenario holds the served routes against the generated spec.
 
 ### One route per command
 Serve each exposed command at exactly one route, whose handler decodes the request into the command's plain parameters, calls the command's handler, and encodes its result.
@@ -47,7 +53,7 @@ Keep the routes of each resource — the first path segment after the version, i
 - Fix: one unit per resource in a folder of its own; adding a command to a resource changes only that unit, the contract, and the composition root.
 
 ### Request and response types belong to the entry point
-Declare the request and response bodies as types of the HTTP entry point and map them to and from the command and its result.
+Declare the request and response bodies as types of the HTTP entry point — or, for a proto contract, use its generated messages — and map them to and from the command and its result.
 - Violation: the command's result type encoded directly as the response.
 - Risk: renaming a field of the command's result silently changes the published contract every client depends on.
 - Fix: a request type and a response type per route, with the mapping beside the route.

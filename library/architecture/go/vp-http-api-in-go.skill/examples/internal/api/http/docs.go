@@ -35,9 +35,11 @@ func registerDocs(mux *http.ServeMux, basePath string) {
 	})
 }
 
-// publishedSpec is the embedded contract with its server URL set to the path
-// the service is published under, so Swagger UI's "Try it out" calls this
-// service and not the ingress root. The committed file names no server.
+// publishedSpec is the embedded contract with the path the service is
+// published under set in it, so Swagger UI's "Try it out" calls this service
+// and not the ingress root: servers[0].url in a hand-written OpenAPI 3 spec,
+// basePath in an OpenAPI 2 spec generated from a proto file. The committed
+// file names neither.
 func publishedSpec(embedded []byte, basePath string) []byte {
 	if basePath == "" {
 		return embedded
@@ -46,7 +48,11 @@ func publishedSpec(embedded []byte, basePath string) []byte {
 	if err := json.Unmarshal(embedded, &doc); err != nil {
 		panic("the embedded OpenAPI contract is not JSON: " + err.Error())
 	}
-	doc["servers"] = []map[string]string{{"url": basePath}}
+	if _, v2 := doc["swagger"]; v2 {
+		doc["basePath"] = basePath
+	} else {
+		doc["servers"] = []map[string]string{{"url": basePath}}
+	}
 	published, err := json.Marshal(doc)
 	if err != nil {
 		panic(err)

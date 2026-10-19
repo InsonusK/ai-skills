@@ -80,7 +80,7 @@ the `spec/` skills come along because every stack skill links its spec.
 | 1c-1 | API: gRPC (`vp-grpc-api`) | ✅ | | |
 | — | error kinds (`library/develop/core/error-kinds`) | ✅ | | |
 | — | health (`vp-health`, `:8081`) + one runner for every entry point (`entry.RunAll`) | ✅ | | |
-| 1c-2 | HTTP + gRPC in one service | | | |
+| 1c-2 | HTTP form of a gRPC contract (`vp-http-api`, proto mode) | ✅ | | |
 | 1d | API: CLI | | | |
 | 2 | clients: HTTP, gRPC | | | |
 | 3 | DB | | | |
@@ -95,7 +95,7 @@ variation points are formed (2026-10-18).
 | Candidate | Where it lives now | Why a library |
 |---|---|---|
 | Go handler contract + startup entry (`Handler[TCommand, TResult]`, `HandlerFunc`, `WithLogging`, `startup.Run`, `ExitCode`) | templates of `base-plateau-in-go` | identical in every Go application; a variation point's decorator or entry point would import one stable package |
-| Go HTTP entry point (`Endpoint`, `Server` with health and graceful stop, `LoadConfig`, docs routes) | templates of `vp-http-api-in-go` | identical in every Go HTTP service except the module path and the contract's name; the docs routes could take the embedded spec as a parameter |
+| Go HTTP entry point (`Endpoint`, `Server` with graceful stop, `LoadConfig`, docs routes, `proto.go` for a proto contract) | templates of `vp-http-api-in-go` | identical in every Go HTTP service except the module path and the contract's name; the docs routes could take the embedded spec as a parameter |
 | Go gRPC entry point (`Call`, `Server` with reflection, panic recovery, graceful stop, `LoadConfig`) | templates of `vp-grpc-api-in-go` | identical in every Go gRPC service except the module path |
 | Go error kinds (`entity/kinds.go`, `pipeline/errors.go` with `KindOf`, `api/rpcstatus`) | templates of `error-kinds-in-go` | identical in every Go application; a service would import the kinds and the table instead of copying them; the skill would keep only when to choose each kind |
 | Testing tooling (`tools/testing`, `tools/normalize_*`, `tools/livingdoc`, `report-template`) | example of `solution-conformance-testing-in-go`; not copied into plateau or variation-point examples | ~2,000 lines copied into every real project; a version bump would update every project at once |
@@ -109,12 +109,12 @@ Agreed with the owner; written into the variation point's skill and ADR when it 
 |---|---|---|
 | **Unit of work at the command.** Optional, available once the DB variation point is attached; the outermost command opens it, nested commands and notification handlers join, services never commit. A simple service may skip it; once any command changes data in several places at once (nested commands, notification handlers, outbox task), every command is wrapped. Rejected: each service method owning its transaction (breaks atomicity across handlers); mandatory for every application. dotnet: pipeline behavior + EF change tracking (one short transaction at the end). Go: handler decorator, unit of work in `context.Context`, transaction opened on the first write, every storage method takes its executor from the context. | DB (step 3) | 2026-10-17 |
 | **In-process notifications in Go** (the counterpart of MediatR notifications), joining the command's unit of work. | DB (step 3) | 2026-10-17 |
-| **HTTP form of a gRPC contract: HTTP endpoint files over the generated messages** (`protojson`), the spec generated from the proto's `google.api.http` annotations, no grpc-gateway (ADR `http-form-over-generated-messages`). Must cover the owner's example: path parameters (`/v1/users/{user_id}/books`), 201 and 409 documented through `openapiv2_operation`, a deprecated method answering 501 `UNIMPLEMENTED`. | HTTP + gRPC (step 1c-2) | 2026-10-18 |
 
 ## Backlog
 
 | Task | When |
 |---|---|
+| The proto example keeps its lists in memory (`internal/infrastructure/memory`, scenarios tagged `@type/tech-check` since the tag vocabulary has no in-memory store); the DB variation point replaces it | DB (step 3) |
 | The verification `curl` of the `devops-service-deploy` guides calls `/health/ready` on the published API port; for a service with the management port it needs that port published or port-forwarded | with the next change of `devops-service-deploy` |
 | Review [Library candidates](#library-candidates) with the owner: turn fixed Go code (handler contract, error kinds + `rpcstatus`, HTTP/gRPC entry points) into libraries services import instead of copying templates | after the last variation point (step 4) |
 | Rename Client → Service and Integration → Infrastructure in `solution-integration-client-layering` (old Client = today's service, old Integration = today's infrastructure) | after the API variation points are designed |

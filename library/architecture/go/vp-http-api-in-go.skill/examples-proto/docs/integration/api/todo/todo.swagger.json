@@ -1,0 +1,285 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Todo",
+    "version": "1.1.0"
+  },
+  "tags": [
+    {
+      "name": "ItemsService",
+      "description": "ItemsService plans and keeps to-do items in lists."
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/items/plan": {
+      "post": {
+        "summary": "PlanItems turns a list of titles into to-do items, none done yet; nothing is kept.",
+        "operationId": "ItemsService_PlanItems",
+        "responses": {
+          "200": {
+            "description": "The planned items.",
+            "schema": {
+              "$ref": "#/definitions/v1PlanItemsResponse"
+            }
+          },
+          "400": {
+            "description": "INVALID_ARGUMENT: a title is empty, too long, or repeated.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1PlanItemsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ItemsService"
+        ]
+      }
+    },
+    "/v1/lists/{listId}/clear": {
+      "post": {
+        "summary": "ClearList removed every item of a list. Deprecated since 1.1.0: it always\nanswers UNIMPLEMENTED; it stays in the contract so that clients get a clear\nanswer instead of a 404 until the next major version removes it.",
+        "operationId": "ItemsService_ClearList",
+        "responses": {
+          "501": {
+            "description": "UNIMPLEMENTED: the method is deprecated since 1.1.0.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "listId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ItemsServiceClearListBody"
+            }
+          }
+        ],
+        "tags": [
+          "ItemsService"
+        ],
+        "deprecated": true
+      }
+    },
+    "/v1/lists/{listId}/items": {
+      "get": {
+        "summary": "ListItems returns the items of a list, in the order they were added.",
+        "operationId": "ItemsService_ListItems",
+        "responses": {
+          "200": {
+            "description": "The items of the list.",
+            "schema": {
+              "$ref": "#/definitions/v1ListItemsResponse"
+            }
+          },
+          "404": {
+            "description": "NOT_FOUND: no list with this id.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "listId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ItemsService"
+        ]
+      },
+      "post": {
+        "summary": "AddItem adds an item to a list, creating the list with its first item.",
+        "operationId": "ItemsService_AddItem",
+        "responses": {
+          "201": {
+            "description": "The item was added.",
+            "schema": {
+              "$ref": "#/definitions/v1AddItemResponse"
+            }
+          },
+          "400": {
+            "description": "INVALID_ARGUMENT: the title is empty or too long.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "409": {
+            "description": "ALREADY_EXISTS: the list already has an item with this title.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "listId",
+            "description": "list_id names the list; it is taken from the path.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ItemsServiceAddItemBody"
+            }
+          }
+        ],
+        "tags": [
+          "ItemsService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "ItemsServiceAddItemBody": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        }
+      }
+    },
+    "ItemsServiceClearListBody": {
+      "type": "object"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1AddItemResponse": {
+      "type": "object",
+      "properties": {
+        "item": {
+          "$ref": "#/definitions/v1Item"
+        }
+      }
+    },
+    "v1ClearListResponse": {
+      "type": "object"
+    },
+    "v1Item": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "done": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1ListItemsResponse": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Item"
+          }
+        }
+      }
+    },
+    "v1PlanItemsRequest": {
+      "type": "object",
+      "properties": {
+        "titles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "v1PlanItemsResponse": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Item"
+          }
+        }
+      }
+    }
+  }
+}
