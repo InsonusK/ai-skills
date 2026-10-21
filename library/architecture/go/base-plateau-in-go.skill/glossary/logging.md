@@ -12,11 +12,11 @@ Three kinds of part log: the command decorator (a command was called, handled, f
 |---|---|---|---|
 | `pipeline.WithLogging` | `command called` (INFO) | `command` | the command |
 | | `command handled` (INFO) / `command failed` (WARN) | `command`, `duration`, `failed`, `error` | the command, on failure |
-| HTTP entry point | `http request` (INFO) | `method`, `path`, `status`, `duration`, `failed` | `query`, `headers`, `body` |
-| gRPC entry point | `grpc call` (INFO) | `method`, `code`, `duration`, `failed` | the request message |
-| CLI entry point | `cli call` (INFO) | `action`, `duration`, `failed` | the flags given |
+| HTTP entry point | `http request` (INFO) | `method`, `path`, `status`, `duration`, `failed` | `request`: `query`, `headers`, `body`; `response`: `body` as written |
+| gRPC entry point | `grpc call` (INFO) | `method`, `code`, `duration`, `failed` | `request` and `response` messages |
+| CLI entry point | `cli call` (INFO) | `action`, `duration`, `failed` | `flags` given, `output` as printed |
 
-Every entry point also puts a **request id** into the context (`logging.WithRequestID`): the client's (`X-Request-Id`, `x-request-id`) or a new one, sent back in the response.
+The response is logged as it was sent, not as the command returned it, so a fault in turning a result into the response — a wrong mapping, a field left out — shows in the log. Every entry point also puts a **request id** into the context (`logging.WithRequestID`): the client's (`X-Request-Id`, `x-request-id`) or a new one, sent back in the response.
 
 ## How it works
 

@@ -69,11 +69,12 @@ const RequestIDHeader = "X-Request-Id"
 
 // logRequests writes one record per request once it is answered - "http
 // request" with the method, the path, the status, the duration, failed (a
-// status of 400 or above), and as the payload what the client sent: the
-// query, the headers, and the body. It puts the request id into the request's
-// context, so every record of the request carries it once the logging
-// variation point is attached. The body is read here and given back to the
-// routes unchanged.
+// status of 400 or above), and as the payload what the client sent - the
+// query, the headers, and the body - and the body it was answered with, as
+// written, so a fault in turning a result into the response shows in the log.
+// It puts the request id into the request's context, so every record of the
+// request carries it once the logging variation point is attached. The
+// request body is read here and given back to the routes unchanged.
 func (s *Server) logRequests(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
@@ -81,25 +82,35 @@ func (s *Server) logRequests(next http.Handler) http.Handler {
 		w.Header().Set(RequestIDHeader, logging.RequestID(ctx))
 		body, _ := io.ReadAll(r.Body) // a broken body reaches the route empty and fails its decode
 		r.Body = io.NopCloser(bytes.NewReader(body))
-		answered := &statusRecorder{ResponseWriter: w, status: http.StatusOK}
+		answered := &responseRecorder{ResponseWriter: w, status: http.StatusOK}
 		next.ServeHTTP(answered, r.WithContext(ctx))
 		s.logger.LogAttrs(ctx, slog.LevelInfo, "http request",
 			slog.String("method", r.Method), slog.String("path", r.URL.Path),
 			slog.Int("status", answered.status), slog.Duration("duration", time.Since(start)),
 			logging.Failed(answered.status >= http.StatusBadRequest),
-			logging.Payload(map[string]any{"query": r.URL.Query(), "headers": r.Header, "body": body}))
+			logging.Payload(map[string]any{
+				"request":  map[string]any{"query": r.URL.Query(), "headers": r.Header, "body": body},
+				"response": map[string]any{"body": answered.body.Bytes()},
+			}))
 	})
 }
 
-// statusRecorder remembers the status a route answered with.
-type statusRecorder struct {
+// responseRecorder remembers the status and the body a route answered with,
+// while writing both to the client.
+type responseRecorder struct {
 	http.ResponseWriter
 	status int
+	body   bytes.Buffer
 }
 
-func (r *statusRecorder) WriteHeader(status int) {
+func (r *responseRecorder) WriteHeader(status int) {
 	r.status = status
 	r.ResponseWriter.WriteHeader(status)
+}
+
+func (r *responseRecorder) Write(b []byte) (int, error) {
+	r.body.Write(b)
+	return r.ResponseWriter.Write(b)
 }
 
 // Serve listens on the configured port until ctx is cancelled (SIGTERM), then

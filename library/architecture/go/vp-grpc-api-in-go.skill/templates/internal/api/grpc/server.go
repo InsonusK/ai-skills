@@ -112,8 +112,9 @@ func (s *Server) build() *grpc.Server {
 const RequestIDMetadata = "x-request-id"
 
 // logCalls writes one record per call once it is answered - "grpc call" with
-// the method, the status code, the duration, failed (any code but OK), and the
-// request message as the payload. It puts the request id into the call's
+// the method, the status code, the duration, failed (any code but OK), and as
+// the payload the request message and the response message as returned, so a
+// fault in turning a result into the response shows in the log. It puts the request id into the call's
 // context, so every record of the call carries it once the logging variation
 // point is attached. It runs outside recoverPanics, so a panic is logged with
 // the INTERNAL it was answered with.
@@ -131,7 +132,7 @@ func logCalls(logger *slog.Logger) grpc.UnaryServerInterceptor {
 		logger.LogAttrs(ctx, slog.LevelInfo, "grpc call",
 			slog.String("method", info.FullMethod), slog.String("code", code.String()),
 			slog.Duration("duration", time.Since(start)), logging.Failed(code != codes.OK),
-			logging.Payload(req))
+			logging.Payload(map[string]any{"request": req, "response": resp}))
 		return resp, err
 	}
 }

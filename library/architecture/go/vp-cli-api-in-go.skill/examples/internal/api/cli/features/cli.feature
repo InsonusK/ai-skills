@@ -79,6 +79,7 @@ Feature: Command line
     When I run "test echo --text hi --output text"
     Then one "cli call" record should be logged for the action "todo test echo", failed "false"
     And its payload should hold the flag "text" = "hi"
+    And its payload should hold the output "echo: hello"
 
   @category/negative
   Scenario: A run that fails is logged as failed

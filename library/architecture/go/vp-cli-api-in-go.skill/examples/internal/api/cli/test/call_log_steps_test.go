@@ -32,13 +32,25 @@ func registerCallLogSteps(sc *godog.ScenarioContext, w *World) {
 		}
 		return nil
 	})
+	sc.Step(`^its payload should hold the output "([^"]*)"$`, func(want string) error {
+		rec, err := record()
+		if err != nil {
+			return err
+		}
+		payload, _ := rec["payload"].(map[string]any)
+		if got := strings.TrimSpace(fmt.Sprint(payload["output"])); got != want {
+			return fmt.Errorf("output in the payload: got %q, want %q", got, want)
+		}
+		return nil
+	})
 	sc.Step(`^its payload should hold the flag "([^"]*)" = "([^"]*)"$`, func(name, value string) error {
 		rec, err := record()
 		if err != nil {
 			return err
 		}
 		payload, _ := rec["payload"].(map[string]any)
-		if payload[name] != value {
+		flags, _ := payload["flags"].(map[string]any)
+		if flags[name] != value {
 			return fmt.Errorf("payload %v, want %s=%s", rec["payload"], name, value)
 		}
 		return nil

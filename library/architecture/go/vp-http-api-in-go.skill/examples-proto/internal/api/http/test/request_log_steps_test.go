@@ -21,6 +21,7 @@ func registerRequestLogSteps(sc *godog.ScenarioContext, w *World) {
 	})
 	sc.Step(`^one "([^"]*)" record should be logged with:$`, w.oneRecordShouldBeLoggedWith)
 	sc.Step(`^its payload should hold the query "([^"]*)" = "([^"]*)" and the body '([^']*)'$`, w.itsPayloadShouldHold)
+	sc.Step(`^its payload should hold the response body '([^']*)'$`, w.itsPayloadShouldHoldTheResponse)
 	sc.Step(`^the response should carry the request id "([^"]*)"$`, func(want string) error {
 		if got := w.response.Header().Get(httpapi.RequestIDHeader); got != want {
 			return fmt.Errorf("response request id: got %q, want %q", got, want)
@@ -73,12 +74,32 @@ func (w *World) itsPayloadShouldHold(ctx context.Context, name, value, body stri
 		return fmt.Errorf("http request records: got %d, want 1", len(recs))
 	}
 	payload, _ := recs[0]["payload"].(map[string]any)
-	query, _ := payload["query"].(map[string]any)
+	request, _ := payload["request"].(map[string]any)
+	query, _ := request["query"].(map[string]any)
 	values, _ := query[name].([]any)
-	raw, _ := payload["body"].(string) // []byte is written as base64 by the JSON handler
-	decoded, err := base64.StdEncoding.DecodeString(raw)
-	if len(values) != 1 || values[0] != value || err != nil || string(decoded) != body {
+	if len(values) != 1 || values[0] != value || decodeBody(request) != body {
 		return fmt.Errorf("payload %v, want query %s=%s and body %s", payload, name, value, body)
 	}
 	return nil
+}
+
+func (w *World) itsPayloadShouldHoldTheResponse(ctx context.Context, body string) error {
+	recs := w.records("http request")
+	if len(recs) != 1 {
+		return fmt.Errorf("http request records: got %d, want 1", len(recs))
+	}
+	payload, _ := recs[0]["payload"].(map[string]any)
+	response, _ := payload["response"].(map[string]any)
+	if got := strings.TrimSpace(decodeBody(response)); got != body {
+		return fmt.Errorf("response body in the payload: got %q, want %q", got, body)
+	}
+	return nil
+}
+
+// decodeBody is the body of a payload part: []byte is written as base64 by
+// the plain JSON handler the scenarios log through.
+func decodeBody(part map[string]any) string {
+	raw, _ := part["body"].(string)
+	decoded, _ := base64.StdEncoding.DecodeString(raw)
+	return string(decoded)
 }

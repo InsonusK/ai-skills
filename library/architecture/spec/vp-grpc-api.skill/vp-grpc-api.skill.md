@@ -62,8 +62,8 @@ Serve gRPC server reflection only when `GRPC_REFLECTION_ENABLED` is `true`; it i
 - Fix: switch it on in a local or test environment, the way `HTTP_API_DOCS_ENABLED` switches on Swagger UI.
 
 ### Log every call with what arrived
-Write one record per call once it is answered, through the composition root's logger, with the method, the status code, and the duration, whether it failed, and as the payload the request message; put the request id — the client's (`x-request-id` metadata), else a new one — into the context and send it back.
-- Risk: a request that failed cannot be found or replayed from the log, and its records cannot be told from those of the requests served at the same time.
+Write one record per call once it is answered, through the composition root's logger, with the method, the status code, and the duration, whether it failed, and as the payload the request message and the response message as returned; put the request id — the client's (`x-request-id` metadata), else a new one — into the context and send it back.
+- Risk: a request that failed cannot be found or replayed from the log, its records cannot be told from those of the requests served at the same time, and a fault in turning the result into the response is invisible.
 - Fix: one record per call; the data only as the payload attribute, so the base handler drops it and the logging variation point masks it.
 
 ### Stop gracefully

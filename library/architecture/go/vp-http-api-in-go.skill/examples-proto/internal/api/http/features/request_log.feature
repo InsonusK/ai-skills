@@ -12,6 +12,7 @@ Feature: Request log
       | method | path     | status | failed |
       | POST   | /v1/echo | 201    | false  |
     And its payload should hold the query "mode" = "fast" and the body '{"text":"hi"}'
+    And its payload should hold the response body '{"text":"hello"}'
     And the command should have received "hi"
 
   @category/negative
@@ -21,6 +22,7 @@ Feature: Request log
     Then one "http request" record should be logged with:
       | method | path     | status | failed |
       | POST   | /v1/echo | 400    | true   |
+    And its payload should hold the response body '{"code":3,"message":"invalid: item titles repeat","details":[]}'
 
   @category/happy
   Scenario: The request id of the client is kept and sent back

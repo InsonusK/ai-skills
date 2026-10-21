@@ -10,6 +10,7 @@
 package cli
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -66,11 +67,12 @@ func Run(ctx context.Context, logger *slog.Logger, name, version string, args []
 		root.AddCommand(group)
 	}
 	root.SetArgs(args)
-	root.SetOut(stdout)
+	var output bytes.Buffer // what the action printed, for the record of the run
+	root.SetOut(io.MultiWriter(stdout, &output))
 	root.SetErr(stderr)
 
 	ran, err := root.ExecuteContextC(ctx)
-	defer logCall(ctx, logger, ran, start, err)
+	defer func() { logCall(ctx, logger, ran, start, err, output.String()) }()
 	var handled handlerError
 	switch {
 	case err == nil:
@@ -86,13 +88,14 @@ func Run(ctx context.Context, logger *slog.Logger, name, version string, args []
 }
 
 // logCall writes the record of one run - "cli call" with the action run, the
-// duration, failed, and as the payload the flags given on the command line.
-func logCall(ctx context.Context, logger *slog.Logger, ran *cobra.Command, start time.Time, err error) {
+// duration, failed, and as the payload the flags given on the command line and
+// the output printed, as printed.
+func logCall(ctx context.Context, logger *slog.Logger, ran *cobra.Command, start time.Time, err error, output string) {
 	flags := map[string]string{}
 	ran.Flags().Visit(func(f *pflag.Flag) { flags[f.Name] = f.Value.String() })
 	logger.LogAttrs(ctx, slog.LevelInfo, "cli call",
 		slog.String("action", ran.CommandPath()), slog.Duration("duration", time.Since(start)),
-		logging.Failed(err != nil), logging.Payload(flags))
+		logging.Failed(err != nil), logging.Payload(map[string]any{"flags": flags, "output": output}))
 }
 
 // noArgs rejects an argument where an action is expected, so `todo items

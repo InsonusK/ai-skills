@@ -42,15 +42,17 @@ func registerCallLogSteps(sc *godog.ScenarioContext, w *World) {
 			}
 			return nil
 		})
-	sc.Step(`^its payload should be the message "([^"]*)"$`, func(want string) error {
+	sc.Step(`^its payload should hold the request "([^"]*)" and the response "([^"]*)"$`, func(request, response string) error {
 		recs := w.records("grpc call")
 		if len(recs) != 1 {
 			return fmt.Errorf("grpc call records: got %d, want 1", len(recs))
 		}
 		// the JSON handler writes a generated message through encoding/json: its exported fields
 		payload, _ := recs[0]["payload"].(map[string]any)
-		if payload["value"] != want {
-			return fmt.Errorf("payload %v, want the message %q", recs[0]["payload"], want)
+		req, _ := payload["request"].(map[string]any)
+		resp, _ := payload["response"].(map[string]any)
+		if req["value"] != request || resp["value"] != response {
+			return fmt.Errorf("payload %v, want request %q and response %q", recs[0]["payload"], request, response)
 		}
 		return nil
 	})

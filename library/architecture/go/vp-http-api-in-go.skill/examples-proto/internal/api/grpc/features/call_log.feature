@@ -1,15 +1,15 @@
 @type/tech-check
 Feature: Call log
   As an operator of the service
-  I want one record per gRPC call with its method, its status code, and the request message
+  I want one record per gRPC call with its method, its status code, and the messages in and out
   So that I find any call in the log, and, with the logging variation point, its data
 
   @category/happy
-  Scenario: A call is logged with its method, its code, and the request message
+  Scenario: A call is logged with its method, its code, and the request and response messages
     Given the command answers "hello"
     When I call the test method with "hi"
     Then one "grpc call" record should be logged with the method "/test.v1.EchoService/Echo", the code "OK", and failed "false"
-    And its payload should be the message "hi"
+    And its payload should hold the request "hi" and the response "hello"
 
   @category/negative
   Scenario: A rejected call is logged as failed

@@ -57,7 +57,7 @@ Answer `--help` on the application, on a resource, and on an action — and the 
 - Fix: each action and resource has a one-line description; each flag a description.
 
 ### Log every run with what arrived
-Write one record per run once it is answered, through the composition root's logger, with the action and the duration, whether it failed, and as the payload the flags given and a new request id in the context for the records of the run.
+Write one record per run once it is answered, through the composition root's logger, with the action and the duration, whether it failed, and as the payload the flags given and the output as printed and a new request id in the context for the records of the run.
 - Risk: a run that failed cannot be found or replayed from the log.
 - Fix: one record per run; the data only as the payload attribute, so the base handler drops it and the logging variation point masks it.
 
