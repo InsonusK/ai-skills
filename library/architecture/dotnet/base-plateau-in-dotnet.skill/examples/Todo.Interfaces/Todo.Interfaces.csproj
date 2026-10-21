@@ -1,8 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <!-- What an entry point sees of the module: the commands and their results.
-       Only MediatR.Contracts (IRequest), so an entry point referencing it
-       reaches neither the handlers nor the domain. -->
-  <ItemGroup>
-    <PackageReference Include="MediatR.Contracts" />
-  </ItemGroup>
-</Project>
