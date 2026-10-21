@@ -118,10 +118,10 @@ Agreed with the owner; written into the variation point's skill and ADR when it 
 
 | Task | When |
 |---|---|
+| Rewrite `api-client-develop` and `client-mocking` (`common-workflow/develop`) in service / infrastructure terms as they move to `library/develop` (the old Client/Integration names stay in `solution-integration-client-layering` and the old catalogs; the mapping is recorded in the `app-layers` ADR `service-wraps-one-infrastructure`) | clients (step 2) |
 | Clients log every outgoing call (`http client call`, `grpc client call`) with the request as the payload and the request id of the context sent on, through the same logger | clients (step 2) |
 | The proto example keeps its lists in memory (`internal/infrastructure/memory`, scenarios tagged `@type/tech-check` since the tag vocabulary has no in-memory store); the DB variation point replaces it | DB (step 3) |
 | The verification `curl` of the `devops-service-deploy` guides calls `/health/ready` on the published API port; for a service with the management port it needs that port published or port-forwarded | with the next change of `devops-service-deploy` |
 | Review [Library candidates](#library-candidates) with the owner: turn fixed Go code (handler contract, error kinds + `rpcstatus`, HTTP/gRPC entry points) into libraries services import instead of copying templates | after the last variation point (step 4) |
-| Rename Client → Service and Integration → Infrastructure in `solution-integration-client-layering` (old Client = today's service, old Integration = today's infrastructure) | after the API variation points are designed |
 | Move `library/common-workflow/develop/*` to `library/develop/{core,stack}` | later pass |
 | `api-develop-in-go` still says the contract's routes are one list in `internal/api/http/server.go` exposed as `ContractRoutes()`; the HTTP variation point now keeps them in `internal/api/http/endpoint` (`Routes`) | with the move of `library/common-workflow/develop/*` |
