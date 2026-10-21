@@ -25,7 +25,7 @@ adr:
 
 # Scope
 - Covers what the base plateau contains and how a variation point attaches to it, for every stack; the layer rules themselves are [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md)'s.
-- The implementation for each stack is described in its stack-specialized extension: `base-plateau-in-go`; `base-plateau-in-dotnet` and `base-plateau-in-python` are planned.
+- The implementation for each stack is described in its stack-specialized extension: `base-plateau-in-go`, `base-plateau-in-dotnet`; `base-plateau-in-python` is planned.
 
 # Rule
 
