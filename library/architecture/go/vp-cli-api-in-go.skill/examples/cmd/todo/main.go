@@ -50,7 +50,7 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 	// name and ends, and the process ends with it.
 	resources := endpoint.Resources(endpoint.Handlers{Items: endpoint.ItemHandlers{PlanItems: planItems}})
 	err = entry.RunAll(ctx, logger,
-		entry.Entry{Name: "cli", Run: func(ctx context.Context) error {
+		entry.Entry{Name: "cli", ReportsErrors: true, Run: func(ctx context.Context) error {
 			return cliapi.Run(ctx, "todo", version.Version, os.Args[1:], resources, stdout, stderr)
 		}},
 	)

@@ -51,7 +51,7 @@ sequenceDiagram
 
 | Part | Role |
 |---|---|
-| `Entry{Name, Run}` | one entry point: its name for the logs, and the function that serves until ctx is cancelled |
+| `Entry{Name, Run, ReportsErrors}` | one entry point: its name for the logs, the function that serves until ctx is cancelled, and whether it shows its own error (the CLI prints `Error: ...`), so `RunAll` does not log it again |
 | `RunAll(ctx, logger, entries...)` | runs all together, stops all when the first ends, logs each failure with its name |
 | `ExitCode(err)` | error kind → `ExitOK` (0), `ExitFailure` (1), `ExitRejected` (2) |
 
