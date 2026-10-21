@@ -2,7 +2,7 @@
 name: vp-health
 description: The health variation point — a management entry point attached to the base plateau that answers the orchestrator's probes with /health/live, /health/ready, and /health on a port of its own, the same in every long-running service whatever its other entry points, runs the readiness checks the service variation points add, and is never published through the ingress
 whenToUse: when an application built on the base plateau runs as a long-running service (it has an HTTP, gRPC, or listener entry point), when a service variation point adds a readiness check, when you write the probes of such a service's deployment, or when you review its health endpoints
-updated: 20261018
+updated: 20261021
 tags:
   - stack
   - concern/architecture
@@ -25,7 +25,7 @@ adr:
 # Scope
 - Covers the health endpoints of a long-running service. A one-shot application (the startup command alone, a CLI) has no probes; attached to one, the entry point stops when the command is done.
 - `/metrics` is planned on the same port with the metrics variation point.
-- The implementation for each stack is described in its stack-specialized extension: `vp-health-in-go`; `vp-health-in-dotnet` and `vp-health-in-python` are planned.
+- The implementation for each stack is described in its stack-specialized extension: `vp-health-in-go`, `vp-health-in-dotnet`; `vp-health-in-python` is planned.
 
 # Rule
 

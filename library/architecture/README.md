@@ -78,10 +78,10 @@ the `spec/` skills come along because every stack skill links its spec.
 | Step | Content | Go | dotnet | Python |
 |---|---|:-:|:-:|:-:|
 | 1a | base plateau (on `app-layers`) | ✅ | ✅ | |
-| 1b | API: HTTP (`vp-http-api`) | ✅ | | |
+| 1b | API: HTTP (`vp-http-api`) | ✅ | ✅ | |
 | 1c-1 | API: gRPC (`vp-grpc-api`) | ✅ | | |
 | — | error kinds (`library/develop/core/error-kinds`) | ✅ | ✅ (exceptions) | |
-| — | health (`vp-health`, `:8081`) + one runner for every entry point (`entry.RunAll`) | ✅ | | |
+| — | health (`vp-health`, `:8081`) + one runner for every entry point (`entry.RunAll`) | ✅ | ✅ | |
 | 1c-2 | HTTP form of a gRPC contract (`vp-http-api`, proto mode) | ✅ | | |
 | 1d | API: CLI (`vp-cli-api`, cobra) | ✅ | | |
 | — | logging: one logger, payload attribute, base handler drops it; every entry point logs its calls; `vp-logging` masks and writes the payload | ✅ | base ✅ | |
@@ -104,7 +104,7 @@ variation points are formed (2026-10-18).
 | Go logging (`internal/logging`, `internal/logging/masked`: payload attribute, masked handler) | templates of `base-plateau-in-go` and `vp-logging-in-go` | identical in every Go application; one masking for all services |
 | Go error kinds (`entity/kinds.go`, `pipeline/errors.go` with `KindOf`, `api/rpcstatus`) | templates of `error-kinds-in-go` | identical in every Go application; a service would import the kinds and the table instead of copying them; the skill would keep only when to choose each kind |
 | Testing tooling (`tools/testing`, `tools/normalize_*`, `tools/livingdoc`, `report-template`) | example of `solution-conformance-testing-in-go`; not copied into plateau or variation-point examples | ~2,000 lines copied into every real project; a version bump would update every project at once |
-| dotnet fixed code (`Shared`: error kinds; `BuildingBlocks`: `LoggingBehavior`, `JsonLogProvider`, `LogAttr`, `RequestId`; `Api/Entry`, `Api/Startup`) | templates of `base-plateau-in-dotnet`, `error-kinds-in-dotnet` | no placeholder at all: one NuGet package (or two: `Shared` with no dependency, the rest over MediatR) |
+| dotnet fixed code (`Shared`: error kinds; `BuildingBlocks`: `LoggingBehavior`, `JsonLogProvider`, `LogAttr`, `RequestId`; `Api/Entry`, `Api/Startup`; `Api/Errors/RpcStatus`, `Api/Hosting/WebHost`, `Api/Http/Pipeline`, `Api/Management`) | templates of `base-plateau-in-dotnet`, `error-kinds-in-dotnet`, `vp-http-api-in-dotnet`, `vp-health-in-dotnet` | no placeholder at all: one NuGet package (or two: `Shared` with no dependency, the rest over MediatR) |
 | TaskBox | `taskbox-spec` published; `taskbox-go` code proven, not yet packaged | already decided as a library (ADR `contract-vp-realized-by-libraries`) |
 
 ## Decisions waiting for their variation point
@@ -113,7 +113,6 @@ Agreed with the owner; written into the variation point's skill and ADR when it 
 
 | Decision | Goes to | Agreed |
 |---|---|---|
-| **dotnet HTTP: Minimal API organized like controllers** — one class per resource `ItemsHandler` with `Map(RouteGroupBuilder)` in `Api/Http/Endpoint/`, the generic adapter in `Api/Http/Pipeline/`, registration in `Api/Http/Routes.cs`; no MVC conventions (automatic `ProblemDetails` would fight `google.rpc.Status`). | dotnet HTTP (B2) | 2026-10-21 |
 | **dotnet logging VP: own masking or Serilog + `Destructurama.Attributed`** — the base has its own `JsonLogProvider`; the logging variation point replaces only its `AddProvider` line, so the choice is made there (ADR `own-json-log-provider`). | dotnet logging (B4) | 2026-10-21 |
 | **Order of B**: B1 dotnet base → B2 HTTP + health → B3 gRPC + HTTP form → B4 logging VP; then Python base → HTTP → gRPC → CLI → health → logging. dotnet has no CLI. | B | 2026-10-21 |
 | **Unit of work at the command.** Optional, available once the DB variation point is attached; the outermost command opens it, nested commands and notification handlers join, services never commit. A simple service may skip it; once any command changes data in several places at once (nested commands, notification handlers, outbox task), every command is wrapped. Rejected: each service method owning its transaction (breaks atomicity across handlers); mandatory for every application. dotnet: pipeline behavior + EF change tracking (one short transaction at the end). Go: handler decorator, unit of work in `context.Context`, transaction opened on the first write, every storage method takes its executor from the context. | DB (step 3) | 2026-10-17 |
@@ -129,6 +128,7 @@ Agreed with the owner; written into the variation point's skill and ADR when it 
 | The verification `curl` of the `devops-service-deploy` guides calls `/health/ready` on the published API port; for a service with the management port it needs that port published or port-forwarded | with the next change of `devops-service-deploy` |
 | Review [Library candidates](#library-candidates) with the owner: turn fixed Go code (handler contract, error kinds + `rpcstatus`, HTTP/gRPC entry points) into libraries services import instead of copying templates | after the last variation point (step 4) |
 | Move `library/common-workflow/develop/*` to `library/develop/{core,stack}` | later pass |
+| Go HTTP: `http.ServeMux` answers an unknown route (404) and another method (405) with plain text, not `google.rpc.Status`; the dotnet `ErrorAnswers` fills both — add the same to the Go pipeline | with the next change of `vp-http-api-in-go` |
 | The old dotnet catalog (`library/dotnet/architecture/...`: plateau examples, `*.Tests.csproj.create.md`) still keeps test projects in a root `tests/`; `cucumber-testing-in-dotnet` now puts each beside its project (ADR `test-location`) | when the old dotnet catalog is replaced |
 | dotnet: where a service and its infrastructure live, and which project declares the interface a handler calls (Go's consumer-owned interface needs the implementation to reference the consumer's project in dotnet) | clients (step 2) |
 | dotnet: one DI scope per command, for a scoped `DbContext` — entries send through a sender that opens a scope per call; today they take `ISender` from the root provider | DB (step 3) |
