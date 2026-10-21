@@ -111,6 +111,10 @@ Agreed with the owner; written into the variation point's skill and ADR when it 
 
 | Decision | Goes to | Agreed |
 |---|---|---|
+| **dotnet handler contract: MediatR 12.x** (`IRequestHandler` + `IPipelineBehavior` as the decorators), pinned below 13 (v13+ is commercial); recorded in an ADR of `base-plateau-in-dotnet`. | dotnet base (B1) | 2026-10-21 |
+| **dotnet HTTP: Minimal API organized like controllers** — one class per resource `ItemsHandler` with `Map(RouteGroupBuilder)` in `Api/Http/Endpoint/`, the generic adapter in `Api/Http/Pipeline/`, registration in `Api/Http/Routes.cs`; no MVC conventions (automatic `ProblemDetails` would fight `google.rpc.Status`). | dotnet HTTP (B2) | 2026-10-21 |
+| **dotnet projects: several** — `App.Host`, `Modules/{Module}/{Module}.Domain`, `.Application`, `.Interfaces`, `Infrastructure`, so the compiler holds the layer boundaries. | dotnet base (B1) | 2026-10-21 |
+| **Order of B**: B1 dotnet base → B2 HTTP + health → B3 gRPC + HTTP form → B4 logging VP; then Python base → HTTP → gRPC → CLI → health → logging. dotnet has no CLI. | B | 2026-10-21 |
 | **Unit of work at the command.** Optional, available once the DB variation point is attached; the outermost command opens it, nested commands and notification handlers join, services never commit. A simple service may skip it; once any command changes data in several places at once (nested commands, notification handlers, outbox task), every command is wrapped. Rejected: each service method owning its transaction (breaks atomicity across handlers); mandatory for every application. dotnet: pipeline behavior + EF change tracking (one short transaction at the end). Go: handler decorator, unit of work in `context.Context`, transaction opened on the first write, every storage method takes its executor from the context. | DB (step 3) | 2026-10-17 |
 | **In-process notifications in Go** (the counterpart of MediatR notifications), joining the command's unit of work. | DB (step 3) | 2026-10-17 |
 
