@@ -1,6 +1,7 @@
 package test
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
@@ -8,16 +9,19 @@ import (
 	"log/slog"
 	"net"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/cucumber/godog"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/test/bufconn"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
 	grpcapi "github.com/example/todo/internal/api/grpc"
 	"github.com/example/todo/internal/command/pipeline"
+	"github.com/example/todo/internal/logging"
 )
 
 // logf logs a step's action or observation through stdout, so the line stays
@@ -40,6 +44,9 @@ type World struct {
 	echoCalled  bool
 	echoGot     echoCommand
 	echoStarted chan struct{}
+	echoReqID   string // the request id in the command's context
+
+	logs syncBuffer // what the in-memory server logged, every attribute kept
 
 	cfg grpcapi.Config
 
@@ -105,9 +112,10 @@ type echoResult struct{ Text string }
 // echoHandler is the fake handler: it records the command and answers what the scenario set.
 func (w *World) echoHandler() pipeline.Handler[echoCommand, echoResult] {
 	return pipeline.HandlerFunc[echoCommand, echoResult](
-		func(_ context.Context, cmd echoCommand) (echoResult, error) {
+		func(ctx context.Context, cmd echoCommand) (echoResult, error) {
 			w.echoCalled = true
 			w.echoGot = cmd
+			w.echoReqID = logging.RequestID(ctx)
 			select {
 			case w.echoStarted <- struct{}{}:
 			default:
@@ -162,6 +170,24 @@ func (w *World) services() []grpcapi.Service {
 	return []grpcapi.Service{{Desc: &echoDesc, Impl: echoServer{w: w}}}
 }
 
+// syncBuffer is a bytes.Buffer the server goroutine writes while a step reads.
+type syncBuffer struct {
+	mu  sync.Mutex
+	buf bytes.Buffer
+}
+
+func (b *syncBuffer) Write(p []byte) (int, error) {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	return b.buf.Write(p)
+}
+
+func (b *syncBuffer) String() string {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	return b.buf.String()
+}
+
 func discard() *slog.Logger {
 	return slog.New(slog.NewTextHandler(io.Discard, nil))
 }
@@ -175,7 +201,7 @@ func (w *World) client() (*grpc.ClientConn, error) {
 	listener := bufconn.Listen(1 << 20)
 	ctx, cancel := context.WithCancel(context.Background())
 	w.stopInMemory = cancel
-	server := grpcapi.NewServer(w.cfg, w.services(), discard())
+	server := grpcapi.NewServer(w.cfg, w.services(), slog.New(slog.NewJSONHandler(&w.logs, nil)))
 	go func() { _ = server.ServeListener(ctx, listener) }()
 	conn, err := grpc.NewClient("passthrough:///in-memory",
 		grpc.WithContextDialer(func(ctx context.Context, _ string) (net.Conn, error) { return listener.DialContext(ctx) }),
@@ -189,9 +215,24 @@ func (w *World) client() (*grpc.ClientConn, error) {
 
 // callEcho calls the test method over conn.
 func callEcho(conn *grpc.ClientConn, text string) (string, error) {
+	reply, _, err := callEchoWithID(conn, text, "")
+	return reply, err
+}
+
+// callEchoWithID calls the test method sending the request id id (none when
+// empty) and returns the request id the server sent back.
+func callEchoWithID(conn *grpc.ClientConn, text, id string) (string, string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
+	if id != "" {
+		ctx = metadata.AppendToOutgoingContext(ctx, grpcapi.RequestIDMetadata, id)
+	}
 	out := new(wrapperspb.StringValue)
-	err := conn.Invoke(ctx, echoMethod, wrapperspb.String(text), out)
-	return out.GetValue(), err
+	var header metadata.MD
+	err := conn.Invoke(ctx, echoMethod, wrapperspb.String(text), out, grpc.Header(&header))
+	sent := ""
+	if values := header.Get(grpcapi.RequestIDMetadata); len(values) > 0 {
+		sent = values[0]
+	}
+	return out.GetValue(), sent, err
 }

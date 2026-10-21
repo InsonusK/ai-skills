@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log/slog"
 	"strings"
 
 	"github.com/cucumber/godog"
@@ -31,6 +32,7 @@ type World struct {
 	echoGot    echoCommand
 
 	stdout, stderr bytes.Buffer
+	logs           bytes.Buffer // what the run logged, every attribute kept
 	err            error
 }
 
@@ -79,6 +81,6 @@ func (w *World) resources() []cliapi.Resource {
 // run runs the command line with args split on spaces.
 func (w *World) run(ctx context.Context, line string) {
 	args := strings.Fields(line)
-	w.err = cliapi.Run(ctx, "todo", "1.2.3", args, w.resources(), &w.stdout, &w.stderr)
+	w.err = cliapi.Run(ctx, slog.New(slog.NewJSONHandler(&w.logs, nil)), "todo", "1.2.3", args, w.resources(), &w.stdout, &w.stderr)
 	logf("when: todo %s -> err=%v\nstdout: %s\nstderr: %s", line, w.err, w.stdout.String(), w.stderr.String())
 }

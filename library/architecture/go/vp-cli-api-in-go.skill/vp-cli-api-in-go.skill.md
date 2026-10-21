@@ -61,7 +61,7 @@ Replace the startup `entry.Entry` in the `// [entries]` list of `cmd/{app}/main.
 resources := endpoint.Resources(endpoint.Handlers{Items: endpoint.ItemHandlers{PlanItems: planItems}})
 err = entry.RunAll(ctx, logger,
 	entry.Entry{Name: "cli", ReportsErrors: true, Run: func(ctx context.Context) error {
-		return cliapi.Run(ctx, "todo", version.Version, os.Args[1:], resources, stdout, stderr)
+		return cliapi.Run(ctx, logger, "todo", version.Version, os.Args[1:], resources, stdout, stderr)
 	}},
 )
 return entry.ExitCode(err)

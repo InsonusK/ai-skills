@@ -2,7 +2,7 @@
 name: base-plateau
 description: The base plateau every application of the architecture catalog starts from — a program that starts, runs exactly one command, reports its result and exits — with its four layers, the direction of their dependencies, and the extension points a variation point attaches to without editing the base
 whenToUse: when you create a new service or CLI application from the architecture catalog, when you write or review a variation point (an API, a client, a store, TaskBox, ...) that attaches to the base plateau, or when you check whether an application still keeps the base plateau's layer and dependency rules
-updated: 20261018
+updated: 20261021
 tags:
   - stack
   - concern/architecture
@@ -60,6 +60,12 @@ Run the startup command once, write its result to standard output as one machine
 - Risk: a script or a scheduler starting the process cannot tell its outcome apart, and logs mixed into the output break whoever reads the result.
 - Fix: the startup entry encodes the result; the exit code comes from the error kind through the runner of the entry points, which stays when the startup entry goes; the composition root names the command and builds its input from a setting the startup entry reads itself, so the setting goes away with the entry.
 
+### Log through one handler, data only masked
+Write every log record — the command decorator's, each entry point's, later each client's — through the one logger the composition root builds, with the data of the call (a command's parameters, a request's query, headers, and body) as one payload attribute, and let the handler alone decide what reaches the output: the base plateau's writes who, what, how long, and how it ended, and drops the payload; the logging variation point writes the payload masked.
+- Violation: an entry point that formats the body into its message; a part that builds its own logger; a base handler that writes the payload as it is.
+- Risk: a secret in a request reaches the log of every service that did not attach the logging variation point; a part with its own format cannot be masked or correlated by any handler.
+- Fix: a pair of records per call at each layer, so the log reads top-down as the call ran — "command called" then "command handled" (with the result) or "command failed" (repeating the command) by the decorator, "received" then "answered" by each entry point with the request id in the context — the data as the payload attribute and the out record marked failed or not.
+
 ### Run every entry point through one runner
 Start the entry points in the composition root's `entries` section as a list run together by one runner of the base plateau: it runs them at once, stops all when the first ends — its work done, its failure, or termination — and turns the outcome into the exit code by the error kind.
 - Violation: two entry points started one after the other, the second never reached; a variation point that writes its own concurrent start beside another's.
@@ -107,6 +113,7 @@ Add a cross-cutting step (logging, a unit of work, a metric) as a decorator over
 - [ ] Every error a caller can act on carries one kind of error-kinds.
 - [ ] Every concrete type is constructed in the composition root, in the `services`, `handlers`, or `entries` section.
 - [ ] The `entries` section lists every entry point for the one runner; no entry point is started on its own.
+- [ ] Every part logs through the composition root's logger with the data as the payload attribute; the base handler drops the payload.
 - [ ] The base settings hold only the base plateau's own settings.
 - [ ] A variation point attached to the application changed no base file other than the composition root.
 - [ ] The examples hold scenarios and one command to run them, no testing tooling.

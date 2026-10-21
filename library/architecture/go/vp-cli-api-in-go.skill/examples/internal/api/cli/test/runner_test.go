@@ -23,6 +23,7 @@ func TestFeatures(t *testing.T) {
 		ScenarioInitializer: func(sc *godog.ScenarioContext) {
 			registerWorldHooks(sc, w)
 			registerCLISteps(sc, w)
+			registerCallLogSteps(sc, w)
 		},
 		Options: &godog.Options{
 			Format:   format,

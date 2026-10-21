@@ -2,7 +2,7 @@
 name: vp-http-api
 description: The HTTP API variation point — an entry point attached to the base plateau that serves commands as versioned HTTP routes, answers errors by their kind, publishes its OpenAPI contract and Swagger UI, stops gracefully, and replaces the startup entry without editing any other base file
 whenToUse: when an application built on the base plateau must be reachable over HTTP — adding the HTTP entry point, serving a new command over HTTP, or reviewing the HTTP entry point of such an application
-updated: 20261019
+updated: 20261021
 tags:
   - stack
   - concern/architecture
@@ -62,6 +62,11 @@ Declare the request and response bodies as types of the HTTP entry point — or,
 Answer a request that cannot be decoded with 400 `INVALID_ARGUMENT` without calling the command, and every error of a command by [error-kinds](library/develop/core/error-kinds.skill/error-kinds.skill.md)' table — its kind's status and code with the error's message, or 500 `INTERNAL` with no internal message for an error with no kind.
 - Risk: a client cannot tell its own mistake from the service's, the HTTP and gRPC forms of a service answer one outcome differently, and a 500 that carries the internal error leaks connection strings and stack details.
 - Fix: one table shared by every entry point of the application; the failure itself is logged by the handler's logging decorator, not written to the client.
+
+### Log every request with what arrived
+Write two records per request through the composition root's logger — one when it arrives, with what arrived as the payload, one when it is answered — the second with the method, the path, the status, and the duration, whether it failed, and as the payload the query, the headers, and the body received and the body sent back as written; put the request id — the client's (`X-Request-Id`), else a new one — into the context and send it back.
+- Risk: a request that failed cannot be found or replayed from the log, its records cannot be told from those of the requests served at the same time, and a fault in turning the result into the response is invisible.
+- Fix: an in record and an out record per request, so the log reads top-down with the command's records between them; the out record of a failure repeats the input; the data only as the payload attribute, so the base handler drops it and the logging variation point masks it.
 
 ### Stop gracefully
 On termination (`SIGTERM`), stop accepting connections, let requests in flight finish within a bounded time, and return without an error.
