@@ -67,6 +67,7 @@ the `spec/` skills come along because every stack skill links its spec.
 | CLI API | — | ✅ |
 | HTTP / gRPC API | ✅ | — |
 | Health (management port) | ✅ | — |
+| Logging (payload, masking, request id) | ✅ | ✅ |
 | Kafka / RabbitMQ listener, producer | ✅ | ⏳ allowed, not built |
 | DB, HTTP / gRPC client | ✅ | ✅ |
 | TaskBox, Inbox, Outbox | ✅ | — |
@@ -82,6 +83,7 @@ the `spec/` skills come along because every stack skill links its spec.
 | — | health (`vp-health`, `:8081`) + one runner for every entry point (`entry.RunAll`) | ✅ | | |
 | 1c-2 | HTTP form of a gRPC contract (`vp-http-api`, proto mode) | ✅ | | |
 | 1d | API: CLI (`vp-cli-api`, cobra) | ✅ | | |
+| — | logging: one logger, payload attribute, base handler drops it; every entry point logs its calls; `vp-logging` masks and writes the payload | ✅ | | |
 | 2 | clients: HTTP, gRPC | | | |
 | 3 | DB | | | |
 | 4 | TaskBox, Inbox, Outbox | | | |
@@ -98,6 +100,7 @@ variation points are formed (2026-10-18).
 | Go HTTP entry point (`Endpoint`, `Server` with graceful stop, `LoadConfig`, docs routes, `proto.go` for a proto contract) | templates of `vp-http-api-in-go` | identical in every Go HTTP service except the module path and the contract's name; the docs routes could take the embedded spec as a parameter |
 | Go gRPC entry point (`Call`, `Server` with reflection, panic recovery, graceful stop, `LoadConfig`) | templates of `vp-grpc-api-in-go` | identical in every Go gRPC service except the module path |
 | Go CLI entry point (`Run`, `Command` over cobra, `--output`, usage errors as invalid) | templates of `vp-cli-api-in-go` | identical in every Go CLI except the module path |
+| Go logging (`internal/logging`, `internal/logging/masked`: payload attribute, masked handler) | templates of `base-plateau-in-go` and `vp-logging-in-go` | identical in every Go application; one masking for all services |
 | Go error kinds (`entity/kinds.go`, `pipeline/errors.go` with `KindOf`, `api/rpcstatus`) | templates of `error-kinds-in-go` | identical in every Go application; a service would import the kinds and the table instead of copying them; the skill would keep only when to choose each kind |
 | Testing tooling (`tools/testing`, `tools/normalize_*`, `tools/livingdoc`, `report-template`) | example of `solution-conformance-testing-in-go`; not copied into plateau or variation-point examples | ~2,000 lines copied into every real project; a version bump would update every project at once |
 | TaskBox | `taskbox-spec` published; `taskbox-go` code proven, not yet packaged | already decided as a library (ADR `contract-vp-realized-by-libraries`) |
@@ -115,6 +118,7 @@ Agreed with the owner; written into the variation point's skill and ADR when it 
 
 | Task | When |
 |---|---|
+| Clients log every outgoing call (`http client call`, `grpc client call`) with the request as the payload and the request id of the context sent on, through the same logger | clients (step 2) |
 | The proto example keeps its lists in memory (`internal/infrastructure/memory`, scenarios tagged `@type/tech-check` since the tag vocabulary has no in-memory store); the DB variation point replaces it | DB (step 3) |
 | The verification `curl` of the `devops-service-deploy` guides calls `/health/ready` on the published API port; for a service with the management port it needs that port published or port-forwarded | with the next change of `devops-service-deploy` |
 | Review [Library candidates](#library-candidates) with the owner: turn fixed Go code (handler contract, error kinds + `rpcstatus`, HTTP/gRPC entry points) into libraries services import instead of copying templates | after the last variation point (step 4) |
