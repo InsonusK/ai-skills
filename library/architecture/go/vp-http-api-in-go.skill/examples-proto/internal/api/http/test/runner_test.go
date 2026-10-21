@@ -24,6 +24,7 @@ func TestFeatures(t *testing.T) {
 			registerWorldHooks(sc, w)
 			registerAPISteps(sc, w)
 			registerDocsSteps(sc, w)
+			registerRequestLogSteps(sc, w)
 			registerConfigServeSteps(sc, w)
 		},
 		Options: &godog.Options{

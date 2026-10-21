@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"log/slog"
 	"strings"
 
 	"github.com/cucumber/godog"
@@ -29,6 +30,7 @@ type World struct {
 	planGot    command.PlanItems
 
 	stdout, stderr bytes.Buffer
+	logs           bytes.Buffer // what the run logged, every attribute kept
 	err            error
 }
 
@@ -53,7 +55,7 @@ func (w *World) handlers() endpoint.Handlers {
 }
 
 func (w *World) run(ctx context.Context, line string) error {
-	w.err = cliapi.Run(ctx, "todo", "0.0.0-test", strings.Fields(line), endpoint.Resources(w.handlers()), &w.stdout, &w.stderr)
+	w.err = cliapi.Run(ctx, slog.New(slog.NewJSONHandler(&w.logs, nil)), "todo", "0.0.0-test", strings.Fields(line), endpoint.Resources(w.handlers()), &w.stdout, &w.stderr)
 	logf("when: todo %s -> err=%v\nstdout: %s\nstderr: %s", line, w.err, w.stdout.String(), w.stderr.String())
 	return w.err
 }

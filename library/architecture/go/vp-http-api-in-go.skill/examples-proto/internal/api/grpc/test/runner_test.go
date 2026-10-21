@@ -24,6 +24,7 @@ func TestFeatures(t *testing.T) {
 			registerWorldHooks(sc, w)
 			registerCallSteps(sc, w)
 			registerReflectionSteps(sc, w)
+			registerCallLogSteps(sc, w)
 			registerConfigServeSteps(sc, w)
 		},
 		Options: &godog.Options{

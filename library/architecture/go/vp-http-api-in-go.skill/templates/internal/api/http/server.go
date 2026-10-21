@@ -3,12 +3,16 @@
 package http
 
 import (
+	"bytes"
 	"context"
 	"errors"
+	"io"
 	"log/slog"
 	"net"
 	"net/http"
 	"time"
+
+	"{module-path}/internal/logging"
 )
 
 // Route is one operation of the published contract: a "METHOD /path" pattern
@@ -56,7 +60,46 @@ func (s *Server) Handler() http.Handler {
 	if s.cfg.DocsEnabled {
 		registerDocs(mux, s.cfg.BasePath)
 	}
-	return mux
+	return s.logRequests(mux)
+}
+
+// RequestIDHeader carries the id of a request: taken from the client when it
+// sends one, else made here, and always sent back in the response.
+const RequestIDHeader = "X-Request-Id"
+
+// logRequests writes one record per request once it is answered - "http
+// request" with the method, the path, the status, the duration, failed (a
+// status of 400 or above), and as the payload what the client sent: the
+// query, the headers, and the body. It puts the request id into the request's
+// context, so every record of the request carries it once the logging
+// variation point is attached. The body is read here and given back to the
+// routes unchanged.
+func (s *Server) logRequests(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		ctx := logging.WithRequestID(r.Context(), r.Header.Get(RequestIDHeader))
+		w.Header().Set(RequestIDHeader, logging.RequestID(ctx))
+		body, _ := io.ReadAll(r.Body) // a broken body reaches the route empty and fails its decode
+		r.Body = io.NopCloser(bytes.NewReader(body))
+		answered := &statusRecorder{ResponseWriter: w, status: http.StatusOK}
+		next.ServeHTTP(answered, r.WithContext(ctx))
+		s.logger.LogAttrs(ctx, slog.LevelInfo, "http request",
+			slog.String("method", r.Method), slog.String("path", r.URL.Path),
+			slog.Int("status", answered.status), slog.Duration("duration", time.Since(start)),
+			logging.Failed(answered.status >= http.StatusBadRequest),
+			logging.Payload(map[string]any{"query": r.URL.Query(), "headers": r.Header, "body": body}))
+	})
+}
+
+// statusRecorder remembers the status a route answered with.
+type statusRecorder struct {
+	http.ResponseWriter
+	status int
+}
+
+func (r *statusRecorder) WriteHeader(status int) {
+	r.status = status
+	r.ResponseWriter.WriteHeader(status)
 }
 
 // Serve listens on the configured port until ctx is cancelled (SIGTERM), then

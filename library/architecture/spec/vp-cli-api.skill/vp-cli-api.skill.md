@@ -2,7 +2,7 @@
 name: vp-cli-api
 description: The CLI API variation point — a command-line entry point attached to the base plateau that runs one command per call as `{app} {resource} {action} [flags]`, prints the result on standard output as one JSON line or as text, writes errors on standard error, exits by the error kind with usage errors as rejected, offers help at every level, and replaces the startup entry without editing any other base file
 whenToUse: when an application built on the base plateau must be run from a command line by a person or a script — adding the CLI entry point, offering a new command as an action, or reviewing the CLI entry point of such an application
-updated: 20261019
+updated: 20261021
 tags:
   - stack
   - concern/architecture
@@ -55,6 +55,11 @@ Exit `0` on success, `2` for an error of a kind other than unavailable and for e
 Answer `--help` on the application, on a resource, and on an action — and the application or a resource called with no action — with what can be run and its flags, running no command; answer `--version` with the version of the binary.
 - Risk: a person has to read the code to learn the actions and their flags.
 - Fix: each action and resource has a one-line description; each flag a description.
+
+### Log every run with what arrived
+Write one record per run once it is answered, through the composition root's logger, with the action and the duration, whether it failed, and as the payload the flags given and a new request id in the context for the records of the run.
+- Risk: a run that failed cannot be found or replayed from the log.
+- Fix: one record per run; the data only as the payload attribute, so the base handler drops it and the logging variation point masks it.
 
 ### Attach by replacing the startup entry
 Attach the entry point by adding its packages and replacing the startup entry in the composition root's `entries` list with one entry that reads the arguments, runs the action, and ends, deleting the startup entry, and changing no other base file than the composition root and the module's dependency, build, and readme files.

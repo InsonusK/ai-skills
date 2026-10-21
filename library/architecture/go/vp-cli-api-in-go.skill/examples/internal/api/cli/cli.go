@@ -14,10 +14,14 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log/slog"
+	"time"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 
 	"github.com/example/todo/internal/command/pipeline"
+	"github.com/example/todo/internal/logging"
 )
 
 // Resource is one resource of the command line - `todo items ...` - with its
@@ -36,8 +40,13 @@ type Resource struct {
 // returns its error. An error of the action's handler is returned as it is,
 // so the process exit code follows its kind; an error of the command line
 // itself - an unknown action, a bad flag - wraps pipeline.ErrInvalid (exit
-// code 2). Help goes to stdout, every error to stderr.
-func Run(ctx context.Context, name, version string, args []string, resources []Resource, stdout, stderr io.Writer) error {
+// code 2). Help goes to stdout, every error to stderr. One "cli call" record
+// is logged per run (see logCall); the run gets a request id of its own, so
+// every record of it carries the same one once the logging variation point is
+// attached.
+func Run(ctx context.Context, logger *slog.Logger, name, version string, args []string, resources []Resource, stdout, stderr io.Writer) error {
+	ctx = logging.WithRequestID(ctx, "")
+	start := time.Now()
 	root := &cobra.Command{
 		Use:           name,
 		Args:          noArgs,
@@ -60,7 +69,8 @@ func Run(ctx context.Context, name, version string, args []string, resources []R
 	root.SetOut(stdout)
 	root.SetErr(stderr)
 
-	err := root.ExecuteContext(ctx)
+	ran, err := root.ExecuteContextC(ctx)
+	defer logCall(ctx, logger, ran, start, err)
 	var handled handlerError
 	switch {
 	case err == nil:
@@ -73,6 +83,16 @@ func Run(ctx context.Context, name, version string, args []string, resources []R
 	}
 	fmt.Fprintln(stderr, "Error:", err)
 	return err
+}
+
+// logCall writes the record of one run - "cli call" with the action run, the
+// duration, failed, and as the payload the flags given on the command line.
+func logCall(ctx context.Context, logger *slog.Logger, ran *cobra.Command, start time.Time, err error) {
+	flags := map[string]string{}
+	ran.Flags().Visit(func(f *pflag.Flag) { flags[f.Name] = f.Value.String() })
+	logger.LogAttrs(ctx, slog.LevelInfo, "cli call",
+		slog.String("action", ran.CommandPath()), slog.Duration("duration", time.Since(start)),
+		logging.Failed(err != nil), logging.Payload(flags))
 }
 
 // noArgs rejects an argument where an action is expected, so `todo items

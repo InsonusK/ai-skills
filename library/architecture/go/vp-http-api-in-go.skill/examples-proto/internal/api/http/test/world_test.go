@@ -1,9 +1,9 @@
 package test
 
 import (
+	"bytes"
 	"context"
 	"fmt"
-	"io"
 	"log/slog"
 	"net"
 	"net/http"
@@ -15,6 +15,7 @@ import (
 
 	httpapi "github.com/example/todo/internal/api/http"
 	"github.com/example/todo/internal/command/pipeline"
+	"github.com/example/todo/internal/logging"
 )
 
 // logf logs a step's action or observation through stdout, so the line stays
@@ -34,8 +35,10 @@ type World struct {
 	echoErr    error
 	echoCalled bool
 	echoGot    echoCommand
+	echoReqID  string // the request id in the command's context
 
-	cfg httpapi.Config
+	cfg  httpapi.Config
+	logs bytes.Buffer // what the server logged, every attribute kept
 
 	response *httptest.ResponseRecorder
 
@@ -79,9 +82,10 @@ type echoResult struct{ Text string }
 // echoHandler is the fake handler: it records the command and answers what the scenario set.
 func (w *World) echoHandler() pipeline.Handler[echoCommand, echoResult] {
 	return pipeline.HandlerFunc[echoCommand, echoResult](
-		func(_ context.Context, cmd echoCommand) (echoResult, error) {
+		func(ctx context.Context, cmd echoCommand) (echoResult, error) {
 			w.echoCalled = true
 			w.echoGot = cmd
+			w.echoReqID = logging.RequestID(ctx)
 			return echoResult{Text: w.echoAnswer}, w.echoErr
 		})
 }
@@ -108,13 +112,22 @@ func (w *World) routes() []httpapi.Route {
 // proto.go. Nil otherwise.
 var moreRoutes func(w *World) []httpapi.Route
 
+// server logs through a plain JSON handler, which keeps the payload, so the
+// scenarios see every attribute the server writes.
 func (w *World) server() *httpapi.Server {
-	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
+	logger := slog.New(slog.NewJSONHandler(&w.logs, nil))
 	return httpapi.NewServer(w.cfg, w.routes(), logger)
 }
 
 func (w *World) send(method, path, body string) {
+	w.sendWithHeaders(method, path, body, nil)
+}
+
+func (w *World) sendWithHeaders(method, path, body string, headers map[string]string) {
 	req := httptest.NewRequest(method, path, strings.NewReader(body))
+	for name, value := range headers {
+		req.Header.Set(name, value)
+	}
 	w.response = httptest.NewRecorder()
 	w.server().Handler().ServeHTTP(w.response, req)
 	logf("when: %s %s %s -> %d %s", method, path, body, w.response.Code, strings.TrimSpace(w.response.Body.String()))

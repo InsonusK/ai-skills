@@ -16,11 +16,14 @@ import (
 func registerLoggingSteps(sc *godog.ScenarioContext, w *World) {
 	sc.Step(`^a handler that succeeds, wrapped with logging as "([^"]*)"$`, w.aSucceedingHandler)
 	sc.Step(`^a handler that fails with "([^"]*)", wrapped with logging as "([^"]*)"$`, w.aFailingHandler)
-	sc.Step(`^the wrapped handler handles a command$`, w.theWrappedHandlerHandles)
+	sc.Step(`^the wrapped handler handles the command "([^"]*)"$`, w.theWrappedHandlerHandles)
 	sc.Step(`^the wrapped handler should return the error "([^"]*)"$`, w.theWrappedHandlerShouldReturn)
-	sc.Step(`^one "([^"]*)" record "([^"]*)" should be logged for "([^"]*)"$`, w.oneRecordShouldBeLogged)
+	sc.Step(`^the records should be:$`, w.theRecordsShouldBe)
 }
 
+// wrap logs through a plain JSON handler, which keeps the payload, so the
+// scenarios see every attribute the decorator writes - what the base handler
+// then drops is the logging package's scenarios' concern.
 func (w *World) wrap(name string, inner pipeline.HandlerFunc[string, string]) {
 	logger := slog.New(slog.NewJSONHandler(&w.logs, nil))
 	w.wrapped = pipeline.WithLogging[string, string](name, logger, inner)
@@ -36,8 +39,8 @@ func (w *World) aFailingHandler(ctx context.Context, message, name string) error
 	return nil
 }
 
-func (w *World) theWrappedHandlerHandles(ctx context.Context) error {
-	_, w.err = w.wrapped.Handle(ctx, "cmd")
+func (w *World) theWrappedHandlerHandles(ctx context.Context, cmd string) error {
+	_, w.err = w.wrapped.Handle(ctx, cmd)
 	logf("when: handle -> err=%v logs=%s", w.err, strings.TrimSpace(w.logs.String()))
 	return nil
 }
@@ -49,20 +52,35 @@ func (w *World) theWrappedHandlerShouldReturn(ctx context.Context, message strin
 	return nil
 }
 
-func (w *World) oneRecordShouldBeLogged(ctx context.Context, level, msg, command string) error {
+// theRecordsShouldBe compares the records, in order, with the table; an empty
+// cell means the record has no such attribute.
+func (w *World) theRecordsShouldBe(ctx context.Context, table *godog.Table) error {
 	lines := strings.Split(strings.TrimSpace(w.logs.String()), "\n")
-	if len(lines) != 1 {
-		return fmt.Errorf("records: got %d, want 1", len(lines))
+	if len(lines) != len(table.Rows)-1 {
+		return fmt.Errorf("records: got %d, want %d", len(lines), len(table.Rows)-1)
 	}
-	var rec map[string]any
-	if err := json.Unmarshal([]byte(lines[0]), &rec); err != nil {
-		return fmt.Errorf("record is not JSON: %w", err)
-	}
-	if rec["level"] != level || rec["msg"] != msg || rec["command"] != command {
-		return fmt.Errorf("record: got %v, want level=%s msg=%q command=%s", rec, level, msg, command)
-	}
-	if w.err != nil && rec["error"] != w.err.Error() {
-		return fmt.Errorf("record error: got %v, want %q", rec["error"], w.err.Error())
+	header := table.Rows[0].Cells
+	for i, row := range table.Rows[1:] {
+		var rec map[string]any
+		if err := json.Unmarshal([]byte(lines[i]), &rec); err != nil {
+			return fmt.Errorf("record %d is not JSON: %w", i, err)
+		}
+		for j, cell := range row.Cells {
+			key, want := header[j].Value, cell.Value
+			got, has := rec[key]
+			if want == "" {
+				if has {
+					return fmt.Errorf("record %d has %s=%v, want none", i, key, got)
+				}
+				continue
+			}
+			if fmt.Sprint(got) != want {
+				return fmt.Errorf("record %d: %s=%v, want %s", i, key, got, want)
+			}
+		}
+		if w.err != nil && rec["level"] == "WARN" && rec["error"] != w.err.Error() {
+			return fmt.Errorf("record %d error: got %v, want %q", i, rec["error"], w.err.Error())
+		}
 	}
 	return nil
 }

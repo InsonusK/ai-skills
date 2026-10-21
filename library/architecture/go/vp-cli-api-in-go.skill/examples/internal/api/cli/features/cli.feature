@@ -72,3 +72,15 @@ Feature: Command line
   Scenario: --version prints the version of the binary
     When I run "--version"
     Then stdout should mention "todo version 1.2.3"
+
+  @category/happy
+  Scenario: A run is logged with its action and the flags given
+    Given the command answers "hello"
+    When I run "test echo --text hi --output text"
+    Then one "cli call" record should be logged for the action "todo test echo", failed "false"
+    And its payload should hold the flag "text" = "hi"
+
+  @category/negative
+  Scenario: A run that fails is logged as failed
+    When I run "test echo --nope"
+    Then one "cli call" record should be logged for the action "todo test echo", failed "true"

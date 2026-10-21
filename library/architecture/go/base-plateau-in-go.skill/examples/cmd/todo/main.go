@@ -16,6 +16,7 @@ import (
 	"github.com/example/todo/internal/command"
 	"github.com/example/todo/internal/command/pipeline"
 	"github.com/example/todo/internal/config"
+	"github.com/example/todo/internal/logging"
 	"github.com/example/todo/internal/version"
 )
 
@@ -34,7 +35,9 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 		slog.New(slog.NewJSONHandler(stderr, nil)).Error("startup failed", "error", err)
 		return 1
 	}
-	logger := slog.New(slog.NewJSONHandler(stderr, &slog.HandlerOptions{Level: cfg.LogLevel}))
+	// The handler decides what reaches the log: the base plateau's leaves out
+	// every payload; the logging variation point replaces this line.
+	logger := slog.New(logging.NewHandler(stderr, cfg.LogLevel))
 	logger.Info("starting", "version", version.Version)
 
 	// [services] - infrastructure and the services over it; none in the base plateau.
