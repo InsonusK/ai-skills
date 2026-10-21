@@ -50,10 +50,10 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 	// [entries] - every entry point, one Entry each, run together by
 	// entry.RunAll until the first one ends. The HTTP variation point replaced
 	// the startup Entry with its own; the health variation point adds one.
-	routes := endpoint.Routes(endpoint.Handlers{Items: endpoint.ItemHandlers{PlanItems: planItems}})
+	endpoints := httpapi.Endpoints{Items: endpoint.ItemsHandler{PlanItems: planItems}}
 	err = entry.RunAll(ctx, logger,
 		entry.Entry{Name: "http", Run: func(ctx context.Context) error {
-			return httpapi.Run(ctx, routes, logger)
+			return httpapi.Run(ctx, endpoints, logger)
 		}},
 	)
 	return entry.ExitCode(err)

@@ -3,7 +3,7 @@ package endpoint
 import (
 	"net/http"
 
-	httpapi "github.com/example/todo/internal/api/http"
+	httppipeline "github.com/example/todo/internal/api/http/pipeline"
 	"github.com/example/todo/internal/command"
 	"github.com/example/todo/internal/command/pipeline"
 )
@@ -13,16 +13,17 @@ import (
 // mappings. A new command on items adds a field, a route line, and its types
 // here, and its path in openapi.json.
 
-// ItemHandlers are the command handlers of the items resource.
-type ItemHandlers struct {
+// ItemsHandler is the items resource: the command handlers its routes call. The
+// composition root fills it; Routes lists its operations.
+type ItemsHandler struct {
 	PlanItems pipeline.Handler[command.PlanItems, command.PlanItemsResult]
 }
 
-// itemRoutes are the items operations of the published contract.
-func itemRoutes(h ItemHandlers) []httpapi.Route {
-	return []httpapi.Route{
+// Routes are the items operations of the published contract.
+func (h ItemsHandler) Routes() []httppipeline.Route {
+	return []httppipeline.Route{
 		// 200: planning creates nothing that is kept, and its work is done.
-		{Pattern: "POST /v1/items/plan", Handler: httpapi.Endpoint(h.PlanItems, decodePlanItems, encodePlanItems, http.StatusOK)},
+		{Pattern: "POST /v1/items/plan", Handler: httppipeline.Endpoint(h.PlanItems, decodePlanItems, encodePlanItems, http.StatusOK)},
 	}
 }
 
@@ -42,7 +43,7 @@ type itemResponse struct {
 }
 
 func decodePlanItems(r *http.Request) (command.PlanItems, error) {
-	body, err := httpapi.DecodeJSON[planItemsRequest](r)
+	body, err := httppipeline.DecodeJSON[planItemsRequest](r)
 	if err != nil {
 		return command.PlanItems{}, err
 	}

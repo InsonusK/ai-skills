@@ -55,7 +55,7 @@ the `spec/` skills come along because every stack skill links its spec.
 | Entity | `internal/domain/entity` | `src/{package}/domain/entity` | `src/Modules/{Module}/{Module}.Domain/Entities` |
 | Domain service | `internal/domain/service` | `src/{package}/domain/service` | `src/Modules/{Module}/{Module}.Domain/Services` |
 | Commands + handlers | `internal/command` (contract and decorators in `internal/command/pipeline`) | `src/{package}/command` | `src/Modules/{Module}/{Module}.Application` (command types in `{Module}.Interfaces`) |
-| API (entries) | `internal/api/{transport}` | `src/{package}/api/{transport}` | `src/App/App.Host/Api/{Transport}` |
+| API (entries) | `internal/api/{transport}`: `pipeline/` (fixed), `endpoint/` (`{Resource}Handler` per file), `routes.go` / `services.go` / `commands.go` (registration) | `src/{package}/api/{transport}` | `src/App/App.Host/Api/{Transport}` |
 | Service | `internal/service` | `src/{package}/service` | to be decided with the dotnet base |
 | Infrastructure | `internal/infrastructure/{kind}` | `src/{package}/infrastructure/{kind}` | `src/Infrastructure/{Kind}` |
 | Composition root | `cmd/{app}/main.go` | `src/{package}/main.py` | `src/App/App.Host/Program.cs` |

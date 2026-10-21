@@ -7,7 +7,7 @@ The **entry runner** (`internal/api/entry`) starts every entry point of the appl
 `httpapi.Run(ctx, ...)` blocks until the process is told to stop. Written one after another, the second entry point would never start:
 
 ```go
-httpapi.Run(ctx, routes, logger)   // blocks here until SIGTERM
+httpapi.Run(ctx, endpoints, logger)   // blocks here until SIGTERM
 management.Run(ctx, logger)        // never reached
 ```
 
@@ -61,7 +61,7 @@ sequenceDiagram
 // [entries] - a service with HTTP and health: each variation point brought one Entry.
 err = entry.RunAll(ctx, logger,
 	entry.Entry{Name: "http", Run: func(ctx context.Context) error {
-		return httpapi.Run(ctx, routes, logger)
+		return httpapi.Run(ctx, endpoints, logger)
 	}},
 	entry.Entry{Name: "management", Run: func(ctx context.Context) error {
 		return management.Run(ctx, logger)

@@ -12,6 +12,7 @@ import (
 
 	httpapi "github.com/example/todo/internal/api/http"
 	"github.com/example/todo/internal/api/http/endpoint"
+	httppipeline "github.com/example/todo/internal/api/http/pipeline"
 	"github.com/example/todo/internal/command"
 	"github.com/example/todo/internal/command/pipeline"
 )
@@ -42,9 +43,9 @@ func registerWorldHooks(sc *godog.ScenarioContext, w *World) {
 }
 
 // handlers are the fake handlers of every resource; a new resource adds its fakes here.
-func (w *World) handlers() endpoint.Handlers {
-	return endpoint.Handlers{
-		Items: endpoint.ItemHandlers{
+func (w *World) handlers() httpapi.Endpoints {
+	return httpapi.Endpoints{
+		Items: endpoint.ItemsHandler{
 			PlanItems: pipeline.HandlerFunc[command.PlanItems, command.PlanItemsResult](
 				func(_ context.Context, cmd command.PlanItems) (command.PlanItemsResult, error) {
 					w.planCalled = true
@@ -57,7 +58,7 @@ func (w *World) handlers() endpoint.Handlers {
 
 func (w *World) send(method, path, body string) {
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
-	server := httpapi.NewServer(httpapi.Config{}, endpoint.Routes(w.handlers()), logger)
+	server := httppipeline.NewServer(httppipeline.Config{}, httpapi.Routes(w.handlers()), logger)
 	req := httptest.NewRequest(method, path, strings.NewReader(body))
 	w.response = httptest.NewRecorder()
 	server.Handler().ServeHTTP(w.response, req)

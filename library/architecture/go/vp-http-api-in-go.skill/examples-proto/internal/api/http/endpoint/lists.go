@@ -4,43 +4,44 @@ import (
 	"net/http"
 
 	"github.com/example/todo/gen/api/todo"
-	httpapi "github.com/example/todo/internal/api/http"
+	httppipeline "github.com/example/todo/internal/api/http/pipeline"
 	"github.com/example/todo/internal/command"
 	"github.com/example/todo/internal/command/pipeline"
 )
 
 // This file is the lists resource (/v1/lists/{listId}/...). The path
 // parameter is named as the generated spec names it - listId, the
-// lowerCamelCase form of the proto field list_id - and the route's decode
+//owerCamelCase form of the proto field list_id - and the route's decode
 // reads it with r.PathValue, since it is not in the body.
 
-// ListHandlers are the command handlers of the lists resource.
-type ListHandlers struct {
+// ListsHandler is the lists resource: the command handlers its routes call. The
+// composition root fills it; Routes lists its operations.
+type ListsHandler struct {
 	AddItem   pipeline.Handler[command.AddItem, command.AddItemResult]
 	ListItems pipeline.Handler[command.ListItems, command.ListItemsResult]
 }
 
-// listRoutes are the lists operations of the HTTP form.
-func listRoutes(h ListHandlers) []httpapi.Route {
-	return []httpapi.Route{
+// Routes are the lists operations of the HTTP form.
+func (h ListsHandler) Routes() []httppipeline.Route {
+	return []httppipeline.Route{
 		// 201: the item is created and kept.
-		{Pattern: "POST /v1/lists/{listId}/items", Handler: httpapi.Endpoint(h.AddItem, decodeAddItem, encodeAddItem, http.StatusCreated)},
-		{Pattern: "GET /v1/lists/{listId}/items", Handler: httpapi.Endpoint(h.ListItems, decodeListItems, encodeListItems, http.StatusOK)},
+		{Pattern: "POST /v1/lists/{listId}/items", Handler: httppipeline.Endpoint(h.AddItem, decodeAddItem, encodeAddItem, http.StatusCreated)},
+		{Pattern: "GET /v1/lists/{listId}/items", Handler: httppipeline.Endpoint(h.ListItems, decodeListItems, encodeListItems, http.StatusOK)},
 		// ClearList is deprecated since 1.1.0: no command, the same answer as its gRPC form.
-		{Pattern: "POST /v1/lists/{listId}/clear", Handler: httpapi.Unimplemented("ClearList is deprecated since 1.1.0")},
+		{Pattern: "POST /v1/lists/{listId}/clear", Handler: httppipeline.Unimplemented("ClearList is deprecated since 1.1.0")},
 	}
 }
 
 func decodeAddItem(r *http.Request) (command.AddItem, error) {
 	req := &todo.AddItemRequest{}
-	if err := httpapi.DecodeProto(r, req); err != nil {
+	if err := httppipeline.DecodeProto(r, req); err != nil {
 		return command.AddItem{}, err
 	}
 	return command.AddItem{ListID: r.PathValue("listId"), Title: req.GetTitle()}, nil
 }
 
 func encodeAddItem(result command.AddItemResult) any {
-	return httpapi.ProtoJSON(&todo.AddItemResponse{Item: &todo.Item{Title: result.Item.Title, Done: result.Item.Done}})
+	return httppipeline.ProtoJSON(&todo.AddItemResponse{Item: &todo.Item{Title: result.Item.Title, Done: result.Item.Done}})
 }
 
 // decodeListItems reads only the path: a GET has no body.
@@ -49,5 +50,5 @@ func decodeListItems(r *http.Request) (command.ListItems, error) {
 }
 
 func encodeListItems(result command.ListItemsResult) any {
-	return httpapi.ProtoJSON(&todo.ListItemsResponse{Items: itemMessages(result.Items)})
+	return httppipeline.ProtoJSON(&todo.ListItemsResponse{Items: itemMessages(result.Items)})
 }
