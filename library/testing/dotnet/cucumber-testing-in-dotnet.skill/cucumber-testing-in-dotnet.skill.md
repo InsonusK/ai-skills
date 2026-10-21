@@ -1,9 +1,9 @@
 ---
-version: 20261009220000
+version: 20261021120000
 name: cucumber-testing-in-dotnet
 description: .NET/Reqnroll-specific rules for Cucumber testing — hook-based logging via ITestOutputHelper/ScenarioContext, binding-class layout, and VSCode glue configuration
 whenToUse: when writing or reviewing Reqnroll (or SpecFlow) scenarios or step bindings in a .NET project
-updated: 20261009
+updated: 20261021
 tags:
   - stack/dotnet
   - concern/testing/bdd
@@ -13,6 +13,7 @@ tags:
 
 adr:
   - "library/testing/dotnet/cucumber-testing-in-dotnet.skill/adr/features-and-steps-layout.md"
+  - "library/testing/dotnet/cucumber-testing-in-dotnet.skill/adr/test-location.md"
 
 ---
 
@@ -33,9 +34,10 @@ This skill adds .NET/Reqnroll-specific mechanics on top of [cucumber-testing](li
 ## MUST
 
 ### Keep tests in separate test projects
-Keep a `{Project}.Tests` project beside each production project, with features under `features/` and bindings under `Steps/`, and reference only that project's allowed architectural dependencies.
-- Risk: putting tests inside the production assembly ships test tooling and violates .NET's assembly isolation; a shared catch-all project can bypass module boundaries.
-- Fix: add every separate test project to the solution and collect its formatter output independently.
+Keep one `{Project}.Tests` project per production project in the same parent folder as that project (`src/Modules/Todo/Todo.Domain/` and `src/Modules/Todo/Todo.Domain.Tests/`), with features under `features/` and bindings under `Steps/`, and reference only that project's allowed architectural dependencies. Decision recorded in [test-location](./adr/test-location.md).
+- Violation: a root `tests/` tree mirroring `src/`; feature files inside the production project; one catch-all test project for several production projects.
+- Risk: putting tests inside the production assembly ships test tooling and violates .NET's assembly isolation; a shared catch-all project can bypass module boundaries; a mirrored tree puts a project's specification in another tree, so moving or deleting a module leaves its tests behind.
+- Fix: move the test project next to the project it tests and fix its `ProjectReference` (`..\Todo.Domain\Todo.Domain.csproj`); add every test project to the solution and collect its formatter output independently.
 
 ### Exercise production code from bindings
 Call the tested project's public entry point from bindings; never re-implement its logic or replace the code under test with a stand-in, and stub only its collaborators where the scenario requires isolation.
@@ -83,6 +85,7 @@ When applying [Configure the Cucumber editor extension](library/testing/core/cuc
 ```
 
 # Check list
+- [ ] Every `{Project}.Tests` sits in the same parent folder as `{Project}`; there is no root `tests/` tree.
 - [ ] Every step logs through `ITestOutputHelper`/`TestContext.Out`, never `Console.WriteLine`.
 - [ ] Binding classes are grouped by domain concept; generic comparator steps sit in their own binding class.
 - [ ] Cross-step state travels through `ScenarioContext` or context injection, never a static field.

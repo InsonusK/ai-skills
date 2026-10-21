@@ -17,3 +17,5 @@ make test    # every scenario
 | `src/Modules/Todo/Todo.Domain` | entities, domain services, the rule errors |
 | `src/BuildingBlocks` | pipeline behaviors, logging — fixed code |
 | `src/Shared` | the error kinds — fixed code, no packages |
+
+Every `{Project}.Tests` sits beside the project it tests (`src/Modules/Todo/Todo.Domain.Tests` next to `Todo.Domain`).

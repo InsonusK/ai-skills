@@ -56,7 +56,7 @@ Give each project only these references, so a call against [app-layers](library/
 | `{Module}.Application` | `{Module}.Interfaces`, `{Module}.Domain`, `MediatR` |
 | `BuildingBlocks` | `Shared`, `MediatR`, `Microsoft.Extensions.Logging.Abstractions` |
 | `App.Host` | every project above |
-| `tests/{Project}.Tests` | the project it tests (and what that project references) |
+| `{Project}.Tests`, beside `{Project}` | the project it tests (and what that project references) |
 
 - Violation: `{Module}.Domain` referencing MediatR or Entity Framework; `{Module}.Interfaces` referencing `{Module}.Domain` to return an entity.
 - Risk: the domain depends on a framework and its rules can no longer be tested alone; a result carrying an entity lets an entry point change the domain outside a command.

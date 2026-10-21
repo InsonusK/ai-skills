@@ -7,8 +7,9 @@
     <PackageReference Include="xunit" />
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="Reqnroll.xUnit" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Modules\Todo\Todo.Application\Todo.Application.csproj" />
+    <ProjectReference Include="..\BuildingBlocks\BuildingBlocks.csproj" />
   </ItemGroup>
 </Project>

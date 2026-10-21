@@ -6,4 +6,4 @@
 
 Run `make init && make test-and-report`, then open `tmp/testing/report/index.html`.
 Eight features share the Python reference's scenarios and tags. Production code lives in
-`src/Linkcheck`; Reqnroll bindings and features live in `tests/Linkcheck.Tests`.
+`src/Linkcheck`; Reqnroll bindings and features live beside it, in `src/Linkcheck.Tests`.

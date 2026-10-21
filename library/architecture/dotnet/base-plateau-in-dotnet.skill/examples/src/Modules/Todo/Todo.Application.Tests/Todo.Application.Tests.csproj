@@ -9,6 +9,6 @@
     <PackageReference Include="Reqnroll.xUnit" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\App\App.Host\App.Host.csproj" />
+    <ProjectReference Include="..\Todo.Application\Todo.Application.csproj" />
   </ItemGroup>
 </Project>

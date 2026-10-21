@@ -43,7 +43,7 @@ Create the projects and folders [app-layers-in-dotnet](library/develop/dotnet/ap
 | [pipeline behaviors](./glossary/pipeline-behavior.md) | `src/BuildingBlocks/Pipeline` |
 | [logging](./glossary/logging.md): `LogAttr`, `Write`, `JsonLogProvider`, `RequestId` | `src/BuildingBlocks/Logging` |
 | error kinds | `src/Shared/Errors`, per [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md) |
-| one test project per project above, but `Shared` and `Interfaces` | `tests/{Project}.Tests` |
+| one test project per project above, but `Shared` and `Interfaces` | `{Project}.Tests` beside the project it tests (`src/Modules/Todo/Todo.Domain.Tests`), per [cucumber-testing-in-dotnet](library/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md) |
 | solution, versions | `{App}.slnx`, `Directory.Build.props`, `Directory.Packages.props` (central package versions) |
 
 - Risk: a part in a project of its own choosing breaks every variation point's instruction that names the file to edit.
@@ -106,7 +106,7 @@ return EntryRunner.ExitCode(error);
 ### Cover each project with scenarios
 Cover `{Module}.Domain`, `{Module}.Application`, `BuildingBlocks`, and `App.Host` (startup entry, entry runner, settings) with Reqnroll scenarios in their test projects per [cucumber-testing-in-dotnet](library/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md), tagged `@type/domain`, `@type/service` (handlers), `@type/tech-check` (behaviors, logging, settings, the runner), and `@type/api/cli` (startup entry).
 - Risk: a project without scenarios lets a variation point break it unnoticed, since the variation point's example reruns the base scenarios as its regression check.
-- Fix: one `tests/{Project}.Tests` with `features/` and `Steps/` per project; a test project whose scenarios set environment variables disables test parallelization.
+- Fix: one `{Project}.Tests` beside each project, with `features/` and `Steps/`; a test project whose scenarios set environment variables disables test parallelization.
 
 ### Run the scenarios with make test
 Give the example's `Makefile` a `test` target running `dotnet test {App}.slnx --filter "Category!=status/todo&Category!=status/broken"`, and leave the testing contract (kinds, reports, mutation) to [solution-conformance-testing-in-dotnet](library/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md), as base-plateau's "Examples show the build, not the testing contract" requires.
