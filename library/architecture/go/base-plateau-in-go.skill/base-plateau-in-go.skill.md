@@ -82,7 +82,7 @@ return entry.ExitCode(err)
 
 - Violation: an entry point's `Run` called outside `entry.RunAll`; an exit code computed in `main.go`.
 - Risk: the next variation point's entry point is never started, or the process keeps running with one entry point dead.
-- Fix: a variation point adds its `entry.Entry` to the list (health) or replaces the startup `Entry` with its own (an API); `RunAll` and `ExitCode` stay as they are.
+- Fix: a variation point adds its `entry.Entry` to the list (health) or replaces the startup `Entry` with its own (an API); `RunAll` and `ExitCode` stay as they are. `RunAll` logs the error of an entry, unless the entry sets `ReportsErrors: true` because it shows the error itself (the CLI).
 
 ### Cover each layer with scenarios
 Cover `internal/domain/entity`, `internal/domain/service`, `internal/command`, `internal/command/pipeline`, `internal/api/startup`, `internal/api/entry`, and `internal/config` with Cucumber scenarios per [cucumber-testing-in-go](library/testing/go/cucumber-testing-in-go.skill.md), tagged `@type/domain`, `@type/service` (commands), `@type/tech-check` (decorators, settings, the runner), and `@type/api/cli` (startup entry), run by `go test ./...`.

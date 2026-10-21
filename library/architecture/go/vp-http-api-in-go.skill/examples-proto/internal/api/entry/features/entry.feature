@@ -30,6 +30,14 @@ Feature: Running the entry points together
     Then every entry point should have stopped
     And running should end with the error "listen tcp :8080: address already in use"
     And the exit code should be 1
+    And the log should name the entry "http" with its error
+
+  @category/negative
+  Scenario: The error of an entry that reports it itself is not logged again, and still sets the exit code
+    Given an entry "cli" that reports its own error "unknown flag: --nope" of the kind "invalid"
+    When the entry points run together
+    Then the log should name no entry
+    And the exit code should be 2
 
   @category/negative
   Scenario Outline: The exit code follows the error kind: 1 when a retry may help, 2 otherwise

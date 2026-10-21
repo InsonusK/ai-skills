@@ -23,6 +23,10 @@ type Entry struct {
 	// early with the error that stopped it. A one-shot entry (the startup
 	// command) returns when its work is done.
 	Run func(ctx context.Context) error
+	// ReportsErrors is true for an entry that shows its own error to whoever
+	// called it - the CLI prints "Error: ..." on stderr - so RunAll does not
+	// log that error a second time. The error still sets the exit code.
+	ReportsErrors bool
 }
 
 // RunAll runs every entry at once and waits until the first one ends - its
@@ -35,19 +39,21 @@ func RunAll(ctx context.Context, logger *slog.Logger, entries ...Entry) error {
 	defer cancel()
 
 	type ended struct {
-		name string
-		err  error
+		entry Entry
+		err   error
 	}
 	results := make(chan ended, len(entries))
 	for _, e := range entries {
-		go func() { results <- ended{e.Name, e.Run(ctx)} }()
+		go func() { results <- ended{e, e.Run(ctx)} }()
 	}
 
 	var first error
 	for i := range entries {
 		r := <-results
 		if r.err != nil {
-			logger.Error("entry point stopped with an error", "entry", r.name, "error", r.err)
+			if !r.entry.ReportsErrors {
+				logger.Error("entry point stopped with an error", "entry", r.entry.Name, "error", r.err)
+			}
 			if first == nil {
 				first = r.err
 			}

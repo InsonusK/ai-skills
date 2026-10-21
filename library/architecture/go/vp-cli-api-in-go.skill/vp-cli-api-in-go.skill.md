@@ -2,7 +2,7 @@
 name: vp-cli-api-in-go
 description: The CLI API variation point in Go — the internal/api/cli package copied from templates (Run building the cobra command line with --output, --version, usage errors as the invalid kind, and the generic Command adapter), one file per resource in internal/api/cli/endpoint with each action's flags, JSON output, and text form, and the startup entry replaced by one cli Entry in main.go
 whenToUse: when a Go application built on the base plateau must be run from a command line, when you offer a new command as an action of such an application, or when you review its internal/api/cli package
-updated: 20261019
+updated: 20261021
 tags:
   - stack/go
   - concern/architecture
@@ -60,7 +60,7 @@ Replace the startup `entry.Entry` in the `// [entries]` list of `cmd/{app}/main.
 // [entries] - every entry point, one Entry each, run together by entry.RunAll.
 resources := endpoint.Resources(endpoint.Handlers{Items: endpoint.ItemHandlers{PlanItems: planItems}})
 err = entry.RunAll(ctx, logger,
-	entry.Entry{Name: "cli", Run: func(ctx context.Context) error {
+	entry.Entry{Name: "cli", ReportsErrors: true, Run: func(ctx context.Context) error {
 		return cliapi.Run(ctx, "todo", version.Version, os.Args[1:], resources, stdout, stderr)
 	}},
 )
@@ -69,7 +69,7 @@ return entry.ExitCode(err)
 
 - Violation: `cobra.Command.Execute` called in `main.go`, an `os.Exit` inside the CLI package, or the startup entry kept beside the CLI.
 - Risk: an exit code computed outside `entry.ExitCode` ignores the error kind; an `os.Exit` skips the graceful stop of every other entry.
-- Fix: import `cliapi "{module-path}/internal/api/cli"` and `"{module-path}/internal/api/cli/endpoint"`; `cliapi.Run` returns the error and `entry.ExitCode` turns it into the exit code.
+- Fix: import `cliapi "{module-path}/internal/api/cli"` and `"{module-path}/internal/api/cli/endpoint"`; `cliapi.Run` prints the error as `Error: ...` and returns it, `ReportsErrors: true` keeps `RunAll` from logging it a second time, and `entry.ExitCode` turns it into the exit code. The logs of the command's run stay on stderr.
 
 ### Add the cobra module
 Add `github.com/spf13/cobra` at `v1.10.2` with `go get` and run `go mod tidy`.
@@ -89,7 +89,7 @@ Offer a further command of an existing resource by adding its field, its action 
 # Check list
 - [ ] `internal/api/cli/{cli,command}.go` are filled copies of the templates; no placeholder is left.
 - [ ] Each resource has its own file in `endpoint/` with its handlers struct, its actions built by `cliapi.Command`, and per action its `bind`, `encode`, and `text`; `endpoint/resources.go` holds only `Handlers` and `Resources`.
-- [ ] The `// [entries]` list of `main.go` has a `cli` entry calling `cliapi.Run` with `os.Args[1:]`; `internal/api/startup/` is deleted.
+- [ ] The `// [entries]` list of `main.go` has a `cli` entry with `ReportsErrors: true` calling `cliapi.Run` with `os.Args[1:]`; `internal/api/startup/` is deleted.
 - [ ] `github.com/spf13/cobra` is pinned at `v1.10.2`.
 - [ ] `make test` passes with the fixed code's feature and one feature per resource.
 - [ ] `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).
