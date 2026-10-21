@@ -1,7 +1,7 @@
 using Reqnroll;
 using Shared.Errors;
 using Todo.Application.Commands;
-using Todo.Interfaces.Commands;
+using Todo.Commands;
 using Xunit;
 using Xunit.Abstractions;
 

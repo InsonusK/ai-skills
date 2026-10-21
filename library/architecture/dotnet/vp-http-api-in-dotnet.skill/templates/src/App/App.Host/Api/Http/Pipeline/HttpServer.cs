@@ -13,7 +13,7 @@ namespace App.Host.Api.Http.Pipeline;
 /// <summary>
 /// The fixed part of the HTTP entry point, copied from templates and never
 /// edited: the settings, this server, the request log, the error answers, and
-/// the docs. Like every entry point it knows only the modules' Interfaces and
+/// the docs. Like every entry point it knows only the modules' Commands and
 /// <c>ISender</c> - never a handler or the domain. The routes are the
 /// application's: <c>Api/Http/Routes.cs</c> passes them in as
 /// <paramref name="mapRoutes"/>.

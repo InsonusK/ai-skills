@@ -1,6 +1,6 @@
 using MediatR;
 using Todo.Domain.Services;
-using Todo.Interfaces.Commands;
+using Todo.Commands;
 
 namespace Todo.Application.Commands;
 

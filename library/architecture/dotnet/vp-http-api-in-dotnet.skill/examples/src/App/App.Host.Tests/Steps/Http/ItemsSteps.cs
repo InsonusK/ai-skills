@@ -3,7 +3,7 @@ using App.Host.Api.Http.Endpoint;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Reqnroll;
-using Todo.Interfaces.Commands;
+using Todo.Commands;
 using Xunit;
 
 namespace App.Host.Tests.Steps.Http;

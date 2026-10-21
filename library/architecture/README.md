@@ -54,10 +54,10 @@ the `spec/` skills come along because every stack skill links its spec.
 |---|---|---|---|
 | Entity | `internal/domain/entity` | `src/{package}/domain/entity` | `src/Modules/{Module}/{Module}.Domain/Entities` |
 | Domain service | `internal/domain/service` | `src/{package}/domain/service` | `src/Modules/{Module}/{Module}.Domain/Services` |
-| Commands + handlers | `internal/command` (contract and decorators in `internal/command/pipeline`) | `src/{package}/command` | `src/Modules/{Module}/{Module}.Application/Commands` (command types in `{Module}.Interfaces/Commands`, behaviors in `src/BuildingBlocks/Pipeline`) |
+| Commands + handlers | `internal/command` (contract and decorators in `internal/command/pipeline`) | `src/{package}/command` | `src/Modules/{Module}/{Module}.Application/Commands` (command types in `{Module}.Commands`, behaviors in `src/BuildingBlocks/Pipeline`) |
 | API (entries) | `internal/api/{transport}`: `pipeline/` (fixed), `endpoint/` (`{Resource}Handler` per file), `routes.go` / `services.go` / `commands.go` (registration) | `src/{package}/api/{transport}` | `src/App/App.Host/Api/{Transport}`: `Pipeline/` (fixed), `Endpoint/` (`{Resource}Handler` per file), `Routes.cs` / `Services.cs` (registration) |
-| Service | `internal/service` | `src/{package}/service` | decided with the clients (step 2) |
-| Infrastructure | `internal/infrastructure/{kind}` | `src/{package}/infrastructure/{kind}` | decided with the clients (step 2) |
+| Service | `internal/service` | `src/{package}/service` | `src/Modules/{Module}/{Module}.Application/Services` (interface beside its consumer) |
+| Infrastructure | `internal/infrastructure/{kind}` | `src/{package}/infrastructure/{kind}` | `src/Infrastructure/{Infra}/{Infra}.Abstractions` + `{Infra}` |
 | Composition root | `cmd/{app}/main.go` | `src/{package}/main.py` | `src/App/App.Host/Program.cs` (`RunAsync`) |
 | Error kinds | `internal/domain/entity/kinds.go` | | `src/Shared/Errors` |
 
@@ -130,6 +130,5 @@ Agreed with the owner; written into the variation point's skill and ADR when it 
 | Move `library/common-workflow/develop/*` to `library/develop/{core,stack}` | later pass |
 | Go HTTP: `http.ServeMux` answers an unknown route (404) and another method (405) with plain text, not `google.rpc.Status`; the dotnet `ErrorAnswers` fills both — add the same to the Go pipeline | with the next change of `vp-http-api-in-go` |
 | The old dotnet catalog (`library/dotnet/architecture/...`: plateau examples, `*.Tests.csproj.create.md`) still keeps test projects in a root `tests/`; `cucumber-testing-in-dotnet` now puts each beside its project (ADR `test-location`) | when the old dotnet catalog is replaced |
-| dotnet: where a service and its infrastructure live, and which project declares the interface a handler calls (Go's consumer-owned interface needs the implementation to reference the consumer's project in dotnet) | clients (step 2) |
 | dotnet: one DI scope per command, for a scoped `DbContext` — entries send through a sender that opens a scope per call; today they take `ISender` from the root provider | DB (step 3) |
 | `api-develop-in-go` still says the contract's routes are one list in `internal/api/http/server.go` exposed as `ContractRoutes()`; the HTTP variation point now keeps them in `internal/api/http/endpoint` (`Routes`) | with the move of `library/common-workflow/develop/*` |

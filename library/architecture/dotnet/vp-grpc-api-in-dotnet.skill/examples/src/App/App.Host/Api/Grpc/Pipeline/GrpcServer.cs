@@ -13,7 +13,7 @@ namespace App.Host.Api.Grpc.Pipeline;
 /// The fixed part of the gRPC entry point, copied from templates and never
 /// edited: the settings, this server, and one interceptor per step around
 /// every call (CallLog, ErrorAnswers). Like every entry point it knows only
-/// the modules' Interfaces and <c>ISender</c> - never a handler or the domain.
+/// the modules' Commands and <c>ISender</c> - never a handler or the domain.
 /// The services are the application's: <c>Api/Grpc/Services.cs</c> passes them in.
 /// It serves no grpc.health.v1: the probes of every service go to the
 /// management port's HTTP endpoints.

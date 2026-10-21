@@ -17,7 +17,7 @@ adr:
 
 # Core Principle
 - **A method is written for its success** - A method maps its request message to the command, sends it, and maps the result to the response message; every exception it lets out is answered once, by the `ErrorAnswers` interceptor, through [RpcStatus](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md) — the same table as the HTTP variation point's.
-- **Copied once, written per command** - The entry point is split as [app-layers-in-dotnet](library/develop/dotnet/app-layers-in-dotnet.skill.md#split-each-entry-point-into-pipeline-endpoint-and-registration) requires: `Pipeline/` is copied from templates and never edited; per command the application writes, in its service's class of `Endpoint/`, one override.
+- **Copied once, written per command** - The entry point is split as [app-layers-in-dotnet](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md#split-each-entry-point-into-pipeline-endpoint-and-registration) requires: `Pipeline/` is copied from templates and never edited; per command the application writes, in its service's class of `Endpoint/`, one override.
 
 ```
 docs/integration/api/{contract-name}/{file}.proto    the contract, written by hand; C# generated at build time

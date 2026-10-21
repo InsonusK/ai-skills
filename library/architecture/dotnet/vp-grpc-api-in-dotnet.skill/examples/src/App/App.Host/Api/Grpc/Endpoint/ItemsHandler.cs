@@ -1,7 +1,7 @@
 using Contracts.Todo.V1;
 using Grpc.Core;
 using MediatR;
-using PlanItemsCommand = Todo.Interfaces.Commands.PlanItems;
+using PlanItemsCommand = Todo.Commands.PlanItems;
 
 namespace App.Host.Api.Grpc.Endpoint;
 

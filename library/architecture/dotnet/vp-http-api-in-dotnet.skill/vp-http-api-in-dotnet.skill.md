@@ -17,7 +17,7 @@ adr:
 
 # Core Principle
 - **A route is written for its success** - A route binds its request type, sends one command, and returns `TypedResults`; every error it lets out is answered once, by the pipeline's `ErrorAnswers`, as `google.rpc.Status`. Decision recorded in [minimal-api-with-binding-and-one-error-middleware](./adr/minimal-api-with-binding-and-one-error-middleware.md).
-- **Copied once, written per command** - The entry point is split as [app-layers-in-dotnet](library/develop/dotnet/app-layers-in-dotnet.skill.md#split-each-entry-point-into-pipeline-endpoint-and-registration) requires: `Pipeline/` is copied from templates and never edited; per command the application writes, in its resource's class of `Endpoint/`, a route line, a method, and a request and a response record.
+- **Copied once, written per command** - The entry point is split as [app-layers-in-dotnet](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md#split-each-entry-point-into-pipeline-endpoint-and-registration) requires: `Pipeline/` is copied from templates and never edited; per command the application writes, in its resource's class of `Endpoint/`, a route line, a method, and a request and a response record.
 
 ```
 src/App/App.Host/Api/

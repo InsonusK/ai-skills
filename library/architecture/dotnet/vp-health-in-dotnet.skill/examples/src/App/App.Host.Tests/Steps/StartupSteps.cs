@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Reqnroll;
 using Todo.Application.Commands;
-using Todo.Interfaces.Commands;
+using Todo.Commands;
 using Xunit;
 using Xunit.Abstractions;
 

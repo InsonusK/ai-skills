@@ -13,7 +13,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Todo.Application.Commands;
-using Todo.Interfaces.Commands;
+using Todo.Commands;
 
 namespace App.Host;
 

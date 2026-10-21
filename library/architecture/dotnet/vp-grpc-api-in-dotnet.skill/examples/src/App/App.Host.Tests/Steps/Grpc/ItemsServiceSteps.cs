@@ -4,7 +4,7 @@ using Contracts.Todo.V1;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Reqnroll;
-using Todo.Interfaces.Commands;
+using Todo.Commands;
 using Xunit;
 using PlanItemsRequest = Contracts.Todo.V1.PlanItemsRequest;
 

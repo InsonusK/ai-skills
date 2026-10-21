@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
-using Todo.Interfaces.Commands;
+using Todo.Commands;
 
 namespace App.Host.Api.Http.Endpoint;
 
