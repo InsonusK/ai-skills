@@ -10,7 +10,7 @@ import (
 	"github.com/cucumber/godog"
 
 	"github.com/example/todo/docs/integration/api/todo"
-	"github.com/example/todo/internal/api/http/endpoint"
+	httpapi "github.com/example/todo/internal/api/http"
 )
 
 func registerContractSteps(sc *godog.ScenarioContext, w *World) {
@@ -25,7 +25,7 @@ func (w *World) bothHaveExactly(ctx context.Context, table *godog.Table) error {
 		want = append(want, row.Cells[0].Value+" "+row.Cells[1].Value)
 	}
 	served := []string{}
-	for _, route := range endpoint.Routes(w.handlers()) {
+	for _, route := range httpapi.Routes(w.handlers()) {
 		served = append(served, route.Pattern)
 	}
 	spec, err := specOperations(todo.Spec)

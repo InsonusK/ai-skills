@@ -15,6 +15,7 @@ import (
 	"github.com/example/todo/gen/api/todo"
 	grpcapi "github.com/example/todo/internal/api/grpc"
 	"github.com/example/todo/internal/api/grpc/endpoint"
+	grpcpipeline "github.com/example/todo/internal/api/grpc/pipeline"
 	"github.com/example/todo/internal/command"
 	"github.com/example/todo/internal/command/pipeline"
 )
@@ -71,9 +72,9 @@ func registerWorldHooks(sc *godog.ScenarioContext, w *World) {
 }
 
 // handlers are the fake handlers of every service; a new service adds its fakes here.
-func (w *World) handlers() endpoint.Handlers {
-	return endpoint.Handlers{
-		Items: endpoint.ItemHandlers{
+func (w *World) handlers() grpcapi.Endpoints {
+	return grpcapi.Endpoints{
+		Items: endpoint.ItemsHandler{
 			PlanItems: pipeline.HandlerFunc[command.PlanItems, command.PlanItemsResult](
 				func(_ context.Context, cmd command.PlanItems) (command.PlanItemsResult, error) {
 					w.planCalled = true
@@ -108,7 +109,7 @@ func (w *World) client() (*grpc.ClientConn, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	w.stop = cancel
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
-	server := grpcapi.NewServer(grpcapi.Config{}, endpoint.Services(w.handlers()), logger)
+	server := grpcpipeline.NewServer(grpcpipeline.Config{}, grpcapi.Services(w.handlers()), logger)
 	go func() { _ = server.ServeListener(ctx, listener) }()
 	conn, err := grpc.NewClient("passthrough:///in-memory",
 		grpc.WithContextDialer(func(ctx context.Context, _ string) (net.Conn, error) { return listener.DialContext(ctx) }),

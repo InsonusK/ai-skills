@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
-	cliapi "github.com/example/todo/internal/api/cli"
+	clipipeline "github.com/example/todo/internal/api/cli/pipeline"
 	"github.com/example/todo/internal/command"
 	"github.com/example/todo/internal/command/pipeline"
 )
@@ -16,14 +16,16 @@ import (
 // A new command on items adds a field, an action line, and its bind, encode,
 // and text functions here.
 
-// ItemHandlers are the command handlers of the items resource.
-type ItemHandlers struct {
+// ItemsHandler is the items resource: the command handlers its actions call.
+// The composition root fills it; Resource lists its actions.
+type ItemsHandler struct {
 	PlanItems pipeline.Handler[command.PlanItems, command.PlanItemsResult]
 }
 
-func itemsResource(h ItemHandlers) cliapi.Resource {
-	return cliapi.Resource{Name: "items", Short: "Plan to-do items", Actions: []*cobra.Command{
-		cliapi.Command("plan", "Plan one open item per --title", h.PlanItems, bindPlanItems, encodePlanItems, textPlanItems),
+// Resource is `todo items` with its actions.
+func (h ItemsHandler) Resource() clipipeline.Resource {
+	return clipipeline.Resource{Name: "items", Short: "Plan to-do items", Actions: []*cobra.Command{
+		clipipeline.Command("plan", "Plan one open item per --title", h.PlanItems, bindPlanItems, encodePlanItems, textPlanItems),
 	}}
 }
 

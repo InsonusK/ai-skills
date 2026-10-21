@@ -51,10 +51,10 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 	// entry.RunAll until the first one ends. The CLI variation point replaced
 	// the startup Entry with its own: it runs the one action the arguments
 	// name and ends, and the process ends with it.
-	resources := endpoint.Resources(endpoint.Handlers{Items: endpoint.ItemHandlers{PlanItems: planItems}})
+	endpoints := cliapi.Endpoints{Items: endpoint.ItemsHandler{PlanItems: planItems}}
 	err = entry.RunAll(ctx, logger,
 		entry.Entry{Name: "cli", ReportsErrors: true, Run: func(ctx context.Context) error {
-			return cliapi.Run(ctx, logger, "todo", version.Version, os.Args[1:], resources, stdout, stderr)
+			return cliapi.Run(ctx, logger, "todo", version.Version, os.Args[1:], endpoints, stdout, stderr)
 		}},
 	)
 	return entry.ExitCode(err)

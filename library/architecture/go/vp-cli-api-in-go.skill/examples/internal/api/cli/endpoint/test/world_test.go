@@ -42,9 +42,9 @@ func registerWorldHooks(sc *godog.ScenarioContext, w *World) {
 }
 
 // handlers are the fake handlers of every resource; a new resource adds its fakes here.
-func (w *World) handlers() endpoint.Handlers {
-	return endpoint.Handlers{
-		Items: endpoint.ItemHandlers{
+func (w *World) handlers() cliapi.Endpoints {
+	return cliapi.Endpoints{
+		Items: endpoint.ItemsHandler{
 			PlanItems: pipeline.HandlerFunc[command.PlanItems, command.PlanItemsResult](
 				func(_ context.Context, cmd command.PlanItems) (command.PlanItemsResult, error) {
 					w.planGot = cmd
@@ -55,7 +55,7 @@ func (w *World) handlers() endpoint.Handlers {
 }
 
 func (w *World) run(ctx context.Context, line string) error {
-	w.err = cliapi.Run(ctx, slog.New(slog.NewJSONHandler(&w.logs, nil)), "todo", "0.0.0-test", strings.Fields(line), endpoint.Resources(w.handlers()), &w.stdout, &w.stderr)
+	w.err = cliapi.Run(ctx, slog.New(slog.NewJSONHandler(&w.logs, nil)), "todo", "0.0.0-test", strings.Fields(line), w.handlers(), &w.stdout, &w.stderr)
 	logf("when: todo %s -> err=%v\nstdout: %s\nstderr: %s", line, w.err, w.stdout.String(), w.stderr.String())
 	return w.err
 }

@@ -60,19 +60,19 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 	// [entries] - every entry point, one Entry each, run together by
 	// entry.RunAll until the first one ends. The gRPC and HTTP forms of one
 	// proto contract serve the same handlers.
-	services := grpcendpoint.Services(grpcendpoint.Handlers{Items: grpcendpoint.ItemHandlers{
+	grpcEndpoints := grpcapi.Endpoints{Items: grpcendpoint.ItemsHandler{
 		PlanItems: planItems, AddItem: addItem, ListItems: listItems,
-	}})
-	routes := httpendpoint.Routes(httpendpoint.Handlers{
-		Items: httpendpoint.ItemHandlers{PlanItems: planItems},
-		Lists: httpendpoint.ListHandlers{AddItem: addItem, ListItems: listItems},
-	})
+	}}
+	httpEndpoints := httpapi.Endpoints{
+		Items: httpendpoint.ItemsHandler{PlanItems: planItems},
+		Lists: httpendpoint.ListsHandler{AddItem: addItem, ListItems: listItems},
+	}
 	err = entry.RunAll(ctx, logger,
 		entry.Entry{Name: "grpc", Run: func(ctx context.Context) error {
-			return grpcapi.Run(ctx, services, logger)
+			return grpcapi.Run(ctx, grpcEndpoints, logger)
 		}},
 		entry.Entry{Name: "http", Run: func(ctx context.Context) error {
-			return httpapi.Run(ctx, routes, logger)
+			return httpapi.Run(ctx, httpEndpoints, logger)
 		}},
 	)
 	return entry.ExitCode(err)

@@ -50,10 +50,10 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 	// [entries] - every entry point, one Entry each, run together by
 	// entry.RunAll until the first one ends. The gRPC variation point replaced
 	// the startup Entry with its own; the health variation point adds one.
-	services := endpoint.Services(endpoint.Handlers{Items: endpoint.ItemHandlers{PlanItems: planItems}})
+	endpoints := grpcapi.Endpoints{Items: endpoint.ItemsHandler{PlanItems: planItems}}
 	err = entry.RunAll(ctx, logger,
 		entry.Entry{Name: "grpc", Run: func(ctx context.Context) error {
-			return grpcapi.Run(ctx, services, logger)
+			return grpcapi.Run(ctx, endpoints, logger)
 		}},
 	)
 	return entry.ExitCode(err)

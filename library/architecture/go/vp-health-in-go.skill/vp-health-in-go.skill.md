@@ -40,7 +40,7 @@ Add a `management` `entry.Entry` calling `management.Run` to the `// [entries]` 
 // [entries] - every entry point, one Entry each, run together by entry.RunAll.
 err = entry.RunAll(ctx, logger,
 	entry.Entry{Name: "http", Run: func(ctx context.Context) error { // already there
-		return httpapi.Run(ctx, routes, logger)
+		return httpapi.Run(ctx, endpoints, logger)
 	}},
 	entry.Entry{Name: "management", Run: func(ctx context.Context) error {
 		return management.Run(ctx, logger)

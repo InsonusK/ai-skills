@@ -8,7 +8,7 @@ import (
 	"github.com/cucumber/godog"
 
 	"github.com/example/todo/gen/api/todo"
-	"github.com/example/todo/internal/api/grpc/endpoint"
+	grpcapi "github.com/example/todo/internal/api/grpc"
 )
 
 func registerContractSteps(sc *godog.ScenarioContext, w *World) {
@@ -25,7 +25,7 @@ func (w *World) bothHaveExactly(ctx context.Context, table *godog.Table) error {
 		want = append(want, row.Cells[0].Value)
 	}
 	served := []string{}
-	for _, service := range endpoint.Services(w.handlers()) {
+	for _, service := range grpcapi.Services(w.handlers()) {
 		served = append(served, service.Desc.ServiceName)
 	}
 	contract := []string{}
