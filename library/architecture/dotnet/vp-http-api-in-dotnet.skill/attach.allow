@@ -1,0 +1,13 @@
+# The base example this variation point attaches to, relative to the repository root.
+base library/architecture/dotnet/base-plateau-in-dotnet.skill/examples
+# Base files the variation point changes - nothing else of the base may differ.
+change src/App/App.Host/Program.cs
+change src/App/App.Host/App.Host.csproj
+change src/App/App.Host.Tests/App.Host.Tests.csproj
+change Directory.Packages.props
+change Makefile
+change README.md
+# Base files the variation point removes: the startup entry it replaces, with its scenarios.
+delete src/App/App.Host/Api/Startup/*
+delete src/App/App.Host.Tests/features/Startup.feature
+delete src/App/App.Host.Tests/Steps/StartupSteps.cs

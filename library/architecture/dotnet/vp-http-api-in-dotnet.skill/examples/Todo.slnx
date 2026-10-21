@@ -1,0 +1,19 @@
+<Solution>
+  <!-- Every test project sits beside the project it tests (skill cucumber-testing-in-dotnet). -->
+  <Folder Name="/src/">
+    <Project Path="src/Shared/Shared.csproj" />
+    <Project Path="src/BuildingBlocks/BuildingBlocks.csproj" />
+    <Project Path="src/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/App/">
+    <Project Path="src/App/App.Host/App.Host.csproj" />
+    <Project Path="src/App/App.Host.Tests/App.Host.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Todo/">
+    <Project Path="src/Modules/Todo/Todo.Domain/Todo.Domain.csproj" />
+    <Project Path="src/Modules/Todo/Todo.Domain.Tests/Todo.Domain.Tests.csproj" />
+    <Project Path="src/Modules/Todo/Todo.Interfaces/Todo.Interfaces.csproj" />
+    <Project Path="src/Modules/Todo/Todo.Application/Todo.Application.csproj" />
+    <Project Path="src/Modules/Todo/Todo.Application.Tests/Todo.Application.Tests.csproj" />
+  </Folder>
+</Solution>

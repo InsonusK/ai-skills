@@ -26,8 +26,8 @@ The **entry runner** (`src/App/App.Host/Api/Entry`) starts every entry point of 
 ```csharp
 // [entries] - a service with HTTP and health: each variation point brought one Entry.
 var error = await EntryRunner.RunAllAsync(logger, stopping,
-    new Entry("http", stopping => HttpApi.RunAsync(endpoints, logger, stopping)),
-    new Entry("management", stopping => Management.RunAsync(logger, stopping)));
+    new Entry("http", stopping => HttpApi.RunAsync(httpEndpoints, loggers, stopping)),
+    new Entry("management", stopping => ManagementServer.RunAsync(loggers, stopping)));
 return EntryRunner.ExitCode(error);
 ```
 

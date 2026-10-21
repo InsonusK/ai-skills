@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The command handlers of the module, one file per command. -->
+  <ItemGroup>
+    <ProjectReference Include="..\Todo.Interfaces\Todo.Interfaces.csproj" />
+    <ProjectReference Include="..\Todo.Domain\Todo.Domain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MediatR" />
+  </ItemGroup>
+</Project>

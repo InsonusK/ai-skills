@@ -1,0 +1,8 @@
+# The health variation point attaches to the base plateau: it adds the management
+# entry point and changes only these base files.
+base library/architecture/dotnet/base-plateau-in-dotnet.skill/examples
+change src/App/App.Host/Program.cs
+change src/App/App.Host/App.Host.csproj
+change src/App/App.Host.Tests/App.Host.Tests.csproj
+change Directory.Packages.props
+change README.md
