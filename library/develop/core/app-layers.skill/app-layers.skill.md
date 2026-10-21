@@ -2,7 +2,7 @@
 name: app-layers
 description: How an application's code is split into layers — api, command (with an optional command factory), domain (entities and domain services), service, and infrastructure — what each layer owns, what it may call, where an interface stands between them, how each is tested
 whenToUse: when you design an application or a feature, when you add or change an entry point, a command or command factory, an entity or domain service, a service, or an infrastructure adapter, or when you review such a change — in any stack
-updated: 20261017
+updated: 20261021
 tags:
   - stack
   - concern/architecture
@@ -27,7 +27,7 @@ adr:
 - **Interfaces where I/O starts** - A caller reaches a service, and a service reaches its infrastructure, through an interface; code with no I/O behind it is called directly.
 
 # Scope
-- Covers the layer split of one application in any stack. The stack-specific packages and interface placement are described in its stack-specialized extensions: `app-layers-in-go`; `app-layers-in-dotnet` and `app-layers-in-python` are planned.
+- Covers the layer split of one application in any stack. The stack-specific packages and interface placement are described in its stack-specialized extensions: `app-layers-in-go`, `app-layers-in-dotnet`; `app-layers-in-python` is planned.
 
 # Rule
 

@@ -13,10 +13,13 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
-# files lists a directory's files, relative to it, without build and test output.
+# files lists a directory's files, relative to it, without build and test output
+# (Go: bin/ and tmp/ at the root; dotnet: bin/, obj/, TestResults/ in every
+# project and the code Reqnroll generates from each .feature).
 files() {
     (cd "$1" && find . -type f \
-        -not -path './tmp/*' -not -path './bin/*' -not -path '*/node_modules/*' \
+        -not -path './tmp/*' -not -path '*/bin/*' -not -path '*/obj/*' \
+        -not -path '*/TestResults/*' -not -path '*/node_modules/*' -not -name '*.feature.cs' \
         | sed 's#^\./##' | sort)
 }
 

@@ -2,7 +2,7 @@
 name: error-kinds
 description: The kinds of error an application's commands return and how every entry point answers them — eleven kinds (invalid, not found, conflict, concurrent change, failed precondition, unauthenticated, permission denied, resource exhausted, unimplemented, unavailable, and no kind for a failure of the service), when to choose each, and one table from kind to gRPC code, HTTP status, and CLI exit code, with the canonical gRPC-to-HTTP mapping
 whenToUse: when a command, domain service, entity, or service returns an error a caller must act on, when an entry point (HTTP, gRPC, CLI, a listener) turns an error into its response, when you choose between two kinds (conflict or failed precondition, invalid or not found), or when you review either
-updated: 20261018
+updated: 20261021
 tags:
   - stack
   - concern/architecture
@@ -23,7 +23,7 @@ tags:
 
 # Scope
 - Covers the errors a command returns and how entry points answer them. Codes an entry point sets by itself, with no command involved, are listed in [Codes an entry point sets itself](#codes-an-entry-point-sets-itself).
-- The implementation for each stack is described in its stack-specialized extension: `error-kinds-in-go`; `error-kinds-in-dotnet` and `error-kinds-in-python` are planned.
+- The implementation for each stack is described in its stack-specialized extension: `error-kinds-in-go`, `error-kinds-in-dotnet`; `error-kinds-in-python` is planned.
 
 # Rule
 

@@ -1,0 +1,20 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Shared/Shared.csproj" />
+    <Project Path="src/BuildingBlocks/BuildingBlocks.csproj" />
+  </Folder>
+  <Folder Name="/src/App/">
+    <Project Path="src/App/App.Host/App.Host.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Todo/">
+    <Project Path="src/Modules/Todo/Todo.Domain/Todo.Domain.csproj" />
+    <Project Path="src/Modules/Todo/Todo.Interfaces/Todo.Interfaces.csproj" />
+    <Project Path="src/Modules/Todo/Todo.Application/Todo.Application.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj" />
+    <Project Path="tests/Todo.Domain.Tests/Todo.Domain.Tests.csproj" />
+    <Project Path="tests/Todo.Application.Tests/Todo.Application.Tests.csproj" />
+    <Project Path="tests/App.Host.Tests/App.Host.Tests.csproj" />
+  </Folder>
+</Solution>

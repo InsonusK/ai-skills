@@ -5,7 +5,8 @@
 # test, and the two must not drift. A template is compared with the file at the
 # same path under its own skill's examples*/ (examples-proto/ for a file of the
 # proto mode), or, for a skill with no example (error-kinds-in-go), under the
-# first example of the catalog that has it.
+# first example of the catalog that has it. Go templates carry placeholders
+# (fill); dotnet templates (.cs, .csproj) have none and are compared as they are.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -41,7 +42,7 @@ for templates in library/architecture/*/*.skill/templates library/develop/*/*.sk
                 status=1
             fi
         done
-    done < <(cd "$templates" && find . -type f -name '*.go' | sed 's#^\./##' | sort)
+    done < <(cd "$templates" && find . -type f \( -name '*.go' -o -name '*.cs' -o -name '*.csproj' \) | sed 's#^\./##' | sort)
 done
 [ "$status" = 0 ] && echo "templates ok: $checked template-example pairs match"
 exit "$status"
