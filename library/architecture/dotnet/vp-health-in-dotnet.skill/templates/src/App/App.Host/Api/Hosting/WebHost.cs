@@ -1,10 +1,11 @@
-// Source: skill vp-http-api-in-dotnet, vp-health-in-dotnet
+// Source: skill vp-http-api-in-dotnet, vp-health-in-dotnet, vp-grpc-api-in-dotnet
 
 using BuildingBlocks.Logging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -22,23 +23,26 @@ public static class WebHost
 {
     /// <summary>
     /// A builder whose application listens on <paramref name="port"/>, logs
-    /// through the application's <paramref name="loggers"/> (ASP.NET's own
-    /// records from warning up only), and is started and stopped by the entry
-    /// runner alone - not by a SIGTERM handler of its own.
+    /// through the application's <paramref name="loggers"/> (ASP.NET's and
+    /// gRPC's own records from warning up only), and is started and stopped by
+    /// the entry runner alone - not by a SIGTERM handler of its own.
+    /// <paramref name="protocols"/> is HTTP/1.1 for an HTTP API and the probes;
+    /// gRPC without TLS needs HTTP/2 only (h2c with prior knowledge).
     /// </summary>
-    public static WebApplicationBuilder CreateBuilder(int port, ILoggerFactory loggers)
+    public static WebApplicationBuilder CreateBuilder(int port, ILoggerFactory loggers, HttpProtocols protocols = HttpProtocols.Http1)
     {
         var builder = WebApplication.CreateSlimBuilder(new WebApplicationOptions
         {
             Args = [],
             ContentRootPath = AppContext.BaseDirectory,
         });
-        builder.WebHost.ConfigureKestrel(kestrel => kestrel.ListenAnyIP(port));
+        builder.WebHost.ConfigureKestrel(kestrel => kestrel.ListenAnyIP(port, listen => listen.Protocols = protocols));
         builder.Services.AddSingleton<IHostLifetime, EntryLifetime>();
         builder.Services.Configure<HostOptions>(host => host.ShutdownTimeout = TimeSpan.FromSeconds(10));
         builder.Logging.ClearProviders()
             .AddProvider(new ForwardingLoggerProvider(loggers))
             .AddFilter("Microsoft", LogLevel.Warning)
+            .AddFilter("Grpc", LogLevel.Warning)
             // A start that fails is logged once, by the entry runner.
             .AddFilter("Microsoft.Extensions.Hosting", LogLevel.None);
         return builder;

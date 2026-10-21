@@ -1,0 +1,13 @@
+<Project>
+  <!-- Settings every project of the solution shares. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- The version of the build, per devops-project-version-in-dotnet; a snapshot
+         build overrides it with -p:Version=... -->
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The process: the composition root (Program.cs), the entry points (Api/),
+       and the base settings. The only project that references every other. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Shared.csproj" />
+    <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks.csproj" />
+    <ProjectReference Include="..\..\Modules\Todo\Todo.Interfaces\Todo.Interfaces.csproj" />
+    <ProjectReference Include="..\..\Modules\Todo\Todo.Application\Todo.Application.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- ASP.NET Core for the web entry points (Api/Hosting); it brings
+         Microsoft.Extensions.DependencyInjection and Logging with it. -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- The gRPC contract: its messages and service bases generated at build
+         time by Grpc.Tools; the client too, which the scenarios call it with. -->
+    <Protobuf Include="..\..\..\docs\integration\api\todo\todo.proto" GrpcServices="Both" Link="Api\Grpc\Contract\todo.proto" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="Grpc.AspNetCore" />
+    <PackageReference Include="Grpc.AspNetCore.Server.Reflection" />
+  </ItemGroup>
+</Project>

@@ -79,7 +79,7 @@ the `spec/` skills come along because every stack skill links its spec.
 |---|---|:-:|:-:|:-:|
 | 1a | base plateau (on `app-layers`) | ✅ | ✅ | |
 | 1b | API: HTTP (`vp-http-api`) | ✅ | ✅ | |
-| 1c-1 | API: gRPC (`vp-grpc-api`) | ✅ | | |
+| 1c-1 | API: gRPC (`vp-grpc-api`) | ✅ | ✅ | |
 | — | error kinds (`library/develop/core/error-kinds`) | ✅ | ✅ (exceptions) | |
 | — | health (`vp-health`, `:8081`) + one runner for every entry point (`entry.RunAll`) | ✅ | ✅ | |
 | 1c-2 | HTTP form of a gRPC contract (`vp-http-api`, proto mode) | ✅ | | |
@@ -104,7 +104,7 @@ variation points are formed (2026-10-18).
 | Go logging (`internal/logging`, `internal/logging/masked`: payload attribute, masked handler) | templates of `base-plateau-in-go` and `vp-logging-in-go` | identical in every Go application; one masking for all services |
 | Go error kinds (`entity/kinds.go`, `pipeline/errors.go` with `KindOf`, `api/rpcstatus`) | templates of `error-kinds-in-go` | identical in every Go application; a service would import the kinds and the table instead of copying them; the skill would keep only when to choose each kind |
 | Testing tooling (`tools/testing`, `tools/normalize_*`, `tools/livingdoc`, `report-template`) | example of `solution-conformance-testing-in-go`; not copied into plateau or variation-point examples | ~2,000 lines copied into every real project; a version bump would update every project at once |
-| dotnet fixed code (`Shared`: error kinds; `BuildingBlocks`: `LoggingBehavior`, `JsonLogProvider`, `LogAttr`, `RequestId`; `Api/Entry`, `Api/Startup`; `Api/Errors/RpcStatus`, `Api/Hosting/WebHost`, `Api/Http/Pipeline`, `Api/Management`) | templates of `base-plateau-in-dotnet`, `error-kinds-in-dotnet`, `vp-http-api-in-dotnet`, `vp-health-in-dotnet` | no placeholder at all: one NuGet package (or two: `Shared` with no dependency, the rest over MediatR) |
+| dotnet fixed code (`Shared`: error kinds; `BuildingBlocks`: `LoggingBehavior`, `JsonLogProvider`, `LogAttr`, `RequestId`; `Api/Entry`, `Api/Startup`; `Api/Errors/RpcStatus`, `Api/Hosting/WebHost`, `Api/Http/Pipeline`, `Api/Grpc/Pipeline`, `Api/Management`) | templates of `base-plateau-in-dotnet`, `error-kinds-in-dotnet`, `vp-http-api-in-dotnet`, `vp-grpc-api-in-dotnet`, `vp-health-in-dotnet` | no placeholder at all: one NuGet package (or two: `Shared` with no dependency, the rest over MediatR) |
 | TaskBox | `taskbox-spec` published; `taskbox-go` code proven, not yet packaged | already decided as a library (ADR `contract-vp-realized-by-libraries`) |
 
 ## Decisions waiting for their variation point
