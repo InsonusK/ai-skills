@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The in-memory store: the infrastructure of this example, so it runs with
+       no database. Only App.Host references it, to build it in [services]. -->
+  <ItemGroup>
+    <ProjectReference Include="..\Memory.Abstractions\Memory.Abstractions.csproj" />
+  </ItemGroup>
+</Project>

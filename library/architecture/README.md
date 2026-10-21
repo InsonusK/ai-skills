@@ -82,7 +82,7 @@ the `spec/` skills come along because every stack skill links its spec.
 | 1c-1 | API: gRPC (`vp-grpc-api`) | ✅ | ✅ | |
 | — | error kinds (`library/develop/core/error-kinds`) | ✅ | ✅ (exceptions) | |
 | — | health (`vp-health`, `:8081`) + one runner for every entry point (`entry.RunAll`) | ✅ | ✅ | |
-| 1c-2 | HTTP form of a gRPC contract (`vp-http-api`, proto mode) | ✅ | | |
+| 1c-2 | HTTP form of a gRPC contract (`vp-http-api`, proto mode) | ✅ | ✅ | |
 | 1d | API: CLI (`vp-cli-api`, cobra) | ✅ | | |
 | — | logging: one logger, payload attribute, base handler drops it; every entry point logs its calls; `vp-logging` masks and writes the payload | ✅ | base ✅ | |
 | 2 | clients: HTTP, gRPC | | | |
@@ -104,7 +104,7 @@ variation points are formed (2026-10-18).
 | Go logging (`internal/logging`, `internal/logging/masked`: payload attribute, masked handler) | templates of `base-plateau-in-go` and `vp-logging-in-go` | identical in every Go application; one masking for all services |
 | Go error kinds (`entity/kinds.go`, `pipeline/errors.go` with `KindOf`, `api/rpcstatus`) | templates of `error-kinds-in-go` | identical in every Go application; a service would import the kinds and the table instead of copying them; the skill would keep only when to choose each kind |
 | Testing tooling (`tools/testing`, `tools/normalize_*`, `tools/livingdoc`, `report-template`) | example of `solution-conformance-testing-in-go`; not copied into plateau or variation-point examples | ~2,000 lines copied into every real project; a version bump would update every project at once |
-| dotnet fixed code (`Shared`: error kinds; `BuildingBlocks`: `LoggingBehavior`, `JsonLogProvider`, `LogAttr`, `RequestId`; `Api/Entry`, `Api/Startup`; `Api/Errors/RpcStatus`, `Api/Hosting/WebHost`, `Api/Http/Pipeline`, `Api/Grpc/Pipeline`, `Api/Management`) | templates of `base-plateau-in-dotnet`, `error-kinds-in-dotnet`, `vp-http-api-in-dotnet`, `vp-grpc-api-in-dotnet`, `vp-health-in-dotnet` | no placeholder at all: one NuGet package (or two: `Shared` with no dependency, the rest over MediatR) |
+| dotnet fixed code (`Shared`: error kinds; `BuildingBlocks`: `LoggingBehavior`, `JsonLogProvider`, `LogAttr`, `RequestId`; `Api/Entry`, `Api/Startup`; `Api/Errors/RpcStatus`, `Api/Hosting/WebHost`, `Api/Http/Pipeline` with `ProtoJson`, `Api/Grpc/Pipeline`, `Api/Management`) | templates of `base-plateau-in-dotnet`, `error-kinds-in-dotnet`, `vp-http-api-in-dotnet`, `vp-grpc-api-in-dotnet`, `vp-health-in-dotnet` | no placeholder at all: one NuGet package (or two: `Shared` with no dependency, the rest over MediatR) |
 | TaskBox | `taskbox-spec` published; `taskbox-go` code proven, not yet packaged | already decided as a library (ADR `contract-vp-realized-by-libraries`) |
 
 ## Decisions waiting for their variation point
@@ -124,7 +124,7 @@ Agreed with the owner; written into the variation point's skill and ADR when it 
 |---|---|
 | Rewrite `api-client-develop` and `client-mocking` (`common-workflow/develop`) in service / infrastructure terms as they move to `library/develop` (the old Client/Integration names stay in `solution-integration-client-layering` and the old catalogs; the mapping is recorded in the `app-layers` ADR `service-wraps-one-infrastructure`) | clients (step 2) |
 | Clients log every outgoing call (`http client call`, `grpc client call`) with the request as the payload and the request id of the context sent on, through the same logger | clients (step 2) |
-| The proto example keeps its lists in memory (`internal/infrastructure/memory`, scenarios tagged `@type/tech-check` since the tag vocabulary has no in-memory store); the DB variation point replaces it | DB (step 3) |
+| The proto examples keep their lists in memory (Go `internal/infrastructure/memory`, dotnet `src/Infrastructure/Memory`, scenarios tagged `@type/tech-check` since the tag vocabulary has no in-memory store); the DB variation point replaces it | DB (step 3) |
 | The verification `curl` of the `devops-service-deploy` guides calls `/health/ready` on the published API port; for a service with the management port it needs that port published or port-forwarded | with the next change of `devops-service-deploy` |
 | Review [Library candidates](#library-candidates) with the owner: turn fixed Go code (handler contract, error kinds + `rpcstatus`, HTTP/gRPC entry points) into libraries services import instead of copying templates | after the last variation point (step 4) |
 | Move `library/common-workflow/develop/*` to `library/develop/{core,stack}` | later pass |
