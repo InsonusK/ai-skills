@@ -9,21 +9,48 @@ import (
 )
 
 func registerCallLogSteps(sc *godog.ScenarioContext, w *World) {
-	record := func() (map[string]any, error) {
+	all := func() []map[string]any {
 		found := []map[string]any{}
 		for _, line := range strings.Split(strings.TrimSpace(w.logs.String()), "\n") {
 			var rec map[string]any
-			if json.Unmarshal([]byte(line), &rec) == nil && rec["msg"] == "cli call" {
+			if json.Unmarshal([]byte(line), &rec) == nil {
+				found = append(found, rec)
+			}
+		}
+		return found
+	}
+	record := func(msg string) (map[string]any, error) {
+		found := []map[string]any{}
+		for _, rec := range all() {
+			if rec["msg"] == msg {
 				found = append(found, rec)
 			}
 		}
 		if len(found) != 1 {
-			return nil, fmt.Errorf(`"cli call" records: got %d, want 1 (log %s)`, len(found), w.logs.String())
+			return nil, fmt.Errorf("%q records: got %d, want 1 (log %s)", msg, len(found), w.logs.String())
 		}
 		return found[0], nil
 	}
-	sc.Step(`^one "cli call" record should be logged for the action "([^"]*)", failed "([^"]*)"$`, func(action, failed string) error {
-		rec, err := record()
+	payload := func(msg string) (map[string]any, error) {
+		rec, err := record(msg)
+		if err != nil {
+			return nil, err
+		}
+		p, _ := rec["payload"].(map[string]any)
+		return p, nil
+	}
+	sc.Step(`^the records should be, in order, "([^"]*)"$`, func(msgs string) error {
+		got := []string{}
+		for _, rec := range all() {
+			got = append(got, fmt.Sprint(rec["msg"]))
+		}
+		if strings.Join(got, "|") != msgs {
+			return fmt.Errorf("records in order: got %q, want %q", strings.Join(got, "|"), msgs)
+		}
+		return nil
+	})
+	sc.Step(`^one "([^"]*)" record should be logged for the action "([^"]*)", failed "([^"]*)"$`, func(msg, action, failed string) error {
+		rec, err := record(msg)
 		if err != nil {
 			return err
 		}
@@ -32,26 +59,24 @@ func registerCallLogSteps(sc *godog.ScenarioContext, w *World) {
 		}
 		return nil
 	})
-	sc.Step(`^its payload should hold the output "([^"]*)"$`, func(want string) error {
-		rec, err := record()
+	sc.Step(`^the "([^"]*)" record should hold the flag "([^"]*)" = "([^"]*)"$`, func(msg, name, value string) error {
+		p, err := payload(msg)
 		if err != nil {
 			return err
 		}
-		payload, _ := rec["payload"].(map[string]any)
-		if got := strings.TrimSpace(fmt.Sprint(payload["output"])); got != want {
-			return fmt.Errorf("output in the payload: got %q, want %q", got, want)
+		flags, _ := p["flags"].(map[string]any)
+		if flags[name] != value {
+			return fmt.Errorf("payload %v, want the flag %s=%s", p, name, value)
 		}
 		return nil
 	})
-	sc.Step(`^its payload should hold the flag "([^"]*)" = "([^"]*)"$`, func(name, value string) error {
-		rec, err := record()
+	sc.Step(`^the "([^"]*)" record should hold the output "([^"]*)"$`, func(msg, want string) error {
+		p, err := payload(msg)
 		if err != nil {
 			return err
 		}
-		payload, _ := rec["payload"].(map[string]any)
-		flags, _ := payload["flags"].(map[string]any)
-		if flags[name] != value {
-			return fmt.Errorf("payload %v, want %s=%s", rec["payload"], name, value)
+		if got := strings.TrimSpace(fmt.Sprint(p["output"])); got != want {
+			return fmt.Errorf("output in the payload: got %q, want %q", got, want)
 		}
 		return nil
 	})

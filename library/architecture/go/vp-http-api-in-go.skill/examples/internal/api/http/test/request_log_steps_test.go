@@ -20,8 +20,11 @@ func registerRequestLogSteps(sc *godog.ScenarioContext, w *World) {
 		return nil
 	})
 	sc.Step(`^one "([^"]*)" record should be logged with:$`, w.oneRecordShouldBeLoggedWith)
-	sc.Step(`^its payload should hold the query "([^"]*)" = "([^"]*)" and the body '([^']*)'$`, w.itsPayloadShouldHold)
-	sc.Step(`^its payload should hold the response body '([^']*)'$`, w.itsPayloadShouldHoldTheResponse)
+	sc.Step(`^the command is wrapped with logging$`, func() error { w.decorated = true; return nil })
+	sc.Step(`^the records should be, in order, "([^"]*)"$`, w.theRecordsShouldBeInOrder)
+	sc.Step(`^the "([^"]*)" record should hold the query "([^"]*)" = "([^"]*)" and the body '([^']*)'$`, w.theRecordShouldHoldTheRequest)
+	sc.Step(`^the "([^"]*)" record should hold the response body '([^']*)'$`, w.theRecordShouldHoldTheResponse)
+	sc.Step(`^the "([^"]*)" record should hold no request$`, w.theRecordShouldHoldNoRequest)
 	sc.Step(`^the response should carry the request id "([^"]*)"$`, func(want string) error {
 		if got := w.response.Header().Get(httpapi.RequestIDHeader); got != want {
 			return fmt.Errorf("response request id: got %q, want %q", got, want)
@@ -68,30 +71,69 @@ func (w *World) oneRecordShouldBeLoggedWith(ctx context.Context, msg string, tab
 	return nil
 }
 
-func (w *World) itsPayloadShouldHold(ctx context.Context, name, value, body string) error {
-	recs := w.records("http request")
-	if len(recs) != 1 {
-		return fmt.Errorf("http request records: got %d, want 1", len(recs))
+func (w *World) theRecordsShouldBeInOrder(ctx context.Context, msgs string) error {
+	got := []string{}
+	for _, line := range strings.Split(strings.TrimSpace(w.logs.String()), "\n") {
+		var rec map[string]any
+		if json.Unmarshal([]byte(line), &rec) == nil {
+			got = append(got, fmt.Sprint(rec["msg"]))
+		}
 	}
-	payload, _ := recs[0]["payload"].(map[string]any)
-	request, _ := payload["request"].(map[string]any)
-	query, _ := request["query"].(map[string]any)
-	values, _ := query[name].([]any)
-	if len(values) != 1 || values[0] != value || decodeBody(request) != body {
-		return fmt.Errorf("payload %v, want query %s=%s and body %s", payload, name, value, body)
+	if strings.Join(got, "|") != msgs {
+		return fmt.Errorf("records in order: got %q, want %q", strings.Join(got, "|"), msgs)
 	}
 	return nil
 }
 
-func (w *World) itsPayloadShouldHoldTheResponse(ctx context.Context, body string) error {
-	recs := w.records("http request")
+// payloadOf is the payload of the one record msg.
+func (w *World) payloadOf(msg string) (map[string]any, error) {
+	recs := w.records(msg)
 	if len(recs) != 1 {
-		return fmt.Errorf("http request records: got %d, want 1", len(recs))
+		return nil, fmt.Errorf("%q records: got %d, want 1 (log %s)", msg, len(recs), w.logs.String())
 	}
 	payload, _ := recs[0]["payload"].(map[string]any)
+	return payload, nil
+}
+
+// theRecordShouldHoldTheRequest reads what the client sent: the payload
+// itself in the received record, its "request" part in the sent record.
+func (w *World) theRecordShouldHoldTheRequest(ctx context.Context, msg, name, value, body string) error {
+	payload, err := w.payloadOf(msg)
+	if err != nil {
+		return err
+	}
+	request := payload
+	if part, ok := payload["request"].(map[string]any); ok {
+		request = part
+	}
+	query, _ := request["query"].(map[string]any)
+	values, _ := query[name].([]any)
+	queryOK := (value == "" && len(values) == 0) || (len(values) == 1 && values[0] == value)
+	if !queryOK || decodeBody(request) != body {
+		return fmt.Errorf("payload %v, want query %s=%q and body %s", payload, name, value, body)
+	}
+	return nil
+}
+
+func (w *World) theRecordShouldHoldTheResponse(ctx context.Context, msg, body string) error {
+	payload, err := w.payloadOf(msg)
+	if err != nil {
+		return err
+	}
 	response, _ := payload["response"].(map[string]any)
 	if got := strings.TrimSpace(decodeBody(response)); got != body {
 		return fmt.Errorf("response body in the payload: got %q, want %q", got, body)
+	}
+	return nil
+}
+
+func (w *World) theRecordShouldHoldNoRequest(ctx context.Context, msg string) error {
+	payload, err := w.payloadOf(msg)
+	if err != nil {
+		return err
+	}
+	if _, has := payload["request"]; has {
+		return fmt.Errorf("payload %v holds the request", payload)
 	}
 	return nil
 }

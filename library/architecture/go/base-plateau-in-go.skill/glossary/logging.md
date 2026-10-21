@@ -8,15 +8,24 @@ Three kinds of part log: the command decorator (a command was called, handled, f
 
 ## Who writes what
 
-| Part | Record | Attributes | Payload |
-|---|---|---|---|
-| `pipeline.WithLogging` | `command called` (INFO) | `command` | the command |
-| | `command handled` (INFO) / `command failed` (WARN) | `command`, `duration`, `failed`, `error` | the command, on failure |
-| HTTP entry point | `http request` (INFO) | `method`, `path`, `status`, `duration`, `failed` | `request`: `query`, `headers`, `body`; `response`: `body` as written |
-| gRPC entry point | `grpc call` (INFO) | `method`, `code`, `duration`, `failed` | `request` and `response` messages |
-| CLI entry point | `cli call` (INFO) | `action`, `duration`, `failed` | `flags` given, `output` as printed |
+Every layer writes a pair of records — one when the call comes in, one when it goes out — so the log of one request reads top-down as it was served:
 
-The response is logged as it was sent, not as the command returned it, so a fault in turning a result into the response — a wrong mapping, a field left out — shows in the log. Every entry point also puts a **request id** into the context (`logging.WithRequestID`): the client's (`X-Request-Id`, `x-request-id`) or a new one, sent back in the response.
+```
+http request received   POST /v1/items/plan         payload: query, headers, body
+  command called        PlanItems                   payload: the command
+    (client send / client response - with the client variation points)
+  command handled       PlanItems, duration         payload: the result
+http response sent      200, duration               payload: the response body as written
+```
+
+| Part | In | Out | Payload in / out |
+|---|---|---|---|
+| `pipeline.WithLogging` | `command called` | `command handled` / `command failed` (WARN) | the command / the result; a failure repeats the command |
+| HTTP entry point | `http request received` | `http response sent` (`status`, `duration`, `failed`) | query, headers, body / the response body as written |
+| gRPC entry point | `grpc call received` | `grpc call answered` (`code`, `duration`, `failed`) | the request message / the response message |
+| CLI entry point | `cli call received` (once parsed) | `cli call answered` (`duration`, `failed`) | the flags given / the output as printed |
+
+The out record of a **failure** repeats the input, so it is in the log even when the logging variation point keeps the payload of failed records only (`LOG_PAYLOAD=errors`). The response is logged as it was sent, not as the command returned it, so a fault in turning a result into the response shows in the log. Every entry point also puts a **request id** into the context (`logging.WithRequestID`): the client's (`X-Request-Id`, `x-request-id`) or a new one, sent back in the response.
 
 ## How it works
 
@@ -42,9 +51,10 @@ The base handler drops the payload so that no data — and no secret in it — i
 ## Example
 
 ```json
+{"level":"INFO","msg":"http request received","method":"POST","path":"/v1/items/plan"}
 {"level":"INFO","msg":"command called","command":"PlanItems"}
 {"level":"INFO","msg":"command handled","command":"PlanItems","duration":1253,"failed":false}
-{"level":"INFO","msg":"http request","method":"POST","path":"/v1/items/plan","status":200,"duration":2101,"failed":false}
+{"level":"INFO","msg":"http response sent","method":"POST","path":"/v1/items/plan","status":200,"duration":2101,"failed":false}
 ```
 
 ## Related concepts

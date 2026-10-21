@@ -37,8 +37,9 @@ type World struct {
 	echoGot    echoCommand
 	echoReqID  string // the request id in the command's context
 
-	cfg  httpapi.Config
-	logs bytes.Buffer // what the server logged, every attribute kept
+	cfg       httpapi.Config
+	logs      bytes.Buffer // what the server logged, every attribute kept
+	decorated bool         // the echo handler is wrapped with pipeline.WithLogging
 
 	response *httptest.ResponseRecorder
 
@@ -79,8 +80,17 @@ func registerWorldHooks(sc *godog.ScenarioContext, w *World) {
 type echoCommand struct{ Text string }
 type echoResult struct{ Text string }
 
-// echoHandler is the fake handler: it records the command and answers what the scenario set.
+// echoHandler is the fake handler: it records the command and answers what
+// the scenario set; wrapped with logging when the scenario asks, so its
+// records land between the server's.
 func (w *World) echoHandler() pipeline.Handler[echoCommand, echoResult] {
+	if w.decorated {
+		return pipeline.WithLogging("Echo", w.logger(), w.fakeEcho())
+	}
+	return w.fakeEcho()
+}
+
+func (w *World) fakeEcho() pipeline.Handler[echoCommand, echoResult] {
 	return pipeline.HandlerFunc[echoCommand, echoResult](
 		func(ctx context.Context, cmd echoCommand) (echoResult, error) {
 			w.echoCalled = true
@@ -115,8 +125,11 @@ var moreRoutes func(w *World) []httpapi.Route
 // server logs through a plain JSON handler, which keeps the payload, so the
 // scenarios see every attribute the server writes.
 func (w *World) server() *httpapi.Server {
-	logger := slog.New(slog.NewJSONHandler(&w.logs, nil))
-	return httpapi.NewServer(w.cfg, w.routes(), logger)
+	return httpapi.NewServer(w.cfg, w.routes(), w.logger())
+}
+
+func (w *World) logger() *slog.Logger {
+	return slog.New(slog.NewJSONHandler(&w.logs, nil))
 }
 
 func (w *World) send(method, path, body string) {

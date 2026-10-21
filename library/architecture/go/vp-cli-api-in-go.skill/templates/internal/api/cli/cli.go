@@ -41,10 +41,11 @@ type Resource struct {
 // returns its error. An error of the action's handler is returned as it is,
 // so the process exit code follows its kind; an error of the command line
 // itself - an unknown action, a bad flag - wraps pipeline.ErrInvalid (exit
-// code 2). Help goes to stdout, every error to stderr. One "cli call" record
-// is logged per run (see logCall); the run gets a request id of its own, so
-// every record of it carries the same one once the logging variation point is
-// attached.
+// code 2). Help goes to stdout, every error to stderr. Two records are logged
+// per run, so the log reads top-down as it ran - "cli call received" once the
+// arguments are parsed, "cli call answered" when it ends (see logCall); the
+// run gets a request id of its own, so every record of it carries the same
+// one once the logging variation point is attached.
 func Run(ctx context.Context, logger *slog.Logger, name, version string, args []string, resources []Resource, stdout, stderr io.Writer) error {
 	ctx = logging.WithRequestID(ctx, "")
 	start := time.Now()
@@ -58,6 +59,11 @@ func Run(ctx context.Context, logger *slog.Logger, name, version string, args []
 		SilenceUsage:  true, // a failed command is not a usage error
 	}
 	root.PersistentFlags().String(outputFlag, outputJSON, "output format: json or text")
+	// runs once the arguments are parsed, before the action: the first record
+	root.PersistentPreRun = func(cmd *cobra.Command, _ []string) {
+		logger.LogAttrs(cmd.Context(), slog.LevelInfo, "cli call received",
+			slog.String("action", cmd.CommandPath()), logging.Payload(map[string]any{"flags": givenFlags(cmd)}))
+	}
 	root.SetFlagErrorFunc(func(cmd *cobra.Command, err error) error {
 		return fmt.Errorf("%w: %s (see %s --help)", pipeline.ErrInvalid, err, cmd.CommandPath())
 	})
@@ -87,15 +93,26 @@ func Run(ctx context.Context, logger *slog.Logger, name, version string, args []
 	return err
 }
 
-// logCall writes the record of one run - "cli call" with the action run, the
-// duration, failed, and as the payload the flags given on the command line and
-// the output printed, as printed.
+// logCall writes the last record of a run - "cli call answered" with the
+// action run, the duration, failed, and as the payload the output as printed;
+// a failed run repeats the flags given, so they are in the log even when only
+// failed records keep their payload, and even when the arguments could not be
+// parsed and no "cli call received" was written.
 func logCall(ctx context.Context, logger *slog.Logger, ran *cobra.Command, start time.Time, err error, output string) {
-	flags := map[string]string{}
-	ran.Flags().Visit(func(f *pflag.Flag) { flags[f.Name] = f.Value.String() })
-	logger.LogAttrs(ctx, slog.LevelInfo, "cli call",
+	sent := map[string]any{"output": output}
+	if err != nil {
+		sent["flags"] = givenFlags(ran)
+	}
+	logger.LogAttrs(ctx, slog.LevelInfo, "cli call answered",
 		slog.String("action", ran.CommandPath()), slog.Duration("duration", time.Since(start)),
-		logging.Failed(err != nil), logging.Payload(map[string]any{"flags": flags, "output": output}))
+		logging.Failed(err != nil), logging.Payload(sent))
+}
+
+// givenFlags are the flags given on the command line, by name.
+func givenFlags(cmd *cobra.Command) map[string]string {
+	flags := map[string]string{}
+	cmd.Flags().Visit(func(f *pflag.Flag) { flags[f.Name] = f.Value.String() })
+	return flags
 }
 
 // noArgs rejects an argument where an action is expected, so `todo items

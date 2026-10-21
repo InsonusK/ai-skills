@@ -1,28 +1,36 @@
 @type/tech-check
 Feature: Request log
   As an operator of the service
-  I want one record per HTTP request with what the client sent and how it was answered
-  So that I find any request in the log, and, with the logging variation point, its data
+  I want each HTTP request logged when it arrives and when it is answered, with what came in and what went out
+  So that the log reads top-down as the request was served, and, with the logging variation point, shows its data
 
   @category/happy
-  Scenario: A request is logged with its method, path, status, and what the client sent
+  Scenario: The log reads top-down: request received, command called and handled, response sent
+    Given the command answers "hello"
+    And the command is wrapped with logging
+    When I POST "/v1/echo" with the body '{"text":"hi"}'
+    Then the records should be, in order, "http request received|command called|command handled|http response sent"
+
+  @category/happy
+  Scenario: The received record holds what the client sent, the sent record what it was answered
     Given the command answers "hello"
     When I POST "/v1/echo?mode=fast" with the body '{"text":"hi"}'
-    Then one "http request" record should be logged with:
+    Then the "http request received" record should hold the query "mode" = "fast" and the body '{"text":"hi"}'
+    And one "http response sent" record should be logged with:
       | method | path     | status | failed |
       | POST   | /v1/echo | 201    | false  |
-    And its payload should hold the query "mode" = "fast" and the body '{"text":"hi"}'
-    And its payload should hold the response body '{"text":"hello"}'
-    And the command should have received "hi"
+    And the "http response sent" record should hold the response body '{"text":"hello"}'
+    And the "http response sent" record should hold no request
 
   @category/negative
-  Scenario: A rejected request is logged as failed
+  Scenario: A failed request's sent record repeats what the client sent
     Given the command is rejected with "item titles repeat"
     When I POST "/v1/echo" with the body '{"text":"a"}'
-    Then one "http request" record should be logged with:
+    Then one "http response sent" record should be logged with:
       | method | path     | status | failed |
       | POST   | /v1/echo | 400    | true   |
-    And its payload should hold the response body '{"code":3,"message":"invalid: item titles repeat","details":[]}'
+    And the "http response sent" record should hold the response body '{"code":3,"message":"invalid: item titles repeat","details":[]}'
+    And the "http response sent" record should hold the query "mode" = "" and the body '{"text":"a"}'
 
   @category/happy
   Scenario: The request id of the client is kept and sent back

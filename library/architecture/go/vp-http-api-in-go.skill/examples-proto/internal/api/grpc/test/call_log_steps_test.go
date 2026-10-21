@@ -42,17 +42,50 @@ func registerCallLogSteps(sc *godog.ScenarioContext, w *World) {
 			}
 			return nil
 		})
-	sc.Step(`^its payload should hold the request "([^"]*)" and the response "([^"]*)"$`, func(request, response string) error {
-		recs := w.records("grpc call")
+	payloadOf := func(msg string) (map[string]any, error) {
+		recs := w.records(msg)
 		if len(recs) != 1 {
-			return fmt.Errorf("grpc call records: got %d, want 1", len(recs))
+			return nil, fmt.Errorf("%q records: got %d, want 1 (log %s)", msg, len(recs), w.logs.String())
 		}
-		// the JSON handler writes a generated message through encoding/json: its exported fields
 		payload, _ := recs[0]["payload"].(map[string]any)
-		req, _ := payload["request"].(map[string]any)
-		resp, _ := payload["response"].(map[string]any)
-		if req["value"] != request || resp["value"] != response {
-			return fmt.Errorf("payload %v, want request %q and response %q", recs[0]["payload"], request, response)
+		return payload, nil
+	}
+	// the JSON handler writes a generated message through encoding/json: its exported fields
+	value := func(part any) any {
+		m, _ := part.(map[string]any)
+		return m["value"]
+	}
+	// the records of the call, in order; the server's own (listening, stopped) are left out
+	sc.Step(`^the records should be, in order, "([^"]*)"$`, func(msgs string) error {
+		got := []string{}
+		for _, line := range strings.Split(strings.TrimSpace(w.logs.String()), "\n") {
+			var rec map[string]any
+			if json.Unmarshal([]byte(line), &rec) == nil && strings.Contains(msgs, fmt.Sprint(rec["msg"])) {
+				got = append(got, fmt.Sprint(rec["msg"]))
+			}
+		}
+		if strings.Join(got, "|") != msgs {
+			return fmt.Errorf("records in order: got %q, want %q", strings.Join(got, "|"), msgs)
+		}
+		return nil
+	})
+	sc.Step(`^the "([^"]*)" record should hold the request "([^"]*)"$`, func(msg, want string) error {
+		payload, err := payloadOf(msg)
+		if err != nil {
+			return err
+		}
+		if value(payload["request"]) != want {
+			return fmt.Errorf("payload %v, want the request %q", payload, want)
+		}
+		return nil
+	})
+	sc.Step(`^the "([^"]*)" record should hold the response "([^"]*)" and no request$`, func(msg, want string) error {
+		payload, err := payloadOf(msg)
+		if err != nil {
+			return err
+		}
+		if _, has := payload["request"]; has || value(payload["response"]) != want {
+			return fmt.Errorf("payload %v, want the response %q and no request", payload, want)
 		}
 		return nil
 	})

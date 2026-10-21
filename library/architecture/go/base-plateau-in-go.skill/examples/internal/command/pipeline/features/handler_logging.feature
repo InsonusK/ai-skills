@@ -5,13 +5,13 @@ Feature: Handler logging decorator
   So that every command run is visible without reading each handler
 
   @category/happy
-  Scenario: A handled command is logged when called, with its parameters, and when handled
+  Scenario: A handled command is logged when called, with its parameters, and when handled, with its result
     Given a handler that succeeds, wrapped with logging as "PlanItems"
     When the wrapped handler handles the command "buy milk"
     Then the records should be:
       | level | msg             | command   | payload  | failed |
       | INFO  | command called  | PlanItems | buy milk |        |
-      | INFO  | command handled | PlanItems |          | false  |
+      | INFO  | command handled | PlanItems | ok       | false  |
 
   @category/error
   Scenario: A failed command is logged at warn level with its error and its parameters

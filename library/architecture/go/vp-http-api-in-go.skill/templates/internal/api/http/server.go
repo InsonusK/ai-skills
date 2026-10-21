@@ -67,14 +67,18 @@ func (s *Server) Handler() http.Handler {
 // sends one, else made here, and always sent back in the response.
 const RequestIDHeader = "X-Request-Id"
 
-// logRequests writes one record per request once it is answered - "http
-// request" with the method, the path, the status, the duration, failed (a
-// status of 400 or above), and as the payload what the client sent - the
-// query, the headers, and the body - and the body it was answered with, as
-// written, so a fault in turning a result into the response shows in the log.
-// It puts the request id into the request's context, so every record of the
-// request carries it once the logging variation point is attached. The
-// request body is read here and given back to the routes unchanged.
+// logRequests writes two records per request, so the log reads top-down as
+// the request was served: "http request received" when it arrives, with the
+// method, the path, and as the payload what the client sent - the query, the
+// headers, and the body; then "http response sent" once it is answered, with
+// the status, the duration, failed (a status of 400 or above), and as the
+// payload the body as written, so a fault in turning a result into the
+// response shows in the log. A failed request's second record repeats what
+// the client sent, so it is in the log even when only failed records keep
+// their payload. It puts the request id into the request's context, so every
+// record of the request carries it once the logging variation point is
+// attached. The request body is read here and given back to the routes
+// unchanged.
 func (s *Server) logRequests(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
@@ -82,16 +86,22 @@ func (s *Server) logRequests(next http.Handler) http.Handler {
 		w.Header().Set(RequestIDHeader, logging.RequestID(ctx))
 		body, _ := io.ReadAll(r.Body) // a broken body reaches the route empty and fails its decode
 		r.Body = io.NopCloser(bytes.NewReader(body))
+		received := map[string]any{"query": r.URL.Query(), "headers": r.Header, "body": body}
+		s.logger.LogAttrs(ctx, slog.LevelInfo, "http request received",
+			slog.String("method", r.Method), slog.String("path", r.URL.Path), logging.Payload(received))
+
 		answered := &responseRecorder{ResponseWriter: w, status: http.StatusOK}
 		next.ServeHTTP(answered, r.WithContext(ctx))
-		s.logger.LogAttrs(ctx, slog.LevelInfo, "http request",
+
+		failed := answered.status >= http.StatusBadRequest
+		sent := map[string]any{"response": map[string]any{"body": answered.body.Bytes()}}
+		if failed {
+			sent["request"] = received
+		}
+		s.logger.LogAttrs(ctx, slog.LevelInfo, "http response sent",
 			slog.String("method", r.Method), slog.String("path", r.URL.Path),
 			slog.Int("status", answered.status), slog.Duration("duration", time.Since(start)),
-			logging.Failed(answered.status >= http.StatusBadRequest),
-			logging.Payload(map[string]any{
-				"request":  map[string]any{"query": r.URL.Query(), "headers": r.Header, "body": body},
-				"response": map[string]any{"body": answered.body.Bytes()},
-			}))
+			logging.Failed(failed), logging.Payload(sent))
 	})
 }
 

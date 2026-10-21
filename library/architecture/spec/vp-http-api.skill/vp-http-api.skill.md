@@ -64,9 +64,9 @@ Answer a request that cannot be decoded with 400 `INVALID_ARGUMENT` without call
 - Fix: one table shared by every entry point of the application; the failure itself is logged by the handler's logging decorator, not written to the client.
 
 ### Log every request with what arrived
-Write one record per request once it is answered, through the composition root's logger, with the method, the path, the status, and the duration, whether it failed, and as the payload the query, the headers, and the body received and the body sent back as written; put the request id — the client's (`X-Request-Id`), else a new one — into the context and send it back.
+Write two records per request through the composition root's logger — one when it arrives, with what arrived as the payload, one when it is answered — the second with the method, the path, the status, and the duration, whether it failed, and as the payload the query, the headers, and the body received and the body sent back as written; put the request id — the client's (`X-Request-Id`), else a new one — into the context and send it back.
 - Risk: a request that failed cannot be found or replayed from the log, its records cannot be told from those of the requests served at the same time, and a fault in turning the result into the response is invisible.
-- Fix: one record per request; the data only as the payload attribute, so the base handler drops it and the logging variation point masks it.
+- Fix: an in record and an out record per request, so the log reads top-down with the command's records between them; the out record of a failure repeats the input; the data only as the payload attribute, so the base handler drops it and the logging variation point masks it.
 
 ### Stop gracefully
 On termination (`SIGTERM`), stop accepting connections, let requests in flight finish within a bounded time, and return without an error.

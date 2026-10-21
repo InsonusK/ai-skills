@@ -11,10 +11,12 @@ import (
 )
 
 // WithLogging is a decorator: it returns a Handler that calls next and writes
-// two log records per call - "command called" with the command as the
-// payload, then "command handled" with the duration, or "command failed" at
-// warn level with the error and the payload again. name is the command's name
-// in the log. Whether the payload reaches the output is the handler's choice
+// two log records per call, so the log reads top-down as the call ran -
+// "command called" with the command as the payload, then "command handled"
+// with the duration and the result as the payload, or "command failed" at
+// warn level with the error and the command again, so the input of a failure
+// is in the log even when only failed records keep their payload. name is the
+// command's name in the log. Whether the payload reaches the output is the handler's choice
 // (package logging), never this decorator's.
 //
 // Every cross-cutting step (a transaction, a metric, ...) follows the same
@@ -32,7 +34,8 @@ func WithLogging[TCommand, TResult any](name string, logger *slog.Logger, next H
 			return res, err
 		}
 		logger.LogAttrs(ctx, slog.LevelInfo, "command handled",
-			slog.String("command", name), slog.Duration("duration", time.Since(start)), logging.Failed(false))
+			slog.String("command", name), slog.Duration("duration", time.Since(start)), logging.Failed(false),
+			logging.Payload(res))
 		return res, nil
 	})
 }

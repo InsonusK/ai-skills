@@ -62,9 +62,9 @@ Serve gRPC server reflection only when `GRPC_REFLECTION_ENABLED` is `true`; it i
 - Fix: switch it on in a local or test environment, the way `HTTP_API_DOCS_ENABLED` switches on Swagger UI.
 
 ### Log every call with what arrived
-Write one record per call once it is answered, through the composition root's logger, with the method, the status code, and the duration, whether it failed, and as the payload the request message and the response message as returned; put the request id — the client's (`x-request-id` metadata), else a new one — into the context and send it back.
+Write two records per call through the composition root's logger — one when it arrives, with what arrived as the payload, one when it is answered — the second with the method, the status code, and the duration, whether it failed, and as the payload the request message and the response message as returned; put the request id — the client's (`x-request-id` metadata), else a new one — into the context and send it back.
 - Risk: a request that failed cannot be found or replayed from the log, its records cannot be told from those of the requests served at the same time, and a fault in turning the result into the response is invisible.
-- Fix: one record per call; the data only as the payload attribute, so the base handler drops it and the logging variation point masks it.
+- Fix: an in record and an out record per call, so the log reads top-down with the command's records between them; the out record of a failure repeats the input; the data only as the payload attribute, so the base handler drops it and the logging variation point masks it.
 
 ### Stop gracefully
 On termination (`SIGTERM`), stop accepting calls, let calls in flight finish within a bounded time, cut off what remains, and return without an error.

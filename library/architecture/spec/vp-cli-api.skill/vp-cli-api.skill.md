@@ -57,9 +57,9 @@ Answer `--help` on the application, on a resource, and on an action — and the 
 - Fix: each action and resource has a one-line description; each flag a description.
 
 ### Log every run with what arrived
-Write one record per run once it is answered, through the composition root's logger, with the action and the duration, whether it failed, and as the payload the flags given and the output as printed and a new request id in the context for the records of the run.
+Write two records per run through the composition root's logger — one when it arrives, with what arrived as the payload, one when it is answered — the second with the action and the duration, whether it failed, and as the payload the flags given and the output as printed and a new request id in the context for the records of the run.
 - Risk: a run that failed cannot be found or replayed from the log.
-- Fix: one record per run; the data only as the payload attribute, so the base handler drops it and the logging variation point masks it.
+- Fix: an in record and an out record per run, so the log reads top-down with the command's records between them; the out record of a failure repeats the input; the data only as the payload attribute, so the base handler drops it and the logging variation point masks it.
 
 ### Attach by replacing the startup entry
 Attach the entry point by adding its packages and replacing the startup entry in the composition root's `entries` list with one entry that reads the arguments, runs the action, and ends, deleting the startup entry, and changing no other base file than the composition root and the module's dependency, build, and readme files.

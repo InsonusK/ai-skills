@@ -74,14 +74,16 @@ Feature: Command line
     Then stdout should mention "todo version 1.2.3"
 
   @category/happy
-  Scenario: A run is logged with its action and the flags given
+  Scenario: A run is logged when its arguments are parsed, with the flags, and when it ends, with the output
     Given the command answers "hello"
     When I run "test echo --text hi --output text"
-    Then one "cli call" record should be logged for the action "todo test echo", failed "false"
-    And its payload should hold the flag "text" = "hi"
-    And its payload should hold the output "echo: hello"
+    Then the records should be, in order, "cli call received|cli call answered"
+    And the "cli call received" record should hold the flag "text" = "hi"
+    And one "cli call answered" record should be logged for the action "todo test echo", failed "false"
+    And the "cli call answered" record should hold the output "echo: hello"
 
   @category/negative
-  Scenario: A run that fails is logged as failed
+  Scenario: A run that fails is logged as failed with the flags given, even when they could not be parsed
     When I run "test echo --nope"
-    Then one "cli call" record should be logged for the action "todo test echo", failed "true"
+    Then one "cli call answered" record should be logged for the action "todo test echo", failed "true"
+    And the records should be, in order, "cli call answered"
