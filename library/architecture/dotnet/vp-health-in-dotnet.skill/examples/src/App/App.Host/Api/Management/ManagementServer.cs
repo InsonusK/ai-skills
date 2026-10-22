@@ -1,6 +1,6 @@
 // Source: skill vp-health-in-dotnet
 
-using App.Host.Api.Hosting;
+using App.Host.Api.Core.Hosting;
 using App.Host.Version;
 using BuildingBlocks.Logging;
 using Microsoft.AspNetCore.Builder;

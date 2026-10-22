@@ -18,7 +18,7 @@ tags:
 - **Copied once, written per command** - The entry point is split as [app-layers-in-go](library/develop/go/app-layers-in-go.skill.md#split-each-entry-point-into-pipeline-endpoint-and-registration) requires: `pipeline/` is copied from templates and never edited; per command the application writes, in its resource's file of `endpoint/`, a handler field, a route line, a request and a response type, and their two mappings.
 
 ```
-internal/api/rpcstatus/          copied from error-kinds-in-go; the same in every network entry point
+internal/api/core/rpcstatus/          copied from error-kinds-in-go; the same in every network entry point
 internal/api/http/
 ├── pipeline/                    copied from templates, never edited (httppipeline)
 │   ├── config.go  server.go  endpoint.go  docs.go
@@ -36,7 +36,7 @@ internal/api/http/
 ## MUST
 
 ### Copy the entry point from templates
-Fill and copy [config.go](./templates/internal/api/http/pipeline/config.go), [server.go](./templates/internal/api/http/pipeline/server.go), [endpoint.go](./templates/internal/api/http/pipeline/endpoint.go), [logging.go](./templates/internal/api/http/pipeline/logging.go), and [docs.go](./templates/internal/api/http/pipeline/docs.go) to `internal/api/http/pipeline/` and `rpcstatus.go` of [error-kinds-in-go](library/develop/go/error-kinds-in-go.skill/error-kinds-in-go.skill.md) with its scenarios (the example's `internal/api/rpcstatus/`) unless another entry point already put them there, replacing:
+Fill and copy [config.go](./templates/internal/api/http/pipeline/config.go), [server.go](./templates/internal/api/http/pipeline/server.go), [endpoint.go](./templates/internal/api/http/pipeline/endpoint.go), [logging.go](./templates/internal/api/http/pipeline/logging.go), and [docs.go](./templates/internal/api/http/pipeline/docs.go) to `internal/api/http/pipeline/` and `rpcstatus.go` of [error-kinds-in-go](library/develop/go/error-kinds-in-go.skill/error-kinds-in-go.skill.md) with its scenarios (the example's `internal/api/core/rpcstatus/`) unless another entry point already put them there, replacing:
 
 | Placeholder | Substitute |
 |---|---|
@@ -145,7 +145,7 @@ Copy the example's `internal/api/http/pipeline/features/` and `test/` — of [ex
 Serve a further command of an existing resource by adding its field, its route line, and its request and response types with `decode` and `encode` to the resource's file in `endpoint/`, its path to `openapi.json`, its scenario to the resource's feature, and its handler to the resource's `{Resource}Handler` in `main.go`; a new resource adds its file and feature, one field of `Endpoints`, and one line of `Routes`.
 
 # Check list
-- [ ] `internal/api/http/pipeline/{config,server,endpoint,logging,docs}.go` and `internal/api/rpcstatus/rpcstatus.go` are filled copies of the templates; no placeholder is left.
+- [ ] `internal/api/http/pipeline/{config,server,endpoint,logging,docs}.go` and `internal/api/core/rpcstatus/rpcstatus.go` are filled copies of the templates; no placeholder is left.
 - [ ] `internal/api/http/pipeline/` holds only filled template files and their copied scenarios; each resource has its own file in `endpoint/` with its `{Resource}Handler`, its `Routes()`, and per route its request and response types with `decode` and `encode`; `routes.go` holds only `Endpoints`, `Routes`, and `Run`.
 - [ ] `docs/integration/api/{contract-name}/` holds `embed.go` and one spec: the hand-written `openapi.json`, or, for a proto contract, the generated `{file}.swagger.json`; the contract scenario passes.
 - [ ] For a proto contract: every rpc has `google.api.http` and `openapiv2_operation`; the routes use the generated messages through `proto.go` and the spec's path-parameter names; every path variable is a whole segment; a deprecated rpc answers 501 / `UNIMPLEMENTED` in both forms.

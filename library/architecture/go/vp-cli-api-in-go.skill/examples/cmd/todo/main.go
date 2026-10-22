@@ -13,7 +13,7 @@ import (
 
 	cliapi "github.com/example/todo/internal/api/cli"
 	"github.com/example/todo/internal/api/cli/endpoint"
-	"github.com/example/todo/internal/api/entry"
+	"github.com/example/todo/internal/api/core/entry"
 	"github.com/example/todo/internal/command"
 	"github.com/example/todo/internal/command/pipeline"
 	"github.com/example/todo/internal/config"

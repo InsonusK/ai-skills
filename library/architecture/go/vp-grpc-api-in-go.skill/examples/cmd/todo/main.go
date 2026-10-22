@@ -11,7 +11,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/example/todo/internal/api/entry"
+	"github.com/example/todo/internal/api/core/entry"
 	grpcapi "github.com/example/todo/internal/api/grpc"
 	"github.com/example/todo/internal/api/grpc/endpoint"
 	"github.com/example/todo/internal/command"

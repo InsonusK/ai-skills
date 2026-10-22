@@ -43,7 +43,7 @@ docs/integration/api/{contract-name}/openapi.json    the hand-written contract, 
 ## MUST
 
 ### Copy the entry point from templates
-Copy, unchanged, [HttpConfig.cs](./templates/src/App/App.Host/Api/Http/Pipeline/HttpConfig.cs), [HttpServer.cs](./templates/src/App/App.Host/Api/Http/Pipeline/HttpServer.cs), [RequestLog.cs](./templates/src/App/App.Host/Api/Http/Pipeline/RequestLog.cs), [ErrorAnswers.cs](./templates/src/App/App.Host/Api/Http/Pipeline/ErrorAnswers.cs), and [HttpDocs.cs](./templates/src/App/App.Host/Api/Http/Pipeline/HttpDocs.cs) to `src/App/App.Host/Api/Http/Pipeline/`, [WebHost.cs](./templates/src/App/App.Host/Api/Hosting/WebHost.cs) to `Api/Hosting/`, and `RpcStatus.cs` of [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md) to `Api/Errors/`, unless another entry point already put the last two there.
+Copy, unchanged, [HttpConfig.cs](./templates/src/App/App.Host/Api/Http/Pipeline/HttpConfig.cs), [HttpServer.cs](./templates/src/App/App.Host/Api/Http/Pipeline/HttpServer.cs), [RequestLog.cs](./templates/src/App/App.Host/Api/Http/Pipeline/RequestLog.cs), [ErrorAnswers.cs](./templates/src/App/App.Host/Api/Http/Pipeline/ErrorAnswers.cs), and [HttpDocs.cs](./templates/src/App/App.Host/Api/Http/Pipeline/HttpDocs.cs) to `src/App/App.Host/Api/Http/Pipeline/`, [WebHost.cs](./templates/src/App/App.Host/Api/Core/Hosting/WebHost.cs) to `Api/Core/Hosting/`, and `RpcStatus.cs` of [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md) to `Api/Core/Errors/`, unless another entry point already put the last two there.
 - Risk: a retyped server drifts in its error answers, its request log, or its shutdown from every other dotnet service of the catalog.
 - Fix: copy the files; they hold no placeholder — the namespaces are the same in every application, and Swagger UI's title is the contract's `info.title`.
 
@@ -144,7 +144,7 @@ Copy the example's `src/App/App.Host.Tests/features/Http/` scenarios of the fixe
 Serve a further command of an existing resource by adding its route line to `Map`, its method, and its request and response records to the resource's class, its path to `openapi.json`, and its scenario to the resource's feature; a new resource adds its class and feature, one parameter of `HttpEndpoints`, and one line of `Map`.
 
 # Check list
-- [ ] `Api/Http/Pipeline/{HttpConfig,HttpServer,RequestLog,ErrorAnswers,HttpDocs}.cs`, `Api/Hosting/WebHost.cs`, and `Api/Errors/RpcStatus.cs` are copies of the templates.
+- [ ] `Api/Http/Pipeline/{HttpConfig,HttpServer,RequestLog,ErrorAnswers,HttpDocs}.cs`, `Api/Core/Hosting/WebHost.cs`, and `Api/Core/Errors/RpcStatus.cs` are copies of the templates.
 - [ ] `App.Host.csproj` references `Microsoft.AspNetCore.App` and `Swashbuckle.AspNetCore.SwaggerUI` and embeds the contract as `openapi.json`.
 - [ ] Each resource is one `{Resource}Handler` class in `Api/Http/Endpoint/` mapping its group; every route binds a record of its own, sends one command, and returns `TypedResults` with no error handling of its own.
 - [ ] `Routes.cs` holds only `HttpEndpoints`, its `Map`, and `HttpApi.RunAsync`.

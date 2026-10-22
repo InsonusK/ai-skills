@@ -2,7 +2,7 @@
 
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using App.Host.Api.Errors;
+using App.Host.Api.Core.Errors;
 using BuildingBlocks.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
