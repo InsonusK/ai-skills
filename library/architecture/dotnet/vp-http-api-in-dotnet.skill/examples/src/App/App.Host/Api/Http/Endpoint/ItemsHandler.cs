@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
-using Todo.Interfaces.Commands;
+using Todo.Commands;
 
 namespace App.Host.Api.Http.Endpoint;
 
@@ -29,7 +29,7 @@ public sealed class ItemsHandler(ISender sender)
 
     private async Task<Ok<PlanItemsResponse>> PlanItemsAsync(PlanItemsRequest body, CancellationToken cancellationToken)
     {
-        var result = await sender.Send(new PlanItems(body.Titles ?? []), cancellationToken);
+        var result = await sender.Send(new PlanItemsCommand(body.Titles ?? []), cancellationToken);
         return TypedResults.Ok(new PlanItemsResponse(result.Items.Select(item => new ItemResponse(item.Title, item.Done)).ToList()));
     }
 }

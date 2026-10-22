@@ -7,7 +7,7 @@ namespace App.Host.Api.Startup;
 
 /// <summary>
 /// The base plateau's only entry point: the process runs one command when it
-/// starts. Like every entry point, it knows the module's Interfaces project
+/// starts. Like every entry point, it knows the module's Commands project
 /// (the command types) and <see cref="ISender"/> (the way to the handlers),
 /// and nothing below them.
 ///

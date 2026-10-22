@@ -37,13 +37,13 @@ flowchart TB
 
 ```go
 // [handlers] - one per command, wrapped by its decorators.
-var planItems pipeline.Handler[command.PlanItems, command.PlanItemsResult] = command.NewPlanItemsHandler()
+var planItems pipeline.Handler[command.PlanItemsCommand, command.PlanItemsResult] = command.NewPlanItemsHandler()
 planItems = pipeline.WithLogging("PlanItems", logger, planItems)
 
 // [entries] - every entry point, one Entry each; the base plateau has only the startup command.
 err = entry.RunAll(ctx, logger,
 	entry.Entry{Name: "startup", Run: func(ctx context.Context) error {
-		return startup.Run(ctx, planItems, command.PlanItems{Titles: startup.EnvList("STARTUP_TITLES")}, stdout)
+		return startup.Run(ctx, planItems, command.PlanItemsCommand{Titles: startup.EnvList("STARTUP_TITLES")}, stdout)
 	}},
 )
 return entry.ExitCode(err)

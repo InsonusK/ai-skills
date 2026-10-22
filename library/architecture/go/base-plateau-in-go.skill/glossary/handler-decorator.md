@@ -52,7 +52,7 @@ sequenceDiagram
 
 ```go
 // cmd/todo/main.go
-var planItems pipeline.Handler[command.PlanItems, command.PlanItemsResult] = command.NewPlanItemsHandler()
+var planItems pipeline.Handler[command.PlanItemsCommand, command.PlanItemsResult] = command.NewPlanItemsHandler()
 planItems = pipeline.WithLogging("PlanItems", logger, planItems)
 ```
 

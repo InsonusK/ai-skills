@@ -1,7 +1,7 @@
 using Reqnroll;
 using Shared.Errors;
 using Todo.Application.Commands;
-using Todo.Interfaces.Commands;
+using Todo.Commands;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,7 +18,7 @@ public sealed class PlanItemsSteps(ITestOutputHelper output)
     {
         try
         {
-            _result = await new PlanItemsHandler().Handle(new PlanItems(titles.Split('|')), CancellationToken.None);
+            _result = await new PlanItemsHandler().Handle(new PlanItemsCommand(titles.Split('|')), CancellationToken.None);
         }
         catch (Exception error)
         {

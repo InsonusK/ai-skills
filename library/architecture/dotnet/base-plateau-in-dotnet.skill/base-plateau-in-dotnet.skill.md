@@ -19,43 +19,43 @@ adr:
 - **Same shape in every dotnet application** - The [pipeline behaviors](./glossary/pipeline-behavior.md), the [startup entry](./glossary/startup-entry.md), the [entry runner](./glossary/entry-runner.md), and the [composition-root](./glossary/composition-root.md) sections are identical across dotnet applications, so a variation point's instructions name the same file and the same section everywhere.
 
 # Core Principle
-- **Layers per app-layers-in-dotnet** - Projects, references, entities, and fakes follow [app-layers-in-dotnet](library/develop/dotnet/app-layers-in-dotnet.skill.md); this skill adds only what the base plateau itself contains.
+- **Layers per app-layers-in-dotnet** - Projects, references, entities, and fakes follow [app-layers-in-dotnet](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md); this skill adds only what the base plateau itself contains.
 - **MediatR is the handler contract** - `IRequestHandler<TCommand, TResult>` is the one contract, `IPipelineBehavior<TCommand, TResult>` the decorator, `ISender` the way every entry point reaches a handler. Decision recorded in [mediatr-12-as-the-handler-contract](./adr/mediatr-12-as-the-handler-contract.md).
-- **Delivered, not retyped** - The fixed code (`Shared`, `BuildingBlocks`, `Api/Entry`, `Api/Startup`) is copied from templates and has no placeholder; only the module, its commands, and the composition-root lines are written per application.
+- **Delivered, not retyped** - The fixed code (`Shared`, `BuildingBlocks`, `Api/Core/Entry`, `Api/Startup`) is copied from templates and has no placeholder; only the module, its commands, and the composition-root lines are written per application.
 
 # Rule
 
 ## MUST
 
 ### Base projects
-Create the projects and folders [app-layers-in-dotnet](library/develop/dotnet/app-layers-in-dotnet.skill.md) assigns to the api, command, and domain layers, with the startup entry as the only entry point and the base settings in their own folder.
+Create the projects and folders [app-layers-in-dotnet](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md) assigns to the api, command, and domain layers, with the startup entry as the only entry point and the base settings in their own folder.
 
 | Part | Project / folder |
 |---|---|
 | startup entry | `src/App/App.Host/Api/Startup` |
-| [runner of the entry points](./glossary/entry-runner.md): `Entry`, `EntryRunner.RunAllAsync`, `ExitCode` | `src/App/App.Host/Api/Entry` |
+| [runner of the entry points](./glossary/entry-runner.md): `Entry`, `EntryRunner.RunAllAsync`, `ExitCode` | `src/App/App.Host/Api/Core/Entry` |
 | composition root | `src/App/App.Host/Program.cs` |
 | base settings (`LOG_LEVEL` only) | `src/App/App.Host/Config/AppConfig.cs` |
 | version of the build | `src/App/App.Host/Version/AppVersion.cs`, the `<Version>` of `Directory.Build.props` per `devops-project-version-in-dotnet` |
-| commands and their results — one file each | `src/Modules/{Module}/{Module}.Interfaces/Commands` |
+| commands and their results — one file each | `src/Modules/{Module}/{Module}.Commands` |
 | handlers — one file each | `src/Modules/{Module}/{Module}.Application/Commands` |
 | entities, domain services, `{Module}Errors` | `src/Modules/{Module}/{Module}.Domain/{Entities,Services,Errors}` |
 | [pipeline behaviors](./glossary/pipeline-behavior.md) | `src/BuildingBlocks/Pipeline` |
 | [logging](./glossary/logging.md): `LogAttr`, `Write`, `JsonLogProvider`, `RequestId` | `src/BuildingBlocks/Logging` |
 | error kinds | `src/Shared/Errors`, per [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md) |
-| one test project per project above, but `Shared` and `Interfaces` | `{Project}.Tests` beside the project it tests (`src/Modules/Todo/Todo.Domain.Tests`), per [cucumber-testing-in-dotnet](library/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md) |
+| one test project per project above, but `Shared` and `Commands` | `{Project}.Tests` beside the project it tests (`src/Modules/Todo/Todo.Domain.Tests`), per [cucumber-testing-in-dotnet](library/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md) |
 | solution, versions | `{App}.slnx`, `Directory.Build.props`, `Directory.Packages.props` (central package versions) |
 
 - Risk: a part in a project of its own choosing breaks every variation point's instruction that names the file to edit.
 - Fix: move the code to the project and folder in the table.
 
 ### Copy the fixed code
-Copy, unchanged, [BuildingBlocks.csproj](./templates/src/BuildingBlocks/BuildingBlocks.csproj), [LoggingBehavior.cs](./templates/src/BuildingBlocks/Pipeline/LoggingBehavior.cs), [LogAttr.cs](./templates/src/BuildingBlocks/Logging/LogAttr.cs), [JsonLogProvider.cs](./templates/src/BuildingBlocks/Logging/JsonLogProvider.cs), [RequestId.cs](./templates/src/BuildingBlocks/Logging/RequestId.cs), [Entry.cs](./templates/src/App/App.Host/Api/Entry/Entry.cs), [EntryRunner.cs](./templates/src/App/App.Host/Api/Entry/EntryRunner.cs), and [StartupEntry.cs](./templates/src/App/App.Host/Api/Startup/StartupEntry.cs) to the same paths under the solution root, and the `Shared` project from [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md).
+Copy, unchanged, [BuildingBlocks.csproj](./templates/src/BuildingBlocks/BuildingBlocks.csproj), [LoggingBehavior.cs](./templates/src/BuildingBlocks/Pipeline/LoggingBehavior.cs), [LogAttr.cs](./templates/src/BuildingBlocks/Logging/LogAttr.cs), [JsonLogProvider.cs](./templates/src/BuildingBlocks/Logging/JsonLogProvider.cs), [RequestId.cs](./templates/src/BuildingBlocks/Logging/RequestId.cs), [Entry.cs](./templates/src/App/App.Host/Api/Core/Entry/Entry.cs), [EntryRunner.cs](./templates/src/App/App.Host/Api/Core/Entry/EntryRunner.cs), and [StartupEntry.cs](./templates/src/App/App.Host/Api/Startup/StartupEntry.cs) to the same paths under the solution root, and the `Shared` project from [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md).
 - Risk: retyped code drifts from the one every variation point's behavior and entry point is written against.
 - Fix: copy the templates; the namespaces (`BuildingBlocks`, `Shared`, `App.Host`) are the same in every application, so there is nothing to fill.
 
 ### Pin MediatR below 13
-Reference `MediatR` 12.5.0 in `{Module}.Application`, `BuildingBlocks`, and `App.Host`, and `MediatR.Contracts` 2.0.1 in `{Module}.Interfaces`, through `Directory.Packages.props`.
+Reference `MediatR` 12.5.0 in `{Module}.Application`, `BuildingBlocks`, and `App.Host`, and `MediatR.Contracts` 2.0.1 in `{Module}.Commands`, through `Directory.Packages.props`.
 - Violation: `MediatR` 13 or later; a `PackageReference` with its own `Version`.
 - Risk: MediatR 13+ needs a commercial license key; a version per project lets two projects of one solution load different contracts.
 - Fix: one `PackageVersion` per package in `Directory.Packages.props`.
@@ -72,7 +72,7 @@ Raise every business-rule error as a factory method of `{Module}Errors` per [err
 - Fix: the example's `TodoErrors.AlreadyDone()` is failed precondition (the input is valid, the item's state forbids it); the others are invalid.
 
 ### One file per command
-Declare a command as a `sealed record {Command}(...) : IRequest<{Command}Result>` with its result records in `{Module}.Interfaces/Commands/{Command}.cs`, and its handler as `sealed class {Command}Handler : IRequestHandler<{Command}, {Command}Result>` in `{Module}.Application/Commands/{Command}Handler.cs`.
+Declare a command as a `sealed record {Command}(...) : IRequest<{Command}Result>` with its result records in `{Module}.Commands/{Command}.cs`, and its handler as `sealed class {Command}Handler : IRequestHandler<{Command}, {Command}Result>` in `{Module}.Application/Commands/{Command}Handler.cs`.
 - Risk: a command without `IRequest<TResult>` cannot be sent through `ISender` and skips every behavior; a result type in `Application` cannot be seen by an entry point.
 - Fix: take every service the handler uses as a constructor parameter typed by an interface; MediatR builds the handler from the container.
 
@@ -95,7 +95,7 @@ End `RunAsync` with one `EntryRunner.RunAllAsync` call listing a `new Entry(name
 // [entries] - every entry point, one Entry each, run together by EntryRunner.
 var error = await EntryRunner.RunAllAsync(logger, stopping,
     new Entry("startup", stopping =>
-        StartupEntry.RunAsync(sender, new PlanItems(StartupEntry.EnvList("STARTUP_TITLES")), stdout, stopping)));
+        StartupEntry.RunAsync(sender, new PlanItemsCommand(StartupEntry.EnvList("STARTUP_TITLES")), stdout, stopping)));
 return EntryRunner.ExitCode(error);
 ```
 
@@ -124,11 +124,11 @@ Name a type parameter after what it stands for (`TCommand`, `TResult`), never `T
 Read the base settings from environment variables in `AppConfig.Load()`, throwing a `FormatException` that names the variable it could not parse, with the same variable names and values as the other stacks (`LOG_LEVEL`: `debug`, `info`, `warn`, `error`).
 
 # Check list
-- [ ] Projects and folders follow [Base projects](#base-projects) and [app-layers-in-dotnet](library/develop/dotnet/app-layers-in-dotnet.skill.md).
-- [ ] `src/Shared`, `src/BuildingBlocks`, `src/App/App.Host/Api/Entry`, and `src/App/App.Host/Api/Startup` are copies of the templates.
+- [ ] Projects and folders follow [Base projects](#base-projects) and [app-layers-in-dotnet](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md).
+- [ ] `src/Shared`, `src/BuildingBlocks`, `src/App/App.Host/Api/Core/Entry`, and `src/App/App.Host/Api/Startup` are copies of the templates.
 - [ ] `MediatR` is 12.5.0 and `MediatR.Contracts` 2.0.1, both in `Directory.Packages.props` only.
 - [ ] Every business-rule error is a factory method of `{Module}Errors` carrying one kind.
-- [ ] Every command is a record implementing `IRequest<TResult>` in `{Module}.Interfaces`, its handler in its own file of `{Module}.Application`.
+- [ ] Every command is a record implementing `IRequest<TResult>` in `{Module}.Commands`, its handler in its own file of `{Module}.Application`.
 - [ ] Each behavior is in its own file of `src/BuildingBlocks/Pipeline`, added by `AddOpenBehavior` in `// [handlers]`.
 - [ ] `RunAsync` in `Program.cs` builds a plain `ServiceCollection` with `// [services]`, `// [handlers]`, `// [entries]` in this order; `[entries]` is one `EntryRunner.RunAllAsync` call returning `EntryRunner.ExitCode(error)`.
 - [ ] Every record is written by `logger.Write` with fixed text; the data of a call is only `LogAttr.Payload`; the one provider is `JsonLogProvider`.

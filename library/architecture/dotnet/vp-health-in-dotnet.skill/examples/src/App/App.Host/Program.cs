@@ -3,7 +3,7 @@
 // the marked sections below - never by editing another file.
 
 using System.Runtime.InteropServices;
-using App.Host.Api.Entry;
+using App.Host.Api.Core.Entry;
 using App.Host.Api.Management;
 using App.Host.Api.Startup;
 using App.Host.Config;
@@ -14,7 +14,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Todo.Application.Commands;
-using Todo.Interfaces.Commands;
+using Todo.Commands;
 
 namespace App.Host;
 
@@ -76,7 +76,7 @@ public static class Program
         var loggers = provider.GetRequiredService<ILoggerFactory>();
         var error = await EntryRunner.RunAllAsync(logger, stopping,
             new Entry("startup", stopping =>
-                StartupEntry.RunAsync(sender, new PlanItems(StartupEntry.EnvList("STARTUP_TITLES")), stdout, stopping)),
+                StartupEntry.RunAsync(sender, new PlanItemsCommand(StartupEntry.EnvList("STARTUP_TITLES")), stdout, stopping)),
             new Entry("management", stopping =>
                 // Readiness checks go here, one argument per dependency the
                 // service needs before it takes traffic. The base plateau has
