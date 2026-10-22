@@ -28,7 +28,7 @@ func registerStartupSteps(sc *godog.ScenarioContext, w *World) {
 }
 
 func (w *World) theProcessStartsWithPlanItems(ctx context.Context, titles string) error {
-	cmd := command.PlanItems{Titles: strings.Split(titles, "|")}
+	cmd := command.PlanItemsCommand{Titles: strings.Split(titles, "|")}
 	err := startup.Run(ctx, command.NewPlanItemsHandler(), cmd, &w.out)
 	w.exitCode = entry.ExitCode(err)
 	logf("when: Run(PlanItems %q) -> err=%v exit=%d", cmd.Titles, err, w.exitCode)

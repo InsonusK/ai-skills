@@ -95,7 +95,7 @@ End `RunAsync` with one `EntryRunner.RunAllAsync` call listing a `new Entry(name
 // [entries] - every entry point, one Entry each, run together by EntryRunner.
 var error = await EntryRunner.RunAllAsync(logger, stopping,
     new Entry("startup", stopping =>
-        StartupEntry.RunAsync(sender, new PlanItems(StartupEntry.EnvList("STARTUP_TITLES")), stdout, stopping)));
+        StartupEntry.RunAsync(sender, new PlanItemsCommand(StartupEntry.EnvList("STARTUP_TITLES")), stdout, stopping)));
 return EntryRunner.ExitCode(error);
 ```
 

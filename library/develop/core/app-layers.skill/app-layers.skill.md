@@ -2,7 +2,7 @@
 name: app-layers
 description: How an application's code is split into layers — api, command (with an optional command factory), domain (entities and domain services), service, and infrastructure — what each layer owns, what it may call, where an interface stands between them, how each is tested
 whenToUse: when you design an application or a feature, when you add or change an entry point, a command or command factory, an entity or domain service, a service, or an infrastructure adapter, or when you review such a change — in any stack
-updated: 20261021
+updated: 20261022
 tags:
   - stack
   - concern/architecture
@@ -11,6 +11,7 @@ tags:
   - app-type/cli
 adr:
   - adr/service-wraps-one-infrastructure.md
+  - adr/commands-named-command.md
 ---
 
 # Goal
@@ -61,6 +62,12 @@ Give a command only the plain values its operation needs — ids, names, texts, 
 - Violation: a command field holding a Telegram update, an HTTP request, or a context object whose only purpose is to carry the transport's data.
 - Risk: the command runs only from the input whose type it holds, so reusing it from HTTP (`quiz?chatId=111&userId=222`) or a test means faking that input.
 - Fix: api unpacks the values (`chatId`, `userId`) and fills the command with them.
+
+### Name a command by its role
+Name a command type `{Operation}Command`, its result `{Operation}Result`, and a part of a result `{Thing}View`, in every stack — also where the package or namespace already says command. Decision recorded in [commands-named-command](./adr/commands-named-command.md).
+- Violation: `PlanItems` as the command type; `command.PlanItems` in Go; a result named `PlanItemsResponse`.
+- Risk: a reader tells a command from its result or a view only by knowing the codebase's habit (a verb is a command); a command named like a generated rpc method clashes with it and needs an alias.
+- Fix: `PlanItemsCommand`, `PlanItemsResult`, `ItemView`, handled by `PlanItemsHandler`; the operation keeps its name `PlanItems` in logs (`"command":"PlanItems"`) and in scenarios.
 
 ### Add a command factory only when the input cannot choose
 Add a command factory only when the same input leads to different commands depending on the application's state.
@@ -132,7 +139,7 @@ Use a package with no I/O and no business rule — formatting, layout, conversio
 # Check list
 - [ ] Every part sits in one layer of [Keep each part in its layer and its calls downward](#keep-each-part-in-its-layer-and-its-calls-downward), and every call goes down the table.
 - [ ] api only parses, calls a command or a command factory, and maps the result or error.
-- [ ] Every command holds plain values, no transport object.
+- [ ] Every command holds plain values, no transport object, and is named `{Operation}Command`; its result `{Operation}Result`, a part of a result `{Thing}View`.
 - [ ] Every command factory chooses by application state; no factory maps a fixed input to one command.
 - [ ] No command returns an entity; no command, domain service, or entity calls infrastructure.
 - [ ] Each infrastructure adapter is wrapped by one service whose methods use the application's language; no service calls another service.

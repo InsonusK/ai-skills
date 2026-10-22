@@ -1,10 +1,8 @@
 using Contracts.Todo.V1;
 using Grpc.Core;
 using MediatR;
+using Todo.Commands;
 using Shared.Errors;
-using AddItemCommand = Todo.Commands.AddItem;
-using ListItemsCommand = Todo.Commands.ListItems;
-using PlanItemsCommand = Todo.Commands.PlanItems;
 
 namespace App.Host.Api.Grpc.Endpoint;
 

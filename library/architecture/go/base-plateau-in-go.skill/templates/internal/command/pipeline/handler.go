@@ -17,9 +17,9 @@ import "context"
 // Handler is the one contract every command handler satisfies.
 //
 // TCommand is the command type - the input of one operation (for example
-// PlanItems). TResult is the result type the handler returns on success (for
+// PlanItemsCommand). TResult is the result type the handler returns on success (for
 // example PlanItemsResult). Each handler fixes both: PlanItemsHandler is a
-// Handler[PlanItems, PlanItemsResult].
+// Handler[PlanItemsCommand, PlanItemsResult].
 //
 // Because every handler has this one shape, code that is not about a specific
 // command - an entry point that serves commands, a decorator that wraps them -

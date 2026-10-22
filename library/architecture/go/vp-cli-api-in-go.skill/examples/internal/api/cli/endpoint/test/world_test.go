@@ -27,7 +27,7 @@ func logf(format string, args ...any) {
 // flags and output.
 type World struct {
 	planResult command.PlanItemsResult
-	planGot    command.PlanItems
+	planGot    command.PlanItemsCommand
 
 	stdout, stderr bytes.Buffer
 	logs           bytes.Buffer // what the run logged, every attribute kept
@@ -45,8 +45,8 @@ func registerWorldHooks(sc *godog.ScenarioContext, w *World) {
 func (w *World) handlers() cliapi.Endpoints {
 	return cliapi.Endpoints{
 		Items: endpoint.ItemsHandler{
-			PlanItems: pipeline.HandlerFunc[command.PlanItems, command.PlanItemsResult](
-				func(_ context.Context, cmd command.PlanItems) (command.PlanItemsResult, error) {
+			PlanItems: pipeline.HandlerFunc[command.PlanItemsCommand, command.PlanItemsResult](
+				func(_ context.Context, cmd command.PlanItemsCommand) (command.PlanItemsResult, error) {
 					w.planGot = cmd
 					return w.planResult, nil
 				}),

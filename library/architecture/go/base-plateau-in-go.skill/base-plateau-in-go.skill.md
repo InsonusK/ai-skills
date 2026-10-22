@@ -81,7 +81,7 @@ End `run` with one `entry.RunAll` call listing an `entry.Entry{Name, Run}` per e
 // [entries] - every entry point, one Entry each, run together by entry.RunAll.
 err = entry.RunAll(ctx, logger,
 	entry.Entry{Name: "startup", Run: func(ctx context.Context) error {
-		return startup.Run(ctx, planItems, command.PlanItems{Titles: startup.EnvList("STARTUP_TITLES")}, stdout)
+		return startup.Run(ctx, planItems, command.PlanItemsCommand{Titles: startup.EnvList("STARTUP_TITLES")}, stdout)
 	}},
 )
 return entry.ExitCode(err)

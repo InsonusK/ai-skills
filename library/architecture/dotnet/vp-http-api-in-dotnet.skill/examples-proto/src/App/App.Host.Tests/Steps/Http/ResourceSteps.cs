@@ -27,9 +27,9 @@ public sealed class FakeHandler<TCommand, TResult> : IRequestHandler<TCommand, T
 [Binding]
 public sealed class ResourceSteps(HttpWorld world)
 {
-    private readonly FakeHandler<PlanItems, PlanItemsResult> _planItems = new();
-    private readonly FakeHandler<AddItem, AddItemResult> _addItem = new();
-    private readonly FakeHandler<ListItems, ListItemsResult> _listItems = new();
+    private readonly FakeHandler<PlanItemsCommand, PlanItemsResult> _planItems = new();
+    private readonly FakeHandler<AddItemCommand, AddItemResult> _addItem = new();
+    private readonly FakeHandler<ListItemsCommand, ListItemsResult> _listItems = new();
 
     // The routes as the composition root fills them.
     public static void MapApplicationRoutes(HttpWorld world) =>
@@ -78,8 +78,8 @@ public sealed class ResourceSteps(HttpWorld world)
     public void ThenPlanItemsShouldHaveReceived(string titles) => Assert.Equal(titles.Split('|'), _planItems.Received?.Titles);
 
     [Then("AddItem should have received the list {string} and the title {string}")]
-    public void ThenAddItemShouldHaveReceived(string listId, string title) => Assert.Equal(new AddItem(listId, title), _addItem.Received);
+    public void ThenAddItemShouldHaveReceived(string listId, string title) => Assert.Equal(new AddItemCommand(listId, title), _addItem.Received);
 
     [Then("ListItems should have received the list {string}")]
-    public void ThenListItemsShouldHaveReceived(string listId) => Assert.Equal(new ListItems(listId), _listItems.Received);
+    public void ThenListItemsShouldHaveReceived(string listId) => Assert.Equal(new ListItemsCommand(listId), _listItems.Received);
 }

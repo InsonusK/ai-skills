@@ -86,7 +86,7 @@ func (w *World) planShouldHaveReceived(ctx context.Context, titles string) error
 }
 
 func (w *World) addShouldHaveReceived(ctx context.Context, listID, title string) error {
-	if w.addGot != (command.AddItem{ListID: listID, Title: title}) {
+	if w.addGot != (command.AddItemCommand{ListID: listID, Title: title}) {
 		return fmt.Errorf("AddItem received %+v, want list %q title %q", w.addGot, listID, title)
 	}
 	return nil

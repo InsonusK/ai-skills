@@ -17,7 +17,7 @@ import (
 // ItemsHandler is the items resource: the command handlers its routes call. The
 // composition root fills it; Routes lists its operations.
 type ItemsHandler struct {
-	PlanItems pipeline.Handler[command.PlanItems, command.PlanItemsResult]
+	PlanItems pipeline.Handler[command.PlanItemsCommand, command.PlanItemsResult]
 }
 
 // Routes are the items operations of the HTTP form.
@@ -28,12 +28,12 @@ func (h ItemsHandler) Routes() []httppipeline.Route {
 	}
 }
 
-func decodePlanItems(r *http.Request) (command.PlanItems, error) {
+func decodePlanItems(r *http.Request) (command.PlanItemsCommand, error) {
 	req := &todo.PlanItemsRequest{}
 	if err := httppipeline.DecodeProto(r, req); err != nil {
-		return command.PlanItems{}, err
+		return command.PlanItemsCommand{}, err
 	}
-	return command.PlanItems{Titles: req.GetTitles()}, nil
+	return command.PlanItemsCommand{Titles: req.GetTitles()}, nil
 }
 
 func encodePlanItems(result command.PlanItemsResult) any {

@@ -9,12 +9,12 @@ using Xunit;
 namespace App.Host.Tests.Steps.Http;
 
 /// <summary>The fake handler of PlanItems: answers the items the scenario set, records the command.</summary>
-public sealed class FakePlanItems : IRequestHandler<PlanItems, PlanItemsResult>
+public sealed class FakePlanItems : IRequestHandler<PlanItemsCommand, PlanItemsResult>
 {
     public IReadOnlyList<string> Answer { get; set; } = [];
-    public PlanItems? Received { get; private set; }
+    public PlanItemsCommand? Received { get; private set; }
 
-    public Task<PlanItemsResult> Handle(PlanItems command, CancellationToken cancellationToken)
+    public Task<PlanItemsResult> Handle(PlanItemsCommand command, CancellationToken cancellationToken)
     {
         Received = command;
         return Task.FromResult(new PlanItemsResult(Answer.Select(title => new ItemView(title, false)).ToList()));
@@ -35,7 +35,7 @@ public sealed class ItemsSteps(HttpWorld world)
     public void GivenPlanItemsReturns(string titles)
     {
         _planItems.Answer = titles == "" ? [] : titles.Split('|');
-        world.Handlers.AddSingleton<IRequestHandler<PlanItems, PlanItemsResult>>(_planItems);
+        world.Handlers.AddSingleton<IRequestHandler<PlanItemsCommand, PlanItemsResult>>(_planItems);
         MapApplicationRoutes(world);
     }
 
