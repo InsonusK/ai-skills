@@ -17,6 +17,7 @@ Feature: Writing the payload of a record
     Given the request id "req-42" is in the context
     When a record is logged with the payload password "s3cret" and title "buy milk"
     Then the record should have "request_id" = "req-42"
+    And the record should have "command" = "PlanItems"
     And the record should mention "buy milk"
     And the log should not mention "s3cret"
 
@@ -68,6 +69,13 @@ Feature: Writing the payload of a record
       | http request received | $.body | 24    |
       | http response sent    | $.body | 24    |
     And every warning should have "request_id" = "req-42"
+
+  @category/boundary
+  Scenario: [H05] A warning below the level the log is written at is not written
+    Given the log is written from the level "ERROR"
+    When a record "command failed" is logged at ERROR with the payload body 'user=ann&password=s3cret'
+    Then the record should mention "<unparsed body, 24 bytes>"
+    And the log should hold no warning
 
   @category/boundary
   Scenario: [H05] A record that does not keep its payload warns about nothing

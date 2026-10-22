@@ -28,14 +28,14 @@ adr:
 
 # Scope
 - Covers the payload, the request id, and the size of the log records. Shipping logs, sampling, and tracing spans are not covered.
-- The implementation for each stack is described in its stack-specialized extension: `vp-logging-in-go`; `vp-logging-in-dotnet` and `vp-logging-in-python` are planned.
+- The implementation for each stack is described in its stack-specialized extension: `vp-logging-in-go`, `vp-logging-in-dotnet`; `vp-logging-in-python` is planned.
 
 # Rule
 
 ## MUST
 
 ### Write the payload masked
-Write the payload attribute of every record as plain data with every secret masked: a field marked secret, a proto field marked `debug_redact`, and any field, map key, or JSON key whose name matches the safety-net names, at every depth; leave out a field marked not to log and a field the type leaves out of its JSON form; parse a JSON body, a text holding a JSON object or array, and a proto `Any` of a known type, and mask them by their keys.
+Write the payload attribute of every record as plain data with every secret masked: a field marked secret, a proto field marked `debug_redact`, and any field (by its name in the code or in its JSON form), map key, or JSON key whose name matches the safety-net names, at every depth; leave out a field marked not to log and a field the type leaves out of its JSON form; parse a JSON body, a text holding a JSON object or array, and a proto `Any` of a known type, and mask them by their keys.
 - Violation: a payload written as the raw request body; masking only fields someone marked; masking the top of the payload only.
 - Risk: a password, a token, or another user's data reaches the log, which more people read than the data store, and stays there.
 - Fix: mark secrets in the command, request, and message types; keep the safety-net names as a second line.

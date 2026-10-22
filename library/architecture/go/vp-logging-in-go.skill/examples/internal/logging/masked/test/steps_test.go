@@ -54,6 +54,16 @@ type login struct {
 	Password string `json:"password"`
 }
 
+type account struct {
+	User     string `json:"user"`
+	Password string `json:"p"`
+}
+
+type upload struct {
+	Name    string `json:"name"`
+	Content []byte `json:"content"`
+}
+
 type link struct {
 	Name string `json:"name"`
 	Next *link  `json:"next"`
@@ -144,9 +154,10 @@ func registerSteps(sc *godog.ScenarioContext) {
 	var logger *slog.Logger
 	var ctx context.Context
 	var cfg masked.Config
+	var level slog.Level
 	var loadErr error
 	sc.Before(func(c context.Context, _ *godog.Scenario) (context.Context, error) {
-		rendered, unparsed, logger, ctx = "", nil, nil, context.Background()
+		rendered, unparsed, logger, ctx, level = "", nil, nil, context.Background(), slog.LevelInfo
 		out.Reset()
 		cfg = masked.Config{Payload: masked.PayloadAlways, MaxBytes: 4096}
 		for _, name := range variables {
@@ -175,6 +186,11 @@ func registerSteps(sc *godog.ScenarioContext) {
 		})
 	sc.Step(`^the payload is a login with the user "([^"]*)" and the password "([^"]*)"$`,
 		func(user, password string) error { return render(login{User: user, Password: password}) })
+	sc.Step(`^the payload is an account with the user "([^"]*)" and the password "([^"]*)"$`,
+		func(user, password string) error { return render(account{User: user, Password: password}) })
+	sc.Step(`^the payload is a map with "([^"]*)" holding nothing$`, func(key string) error { return render(map[string]any{key: nil}) })
+	sc.Step(`^the payload is a map with "([^"]*)" holding the bodies '([^']*)', '([^']*)', and '([^']*)'$`,
+		func(key, b1, b2, b3 string) error { return render(map[string]any{key: [][]byte{[]byte(b1), []byte(b2), []byte(b3)}}) })
 	sc.Step(`^the payload is a map with "([^"]*)" = "([^"]*)" and "([^"]*)" = "([^"]*)"$`,
 		func(k1, v1, k2, v2 string) error { return render(map[string]string{k1: v1, k2: v2}) })
 	sc.Step(`^the payload is a map of lists with "([^"]*)" = "([^"]*)" and "([^"]*)" = "([^"]*)"$`,
@@ -213,6 +229,15 @@ func registerSteps(sc *godog.ScenarioContext) {
 	sc.Step(`^the payload is (maps|lists) nested (\d+) levels deep$`, func(shape string, levels int) error {
 		return render(nested(shape, levels))
 	})
+	sc.Step(`^the payload is a JSON body of (objects|lists) nested (\d+) levels deep$`, func(shape string, levels int) error {
+		open, end := `{"next":`, "}"
+		if shape == "lists" {
+			open, end = "[", "]"
+		}
+		return render([]byte(strings.Repeat(open, levels) + `"end"` + strings.Repeat(end, levels)))
+	})
+	sc.Step(`^the payload is an upload "([^"]*)" with the content '([^']*)'$`,
+		func(name, content string) error { return render(upload{Name: name, Content: []byte(content)}) })
 	sc.Step(`^the payload is Node messages (?:linked by|each in) (next|children|named) nested (\d+) levels deep$`, func(field string, levels int) error {
 		msg, err := newMessage("Node")
 		if err != nil {
@@ -253,6 +278,20 @@ func registerSteps(sc *godog.ScenarioContext) {
 		}
 		return nil
 	})
+	sc.Step(`^the mask should report these unparsed bodies:$`, func(table *godog.Table) error {
+		var want []masked.Unparsed
+		for _, row := range table.Rows[1:] {
+			size, err := strconv.Atoi(row.Cells[1].Value)
+			if err != nil {
+				return err
+			}
+			want = append(want, masked.Unparsed{Path: row.Cells[0].Value, Bytes: size})
+		}
+		if !reflect.DeepEqual(unparsed, want) {
+			return fmt.Errorf("unparsed: got %v, want %v", unparsed, want)
+		}
+		return nil
+	})
 	sc.Step(`^the mask should report the unparsed body "([^"]*)" of (\d+) bytes$`, func(path string, size int) error {
 		if want := []masked.Unparsed{{Path: path, Bytes: size}}; !reflect.DeepEqual(unparsed, want) {
 			return fmt.Errorf("unparsed: got %v, want %v", unparsed, want)
@@ -264,13 +303,14 @@ func registerSteps(sc *godog.ScenarioContext) {
 
 	loggerOf := func() *slog.Logger {
 		if logger == nil {
-			logger = slog.New(masked.NewHandler(&out, slog.LevelInfo, cfg))
+			logger = slog.New(masked.NewHandler(&out, level, cfg))
 		}
 		return logger
 	}
-	logRecord := func(message string, failed bool, payload any) {
-		loggerOf().LogAttrs(ctx, slog.LevelInfo, message, slog.String("command", "PlanItems"), logging.Failed(failed), logging.Payload(payload))
+	logRecordAt := func(at slog.Level, message string, failed bool, payload any) {
+		loggerOf().LogAttrs(ctx, at, message, slog.String("command", "PlanItems"), logging.Failed(failed), logging.Payload(payload))
 	}
+	logRecord := func(message string, failed bool, payload any) { logRecordAt(slog.LevelInfo, message, failed, payload) }
 	// lines are the records written, decoded, and written again as the
 	// handler encodes, so a step finds "<" as it is.
 	lines := func() (all []map[string]any, text []string) {
@@ -293,6 +333,11 @@ func registerSteps(sc *godog.ScenarioContext) {
 		return all[0], text[0], nil
 	}
 	sc.Step(`^the request id "([^"]*)" is in the context$`, func(id string) error { ctx = logging.WithRequestID(ctx, id); return nil })
+	sc.Step(`^the log is written from the level "([^"]*)"$`, func(name string) error { return level.UnmarshalText([]byte(name)) })
+	sc.Step(`^a record "([^"]*)" is logged at ERROR with the payload body '([^']*)'$`, func(message, body string) error {
+		logRecordAt(slog.LevelError, message, true, map[string]any{"body": []byte(body)})
+		return nil
+	})
 	sc.Step(`^LOG_PAYLOAD is "([^"]*)"$`, func(mode string) error { cfg.Payload = mode; return nil })
 	sc.Step(`^LOG_PAYLOAD_MAX_BYTES is (\d+)$`, func(n int) error { cfg.MaxBytes = n; return nil })
 	sc.Step(`^a record is logged with the payload password "([^"]*)" and title "([^"]*)"$`, func(password, title string) error {

@@ -50,7 +50,8 @@ type Unparsed struct {
 //   - a struct field is tagged `log:"mask"` (`log:"omit"` or `json:"-"`
 //     leaves it out);
 //   - a field of a proto message has [debug_redact = true];
-//   - its field name, map key, or JSON key matches secretNames.
+//   - its field name (in the code or in its JSON form), map key, or JSON key
+//     matches secretNames.
 //
 // Bytes (a request body) are parsed as JSON and masked by their keys, and so
 // is a string that holds a JSON object or array; bytes that are not JSON are
@@ -164,7 +165,7 @@ func (m *masker) object(v reflect.Value, path string, depth int) map[string]any 
 		switch tag := field.Tag.Get("log"); {
 		case tag == "omit":
 			continue
-		case tag == "mask", secret(name):
+		case tag == "mask", secret(name), secret(field.Name):
 			out[name] = Masked
 		default:
 			out[name] = m.value(v.Field(i), path+"."+name, depth+1)
