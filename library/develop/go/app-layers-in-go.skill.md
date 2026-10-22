@@ -2,7 +2,7 @@
 name: app-layers-in-go
 description: The application layers in Go — one package per layer under internal/, interfaces declared by their consumer so that only cmd/{app}/main.go imports both sides, entities with unexported fields, and hand-written fakes for the layer below
 whenToUse: when you design a Go application or feature, when you add or change a Go entry point, command, entity, domain service, service, or infrastructure adapter, or when you review such a change
-updated: 20261021
+updated: 20261022
 tags:
   - stack/go
   - concern/architecture
@@ -28,6 +28,7 @@ Place each layer of [app-layers](library/develop/core/app-layers.skill/app-layer
 | Layer | Package |
 |---|---|
 | api | `internal/api/{transport}` (`http`, `grpc`, `cli`, `kafka`, ...), split per [Split each entry point](#split-each-entry-point-into-pipeline-endpoint-and-registration) |
+| api — the fixed code the entry points share | `internal/api/core/{part}` (`entry`, `rpcstatus`), per [Keep the code the entry points share in core](#keep-the-code-the-entry-points-share-in-core) |
 | command | `internal/command` — one file per command, nothing else |
 | command pipeline (handler contract, decorators, error kind) | `internal/command/pipeline` |
 | command factory | `internal/command/factory` |
@@ -65,6 +66,12 @@ internal/api/{kind}/
 - Risk: application code mixed into the copied package is lost when the templates are copied again; a wrapper hidden in another file is not seen in the list of files; an unaliased `pipeline` reads as the command layer's.
 - Fix: `{Resource}Handler` (`ItemsHandler`) holds the command handlers of one resource and lists its operations (`Routes()`, `Service()`, `Resource()`); the registration file collects them in `Endpoints` and starts the entry point with `Run`; `main.go` fills `Endpoints` and calls `{kind}api.Run`.
 
+### Keep the code the entry points share in core
+Put the fixed code that serves several entry points and belongs to none of them — the runner of the entry points (`entry`), the table of error kinds (`rpcstatus`) — in its own package under `internal/api/core/`, never in a transport's package or beside the transports.
+- Violation: `rpcstatus` inside `internal/api/http/pipeline`; `internal/api/entry` beside `internal/api/http`.
+- Risk: removing a transport removes code the other entry points still use; a shared package beside the transports reads as one more entry point.
+- Fix: `core/` holds only code copied from templates; each part appears with the base plateau (`entry`) or with the first variation point that needs it (`rpcstatus`).
+
 ### Declare an interface in the consumer's package
 Declare the interface a command, factory, or domain service uses to reach a service in that consumer's package, and the interface a service uses to reach its infrastructure in `internal/service`, each listing only the methods that consumer calls.
 
@@ -101,7 +108,7 @@ Write the fake of the layer below as a small struct in the test package that imp
 - Fix: `type fakeUsers struct{ exists bool; added []string }` implementing the command's `users` interface.
 
 # Check list
-- [ ] Every layer is in its package per [One package per layer](#one-package-per-layer).
+- [ ] Every layer is in its package per [One package per layer](#one-package-per-layer); the code the entry points share is in `internal/api/core/`.
 - [ ] Every interface to a service or an infrastructure adapter is declared in its consumer's package and lists only the methods that consumer calls.
 - [ ] `internal/service` is imported only by `main.go`; `internal/infrastructure/{kind}` only by `main.go` and the one service over it.
 - [ ] Entities have unexported fields, a validating constructor, and guarded state-change methods.

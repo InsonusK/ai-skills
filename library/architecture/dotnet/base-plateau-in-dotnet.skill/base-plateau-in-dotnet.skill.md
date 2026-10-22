@@ -21,7 +21,7 @@ adr:
 # Core Principle
 - **Layers per app-layers-in-dotnet** - Projects, references, entities, and fakes follow [app-layers-in-dotnet](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md); this skill adds only what the base plateau itself contains.
 - **MediatR is the handler contract** - `IRequestHandler<TCommand, TResult>` is the one contract, `IPipelineBehavior<TCommand, TResult>` the decorator, `ISender` the way every entry point reaches a handler. Decision recorded in [mediatr-12-as-the-handler-contract](./adr/mediatr-12-as-the-handler-contract.md).
-- **Delivered, not retyped** - The fixed code (`Shared`, `BuildingBlocks`, `Api/Entry`, `Api/Startup`) is copied from templates and has no placeholder; only the module, its commands, and the composition-root lines are written per application.
+- **Delivered, not retyped** - The fixed code (`Shared`, `BuildingBlocks`, `Api/Core/Entry`, `Api/Startup`) is copied from templates and has no placeholder; only the module, its commands, and the composition-root lines are written per application.
 
 # Rule
 
@@ -33,7 +33,7 @@ Create the projects and folders [app-layers-in-dotnet](library/develop/dotnet/ap
 | Part | Project / folder |
 |---|---|
 | startup entry | `src/App/App.Host/Api/Startup` |
-| [runner of the entry points](./glossary/entry-runner.md): `Entry`, `EntryRunner.RunAllAsync`, `ExitCode` | `src/App/App.Host/Api/Entry` |
+| [runner of the entry points](./glossary/entry-runner.md): `Entry`, `EntryRunner.RunAllAsync`, `ExitCode` | `src/App/App.Host/Api/Core/Entry` |
 | composition root | `src/App/App.Host/Program.cs` |
 | base settings (`LOG_LEVEL` only) | `src/App/App.Host/Config/AppConfig.cs` |
 | version of the build | `src/App/App.Host/Version/AppVersion.cs`, the `<Version>` of `Directory.Build.props` per `devops-project-version-in-dotnet` |
@@ -50,7 +50,7 @@ Create the projects and folders [app-layers-in-dotnet](library/develop/dotnet/ap
 - Fix: move the code to the project and folder in the table.
 
 ### Copy the fixed code
-Copy, unchanged, [BuildingBlocks.csproj](./templates/src/BuildingBlocks/BuildingBlocks.csproj), [LoggingBehavior.cs](./templates/src/BuildingBlocks/Pipeline/LoggingBehavior.cs), [LogAttr.cs](./templates/src/BuildingBlocks/Logging/LogAttr.cs), [JsonLogProvider.cs](./templates/src/BuildingBlocks/Logging/JsonLogProvider.cs), [RequestId.cs](./templates/src/BuildingBlocks/Logging/RequestId.cs), [Entry.cs](./templates/src/App/App.Host/Api/Entry/Entry.cs), [EntryRunner.cs](./templates/src/App/App.Host/Api/Entry/EntryRunner.cs), and [StartupEntry.cs](./templates/src/App/App.Host/Api/Startup/StartupEntry.cs) to the same paths under the solution root, and the `Shared` project from [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md).
+Copy, unchanged, [BuildingBlocks.csproj](./templates/src/BuildingBlocks/BuildingBlocks.csproj), [LoggingBehavior.cs](./templates/src/BuildingBlocks/Pipeline/LoggingBehavior.cs), [LogAttr.cs](./templates/src/BuildingBlocks/Logging/LogAttr.cs), [JsonLogProvider.cs](./templates/src/BuildingBlocks/Logging/JsonLogProvider.cs), [RequestId.cs](./templates/src/BuildingBlocks/Logging/RequestId.cs), [Entry.cs](./templates/src/App/App.Host/Api/Core/Entry/Entry.cs), [EntryRunner.cs](./templates/src/App/App.Host/Api/Core/Entry/EntryRunner.cs), and [StartupEntry.cs](./templates/src/App/App.Host/Api/Startup/StartupEntry.cs) to the same paths under the solution root, and the `Shared` project from [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md).
 - Risk: retyped code drifts from the one every variation point's behavior and entry point is written against.
 - Fix: copy the templates; the namespaces (`BuildingBlocks`, `Shared`, `App.Host`) are the same in every application, so there is nothing to fill.
 
@@ -125,7 +125,7 @@ Read the base settings from environment variables in `AppConfig.Load()`, throwin
 
 # Check list
 - [ ] Projects and folders follow [Base projects](#base-projects) and [app-layers-in-dotnet](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md).
-- [ ] `src/Shared`, `src/BuildingBlocks`, `src/App/App.Host/Api/Entry`, and `src/App/App.Host/Api/Startup` are copies of the templates.
+- [ ] `src/Shared`, `src/BuildingBlocks`, `src/App/App.Host/Api/Core/Entry`, and `src/App/App.Host/Api/Startup` are copies of the templates.
 - [ ] `MediatR` is 12.5.0 and `MediatR.Contracts` 2.0.1, both in `Directory.Packages.props` only.
 - [ ] Every business-rule error is a factory method of `{Module}Errors` carrying one kind.
 - [ ] Every command is a record implementing `IRequest<TResult>` in `{Module}.Commands`, its handler in its own file of `{Module}.Application`.

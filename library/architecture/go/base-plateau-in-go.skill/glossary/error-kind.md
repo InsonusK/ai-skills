@@ -33,12 +33,12 @@ flowchart LR
 | one sentinel per kind | `internal/domain/entity/kinds.go` (template of `error-kinds-in-go`) |
 | one error per business rule, wrapping its kind | `internal/domain/entity/errors.go` |
 | the kinds re-exported, `Kinds`, `KindOf` | `internal/command/pipeline/errors.go` (template of `error-kinds-in-go`) |
-| mapping kind → answer | the exit code: `entry.ExitCode`; HTTP and gRPC: `internal/api/rpcstatus` |
+| mapping kind → answer | the exit code: `entry.ExitCode`; HTTP and gRPC: `internal/api/core/rpcstatus` |
 
 ## Example
 
 ```go
-// internal/api/entry/entry.go
+// internal/api/core/entry/entry.go
 switch kind := pipeline.KindOf(err); {
 case err == nil:
     return ExitOK

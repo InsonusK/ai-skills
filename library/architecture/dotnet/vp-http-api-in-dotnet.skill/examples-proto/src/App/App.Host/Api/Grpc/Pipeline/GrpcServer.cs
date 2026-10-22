@@ -1,6 +1,6 @@
 // Source: skill vp-grpc-api-in-dotnet
 
-using App.Host.Api.Hosting;
+using App.Host.Api.Core.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;

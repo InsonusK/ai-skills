@@ -12,7 +12,7 @@
     <ProjectReference Include="..\..\Infrastructure\Memory\Memory\Memory.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <!-- ASP.NET Core for the web entry points (Api/Hosting); it brings
+    <!-- ASP.NET Core for the web entry points (Api/Core/Hosting); it brings
          Microsoft.Extensions.DependencyInjection and Logging with it. -->
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>

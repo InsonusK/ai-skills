@@ -1,6 +1,6 @@
 # Entry runner
 
-The **entry runner** (`src/App/App.Host/Api/Entry`) starts every entry point of the application together — the startup command, an HTTP server, a gRPC server, the health endpoints — and turns how they ended into the process exit code. It is why each variation point attaches with one `Entry` in `// [entries]`.
+The **entry runner** (`src/App/App.Host/Api/Core/Entry`) starts every entry point of the application together — the startup command, an HTTP server, a gRPC server, the health endpoints — and turns how they ended into the process exit code. It is why each variation point attaches with one `Entry` in `// [entries]`.
 
 ## Why it exists
 

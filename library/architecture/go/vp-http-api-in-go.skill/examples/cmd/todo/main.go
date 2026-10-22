@@ -11,7 +11,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/example/todo/internal/api/entry"
+	"github.com/example/todo/internal/api/core/entry"
 	httpapi "github.com/example/todo/internal/api/http"
 	"github.com/example/todo/internal/api/http/endpoint"
 	"github.com/example/todo/internal/command"

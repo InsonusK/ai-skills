@@ -3,7 +3,7 @@
 // the marked sections below - never by editing another file.
 
 using System.Runtime.InteropServices;
-using App.Host.Api.Entry;
+using App.Host.Api.Core.Entry;
 using App.Host.Api.Grpc;
 using App.Host.Api.Http;
 using GrpcEndpoint = App.Host.Api.Grpc.Endpoint;

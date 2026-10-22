@@ -24,7 +24,7 @@ adr:
 src/Shared/Errors/ErrorKind.cs                          Invalid, NotFound, ... - the kinds
 src/Shared/Errors/ErrorKindException.cs                 the exception + KindOf
 src/Modules/{Module}/{Module}.Domain/Errors/{Module}Errors.cs   the module's errors, one factory each
-src/App/App.Host/Api/Errors/RpcStatus.cs                kind → RpcCode (google.rpc.Code) → HTTP status, message
+src/App/App.Host/Api/Core/Errors/RpcStatus.cs                kind → RpcCode (google.rpc.Code) → HTTP status, message
 ```
 
 # Scope
@@ -58,7 +58,7 @@ Map an exception to an answer in an entry point only by `ErrorKindException.Kind
 - Fix: one table per stack (`EntryRunner.ExitCode` for exit codes; `RpcStatus` for codes and statuses).
 
 ### Answer through RpcStatus in every network entry point
-Copy [RpcStatus.cs](./templates/src/App/App.Host/Api/Errors/RpcStatus.cs) to `src/App/App.Host/Api/Errors/` with the scenarios of an API variation point's example (`features/RpcStatus.feature` and its steps), and answer every exception with `RpcStatus.Of(error)`: over HTTP as `code.HttpStatus()` with a `google.rpc.Status` body, over gRPC as `new RpcException(new Status((StatusCode)code, message))`.
+Copy [RpcStatus.cs](./templates/src/App/App.Host/Api/Core/Errors/RpcStatus.cs) to `src/App/App.Host/Api/Core/Errors/` with the scenarios of an API variation point's example (`features/RpcStatus.feature` and its steps), and answer every exception with `RpcStatus.Of(error)`: over HTTP as `code.HttpStatus()` with a `google.rpc.Status` body, over gRPC as `new RpcException(new Status((StatusCode)code, message))`.
 - Violation: an entry point with its own `switch` over `ErrorKind`; a second `RpcStatus.cs` that differs from the first; the message of an exception with no kind sent to a client.
 - Risk: the HTTP and gRPC forms of one service answer the same kind differently; a connection string in an exception's message reaches the client.
 - Fix: the HTTP and gRPC variation points copy the same file; `bash test/check-vp-attach.sh` in this repository fails when two variation points add it differently. `Of` answers an error with no kind `INTERNAL` "internal error", and a wrapped error with the message of the exception that carries the kind.
@@ -68,4 +68,4 @@ Copy [RpcStatus.cs](./templates/src/App/App.Host/Api/Errors/RpcStatus.cs) to `sr
 - [ ] Every error a caller can act on is a factory method of a `{Module}Errors` class returning an `ErrorKindException` of one kind of the table.
 - [ ] No code declares another kind type, throws a shared exception instance, or checks an error by its text.
 - [ ] Every wrap keeps the original as the inner exception; entry points read kinds only through `ErrorKindException.KindOf`.
-- [ ] In a service with a network entry point, `src/App/App.Host/Api/Errors/RpcStatus.cs` is a copy of the template, and every such entry point answers errors only through `RpcStatus.Of`.
+- [ ] In a service with a network entry point, `src/App/App.Host/Api/Core/Errors/RpcStatus.cs` is a copy of the template, and every such entry point answers errors only through `RpcStatus.Of`.

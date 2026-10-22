@@ -7,7 +7,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/example/todo/internal/api/rpcstatus"
+	"github.com/example/todo/internal/api/core/rpcstatus"
 	commandpipeline "github.com/example/todo/internal/command/pipeline"
 )
 

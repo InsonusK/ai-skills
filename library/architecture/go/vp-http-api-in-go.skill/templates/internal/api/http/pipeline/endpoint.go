@@ -7,7 +7,7 @@ import (
 	"errors"
 	"net/http"
 
-	"{module-path}/internal/api/rpcstatus"
+	"{module-path}/internal/api/core/rpcstatus"
 	commandpipeline "{module-path}/internal/command/pipeline"
 )
 

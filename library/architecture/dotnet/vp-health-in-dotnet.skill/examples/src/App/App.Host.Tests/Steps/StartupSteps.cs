@@ -1,4 +1,4 @@
-using App.Host.Api.Entry;
+using App.Host.Api.Core.Entry;
 using App.Host.Api.Startup;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
