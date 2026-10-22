@@ -24,7 +24,7 @@ tags:
 **Selected.**
 
 ### Description
-`ListsHandler.AddItemAsync(listId, request)` reads `AddItemRequest` with `ProtoJson.ReadAsync`, sends `AddItem`, answers `ProtoJson.Result(response, 201)`. `make proto-gen` runs `protoc` of `Grpc.Tools` with the release binary of `protoc-gen-openapiv2` v2.31.0; the googleapis and openapiv2 annotations are vendored under `third_party/proto/`.
+`ListsHandler.AddItemAsync(listId, request)` reads `AddItemRequest` with `ProtoJson.ReadAsync`, sends `AddItemCommand`, answers `ProtoJson.Result(response, 201)`. `make proto-gen` runs `protoc` of `Grpc.Tools` with the release binary of `protoc-gen-openapiv2` v2.31.0; the googleapis and openapiv2 annotations are vendored under `third_party/proto/`.
 
 ### Benefits
 - 201/202/200 by what the rpc did (api-develop's success-status-by-outcome); a Go and a dotnet service answer one contract the same way.

@@ -3,7 +3,7 @@ using MediatR;
 namespace Todo.Commands;
 
 /// <summary>Asks to plan one open to-do item per title.</summary>
-public sealed record PlanItems(IReadOnlyList<string> Titles) : IRequest<PlanItemsResult>;
+public sealed record PlanItemsCommand(IReadOnlyList<string> Titles) : IRequest<PlanItemsResult>;
 
 /// <summary>The planned items, in the order of the titles.</summary>
 public sealed record PlanItemsResult(IReadOnlyList<ItemView> Items);

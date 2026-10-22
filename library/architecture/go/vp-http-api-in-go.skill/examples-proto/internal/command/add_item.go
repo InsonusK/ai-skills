@@ -6,8 +6,8 @@ import (
 	"github.com/example/todo/internal/domain/entity"
 )
 
-// AddItem asks to add an open item with Title to the list ListID.
-type AddItem struct {
+// AddItemCommand asks to add an open item with Title to the list ListID.
+type AddItemCommand struct {
 	ListID string
 	Title  string
 }
@@ -22,7 +22,7 @@ type itemAdder interface {
 	Add(ctx context.Context, listID string, item entity.Item) error
 }
 
-// AddItemHandler handles AddItem: an invalid title is the entity's invalid
+// AddItemHandler handles AddItemCommand: an invalid title is the entity's invalid
 // error, a title already in the list the service's conflict.
 type AddItemHandler struct {
 	lists itemAdder
@@ -32,7 +32,7 @@ func NewAddItemHandler(lists itemAdder) *AddItemHandler {
 	return &AddItemHandler{lists: lists}
 }
 
-func (h *AddItemHandler) Handle(ctx context.Context, cmd AddItem) (AddItemResult, error) {
+func (h *AddItemHandler) Handle(ctx context.Context, cmd AddItemCommand) (AddItemResult, error) {
 	item, err := entity.NewItem(cmd.Title)
 	if err != nil {
 		return AddItemResult{}, err

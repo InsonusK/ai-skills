@@ -19,7 +19,7 @@ import (
 // ItemsHandler is the items resource: the command handlers its actions call.
 // The composition root fills it; Resource lists its actions.
 type ItemsHandler struct {
-	PlanItems pipeline.Handler[command.PlanItems, command.PlanItemsResult]
+	PlanItems pipeline.Handler[command.PlanItemsCommand, command.PlanItemsResult]
 }
 
 // Resource is `todo items` with its actions.
@@ -30,10 +30,10 @@ func (h ItemsHandler) Resource() clipipeline.Resource {
 }
 
 // bindPlanItems declares the flags of `todo items plan`.
-func bindPlanItems(flags *pflag.FlagSet) func() (command.PlanItems, error) {
+func bindPlanItems(flags *pflag.FlagSet) func() (command.PlanItemsCommand, error) {
 	titles := flags.StringArray("title", nil, "the title of an item; repeat for several")
-	return func() (command.PlanItems, error) {
-		return command.PlanItems{Titles: *titles}, nil
+	return func() (command.PlanItemsCommand, error) {
+		return command.PlanItemsCommand{Titles: *titles}, nil
 	}
 }
 

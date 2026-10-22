@@ -16,7 +16,7 @@ import (
 // ItemsHandler is the items resource: the command handlers its routes call. The
 // composition root fills it; Routes lists its operations.
 type ItemsHandler struct {
-	PlanItems pipeline.Handler[command.PlanItems, command.PlanItemsResult]
+	PlanItems pipeline.Handler[command.PlanItemsCommand, command.PlanItemsResult]
 }
 
 // Routes are the items operations of the published contract.
@@ -42,12 +42,12 @@ type itemResponse struct {
 	Done  bool   `json:"done"`
 }
 
-func decodePlanItems(r *http.Request) (command.PlanItems, error) {
+func decodePlanItems(r *http.Request) (command.PlanItemsCommand, error) {
 	body, err := httppipeline.DecodeJSON[planItemsRequest](r)
 	if err != nil {
-		return command.PlanItems{}, err
+		return command.PlanItemsCommand{}, err
 	}
-	return command.PlanItems{Titles: body.Titles}, nil
+	return command.PlanItemsCommand{Titles: body.Titles}, nil
 }
 
 func encodePlanItems(result command.PlanItemsResult) any {

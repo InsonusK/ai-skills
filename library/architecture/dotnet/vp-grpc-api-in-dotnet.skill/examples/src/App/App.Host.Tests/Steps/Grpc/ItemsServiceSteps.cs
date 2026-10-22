@@ -11,12 +11,12 @@ using PlanItemsRequest = Contracts.Todo.V1.PlanItemsRequest;
 namespace App.Host.Tests.Steps.Grpc;
 
 /// <summary>The fake handler of PlanItems: answers the items the scenario set, records the command.</summary>
-public sealed class FakeGrpcPlanItems : IRequestHandler<PlanItems, PlanItemsResult>
+public sealed class FakeGrpcPlanItems : IRequestHandler<PlanItemsCommand, PlanItemsResult>
 {
     public IReadOnlyList<string> Answer { get; set; } = [];
-    public PlanItems? Received { get; private set; }
+    public PlanItemsCommand? Received { get; private set; }
 
-    public Task<PlanItemsResult> Handle(PlanItems command, CancellationToken cancellationToken)
+    public Task<PlanItemsResult> Handle(PlanItemsCommand command, CancellationToken cancellationToken)
     {
         Received = command;
         return Task.FromResult(new PlanItemsResult(Answer.Select(title => new ItemView(title, false)).ToList()));
@@ -38,7 +38,7 @@ public sealed class ItemsServiceSteps(GrpcWorld world)
     public void GivenPlanItemsReturns(string titles)
     {
         _planItems.Answer = titles.Split('|');
-        world.Handlers.AddSingleton<IRequestHandler<PlanItems, PlanItemsResult>>(_planItems);
+        world.Handlers.AddSingleton<IRequestHandler<PlanItemsCommand, PlanItemsResult>>(_planItems);
         ServeApplicationServices(world);
     }
 

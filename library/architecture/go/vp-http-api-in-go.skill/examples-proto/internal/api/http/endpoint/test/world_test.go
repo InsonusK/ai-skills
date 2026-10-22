@@ -30,14 +30,14 @@ type World struct {
 	// the fake handlers - the command layer below the HTTP entry point
 	planResult command.PlanItemsResult
 	planCalled bool
-	planGot    command.PlanItems
+	planGot    command.PlanItemsCommand
 
 	addResult command.AddItemResult
 	addErr    error
-	addGot    command.AddItem
+	addGot    command.AddItemCommand
 
 	listResult command.ListItemsResult
-	listGot    command.ListItems
+	listGot    command.ListItemsCommand
 
 	response *httptest.ResponseRecorder
 }
@@ -53,20 +53,20 @@ func registerWorldHooks(sc *godog.ScenarioContext, w *World) {
 func (w *World) handlers() httpapi.Endpoints {
 	return httpapi.Endpoints{
 		Items: endpoint.ItemsHandler{
-			PlanItems: pipeline.HandlerFunc[command.PlanItems, command.PlanItemsResult](
-				func(_ context.Context, cmd command.PlanItems) (command.PlanItemsResult, error) {
+			PlanItems: pipeline.HandlerFunc[command.PlanItemsCommand, command.PlanItemsResult](
+				func(_ context.Context, cmd command.PlanItemsCommand) (command.PlanItemsResult, error) {
 					w.planCalled, w.planGot = true, cmd
 					return w.planResult, nil
 				}),
 		},
 		Lists: endpoint.ListsHandler{
-			AddItem: pipeline.HandlerFunc[command.AddItem, command.AddItemResult](
-				func(_ context.Context, cmd command.AddItem) (command.AddItemResult, error) {
+			AddItem: pipeline.HandlerFunc[command.AddItemCommand, command.AddItemResult](
+				func(_ context.Context, cmd command.AddItemCommand) (command.AddItemResult, error) {
 					w.addGot = cmd
 					return w.addResult, w.addErr
 				}),
-			ListItems: pipeline.HandlerFunc[command.ListItems, command.ListItemsResult](
-				func(_ context.Context, cmd command.ListItems) (command.ListItemsResult, error) {
+			ListItems: pipeline.HandlerFunc[command.ListItemsCommand, command.ListItemsResult](
+				func(_ context.Context, cmd command.ListItemsCommand) (command.ListItemsResult, error) {
 					w.listGot = cmd
 					return w.listResult, nil
 				}),

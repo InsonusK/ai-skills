@@ -65,12 +65,12 @@ func registerItemListsSteps(sc *godog.ScenarioContext) {
 		return nil
 	})
 	sc.Step(`^I send AddItem with the list "([^"]*)" and the title "([^"]*)"$`, func(ctx context.Context, listID, title string) error {
-		w.added, w.err = command.NewAddItemHandler(w.lists).Handle(ctx, command.AddItem{ListID: listID, Title: title})
+		w.added, w.err = command.NewAddItemHandler(w.lists).Handle(ctx, command.AddItemCommand{ListID: listID, Title: title})
 		logf("when: AddItem(%q, %q) -> %+v err=%v", listID, title, w.added, w.err)
 		return nil
 	})
 	sc.Step(`^I send ListItems with the list "([^"]*)"$`, func(ctx context.Context, listID string) error {
-		w.listed, w.err = command.NewListItemsHandler(w.lists).Handle(ctx, command.ListItems{ListID: listID})
+		w.listed, w.err = command.NewListItemsHandler(w.lists).Handle(ctx, command.ListItemsCommand{ListID: listID})
 		logf("when: ListItems(%q) -> %+v err=%v", listID, w.listed, w.err)
 		return nil
 	})

@@ -4,7 +4,7 @@ The **pipeline** (`internal/command/pipeline`) is the path every command takes f
 
 ## Why it exists
 
-Two kinds of code meet around a command. One is the commands themselves — `PlanItems` and its handler — which change with the business. The other is the machinery every command passes through — the contract, logging, later a unit of work — which is the same for all of them and rarely changes. Kept in one folder, the machinery hides among the commands and a reader cannot tell which file is a command. The pipeline package separates them: `internal/command` lists only commands.
+Two kinds of code meet around a command. One is the commands themselves — `PlanItemsCommand` and its handler — which change with the business. The other is the machinery every command passes through — the contract, logging, later a unit of work — which is the same for all of them and rarely changes. Kept in one folder, the machinery hides among the commands and a reader cannot tell which file is a command. The pipeline package separates them: `internal/command` lists only commands.
 
 ## How it works
 
@@ -33,7 +33,7 @@ The fittings are added in the composition root's `// [handlers]` section; the en
 
 ```go
 // cmd/todo/main.go
-var planItems pipeline.Handler[command.PlanItems, command.PlanItemsResult] = command.NewPlanItemsHandler()
+var planItems pipeline.Handler[command.PlanItemsCommand, command.PlanItemsResult] = command.NewPlanItemsHandler()
 planItems = pipeline.WithLogging("PlanItems", logger, planItems)
 ```
 

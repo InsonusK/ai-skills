@@ -50,11 +50,11 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 	itemLists := service.NewItemLists(memory.NewLists())
 
 	// [handlers] - one per command, wrapped by its decorators.
-	var planItems pipeline.Handler[command.PlanItems, command.PlanItemsResult] = command.NewPlanItemsHandler()
+	var planItems pipeline.Handler[command.PlanItemsCommand, command.PlanItemsResult] = command.NewPlanItemsHandler()
 	planItems = pipeline.WithLogging("PlanItems", logger, planItems)
-	var addItem pipeline.Handler[command.AddItem, command.AddItemResult] = command.NewAddItemHandler(itemLists)
+	var addItem pipeline.Handler[command.AddItemCommand, command.AddItemResult] = command.NewAddItemHandler(itemLists)
 	addItem = pipeline.WithLogging("AddItem", logger, addItem)
-	var listItems pipeline.Handler[command.ListItems, command.ListItemsResult] = command.NewListItemsHandler(itemLists)
+	var listItems pipeline.Handler[command.ListItemsCommand, command.ListItemsResult] = command.NewListItemsHandler(itemLists)
 	listItems = pipeline.WithLogging("ListItems", logger, listItems)
 
 	// [entries] - every entry point, one Entry each, run together by

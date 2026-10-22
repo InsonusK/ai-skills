@@ -74,7 +74,7 @@ public static class Program
         // health variation point adds one.
         var error = await EntryRunner.RunAllAsync(logger, stopping,
             new Entry("startup", stopping =>
-                StartupEntry.RunAsync(sender, new PlanItems(StartupEntry.EnvList("STARTUP_TITLES")), stdout, stopping)));
+                StartupEntry.RunAsync(sender, new PlanItemsCommand(StartupEntry.EnvList("STARTUP_TITLES")), stdout, stopping)));
         return EntryRunner.ExitCode(error);
     }
 }

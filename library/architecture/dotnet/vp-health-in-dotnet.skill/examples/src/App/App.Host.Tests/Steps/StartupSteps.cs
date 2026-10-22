@@ -49,7 +49,7 @@ public sealed class StartupSteps(ProcessOutcome outcome, ITestOutputHelper outpu
     }
 
     [When("the process starts with PlanItems for the titles {string}")]
-    public Task WhenTheProcessStartsWithPlanItems(string titles) => Start(new PlanItems(titles.Split('|')));
+    public Task WhenTheProcessStartsWithPlanItems(string titles) => Start(new PlanItemsCommand(titles.Split('|')));
 
     [When("the process starts with a command whose handler fails with {string}")]
     public Task WhenTheProcessStartsWithAFailingCommand(string message) => Start(new FailingCommand(message));

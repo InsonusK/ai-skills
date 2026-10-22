@@ -44,7 +44,7 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 	// [services] - infrastructure and the services over it; none in the base plateau.
 
 	// [handlers] - one per command, wrapped by its decorators.
-	var planItems pipeline.Handler[command.PlanItems, command.PlanItemsResult] = command.NewPlanItemsHandler()
+	var planItems pipeline.Handler[command.PlanItemsCommand, command.PlanItemsResult] = command.NewPlanItemsHandler()
 	planItems = pipeline.WithLogging("PlanItems", logger, planItems)
 
 	// [entries] - every entry point, one Entry each, run together by
