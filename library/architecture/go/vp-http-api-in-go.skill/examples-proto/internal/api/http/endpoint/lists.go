@@ -17,8 +17,8 @@ import (
 // ListsHandler is the lists resource: the command handlers its routes call. The
 // composition root fills it; Routes lists its operations.
 type ListsHandler struct {
-	AddItem   pipeline.Handler[command.AddItem, command.AddItemResult]
-	ListItems pipeline.Handler[command.ListItems, command.ListItemsResult]
+	AddItem   pipeline.Handler[command.AddItemCommand, command.AddItemResult]
+	ListItems pipeline.Handler[command.ListItemsCommand, command.ListItemsResult]
 }
 
 // Routes are the lists operations of the HTTP form.
@@ -32,12 +32,12 @@ func (h ListsHandler) Routes() []httppipeline.Route {
 	}
 }
 
-func decodeAddItem(r *http.Request) (command.AddItem, error) {
+func decodeAddItem(r *http.Request) (command.AddItemCommand, error) {
 	req := &todo.AddItemRequest{}
 	if err := httppipeline.DecodeProto(r, req); err != nil {
-		return command.AddItem{}, err
+		return command.AddItemCommand{}, err
 	}
-	return command.AddItem{ListID: r.PathValue("listId"), Title: req.GetTitle()}, nil
+	return command.AddItemCommand{ListID: r.PathValue("listId"), Title: req.GetTitle()}, nil
 }
 
 func encodeAddItem(result command.AddItemResult) any {
@@ -45,8 +45,8 @@ func encodeAddItem(result command.AddItemResult) any {
 }
 
 // decodeListItems reads only the path: a GET has no body.
-func decodeListItems(r *http.Request) (command.ListItems, error) {
-	return command.ListItems{ListID: r.PathValue("listId")}, nil
+func decodeListItems(r *http.Request) (command.ListItemsCommand, error) {
+	return command.ListItemsCommand{ListID: r.PathValue("listId")}, nil
 }
 
 func encodeListItems(result command.ListItemsResult) any {

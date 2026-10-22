@@ -2,7 +2,7 @@
 name: app-layers-in-dotnet
 description: The application layers in dotnet — one project per layer of each module (Domain, Commands, Application) plus Shared, BuildingBlocks, App.Host, and an Abstractions and an implementation project per infrastructure, project references that let the compiler hold the direction of the calls, entry points and other modules that see only a module's Commands, service interfaces declared beside their consumer, and entities that guard their state
 whenToUse: when you design a dotnet application or feature, when you add or change a dotnet entry point, command, handler, entity, or domain service, or when you review such a change
-updated: 20261021
+updated: 20261022
 tags:
   - stack/dotnet
   - concern/architecture
@@ -34,6 +34,7 @@ Place each layer of [app-layers](library/develop/core/app-layers.skill/app-layer
 | Layer | Project / folder |
 |---|---|
 | api | `src/App/App.Host/Api/{Transport}` (`Startup`, `Http`, `Grpc`, ...), split per [Split each entry point](#split-each-entry-point-into-pipeline-endpoint-and-registration) |
+| api — the fixed code the entry points share | `src/App/App.Host/Api/Core/{Part}` (`Entry`, `Errors`, `Hosting`), per [Keep the code the entry points share in Core](#keep-the-code-the-entry-points-share-in-core) |
 | command — the command and its result types | `src/Modules/{Module}/{Module}.Commands/{Command}.cs`, one file per command |
 | command — the handler | `src/Modules/{Module}/{Module}.Application/Commands/{Command}Handler.cs`, one file per handler |
 | command factory | `src/Modules/{Module}/{Module}.Application/Factories` |
@@ -97,6 +98,12 @@ Infrastructure/Memory/Memory                   MemoryListStore : IListStore
 - Risk: an entry point that reaches a service skips the command and its behaviors; a handler on the infrastructure's interface must change when the technique does; a service built by its consumer cannot be replaced or faked.
 - Fix: the interface exists for the composition root to swap implementations (memory → a database) and for the handler's scenarios to fake it; it stays inside the module.
 
+### Keep the code the entry points share in Core
+Put the fixed code that serves several entry points and belongs to none of them — the runner of the entry points (`Entry`), the table of error kinds (`Errors/RpcStatus.cs`), the web host of every web entry point (`Hosting/WebHost.cs`) — in its own folder under `App.Host/Api/Core/`, never in a transport's folder or beside the transports.
+- Violation: `RpcStatus.cs` inside `Api/Http/Pipeline`; `Api/Hosting` beside `Api/Http`.
+- Risk: removing a transport removes code the other entry points still use; a shared folder beside the transports reads as one more entry point.
+- Fix: `Core/` holds only code copied from templates — one folder to turn into a package later; each part appears with the base plateau (`Entry`) or with the first variation point that needs it (`Errors`, `Hosting`).
+
 ### Split each entry point into pipeline, endpoint, and registration
 Lay out every entry point `App.Host/Api/{Transport}/` in three parts.
 
@@ -126,7 +133,7 @@ Write the fake of the layer below as a small class in the test project implement
 - Fix: `sealed class FakeUsers : IUsers { public List<string> Added { get; } = []; ... }`.
 
 # Check list
-- [ ] Every layer is in its project and folder per [One project per layer](#one-project-per-layer).
+- [ ] Every layer is in its project and folder per [One project per layer](#one-project-per-layer); the code the entry points share is in `App.Host/Api/Core/`.
 - [ ] Every project has only the references of [Reference only downward](#reference-only-downward).
 - [ ] Another module is called only by its commands; no project outside a module references its `Application` or `Domain`.
 - [ ] Each service interface is in its consumer's project (`Application/Services`, or `Domain/Services` for a domain service); each infrastructure interface is in `{Infra}.Abstractions`; implementations are built only in `// [services]`.

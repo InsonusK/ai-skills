@@ -30,7 +30,7 @@ type World struct {
 	// the fake PlanItems handler - the command layer below the HTTP entry point
 	planResult command.PlanItemsResult
 	planCalled bool
-	planGot    command.PlanItems
+	planGot    command.PlanItemsCommand
 
 	response *httptest.ResponseRecorder
 }
@@ -46,8 +46,8 @@ func registerWorldHooks(sc *godog.ScenarioContext, w *World) {
 func (w *World) handlers() httpapi.Endpoints {
 	return httpapi.Endpoints{
 		Items: endpoint.ItemsHandler{
-			PlanItems: pipeline.HandlerFunc[command.PlanItems, command.PlanItemsResult](
-				func(_ context.Context, cmd command.PlanItems) (command.PlanItemsResult, error) {
+			PlanItems: pipeline.HandlerFunc[command.PlanItemsCommand, command.PlanItemsResult](
+				func(_ context.Context, cmd command.PlanItemsCommand) (command.PlanItemsResult, error) {
 					w.planCalled = true
 					w.planGot = cmd
 					return w.planResult, nil

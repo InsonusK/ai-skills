@@ -17,9 +17,9 @@ import (
 // ItemsHandler is the ItemsService of the contract: the command handlers its
 // methods call. The composition root fills it; Service registers it.
 type ItemsHandler struct {
-	PlanItems pipeline.Handler[command.PlanItems, command.PlanItemsResult]
-	AddItem   pipeline.Handler[command.AddItem, command.AddItemResult]
-	ListItems pipeline.Handler[command.ListItems, command.ListItemsResult]
+	PlanItems pipeline.Handler[command.PlanItemsCommand, command.PlanItemsResult]
+	AddItem   pipeline.Handler[command.AddItemCommand, command.AddItemResult]
+	ListItems pipeline.Handler[command.ListItemsCommand, command.ListItemsResult]
 }
 
 // Service is ItemsService as the server registers it.
@@ -55,24 +55,24 @@ func (s itemsServer) ClearList(context.Context, *todo.ClearListRequest) (*todo.C
 	return nil, grpcpipeline.Unimplemented("ClearList is deprecated since 1.1.0")
 }
 
-func decodePlanItems(req *todo.PlanItemsRequest) (command.PlanItems, error) {
-	return command.PlanItems{Titles: req.GetTitles()}, nil
+func decodePlanItems(req *todo.PlanItemsRequest) (command.PlanItemsCommand, error) {
+	return command.PlanItemsCommand{Titles: req.GetTitles()}, nil
 }
 
 func encodePlanItems(result command.PlanItemsResult) *todo.PlanItemsResponse {
 	return &todo.PlanItemsResponse{Items: itemMessages(result.Items)}
 }
 
-func decodeAddItem(req *todo.AddItemRequest) (command.AddItem, error) {
-	return command.AddItem{ListID: req.GetListId(), Title: req.GetTitle()}, nil
+func decodeAddItem(req *todo.AddItemRequest) (command.AddItemCommand, error) {
+	return command.AddItemCommand{ListID: req.GetListId(), Title: req.GetTitle()}, nil
 }
 
 func encodeAddItem(result command.AddItemResult) *todo.AddItemResponse {
 	return &todo.AddItemResponse{Item: &todo.Item{Title: result.Item.Title, Done: result.Item.Done}}
 }
 
-func decodeListItems(req *todo.ListItemsRequest) (command.ListItems, error) {
-	return command.ListItems{ListID: req.GetListId()}, nil
+func decodeListItems(req *todo.ListItemsRequest) (command.ListItemsCommand, error) {
+	return command.ListItemsCommand{ListID: req.GetListId()}, nil
 }
 
 func encodeListItems(result command.ListItemsResult) *todo.ListItemsResponse {

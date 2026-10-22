@@ -6,8 +6,8 @@ import (
 	"github.com/example/todo/internal/domain/entity"
 )
 
-// ListItems asks for the items of the list ListID.
-type ListItems struct {
+// ListItemsCommand asks for the items of the list ListID.
+type ListItemsCommand struct {
 	ListID string
 }
 
@@ -21,7 +21,7 @@ type itemReader interface {
 	Items(ctx context.Context, listID string) ([]entity.Item, error)
 }
 
-// ListItemsHandler handles ListItems: an unknown list is the service's not found.
+// ListItemsHandler handles ListItemsCommand: an unknown list is the service's not found.
 type ListItemsHandler struct {
 	lists itemReader
 }
@@ -30,7 +30,7 @@ func NewListItemsHandler(lists itemReader) *ListItemsHandler {
 	return &ListItemsHandler{lists: lists}
 }
 
-func (h *ListItemsHandler) Handle(ctx context.Context, cmd ListItems) (ListItemsResult, error) {
+func (h *ListItemsHandler) Handle(ctx context.Context, cmd ListItemsCommand) (ListItemsResult, error) {
 	items, err := h.lists.Items(ctx, cmd.ListID)
 	if err != nil {
 		return ListItemsResult{}, err

@@ -17,7 +17,7 @@ import (
 // ItemsHandler is the ItemsService of the contract: the command handlers its
 // methods call. The composition root fills it; Service registers it.
 type ItemsHandler struct {
-	PlanItems pipeline.Handler[command.PlanItems, command.PlanItemsResult]
+	PlanItems pipeline.Handler[command.PlanItemsCommand, command.PlanItemsResult]
 }
 
 // Service is ItemsService as the server registers it.
@@ -40,8 +40,8 @@ func (s itemsServer) PlanItems(ctx context.Context, req *todo.PlanItemsRequest) 
 	return grpcpipeline.Call(ctx, s.h.PlanItems, req, decodePlanItems, encodePlanItems)
 }
 
-func decodePlanItems(req *todo.PlanItemsRequest) (command.PlanItems, error) {
-	return command.PlanItems{Titles: req.GetTitles()}, nil
+func decodePlanItems(req *todo.PlanItemsRequest) (command.PlanItemsCommand, error) {
+	return command.PlanItemsCommand{Titles: req.GetTitles()}, nil
 }
 
 func encodePlanItems(result command.PlanItemsResult) *todo.PlanItemsResponse {

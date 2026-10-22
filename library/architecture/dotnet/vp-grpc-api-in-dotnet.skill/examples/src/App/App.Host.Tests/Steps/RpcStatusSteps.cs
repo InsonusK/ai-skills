@@ -1,4 +1,4 @@
-using App.Host.Api.Errors;
+using App.Host.Api.Core.Errors;
 using Reqnroll;
 using Shared.Errors;
 using Xunit;

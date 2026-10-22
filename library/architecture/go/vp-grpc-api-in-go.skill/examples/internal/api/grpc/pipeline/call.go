@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/example/todo/internal/api/rpcstatus"
+	"github.com/example/todo/internal/api/core/rpcstatus"
 	commandpipeline "github.com/example/todo/internal/command/pipeline"
 )
 

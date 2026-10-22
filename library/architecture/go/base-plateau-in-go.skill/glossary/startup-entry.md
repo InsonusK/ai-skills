@@ -28,7 +28,7 @@ sequenceDiagram
     participant S as startup.Run
     participant H as Handler (PlanItems)
     M->>R: RunAll(ctx, logger, startup Entry)
-    R->>S: Run(ctx, handler, PlanItems{Titles: EnvList("STARTUP_TITLES")}, stdout)
+    R->>S: Run(ctx, handler, PlanItemsCommand{Titles: EnvList("STARTUP_TITLES")}, stdout)
     S->>H: Handle(ctx, cmd)
     alt success
         H-->>S: result

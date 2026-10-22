@@ -1,6 +1,6 @@
 // Source: skill vp-grpc-api-in-dotnet
 
-using App.Host.Api.Errors;
+using App.Host.Api.Core.Errors;
 using BuildingBlocks.Logging;
 using Grpc.Core;
 using Grpc.Core.Interceptors;

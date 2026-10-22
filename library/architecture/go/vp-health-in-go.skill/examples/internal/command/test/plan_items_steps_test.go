@@ -19,7 +19,7 @@ func registerPlanItemsSteps(sc *godog.ScenarioContext, w *World) {
 }
 
 func (w *World) iSendPlanItems(ctx context.Context, titles string) error {
-	cmd := command.PlanItems{Titles: strings.Split(titles, "|")}
+	cmd := command.PlanItemsCommand{Titles: strings.Split(titles, "|")}
 	w.result, w.err = command.NewPlanItemsHandler().Handle(ctx, cmd)
 	logf("when: PlanItems(%q) -> %+v err=%v", cmd.Titles, w.result, w.err)
 	return nil
