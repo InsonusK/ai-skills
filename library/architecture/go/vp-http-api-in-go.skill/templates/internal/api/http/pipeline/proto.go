@@ -10,7 +10,7 @@ import (
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 
-	"{module-path}/internal/api/rpcstatus"
+	"{module-path}/internal/api/core/rpcstatus"
 )
 
 // This file is copied only when the contract is a proto file: the routes then

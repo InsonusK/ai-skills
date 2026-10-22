@@ -28,7 +28,7 @@ Create the packages [app-layers-in-go](library/develop/go/app-layers-in-go.skill
 | Part | Package |
 |---|---|
 | startup entry | `internal/api/startup` |
-| [runner of the entry points](./glossary/entry-runner.md): `Entry`, `RunAll`, `ExitCode` | `internal/api/entry` |
+| [runner of the entry points](./glossary/entry-runner.md): `Entry`, `RunAll`, `ExitCode` | `internal/api/core/entry` |
 | commands — one file each, nothing else | `internal/command` |
 | [pipeline](./glossary/pipeline.md): handler contract, `HandlerFunc`, decorators, the error kinds re-exported | `internal/command/pipeline` |
 | command factories, when an input needs one | `internal/command/factory` |
@@ -43,7 +43,7 @@ Create the packages [app-layers-in-go](library/develop/go/app-layers-in-go.skill
 - Fix: move the code to the package in the table.
 
 ### Copy the handler contract, the startup entry, and the runner
-Fill and copy [handler.go](./templates/internal/command/pipeline/handler.go) and [logging.go](./templates/internal/command/pipeline/logging.go) to `internal/command/pipeline/`, [startup.go](./templates/internal/api/startup/startup.go) to `internal/api/startup/startup.go`, [entry.go](./templates/internal/api/entry/entry.go) to `internal/api/entry/entry.go`, and [logging.go](./templates/internal/logging/logging.go) to `internal/logging/logging.go`, replacing `{module-path}` with the module path from `go.mod`.
+Fill and copy [handler.go](./templates/internal/command/pipeline/handler.go) and [logging.go](./templates/internal/command/pipeline/logging.go) to `internal/command/pipeline/`, [startup.go](./templates/internal/api/startup/startup.go) to `internal/api/startup/startup.go`, [entry.go](./templates/internal/api/core/entry/entry.go) to `internal/api/core/entry/entry.go`, and [logging.go](./templates/internal/logging/logging.go) to `internal/logging/logging.go`, replacing `{module-path}` with the module path from `go.mod`.
 - Risk: a retyped contract drifts from the one every variation point's decorator and entry point is written against.
 - Fix: copy the templates; after filling, searching the copied files for `{module-path}` returns nothing.
 
@@ -81,7 +81,7 @@ End `run` with one `entry.RunAll` call listing an `entry.Entry{Name, Run}` per e
 // [entries] - every entry point, one Entry each, run together by entry.RunAll.
 err = entry.RunAll(ctx, logger,
 	entry.Entry{Name: "startup", Run: func(ctx context.Context) error {
-		return startup.Run(ctx, planItems, command.PlanItems{Titles: startup.EnvList("STARTUP_TITLES")}, stdout)
+		return startup.Run(ctx, planItems, command.PlanItemsCommand{Titles: startup.EnvList("STARTUP_TITLES")}, stdout)
 	}},
 )
 return entry.ExitCode(err)
@@ -92,7 +92,7 @@ return entry.ExitCode(err)
 - Fix: a variation point adds its `entry.Entry` to the list (health) or replaces the startup `Entry` with its own (an API); `RunAll` and `ExitCode` stay as they are. `RunAll` logs the error of an entry, unless the entry sets `ReportsErrors: true` because it shows the error itself (the CLI).
 
 ### Cover each layer with scenarios
-Cover `internal/domain/entity`, `internal/domain/service`, `internal/command`, `internal/command/pipeline`, `internal/api/startup`, `internal/api/entry`, `internal/logging`, and `internal/config` with Cucumber scenarios per [cucumber-testing-in-go](library/testing/go/cucumber-testing-in-go.skill.md), tagged `@type/domain`, `@type/service` (commands), `@type/tech-check` (decorators, settings, the runner), and `@type/api/cli` (startup entry), run by `go test ./...`.
+Cover `internal/domain/entity`, `internal/domain/service`, `internal/command`, `internal/command/pipeline`, `internal/api/startup`, `internal/api/core/entry`, `internal/logging`, and `internal/config` with Cucumber scenarios per [cucumber-testing-in-go](library/testing/go/cucumber-testing-in-go.skill.md), tagged `@type/domain`, `@type/service` (commands), `@type/tech-check` (decorators, settings, the runner), and `@type/api/cli` (startup entry), run by `go test ./...`.
 - Risk: a layer without scenarios lets a variation point break it unnoticed, since the variation point's example reruns the base scenarios as its regression check.
 - Fix: one `features/` and `test/` pair per package; `make test` passes.
 
@@ -113,7 +113,7 @@ Read the base settings from environment variables in `config.Load() (Config, err
 
 # Check list
 - [ ] Packages follow [Base packages](#base-packages) and [app-layers-in-go](library/develop/go/app-layers-in-go.skill.md).
-- [ ] `internal/command/pipeline/{handler,logging}.go`, `internal/api/startup/startup.go`, `internal/api/entry/entry.go`, and `internal/logging/logging.go` are filled copies of the templates; none contains `{module-path}`.
+- [ ] `internal/command/pipeline/{handler,logging}.go`, `internal/api/startup/startup.go`, `internal/api/core/entry/entry.go`, and `internal/logging/logging.go` are filled copies of the templates; none contains `{module-path}`.
 - [ ] Every business-rule error wraps one kind of `kinds.go`; code outside the domain checks kinds only through `pipeline`.
 - [ ] Every command lives in its own file in `internal/command` with a handler matching `Handler[TCommand, TResult]`.
 - [ ] Each decorator is in its own file of `internal/command/pipeline`.

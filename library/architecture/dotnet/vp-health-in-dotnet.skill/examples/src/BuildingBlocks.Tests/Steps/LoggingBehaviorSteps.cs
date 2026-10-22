@@ -7,12 +7,12 @@ using Xunit.Abstractions;
 namespace BuildingBlocks.Tests.Steps;
 
 /// <summary>A command of the scenarios; the behavior logs it by its type name.</summary>
-public sealed record PlanItems(string Title) : IRequest<string>;
+public sealed record PlanItemsCommand(string Title) : IRequest<string>;
 
 [Binding]
 public sealed class LoggingBehaviorSteps(ITestOutputHelper output)
 {
-    private readonly RecordingLogger<LoggingBehavior<PlanItems, string>> _logger = new();
+    private readonly RecordingLogger<LoggingBehavior<PlanItemsCommand, string>> _logger = new();
     private RequestHandlerDelegate<string> _handler = null!;
     private Exception? _error;
 
@@ -25,10 +25,10 @@ public sealed class LoggingBehaviorSteps(ITestOutputHelper output)
     [When("the wrapped handler handles PlanItems for {string}")]
     public async Task WhenTheWrappedHandlerHandles(string title)
     {
-        var behavior = new LoggingBehavior<PlanItems, string>(_logger);
+        var behavior = new LoggingBehavior<PlanItemsCommand, string>(_logger);
         try
         {
-            await behavior.Handle(new PlanItems(title), _handler, CancellationToken.None);
+            await behavior.Handle(new PlanItemsCommand(title), _handler, CancellationToken.None);
         }
         catch (Exception error)
         {

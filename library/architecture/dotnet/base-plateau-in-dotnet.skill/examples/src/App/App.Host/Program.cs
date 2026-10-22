@@ -3,7 +3,7 @@
 // the marked sections below - never by editing another file.
 
 using System.Runtime.InteropServices;
-using App.Host.Api.Entry;
+using App.Host.Api.Core.Entry;
 using App.Host.Api.Startup;
 using App.Host.Config;
 using App.Host.Version;
@@ -13,7 +13,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Todo.Application.Commands;
-using Todo.Interfaces.Commands;
+using Todo.Commands;
 
 namespace App.Host;
 
@@ -74,7 +74,7 @@ public static class Program
         // health variation point adds one.
         var error = await EntryRunner.RunAllAsync(logger, stopping,
             new Entry("startup", stopping =>
-                StartupEntry.RunAsync(sender, new PlanItems(StartupEntry.EnvList("STARTUP_TITLES")), stdout, stopping)));
+                StartupEntry.RunAsync(sender, new PlanItemsCommand(StartupEntry.EnvList("STARTUP_TITLES")), stdout, stopping)));
         return EntryRunner.ExitCode(error);
     }
 }

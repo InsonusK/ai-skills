@@ -54,10 +54,11 @@ the `spec/` skills come along because every stack skill links its spec.
 |---|---|---|---|
 | Entity | `internal/domain/entity` | `src/{package}/domain/entity` | `src/Modules/{Module}/{Module}.Domain/Entities` |
 | Domain service | `internal/domain/service` | `src/{package}/domain/service` | `src/Modules/{Module}/{Module}.Domain/Services` |
-| Commands + handlers | `internal/command` (contract and decorators in `internal/command/pipeline`) | `src/{package}/command` | `src/Modules/{Module}/{Module}.Application/Commands` (command types in `{Module}.Interfaces/Commands`, behaviors in `src/BuildingBlocks/Pipeline`) |
+| Commands + handlers | `internal/command` (contract and decorators in `internal/command/pipeline`) | `src/{package}/command` | `src/Modules/{Module}/{Module}.Application/Commands` (command types in `{Module}.Commands`, behaviors in `src/BuildingBlocks/Pipeline`) |
 | API (entries) | `internal/api/{transport}`: `pipeline/` (fixed), `endpoint/` (`{Resource}Handler` per file), `routes.go` / `services.go` / `commands.go` (registration) | `src/{package}/api/{transport}` | `src/App/App.Host/Api/{Transport}`: `Pipeline/` (fixed), `Endpoint/` (`{Resource}Handler` per file), `Routes.cs` / `Services.cs` (registration) |
-| Service | `internal/service` | `src/{package}/service` | decided with the clients (step 2) |
-| Infrastructure | `internal/infrastructure/{kind}` | `src/{package}/infrastructure/{kind}` | decided with the clients (step 2) |
+| API — shared by the entries | `internal/api/core/{entry,rpcstatus}` | `src/{package}/api/core` | `src/App/App.Host/Api/Core/{Entry,Errors,Hosting}` |
+| Service | `internal/service` | `src/{package}/service` | `src/Modules/{Module}/{Module}.Application/Services` (interface beside its consumer) |
+| Infrastructure | `internal/infrastructure/{kind}` | `src/{package}/infrastructure/{kind}` | `src/Infrastructure/{Infra}/{Infra}.Abstractions` + `{Infra}` |
 | Composition root | `cmd/{app}/main.go` | `src/{package}/main.py` | `src/App/App.Host/Program.cs` (`RunAsync`) |
 | Error kinds | `internal/domain/entity/kinds.go` | | `src/Shared/Errors` |
 
@@ -82,7 +83,7 @@ the `spec/` skills come along because every stack skill links its spec.
 | 1c-1 | API: gRPC (`vp-grpc-api`) | ✅ | ✅ | |
 | — | error kinds (`library/develop/core/error-kinds`) | ✅ | ✅ (exceptions) | |
 | — | health (`vp-health`, `:8081`) + one runner for every entry point (`entry.RunAll`) | ✅ | ✅ | |
-| 1c-2 | HTTP form of a gRPC contract (`vp-http-api`, proto mode) | ✅ | | |
+| 1c-2 | HTTP form of a gRPC contract (`vp-http-api`, proto mode) | ✅ | ✅ | |
 | 1d | API: CLI (`vp-cli-api`, cobra) | ✅ | | |
 | — | logging: one logger, payload attribute, base handler drops it; every entry point logs its calls; `vp-logging` masks and writes the payload | ✅ | base ✅ | |
 | 2 | clients: HTTP, gRPC | | | |
@@ -104,7 +105,7 @@ variation points are formed (2026-10-18).
 | Go logging (`internal/logging`, `internal/logging/masked`: payload attribute, masked handler) | templates of `base-plateau-in-go` and `vp-logging-in-go` | identical in every Go application; one masking for all services |
 | Go error kinds (`entity/kinds.go`, `pipeline/errors.go` with `KindOf`, `api/rpcstatus`) | templates of `error-kinds-in-go` | identical in every Go application; a service would import the kinds and the table instead of copying them; the skill would keep only when to choose each kind |
 | Testing tooling (`tools/testing`, `tools/normalize_*`, `tools/livingdoc`, `report-template`) | example of `solution-conformance-testing-in-go`; not copied into plateau or variation-point examples | ~2,000 lines copied into every real project; a version bump would update every project at once |
-| dotnet fixed code (`Shared`: error kinds; `BuildingBlocks`: `LoggingBehavior`, `JsonLogProvider`, `LogAttr`, `RequestId`; `Api/Entry`, `Api/Startup`; `Api/Errors/RpcStatus`, `Api/Hosting/WebHost`, `Api/Http/Pipeline`, `Api/Grpc/Pipeline`, `Api/Management`) | templates of `base-plateau-in-dotnet`, `error-kinds-in-dotnet`, `vp-http-api-in-dotnet`, `vp-grpc-api-in-dotnet`, `vp-health-in-dotnet` | no placeholder at all: one NuGet package (or two: `Shared` with no dependency, the rest over MediatR) |
+| dotnet fixed code (`Shared`: error kinds; `BuildingBlocks`: `LoggingBehavior`, `JsonLogProvider`, `LogAttr`, `RequestId`; `Api/Core/Entry`, `Api/Startup`; `Api/Core/Errors/RpcStatus`, `Api/Core/Hosting/WebHost`, `Api/Http/Pipeline` with `ProtoJson`, `Api/Grpc/Pipeline`, `Api/Management`) | templates of `base-plateau-in-dotnet`, `error-kinds-in-dotnet`, `vp-http-api-in-dotnet`, `vp-grpc-api-in-dotnet`, `vp-health-in-dotnet` | no placeholder at all: one NuGet package (or two: `Shared` with no dependency, the rest over MediatR) |
 | TaskBox | `taskbox-spec` published; `taskbox-go` code proven, not yet packaged | already decided as a library (ADR `contract-vp-realized-by-libraries`) |
 
 ## Decisions waiting for their variation point
@@ -124,12 +125,11 @@ Agreed with the owner; written into the variation point's skill and ADR when it 
 |---|---|
 | Rewrite `api-client-develop` and `client-mocking` (`common-workflow/develop`) in service / infrastructure terms as they move to `library/develop` (the old Client/Integration names stay in `solution-integration-client-layering` and the old catalogs; the mapping is recorded in the `app-layers` ADR `service-wraps-one-infrastructure`) | clients (step 2) |
 | Clients log every outgoing call (`http client call`, `grpc client call`) with the request as the payload and the request id of the context sent on, through the same logger | clients (step 2) |
-| The proto example keeps its lists in memory (`internal/infrastructure/memory`, scenarios tagged `@type/tech-check` since the tag vocabulary has no in-memory store); the DB variation point replaces it | DB (step 3) |
+| The proto examples keep their lists in memory (Go `internal/infrastructure/memory`, dotnet `src/Infrastructure/Memory`, scenarios tagged `@type/tech-check` since the tag vocabulary has no in-memory store); the DB variation point replaces it | DB (step 3) |
 | The verification `curl` of the `devops-service-deploy` guides calls `/health/ready` on the published API port; for a service with the management port it needs that port published or port-forwarded | with the next change of `devops-service-deploy` |
 | Review [Library candidates](#library-candidates) with the owner: turn fixed Go code (handler contract, error kinds + `rpcstatus`, HTTP/gRPC entry points) into libraries services import instead of copying templates | after the last variation point (step 4) |
 | Move `library/common-workflow/develop/*` to `library/develop/{core,stack}` | later pass |
 | Go HTTP: `http.ServeMux` answers an unknown route (404) and another method (405) with plain text, not `google.rpc.Status`; the dotnet `ErrorAnswers` fills both — add the same to the Go pipeline | with the next change of `vp-http-api-in-go` |
 | The old dotnet catalog (`library/dotnet/architecture/...`: plateau examples, `*.Tests.csproj.create.md`) still keeps test projects in a root `tests/`; `cucumber-testing-in-dotnet` now puts each beside its project (ADR `test-location`) | when the old dotnet catalog is replaced |
-| dotnet: where a service and its infrastructure live, and which project declares the interface a handler calls (Go's consumer-owned interface needs the implementation to reference the consumer's project in dotnet) | clients (step 2) |
 | dotnet: one DI scope per command, for a scoped `DbContext` — entries send through a sender that opens a scope per call; today they take `ISender` from the root provider | DB (step 3) |
 | `api-develop-in-go` still says the contract's routes are one list in `internal/api/http/server.go` exposed as `ContractRoutes()`; the HTTP variation point now keeps them in `internal/api/http/endpoint` (`Routes`) | with the move of `library/common-workflow/develop/*` |

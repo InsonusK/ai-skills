@@ -17,7 +17,7 @@ adr:
 
 # Core Principle
 - **A method is written for its success** - A method maps its request message to the command, sends it, and maps the result to the response message; every exception it lets out is answered once, by the `ErrorAnswers` interceptor, through [RpcStatus](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md) — the same table as the HTTP variation point's.
-- **Copied once, written per command** - The entry point is split as [app-layers-in-dotnet](library/develop/dotnet/app-layers-in-dotnet.skill.md#split-each-entry-point-into-pipeline-endpoint-and-registration) requires: `Pipeline/` is copied from templates and never edited; per command the application writes, in its service's class of `Endpoint/`, one override.
+- **Copied once, written per command** - The entry point is split as [app-layers-in-dotnet](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md#split-each-entry-point-into-pipeline-endpoint-and-registration) requires: `Pipeline/` is copied from templates and never edited; per command the application writes, in its service's class of `Endpoint/`, one override.
 
 ```
 docs/integration/api/{contract-name}/{file}.proto    the contract, written by hand; C# generated at build time
@@ -39,7 +39,7 @@ src/App/App.Host/Api/
 ## MUST
 
 ### Copy the entry point from templates
-Copy, unchanged, [GrpcConfig.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/GrpcConfig.cs), [GrpcServer.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/GrpcServer.cs), [GrpcService.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/GrpcService.cs), [CallLog.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/CallLog.cs), and [ErrorAnswers.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/ErrorAnswers.cs) to `src/App/App.Host/Api/Grpc/Pipeline/`, [WebHost.cs](./templates/src/App/App.Host/Api/Hosting/WebHost.cs) to `Api/Hosting/`, and `RpcStatus.cs` of [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md) to `Api/Errors/`, unless another entry point already put the last two there.
+Copy, unchanged, [GrpcConfig.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/GrpcConfig.cs), [GrpcServer.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/GrpcServer.cs), [GrpcService.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/GrpcService.cs), [CallLog.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/CallLog.cs), and [ErrorAnswers.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/ErrorAnswers.cs) to `src/App/App.Host/Api/Grpc/Pipeline/`, [WebHost.cs](./templates/src/App/App.Host/Api/Core/Hosting/WebHost.cs) to `Api/Core/Hosting/`, and `RpcStatus.cs` of [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md) to `Api/Core/Errors/`, unless another entry point already put the last two there.
 - Risk: a retyped server drifts in its error answers, its call log, or its shutdown from every other dotnet service of the catalog; a second, different `WebHost.cs` breaks the HTTP or management entry point it is shared with.
 - Fix: copy the files; `bash test/check-vp-attach.sh` in this repository fails when two variation points add a shared file differently.
 
@@ -83,7 +83,7 @@ Copy the example's `src/App/App.Host.Tests/features/Grpc/` scenarios of the fixe
 Serve a further command of an existing service by adding its rpc and messages to the proto file and its override to the service's class, and its scenario to the service's feature; a new service adds its class and feature, one parameter of `GrpcEndpoints`, one line of `Services`, and one row of the contract scenario.
 
 # Check list
-- [ ] `Api/Grpc/Pipeline/{GrpcConfig,GrpcServer,GrpcService,CallLog,ErrorAnswers}.cs`, `Api/Hosting/WebHost.cs`, and `Api/Errors/RpcStatus.cs` are copies of the templates.
+- [ ] `Api/Grpc/Pipeline/{GrpcConfig,GrpcServer,GrpcService,CallLog,ErrorAnswers}.cs`, `Api/Core/Hosting/WebHost.cs`, and `Api/Core/Errors/RpcStatus.cs` are copies of the templates.
 - [ ] The proto file is versioned per api-develop under `docs/integration/api/`, compiled by `<Protobuf ... GrpcServices="Both">`; no generated file is committed.
 - [ ] Each proto service is one `{Service}Handler` class in `Api/Grpc/Endpoint/` overriding every rpc with no error handling of its own; `Services.cs` holds only `GrpcEndpoints`, `Services`, and `GrpcApi.RunAsync`.
 - [ ] `// [entries]` has a `grpc` entry calling `GrpcApi.RunAsync`; `Api/Startup/` is deleted.

@@ -1,5 +1,5 @@
 using System.Collections.Concurrent;
-using App.Host.Api.Entry;
+using App.Host.Api.Core.Entry;
 using BuildingBlocks.Logging;
 using Microsoft.Extensions.Logging;
 using Reqnroll;

@@ -32,7 +32,7 @@ src/App/App.Host/Api/
 ## MUST
 
 ### Copy the entry point from templates
-Copy, unchanged, [ManagementConfig.cs](./templates/src/App/App.Host/Api/Management/ManagementConfig.cs) and [ManagementServer.cs](./templates/src/App/App.Host/Api/Management/ManagementServer.cs) to `src/App/App.Host/Api/Management/` and [WebHost.cs](./templates/src/App/App.Host/Api/Hosting/WebHost.cs) to `Api/Hosting/` unless another web entry point already put it there; in `App.Host.csproj` add `<FrameworkReference Include="Microsoft.AspNetCore.App" />` and remove the `Microsoft.Extensions.DependencyInjection` and `Microsoft.Extensions.Logging` package references the framework brings.
+Copy, unchanged, [ManagementConfig.cs](./templates/src/App/App.Host/Api/Management/ManagementConfig.cs) and [ManagementServer.cs](./templates/src/App/App.Host/Api/Management/ManagementServer.cs) to `src/App/App.Host/Api/Management/` and [WebHost.cs](./templates/src/App/App.Host/Api/Core/Hosting/WebHost.cs) to `Api/Core/Hosting/` unless another web entry point already put it there; in `App.Host.csproj` add `<FrameworkReference Include="Microsoft.AspNetCore.App" />` and remove the `Microsoft.Extensions.DependencyInjection` and `Microsoft.Extensions.Logging` package references the framework brings.
 - Risk: a retyped server drifts in its readiness answer or shutdown from every other dotnet service of the catalog; a second, different `WebHost.cs` breaks the HTTP or gRPC entry point it is shared with.
 - Fix: copy the files; `bash test/check-vp-attach.sh` in this repository fails when two variation points add `WebHost.cs` differently.
 
@@ -75,7 +75,7 @@ Copy the example's `src/App/App.Host.Tests/features/Management/` and `Steps/Mana
 - Fix: the steps name the management port in their text (`the management status should be 200`), so they never collide with the HTTP variation point's in the one test project of `App.Host`; `make test` passes.
 
 # Check list
-- [ ] `Api/Management/{ManagementConfig,ManagementServer}.cs` and `Api/Hosting/WebHost.cs` are copies of the templates; `App.Host.csproj` references `Microsoft.AspNetCore.App`.
+- [ ] `Api/Management/{ManagementConfig,ManagementServer}.cs` and `Api/Core/Hosting/WebHost.cs` are copies of the templates; `App.Host.csproj` references `Microsoft.AspNetCore.App`.
 - [ ] `// [entries]` has a `management` entry calling `ManagementServer.RunAsync`; every other entry is unchanged.
 - [ ] Every readiness check is a `ReadinessCheck` argument of `ManagementServer.RunAsync`.
 - [ ] The deployment's probes name port 8081.

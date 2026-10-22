@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- What a service sees of the in-memory store: its interface and the
+       technical outcomes it reports, in the store's own terms. No package of
+       the technique, so a module referencing it gets none. -->
+</Project>

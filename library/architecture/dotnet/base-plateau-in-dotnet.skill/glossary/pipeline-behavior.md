@@ -5,7 +5,7 @@ MediatR gives the dotnet base plateau its **handler contract** and its **decorat
 ## How it works
 
 ```
-entry point ── sender.Send(new PlanItems(...)) ──► LoggingBehavior ──► (UnitOfWorkBehavior, later) ──► PlanItemsHandler
+entry point ── sender.Send(new PlanItemsCommand(...)) ──► LoggingBehavior ──► (UnitOfWorkBehavior, later) ──► PlanItemsHandler
                                                        ▲ outermost first, the order of AddOpenBehavior
 ```
 
@@ -15,7 +15,7 @@ entry point ── sender.Send(new PlanItems(...)) ──► LoggingBehavior ─
 | `WithLogging(name, logger, handler)` per handler in `main.go` | `LoggingBehavior<,>` once, `AddOpenBehavior` in `// [handlers]` |
 | a handler variable passed to the entry point | `ISender`, which finds the handler by the command's type |
 
-`TCommand` is the command record (`PlanItems`), `TResult` the result it declares with `IRequest<TResult>` (`PlanItemsResult`). MediatR closes the open behavior for every command, so a behavior is written once.
+`TCommand` is the command record (`PlanItemsCommand`), `TResult` the result it declares with `IRequest<TResult>` (`PlanItemsResult`). MediatR closes the open behavior for every command, so a behavior is written once.
 
 ## Example
 

@@ -4,7 +4,7 @@ The **startup entry** (`src/App/App.Host/Api/Startup`) is the base plateau's onl
 
 ## How it works
 
-1. `[entries]` builds the command from the setting the entry owns: `new PlanItems(StartupEntry.EnvList("STARTUP_TITLES"))`.
+1. `[entries]` builds the command from the setting the entry owns: `new PlanItemsCommand(StartupEntry.EnvList("STARTUP_TITLES"))`.
 2. `StartupEntry.RunAsync(sender, command, stdout, stopping)` sends it through `ISender`, so every [pipeline behavior](./pipeline-behavior.md) runs.
 3. On success it writes `{"items":[...]}` (camelCase, `JsonSerializerOptions.Web`); on error nothing is written and the exception goes to the [entry runner](./entry-runner.md), which sets the exit code.
 

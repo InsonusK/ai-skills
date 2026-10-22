@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The process: the composition root (Program.cs), the entry points (Api/),
+       and the base settings. The only project that references every other. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Shared.csproj" />
+    <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks.csproj" />
+    <ProjectReference Include="..\..\Modules\Todo\Todo.Commands\Todo.Commands.csproj" />
+    <ProjectReference Include="..\..\Modules\Todo\Todo.Application\Todo.Application.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Memory\Memory\Memory.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- ASP.NET Core for the web entry points (Api/Core/Hosting); it brings
+         Microsoft.Extensions.DependencyInjection and Logging with it. -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- The gRPC contract: its messages and service bases generated at build
+         time by Grpc.Tools; the client too, which the scenarios call it with.
+         Its HTTP annotations import the vendored googleapis and openapiv2
+         options, compiled with it. -->
+    <Protobuf Include="..\..\..\docs\integration\api\todo\todo.proto" GrpcServices="Both" Link="Api\Grpc\Contract\todo.proto" AdditionalImportDirs="..\..\..\third_party\proto" />
+    <Protobuf Include="..\..\..\third_party\proto\**\*.proto" ProtoRoot="..\..\..\third_party\proto" GrpcServices="None" Link="Api\Grpc\Contract\third_party\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- The spec of the HTTP form, generated from the proto file (make proto-gen),
+         served by Api/Http/Pipeline/HttpDocs under this name. -->
+    <EmbeddedResource Include="..\..\..\docs\integration\api\todo\todo.swagger.json" LogicalName="openapi.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="Grpc.AspNetCore" />
+    <PackageReference Include="Grpc.AspNetCore.Server.Reflection" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" />
+  </ItemGroup>
+</Project>

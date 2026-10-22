@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"{module-path}/internal/api/rpcstatus"
+	"{module-path}/internal/api/core/rpcstatus"
 	commandpipeline "{module-path}/internal/command/pipeline"
 )
 

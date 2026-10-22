@@ -1,6 +1,6 @@
 ---
 name: error-kinds-in-go
-description: The error kinds in Go — sentinel errors declared once in internal/domain/entity/kinds.go, re-exported with KindOf in internal/command/pipeline/errors.go, wrapped with %w by every error a caller can act on, and answered by every entry point through one table in internal/api/rpcstatus (google.rpc.Code, HTTP status, message), with no gRPC module needed by an HTTP-only service
+description: The error kinds in Go — sentinel errors declared once in internal/domain/entity/kinds.go, re-exported with KindOf in internal/command/pipeline/errors.go, wrapped with %w by every error a caller can act on, and answered by every entry point through one table in internal/api/core/rpcstatus (google.rpc.Code, HTTP status, message), with no gRPC module needed by an HTTP-only service
 whenToUse: when a Go command, domain service, entity, or service returns an error a caller must act on, when a Go entry point turns an error into its answer, or when you review either
 updated: 20261018
 tags:
@@ -21,7 +21,7 @@ tags:
 internal/domain/entity/kinds.go      ErrInvalid, ErrNotFound, ... - the sentinels
 internal/domain/entity/errors.go     the application's errors, each wrapping its kind
 internal/command/pipeline/errors.go  the sentinels re-exported + Kinds + KindOf
-internal/api/rpcstatus/rpcstatus.go  kind → Code (google.rpc.Code) → HTTP status, message
+internal/api/core/rpcstatus/rpcstatus.go  kind → Code (google.rpc.Code) → HTTP status, message
 ```
 
 # Rule
@@ -40,7 +40,7 @@ Declare each error a caller can act on as `fmt.Errorf("%w: {what happened, for t
 - Fix: `%w` at every wrap; check a kind only with `errors.Is(err, pipeline.Err{Kind})` or `pipeline.KindOf(err)`.
 
 ### Answer through rpcstatus in every network entry point
-Fill and copy [rpcstatus.go](./templates/internal/api/rpcstatus/rpcstatus.go) to `internal/api/rpcstatus/`, with the scenarios of an API variation point's example, and answer every error with `rpcstatus.Of(err)`: over HTTP as `code.HTTPStatus()` with a `google.rpc.Status` body, over gRPC as `status.Error(codes.Code(code), message)`.
+Fill and copy [rpcstatus.go](./templates/internal/api/core/rpcstatus/rpcstatus.go) to `internal/api/core/rpcstatus/`, with the scenarios of an API variation point's example, and answer every error with `rpcstatus.Of(err)`: over HTTP as `code.HTTPStatus()` with a `google.rpc.Status` body, over gRPC as `status.Error(codes.Code(code), message)`.
 - Violation: an entry point with its own `switch` or `map` of kinds; a second `rpcstatus.go` that differs from the first.
 - Risk: the HTTP and gRPC forms of one service answer the same kind differently.
 - Fix: the HTTP and gRPC variation points copy the same file; `bash test/check-vp-attach.sh` in this repository fails when two variation points add it differently.
@@ -51,7 +51,7 @@ Map an error to the exit code of the table in a command-line entry point: `0` fo
 - Fix: follow `ExitCode` of [base-plateau-in-go](library/architecture/go/base-plateau-in-go.skill/base-plateau-in-go.skill.md)'s startup entry.
 
 # Check list
-- [ ] `internal/domain/entity/kinds.go`, `internal/command/pipeline/errors.go`, and, in a service with a network entry point, `internal/api/rpcstatus/rpcstatus.go` are filled copies of the templates.
+- [ ] `internal/domain/entity/kinds.go`, `internal/command/pipeline/errors.go`, and, in a service with a network entry point, `internal/api/core/rpcstatus/rpcstatus.go` are filled copies of the templates.
 - [ ] Every error a caller can act on wraps one sentinel of `kinds.go` with `%w`, and every wrap above it uses `%w`.
 - [ ] No code outside `entity` and `pipeline` declares a kind; no code checks an error by its text.
 - [ ] Every network entry point answers errors only through `rpcstatus.Of`; a CLI entry point exits by `pipeline.KindOf`.
