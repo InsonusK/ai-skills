@@ -75,12 +75,12 @@ Copy [proto.go](./templates/internal/api/http/pipeline/proto.go) beside the othe
 
 ```go
 // POST /v1/lists/{listId}/items - rpc AddItem, field list_id in the path
-func decodeAddItem(r *http.Request) (command.AddItem, error) {
+func decodeAddItem(r *http.Request) (command.AddItemCommand, error) {
 	req := &todo.AddItemRequest{}
 	if err := httppipeline.DecodeProto(r, req); err != nil {
-		return command.AddItem{}, err
+		return command.AddItemCommand{}, err
 	}
-	return command.AddItem{ListID: r.PathValue("listId"), Title: req.GetTitle()}, nil
+	return command.AddItemCommand{ListID: r.PathValue("listId"), Title: req.GetTitle()}, nil
 }
 ```
 

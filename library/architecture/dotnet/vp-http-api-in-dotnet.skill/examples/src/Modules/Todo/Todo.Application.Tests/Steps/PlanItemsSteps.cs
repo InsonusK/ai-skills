@@ -18,7 +18,7 @@ public sealed class PlanItemsSteps(ITestOutputHelper output)
     {
         try
         {
-            _result = await new PlanItemsHandler().Handle(new PlanItems(titles.Split('|')), CancellationToken.None);
+            _result = await new PlanItemsHandler().Handle(new PlanItemsCommand(titles.Split('|')), CancellationToken.None);
         }
         catch (Exception error)
         {

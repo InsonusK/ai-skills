@@ -18,7 +18,7 @@ namespace BuildingBlocks.Pipeline;
 /// (<see cref="JsonLogProvider"/>), never this behavior's.
 ///
 /// <typeparamref name="TCommand"/> is the command type - the input of one
-/// operation (for example <c>PlanItems</c>); <typeparamref name="TResult"/> is
+/// operation (for example <c>PlanItemsCommand</c>); <typeparamref name="TResult"/> is
 /// the result its handler returns (for example <c>PlanItemsResult</c>).
 /// MediatR closes the behavior for every command, so it is written once.
 ///
@@ -30,9 +30,15 @@ public sealed class LoggingBehavior<TCommand, TResult>(ILogger<LoggingBehavior<T
     : IPipelineBehavior<TCommand, TResult>
     where TCommand : notnull
 {
+    // The command's name in the log: the operation, without the type's
+    // "Command" suffix (PlanItemsCommand -> "PlanItems"), as every stack logs it.
+    private static readonly string Name = typeof(TCommand).Name is var type && type.EndsWith("Command", StringComparison.Ordinal)
+        ? type[..^"Command".Length]
+        : typeof(TCommand).Name;
+
     public async Task<TResult> Handle(TCommand command, RequestHandlerDelegate<TResult> next, CancellationToken cancellationToken)
     {
-        var name = typeof(TCommand).Name;
+        var name = Name;
         logger.Write(LogLevel.Information, "command called", LogAttr.Of("command", name), LogAttr.Payload(command));
         var started = Stopwatch.GetTimestamp();
         TResult result;

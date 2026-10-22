@@ -1,11 +1,10 @@
 using Contracts.Todo.V1;
 using MediatR;
+using Todo.Commands;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Shared.Errors;
-using AddItemCommand = Todo.Commands.AddItem;
-using ListItemsCommand = Todo.Commands.ListItems;
 
 namespace App.Host.Api.Http.Endpoint;
 

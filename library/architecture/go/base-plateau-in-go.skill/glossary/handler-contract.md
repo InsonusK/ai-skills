@@ -19,14 +19,14 @@ type Handler[TCommand, TResult any] interface {
 ```
 
 - `any` means "any type is allowed" for that parameter.
-- `PlanItemsHandler` has the method `Handle(ctx, PlanItems) (PlanItemsResult, error)`. Go checks the method signature, so `*PlanItemsHandler` **is** a `Handler[PlanItems, PlanItemsResult]` — no `implements` keyword is needed (Go interfaces are satisfied implicitly).
+- `PlanItemsHandler` has the method `Handle(ctx, PlanItemsCommand) (PlanItemsResult, error)`. Go checks the method signature, so `*PlanItemsHandler` **is** a `Handler[PlanItemsCommand, PlanItemsResult]` — no `implements` keyword is needed (Go interfaces are satisfied implicitly).
 - Generic code receives the handler as `Handler[TCommand, TResult]`; Go infers the two types from the handler passed in, so `startup.Run(ctx, planItems, cmd, out)` needs no explicit type arguments.
 
 ```mermaid
 flowchart LR
     E["Entry point<br/>startup.Run[TCommand, TResult]"] -->|"Handle(ctx, cmd)"| H{{"Handler[TCommand, TResult]"}}
     D["Decorator<br/>WithLogging[TCommand, TResult]"] -->|wraps| H
-    H -. satisfied by .-> P["*PlanItemsHandler<br/>TCommand = PlanItems<br/>TResult = PlanItemsResult"]
+    H -. satisfied by .-> P["*PlanItemsHandler<br/>TCommand = PlanItemsCommand<br/>TResult = PlanItemsResult"]
 ```
 
 ## How it is structured
@@ -42,10 +42,10 @@ flowchart LR
 
 ```go
 // internal/command/plan_items.go
-func (h *PlanItemsHandler) Handle(_ context.Context, cmd PlanItems) (PlanItemsResult, error)
+func (h *PlanItemsHandler) Handle(_ context.Context, cmd PlanItemsCommand) (PlanItemsResult, error)
 
 // cmd/todo/main.go - the variable is typed by the contract, so a decorator can rewrap it
-var planItems pipeline.Handler[command.PlanItems, command.PlanItemsResult] = command.NewPlanItemsHandler()
+var planItems pipeline.Handler[command.PlanItemsCommand, command.PlanItemsResult] = command.NewPlanItemsHandler()
 ```
 
 ## Related concepts

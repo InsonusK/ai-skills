@@ -1,9 +1,9 @@
 using Contracts.Todo.V1;
 using MediatR;
+using Todo.Commands;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using PlanItemsCommand = Todo.Commands.PlanItems;
 
 namespace App.Host.Api.Http.Endpoint;
 

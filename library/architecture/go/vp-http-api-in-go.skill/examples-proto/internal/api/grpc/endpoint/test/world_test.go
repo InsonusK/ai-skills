@@ -33,13 +33,13 @@ type World struct {
 	// the fake PlanItems handler - the command layer below the gRPC entry point
 	planResult command.PlanItemsResult
 	planCalled bool
-	planGot    command.PlanItems
+	planGot    command.PlanItemsCommand
 
 	planResponse *todo.PlanItemsResponse
 
-	addGot   command.AddItem
+	addGot   command.AddItemCommand
 	addErr   error
-	listGot  command.ListItems
+	listGot  command.ListItemsCommand
 	listHeld []string
 
 	addResponse  *todo.AddItemResponse
@@ -75,19 +75,19 @@ func registerWorldHooks(sc *godog.ScenarioContext, w *World) {
 func (w *World) handlers() grpcapi.Endpoints {
 	return grpcapi.Endpoints{
 		Items: endpoint.ItemsHandler{
-			PlanItems: pipeline.HandlerFunc[command.PlanItems, command.PlanItemsResult](
-				func(_ context.Context, cmd command.PlanItems) (command.PlanItemsResult, error) {
+			PlanItems: pipeline.HandlerFunc[command.PlanItemsCommand, command.PlanItemsResult](
+				func(_ context.Context, cmd command.PlanItemsCommand) (command.PlanItemsResult, error) {
 					w.planCalled = true
 					w.planGot = cmd
 					return w.planResult, nil
 				}),
-			AddItem: pipeline.HandlerFunc[command.AddItem, command.AddItemResult](
-				func(_ context.Context, cmd command.AddItem) (command.AddItemResult, error) {
+			AddItem: pipeline.HandlerFunc[command.AddItemCommand, command.AddItemResult](
+				func(_ context.Context, cmd command.AddItemCommand) (command.AddItemResult, error) {
 					w.addGot = cmd
 					return command.AddItemResult{Item: command.ItemView{Title: cmd.Title}}, w.addErr
 				}),
-			ListItems: pipeline.HandlerFunc[command.ListItems, command.ListItemsResult](
-				func(_ context.Context, cmd command.ListItems) (command.ListItemsResult, error) {
+			ListItems: pipeline.HandlerFunc[command.ListItemsCommand, command.ListItemsResult](
+				func(_ context.Context, cmd command.ListItemsCommand) (command.ListItemsResult, error) {
 					w.listGot = cmd
 					result := command.ListItemsResult{}
 					for _, title := range w.listHeld {

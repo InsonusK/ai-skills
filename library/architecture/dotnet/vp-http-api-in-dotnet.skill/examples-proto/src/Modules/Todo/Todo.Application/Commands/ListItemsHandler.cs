@@ -4,10 +4,10 @@ using Todo.Commands;
 
 namespace Todo.Application.Commands;
 
-/// <summary>Handles <see cref="ListItems"/>: an unknown list is the service's not found.</summary>
-public sealed class ListItemsHandler(IItemLists lists) : IRequestHandler<ListItems, ListItemsResult>
+/// <summary>Handles <see cref="ListItemsCommand"/>: an unknown list is the service's not found.</summary>
+public sealed class ListItemsHandler(IItemLists lists) : IRequestHandler<ListItemsCommand, ListItemsResult>
 {
-    public async Task<ListItemsResult> Handle(ListItems command, CancellationToken cancellationToken)
+    public async Task<ListItemsResult> Handle(ListItemsCommand command, CancellationToken cancellationToken)
     {
         var items = await lists.ItemsAsync(command.ListId, cancellationToken);
         return new ListItemsResult(items.Select(item => new ItemView(item.Title, item.Done)).ToList());

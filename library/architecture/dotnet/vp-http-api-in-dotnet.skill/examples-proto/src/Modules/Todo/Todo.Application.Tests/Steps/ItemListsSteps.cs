@@ -62,7 +62,7 @@ public sealed class ItemListsSteps(ITestOutputHelper output)
     {
         try
         {
-            _added = await new AddItemHandler(_lists).Handle(new AddItem(listId, title), CancellationToken.None);
+            _added = await new AddItemHandler(_lists).Handle(new AddItemCommand(listId, title), CancellationToken.None);
         }
         catch (Exception error)
         {
@@ -76,7 +76,7 @@ public sealed class ItemListsSteps(ITestOutputHelper output)
     {
         try
         {
-            _listed = await new ListItemsHandler(_lists).Handle(new ListItems(listId), CancellationToken.None);
+            _listed = await new ListItemsHandler(_lists).Handle(new ListItemsCommand(listId), CancellationToken.None);
         }
         catch (Exception error)
         {

@@ -43,10 +43,10 @@ Write each resource in its own file `internal/api/cli/endpoint/{resource}.go`: a
 
 ```go
 // bind declares the flags and returns how to read them into the command.
-func bindPlanItems(flags *pflag.FlagSet) func() (command.PlanItems, error) {
+func bindPlanItems(flags *pflag.FlagSet) func() (command.PlanItemsCommand, error) {
 	titles := flags.StringArray("title", nil, "the title of an item; repeat for several")
-	return func() (command.PlanItems, error) {
-		return command.PlanItems{Titles: *titles}, nil
+	return func() (command.PlanItemsCommand, error) {
+		return command.PlanItemsCommand{Titles: *titles}, nil
 	}
 }
 ```
