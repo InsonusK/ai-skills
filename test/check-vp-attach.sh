@@ -15,11 +15,14 @@ cd "$ROOT"
 
 # files lists a directory's files, relative to it, without build and test output
 # (Go: bin/ and tmp/ at the root; dotnet: bin/, obj/, TestResults/ in every
-# project and the code Reqnroll generates from each .feature).
+# project and the code Reqnroll generates from each .feature; Python: .venv/
+# and the caches of the interpreter, pytest, and mypy).
 files() {
     (cd "$1" && find . -type f \
         -not -path './tmp/*' -not -path '*/bin/*' -not -path '*/obj/*' \
         -not -path '*/TestResults/*' -not -path '*/node_modules/*' -not -name '*.feature.cs' \
+        -not -path './.venv/*' -not -path '*/__pycache__/*' -not -path '*.egg-info/*' \
+        -not -path '*/.pytest_cache/*' -not -path '*/.mypy_cache/*' \
         | sed 's#^\./##' | sort)
 }
 

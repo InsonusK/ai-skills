@@ -6,7 +6,9 @@
 # same path under its own skill's examples*/ (examples-proto/ for a file of the
 # proto mode), or, for a skill with no example (error-kinds-in-go), under the
 # first example of the catalog that has it. Go templates carry placeholders
-# (fill); dotnet templates (.cs, .csproj) have none and are compared as they are.
+# (fill); Python templates name the package {package}, in their imports and in
+# their path (src/{package}/...); dotnet templates (.cs, .csproj) have none and
+# are compared as they are.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -17,7 +19,8 @@ fill() {
     sed -e 's#{module-path}#github.com/example/todo#g' \
         -e 's#{contract-name}#todo#g' \
         -e 's#{contract-package}#todo#g' \
-        -e 's#{api-title}#Todo#g' "$1"
+        -e 's#{api-title}#Todo#g' \
+        -e 's#{package}#todo#g' "$1"
 }
 
 status=0 checked=0
@@ -25,10 +28,12 @@ for templates in library/architecture/*/*.skill/templates library/develop/*/*.sk
     [ -d "$templates" ] || continue
     skill=$(dirname "$templates")
     while read -r f; do
+        # a Python template's path names its package {package}, the examples' todo
+        at=${f//\{package\}/todo}
         # every example of the skill that has the file; else the first of the catalog
-        examples=$(ls "$skill"/examples*/"$f" 2>/dev/null || true)
+        examples=$(ls "$skill"/examples*/"$at" 2>/dev/null || true)
         if [ -z "$examples" ]; then
-            examples=$(ls library/architecture/*/*.skill/examples*/"$f" 2>/dev/null | head -1 || true)
+            examples=$(ls library/architecture/*/*.skill/examples*/"$at" 2>/dev/null | head -1 || true)
         fi
         if [ -z "$examples" ]; then
             echo "ERROR $templates/$f: no example has this file" >&2
@@ -42,7 +47,7 @@ for templates in library/architecture/*/*.skill/templates library/develop/*/*.sk
                 status=1
             fi
         done
-    done < <(cd "$templates" && find . -type f \( -name '*.go' -o -name '*.cs' -o -name '*.csproj' \) | sed 's#^\./##' | sort)
+    done < <(cd "$templates" && find . -type f \( -name '*.go' -o -name '*.cs' -o -name '*.csproj' -o -name '*.py' \) | sed 's#^\./##' | sort)
 done
 [ "$status" = 0 ] && echo "templates ok: $checked template-example pairs match"
 exit "$status"
