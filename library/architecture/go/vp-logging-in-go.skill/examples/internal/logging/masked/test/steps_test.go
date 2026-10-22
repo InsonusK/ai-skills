@@ -7,14 +7,21 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"reflect"
+	"strconv"
 	"strings"
+	"sync"
+	"time"
 
+	"github.com/bufbuild/protocompile"
 	"github.com/cucumber/godog"
+	"google.golang.org/protobuf/encoding/protojson"
+	"google.golang.org/protobuf/encoding/protowire"
 	"google.golang.org/protobuf/proto"
-	"google.golang.org/protobuf/reflect/protodesc"
 	"google.golang.org/protobuf/reflect/protoreflect"
-	"google.golang.org/protobuf/types/descriptorpb"
+	"google.golang.org/protobuf/reflect/protoregistry"
 	"google.golang.org/protobuf/types/dynamicpb"
+	"google.golang.org/protobuf/types/known/anypb"
 
 	"github.com/example/todo/internal/logging"
 	"github.com/example/todo/internal/logging/masked"
@@ -22,48 +29,124 @@ import (
 
 var variables = []string{"LOG_PAYLOAD", "LOG_PAYLOAD_MAX_BYTES"}
 
-// person stands for a command with a secret field and a field not to log.
+// The types masking.feature gives as a payload.
+
 type person struct {
-	Name string `json:"name"`
-	PIN  string `json:"pin" log:"mask"`
-	Note string `json:"note" log:"omit"`
+	Name  string `json:"name"`
+	PIN   string `json:"pin" log:"mask"`
+	Note  string `json:"note" log:"omit"`
+	Draft string `json:"-"`
 }
 
-// pinMessage is a proto message built at run time - title, and pin marked
-// [debug_redact = true] - so the scenarios need no proto file of their own.
-func pinMessage(title, pin string) (proto.Message, error) {
-	file := &descriptorpb.FileDescriptorProto{
-		Name: proto.String("test/pin.proto"), Package: proto.String("test"), Syntax: proto.String("proto3"),
-		MessageType: []*descriptorpb.DescriptorProto{{
-			Name: proto.String("Pin"),
-			Field: []*descriptorpb.FieldDescriptorProto{
-				{Name: proto.String("title"), Number: proto.Int32(1), JsonName: proto.String("title"),
-					Type: descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(), Label: descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum()},
-				{Name: proto.String("pin"), Number: proto.Int32(2), JsonName: proto.String("pin"),
-					Type: descriptorpb.FieldDescriptorProto_TYPE_STRING.Enum(), Label: descriptorpb.FieldDescriptorProto_LABEL_OPTIONAL.Enum(),
-					Options: &descriptorpb.FieldOptions{DebugRedact: proto.Bool(true)}},
-			},
-		}},
+type vault struct {
+	Code string `json:"code"`
+}
+
+type team struct {
+	Title   string   `json:"title"`
+	Lead    person   `json:"lead"`
+	Members []person `json:"members"`
+	Vault   vault    `json:"vault" log:"mask"`
+}
+
+type login struct {
+	User     string `json:"user"`
+	Password string `json:"password"`
+}
+
+type link struct {
+	Name string `json:"name"`
+	Next *link  `json:"next"`
+}
+
+// protoMessages are the messages of the shared masking.proto, compiled from
+// the copy beside the scenarios and registered, so an Any of them unpacks as a
+// generated message's would.
+var protoMessages = sync.OnceValues(func() (protoreflect.MessageDescriptors, error) {
+	compiler := protocompile.Compiler{
+		Resolver: protocompile.WithStandardImports(&protocompile.SourceResolver{ImportPaths: []string{"../features"}}),
 	}
-	fd, err := protodesc.NewFile(file, nil)
+	files, err := compiler.Compile(context.Background(), "masking.proto")
 	if err != nil {
 		return nil, err
 	}
-	desc := fd.Messages().ByName("Pin")
-	msg := dynamicpb.NewMessage(desc)
-	msg.Set(desc.Fields().ByName("title"), protoreflect.ValueOfString(title))
-	msg.Set(desc.Fields().ByName("pin"), protoreflect.ValueOfString(pin))
-	return msg, nil
+	messages := files[0].Messages()
+	for i := range messages.Len() {
+		if err := protoregistry.GlobalTypes.RegisterMessage(dynamicpb.NewMessageType(messages.Get(i))); err != nil {
+			return nil, err
+		}
+	}
+	return messages, nil
+})
+
+func newMessage(name string) (*dynamicpb.Message, error) {
+	messages, err := protoMessages()
+	if err != nil {
+		return nil, err
+	}
+	desc := messages.ByName(protoreflect.Name(name))
+	if desc == nil {
+		return nil, fmt.Errorf("masking.proto has no message %s", name)
+	}
+	return dynamicpb.NewMessage(desc), nil
+}
+
+// nested is levels maps or lists, each holding the next, the innermost the
+// text "end".
+func nested(shape string, levels int) any {
+	var v any = "end"
+	for range levels {
+		if shape == "maps" {
+			v = map[string]any{"next": v}
+		} else {
+			v = []any{v}
+		}
+	}
+	return v
+}
+
+// nestedNodes is levels Node messages as proto JSON, each in the field of the
+// one before, the innermost with the title "end".
+func nestedNodes(field string, levels int) string {
+	v := `{"title":"end"}`
+	for range levels - 1 {
+		switch field {
+		case "next":
+			v = `{"next":` + v + `}`
+		case "children":
+			v = `{"children":[` + v + `]}`
+		default:
+			v = `{"named":{"n":` + v + `}}`
+		}
+	}
+	return v
+}
+
+// encode writes JSON as the handler does, "<" and ">" as they are.
+func encode(v any) string {
+	var b bytes.Buffer
+	enc := json.NewEncoder(&b)
+	enc.SetEscapeHTML(false)
+	_ = enc.Encode(v)
+	return strings.TrimSuffix(b.String(), "\n")
+}
+
+// sameJSON compares two JSON texts by what they say, not by key order.
+func sameJSON(got, want string) bool {
+	var g, w any
+	return json.Unmarshal([]byte(got), &g) == nil && json.Unmarshal([]byte(want), &w) == nil && reflect.DeepEqual(g, w)
 }
 
 func registerSteps(sc *godog.ScenarioContext) {
 	var rendered string
+	var unparsed []masked.Unparsed
 	var out bytes.Buffer
+	var logger *slog.Logger
 	var ctx context.Context
 	var cfg masked.Config
 	var loadErr error
 	sc.Before(func(c context.Context, _ *godog.Scenario) (context.Context, error) {
-		rendered, ctx = "", context.Background()
+		rendered, unparsed, logger, ctx = "", nil, nil, context.Background()
 		out.Reset()
 		cfg = masked.Config{Payload: masked.PayloadAlways, MaxBytes: 4096}
 		for _, name := range variables {
@@ -71,92 +154,265 @@ func registerSteps(sc *godog.ScenarioContext) {
 		}
 		return c, nil
 	})
+
+	// masking.feature
+
 	render := func(v any) error {
-		b, err := json.Marshal(masked.Mask(v))
-		rendered = string(b)
-		fmt.Printf("when: Mask -> %s\n", rendered)
-		return err
+		var value any
+		value, unparsed = masked.Mask(v)
+		rendered = encode(value)
+		fmt.Printf("when: Mask -> %s, unparsed %v\n", rendered, unparsed)
+		return nil
 	}
-	sc.Step(`^the payload is a command with the name "([^"]*)", the pin "([^"]*)" tagged mask, and the note "([^"]*)" tagged omit$`,
-		func(name, pin, note string) error { return render(person{Name: name, PIN: pin, Note: note}) })
+	sc.Step(`^the payload is a person with the name "([^"]*)", the pin "([^"]*)", the note "([^"]*)", and the draft "([^"]*)"$`,
+		func(name, pin, note, draft string) error {
+			return render(person{Name: name, PIN: pin, Note: note, Draft: draft})
+		})
+	sc.Step(`^the payload is a team "([^"]*)" led by "([^"]*)" with the pin "([^"]*)", a member "([^"]*)" with the pin "([^"]*)", and the vault code "([^"]*)"$`,
+		func(title, lead, leadPIN, member, memberPIN, code string) error {
+			return render(team{Title: title, Lead: person{Name: lead, PIN: leadPIN},
+				Members: []person{{Name: member, PIN: memberPIN}}, Vault: vault{Code: code}})
+		})
+	sc.Step(`^the payload is a login with the user "([^"]*)" and the password "([^"]*)"$`,
+		func(user, password string) error { return render(login{User: user, Password: password}) })
 	sc.Step(`^the payload is a map with "([^"]*)" = "([^"]*)" and "([^"]*)" = "([^"]*)"$`,
 		func(k1, v1, k2, v2 string) error { return render(map[string]string{k1: v1, k2: v2}) })
+	sc.Step(`^the payload is a map of lists with "([^"]*)" = "([^"]*)" and "([^"]*)" = "([^"]*)"$`,
+		func(k1, v1, k2, v2 string) error { return render(map[string][]string{k1: {v1}, k2: {v2}}) })
 	sc.Step(`^the payload is the body '([^']*)'$`, func(body string) error { return render([]byte(body)) })
-	sc.Step(`^the payload is a proto message with the title "([^"]*)" and the pin "([^"]*)" marked debug_redact$`, func(title, pin string) error {
-		msg, err := pinMessage(title, pin)
+	sc.Step(`^the payload is a map with "([^"]*)" holding the text '([^']*)'$`,
+		func(key, text string) error { return render(map[string]any{key: text}) })
+	sc.Step(`^the payload is a map with "([^"]*)" holding the body '([^']*)'$`,
+		func(key, body string) error { return render(map[string]any{key: []byte(body)}) })
+	sc.Step(`^the payload is a (\w+) message given as '([^']*)'$`, func(name, given string) error {
+		msg, err := newMessage(name)
 		if err != nil {
+			return err
+		}
+		if err := (protojson.UnmarshalOptions{Resolver: protoregistry.GlobalTypes}).Unmarshal([]byte(given), msg); err != nil {
 			return err
 		}
 		return render(msg)
 	})
+	sc.Step(`^the payload is a Wallet message whose extra is an Any of the type "([^"]*)" holding (\d+) bytes$`, func(url string, size int) error {
+		msg, err := newMessage("Wallet")
+		if err != nil {
+			return err
+		}
+		// built on the wire: no message of an unknown type can be given as JSON
+		extra, err := proto.Marshal(&anypb.Any{TypeUrl: url, Value: bytes.Repeat([]byte("x"), size)})
+		if err != nil {
+			return err
+		}
+		wire := protowire.AppendBytes(protowire.AppendTag(nil, 7, protowire.BytesType), extra)
+		if err := proto.Unmarshal(wire, msg); err != nil {
+			return err
+		}
+		return render(msg)
+	})
+	sc.Step(`^the payload is (maps|lists) nested (\d+) levels deep$`, func(shape string, levels int) error {
+		return render(nested(shape, levels))
+	})
+	sc.Step(`^the payload is Node messages (?:linked by|each in) (next|children|named) nested (\d+) levels deep$`, func(field string, levels int) error {
+		msg, err := newMessage("Node")
+		if err != nil {
+			return err
+		}
+		if err := protojson.Unmarshal([]byte(nestedNodes(field, levels)), msg); err != nil {
+			return err
+		}
+		return render(msg)
+	})
+	sc.Step(`^the payload is a link "([^"]*)" whose next is itself$`, func(name string) error {
+		self := &link{Name: name}
+		self.Next = self
+		return render(self)
+	})
+	sc.Step(`^the payload is the time "([^"]*)"$`, func(at string) error {
+		t, err := time.Parse(time.RFC3339, at)
+		if err != nil {
+			return err
+		}
+		return render(t)
+	})
 	sc.Step(`^the masked payload should be '([^']*)'$`, func(want string) error {
-		if rendered != want {
+		if !sameJSON(rendered, want) {
 			return fmt.Errorf("masked: got %s, want %s", rendered, want)
 		}
 		return nil
 	})
-	sc.Step(`^the masked payload should mention "([^"]*)"$`, func(text string) error {
-		if !strings.Contains(rendered, text) {
-			return fmt.Errorf("masked %s does not mention %q", rendered, text)
+	sc.Step(`^the masked payload should (mention|not mention) "([^"]*)"$`, func(how, text string) error {
+		if strings.Contains(rendered, text) != (how == "mention") {
+			return fmt.Errorf("masked %s: want it to %s %q", rendered, how, text)
 		}
 		return nil
 	})
-	sc.Step(`^the masked payload should not mention "([^"]*)"$`, func(text string) error {
-		if strings.Contains(rendered, text) {
-			return fmt.Errorf("masked %s mentions %q", rendered, text)
+	sc.Step(`^the mask should report no unparsed body$`, func() error {
+		if len(unparsed) != 0 {
+			return fmt.Errorf("unparsed: got %v, want none", unparsed)
+		}
+		return nil
+	})
+	sc.Step(`^the mask should report the unparsed body "([^"]*)" of (\d+) bytes$`, func(path string, size int) error {
+		if want := []masked.Unparsed{{Path: path, Bytes: size}}; !reflect.DeepEqual(unparsed, want) {
+			return fmt.Errorf("unparsed: got %v, want %v", unparsed, want)
 		}
 		return nil
 	})
 
-	logRecord := func(failed bool, payload any) {
-		logger := slog.New(masked.NewHandler(&out, slog.LevelInfo, cfg))
-		logger.LogAttrs(ctx, slog.LevelInfo, "command called", slog.String("command", "PlanItems"), logging.Failed(failed), logging.Payload(payload))
-		fmt.Printf("when: logged -> %s", out.String())
+	// payload-policy.feature and bound-payload.feature
+
+	loggerOf := func() *slog.Logger {
+		if logger == nil {
+			logger = slog.New(masked.NewHandler(&out, slog.LevelInfo, cfg))
+		}
+		return logger
+	}
+	logRecord := func(message string, failed bool, payload any) {
+		loggerOf().LogAttrs(ctx, slog.LevelInfo, message, slog.String("command", "PlanItems"), logging.Failed(failed), logging.Payload(payload))
+	}
+	// lines are the records written, decoded, and written again as the
+	// handler encodes, so a step finds "<" as it is.
+	lines := func() (all []map[string]any, text []string) {
+		for _, raw := range strings.Split(strings.TrimSpace(out.String()), "\n") {
+			var rec map[string]any
+			if raw == "" || json.Unmarshal([]byte(raw), &rec) != nil {
+				continue
+			}
+			all, text = append(all, rec), append(text, encode(rec))
+		}
+		fmt.Printf("then: log\n%s\n", strings.Join(text, "\n"))
+		return all, text
+	}
+	isWarning := func(rec map[string]any) bool { return rec["msg"] == masked.NotParsedMessage }
+	firstRecord := func() (map[string]any, string, error) {
+		all, text := lines()
+		if len(all) == 0 {
+			return nil, "", fmt.Errorf("nothing was logged")
+		}
+		return all[0], text[0], nil
 	}
 	sc.Step(`^the request id "([^"]*)" is in the context$`, func(id string) error { ctx = logging.WithRequestID(ctx, id); return nil })
 	sc.Step(`^LOG_PAYLOAD is "([^"]*)"$`, func(mode string) error { cfg.Payload = mode; return nil })
 	sc.Step(`^LOG_PAYLOAD_MAX_BYTES is (\d+)$`, func(n int) error { cfg.MaxBytes = n; return nil })
 	sc.Step(`^a record is logged with the payload password "([^"]*)" and title "([^"]*)"$`, func(password, title string) error {
-		logRecord(false, map[string]string{"password": password, "title": title})
+		logRecord("command called", false, map[string]string{"password": password, "title": title})
 		return nil
 	})
 	sc.Step(`^a record with failed "([^"]*)" is logged with the payload title "([^"]*)"$`, func(failed, title string) error {
-		logRecord(failed == "true", map[string]string{"title": title})
+		logRecord("command called", failed == "true", map[string]string{"title": title})
 		return nil
 	})
-	sc.Step(`^a record is logged with a payload of (\d+) characters$`, func(n int) error {
-		logRecord(false, map[string]string{"title": strings.Repeat("a", n)})
+	sc.Step(`^a record is logged with the payload password "([^"]*)" and a title of (\d+) characters$`, func(password string, n int) error {
+		logRecord("command called", false, map[string]string{"password": password, "title": strings.Repeat("a", n)})
 		return nil
 	})
-	line := func() map[string]any {
-		var rec map[string]any
-		_ = json.Unmarshal(out.Bytes(), &rec)
-		return rec
+	sc.Step(`^a record is logged with the payload title of (\d+) characters$`, func(n int) error {
+		logRecord("command called", false, map[string]string{"title": strings.Repeat("a", n)})
+		return nil
+	})
+	sc.Step(`^a record is logged with a payload that cannot be written as JSON$`, func() error {
+		logRecord("command called", false, map[string]any{"events": make(chan int)})
+		return nil
+	})
+	sc.Step(`^a record "([^"]*)" is logged with the payload body '([^']*)'$`, func(message, body string) error {
+		logRecord(message, false, map[string]any{"body": []byte(body)})
+		return nil
+	})
+	sc.Step(`^the payload password "([^"]*)" and the body '([^']*)' are bound with logger\.With, and (\d+) records "([^"]*)" are logged$`,
+		func(password, body string, n int, message string) error {
+			bound := loggerOf().With(logging.Payload(map[string]any{"password": password, "body": []byte(body)}))
+			for range n {
+				bound.LogAttrs(ctx, slog.LevelInfo, message)
+			}
+			return nil
+		})
+	sc.Step(`^the record should (have|not have) "([^"]*)"$`, func(how, key string) error {
+		rec, text, err := firstRecord()
+		if err != nil {
+			return err
+		}
+		if _, has := rec[key]; has != (how == "have") {
+			return fmt.Errorf("record %s: want it to %s %q", text, how, key)
+		}
+		return nil
+	})
+	sc.Step(`^the record should have "([^"]*)" = "([^"]*)"$`, func(key, want string) error {
+		rec, text, err := firstRecord()
+		if err != nil {
+			return err
+		}
+		if rec[key] != want {
+			return fmt.Errorf("record %s: %s=%v, want %q", text, key, rec[key], want)
+		}
+		return nil
+	})
+	sc.Step(`^the record should (mention|not mention) "([^"]*)"$`, func(how, text string) error {
+		_, line, err := firstRecord()
+		if err != nil {
+			return err
+		}
+		if strings.Contains(line, text) != (how == "mention") {
+			return fmt.Errorf("record %s: want it to %s %q", line, how, text)
+		}
+		return nil
+	})
+	sc.Step(`^the log should not mention "([^"]*)"$`, func(text string) error {
+		if _, all := lines(); strings.Contains(strings.Join(all, "\n"), text) {
+			return fmt.Errorf("the log mentions %q", text)
+		}
+		return nil
+	})
+	sc.Step(`^every record should have "([^"]*)" = "([^"]*)"$`, func(key, want string) error {
+		all, text := lines()
+		for i, rec := range all {
+			if !isWarning(rec) && rec[key] != want {
+				return fmt.Errorf("record %s: %s=%v, want %q", text[i], key, rec[key], want)
+			}
+		}
+		return nil
+	})
+	sc.Step(`^every warning should have "([^"]*)" = "([^"]*)"$`, func(key, want string) error {
+		all, text := lines()
+		for i, rec := range all {
+			if isWarning(rec) && rec[key] != want {
+				return fmt.Errorf("warning %s: %s=%v, want %q", text[i], key, rec[key], want)
+			}
+		}
+		return nil
+	})
+	warnings := func() []string {
+		all, _ := lines()
+		var got []string
+		for _, rec := range all {
+			if isWarning(rec) {
+				got = append(got, fmt.Sprintf("%v %v|%v|%v", rec["level"], rec["record"], rec["field"], rec["bytes"]))
+			}
+		}
+		return got
 	}
-	sc.Step(`^the line should have "([^"]*)" = "([^"]*)"$`, func(key, want string) error {
-		if got := line()[key]; got != want {
-			return fmt.Errorf("line %s: %s=%v, want %q", out.String(), key, got, want)
+	sc.Step(`^the log should hold these warnings:$`, func(table *godog.Table) error {
+		var want []string
+		for _, row := range table.Rows[1:] {
+			size, err := strconv.Atoi(row.Cells[2].Value)
+			if err != nil {
+				return err
+			}
+			want = append(want, fmt.Sprintf("WARN %s|%s|%d", row.Cells[0].Value, row.Cells[1].Value, size))
+		}
+		if got := warnings(); !reflect.DeepEqual(got, want) {
+			return fmt.Errorf("warnings: got %q, want %q", got, want)
 		}
 		return nil
 	})
-	sc.Step(`^the line should (have|not have) "([^"]*)"$`, func(keep, key string) error {
-		if _, has := line()[key]; has != (keep == "have") {
-			return fmt.Errorf("line %s: %s present=%v, want %s", out.String(), key, has, keep)
+	sc.Step(`^the log should hold no warning$`, func() error {
+		if got := warnings(); len(got) != 0 {
+			return fmt.Errorf("warnings: got %q, want none", got)
 		}
 		return nil
 	})
-	sc.Step(`^the line should mention "([^"]*)"$`, func(text string) error {
-		if !strings.Contains(out.String(), text) {
-			return fmt.Errorf("line %s does not mention %q", out.String(), text)
-		}
-		return nil
-	})
-	sc.Step(`^the line should not mention "([^"]*)"$`, func(text string) error {
-		if strings.Contains(out.String(), text) {
-			return fmt.Errorf("line %s mentions %q", out.String(), text)
-		}
-		return nil
-	})
+
+	// settings.feature
 
 	sc.Step(`^the environment variable "([^"]*)" is "([^"]*)"$`, func(name, value string) error { return os.Setenv(name, value) })
 	sc.Step(`^the logging settings are loaded$`, func() error { cfg, loadErr = masked.LoadConfig(); return nil })

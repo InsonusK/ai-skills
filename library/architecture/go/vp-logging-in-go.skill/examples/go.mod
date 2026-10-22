@@ -3,6 +3,7 @@ module github.com/example/todo
 go 1.26
 
 require (
+	github.com/bufbuild/protocompile v0.14.1
 	github.com/cucumber/godog v0.16.0
 	google.golang.org/protobuf v1.36.12
 )
@@ -15,4 +16,5 @@ require (
 	github.com/hashicorp/go-memdb v1.3.5 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
+	golang.org/x/sync v0.8.0 // indirect
 )

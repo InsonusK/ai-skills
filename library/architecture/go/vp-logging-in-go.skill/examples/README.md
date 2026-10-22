@@ -16,6 +16,11 @@ LOG_PAYLOAD=errors make run      # payloads of failed calls only
 | `LOG_PAYLOAD` | `always` | `always`, `errors` (only records with `failed=true`), `off` |
 | `LOG_PAYLOAD_MAX_BYTES` | `4096` | a payload longer than this, as JSON, is cut |
 
+A body the mask cannot read - not JSON, or a proto `Any` of an unknown type - is written as
+`<unparsed body, N bytes>`, and one `WARN` record `log payload not parsed` names where it was.
+The scenarios of `internal/logging/masked/features/` other than `go-payload.feature` are copies
+of the shared ones every stack runs; they are changed at their source, not here.
+
 ```bash
 make init    # once: module dependencies
 make run     # build and run the startup command
