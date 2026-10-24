@@ -13,11 +13,13 @@ Feature: Masking the payload
   #   Team   { title; lead: Person; members: list of Person; vault: Vault marked to mask }
   #   Vault  { code }
   #   Login  { user; password }    nothing marked
+  #   Account { user; password, whose JSON name is "p" }
+  #   Upload { name; content: a body, given in the JSON as its text }
   #   Link   { name; next: Link }  may refer to itself
   #   Pin, Wallet, Node            the proto messages of masking.proto
   # Team.lead given with a note shows the note left out: a Person's note is marked to omit.
-  # "N levels deep" is N maps, lists, or Node messages, the innermost holding
-  # the text "end": the text is N levels below the payload.
+  # "N levels deep" is N maps, lists, JSON objects of a body, or Node messages,
+  # the innermost holding the text "end": the text is N levels below the payload.
   # A "body" is raw bytes, as an entry point reads them; a "text" is a string.
   #
   # A payload is given as JSON in a doc string: the fields of the type it is
@@ -80,6 +82,23 @@ Feature: Masking the payload
       {
         "user": "ann",
         "password": "***"
+      }
+      """
+
+  @category/happy
+  Scenario: [L04] A field named like a secret is masked though its JSON name is not
+    When the payload is an Account:
+      """jsonc
+      {
+        "user": "ann",
+        "p": "s3cret"          // the field Password: its JSON name hides the secret name
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "user": "ann",
+        "p": "***"
       }
       """
 
@@ -147,6 +166,21 @@ Feature: Masking the payload
       }
       """
 
+  @category/boundary
+  Scenario: [L06] A value that is not set is written as null
+    When the payload is a map:
+      """jsonc
+      {
+        "note": null           // a value that is not set
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "note": null
+      }
+      """
+
   @category/happy
   Scenario: [L07] A JSON body is parsed and masked by its keys at every depth
     When the payload is the body:
@@ -154,6 +188,7 @@ Feature: Masking the payload
       {
         "user": "ann",
         "password": "s3cret",                               // a secret name
+        "note": null,
         "items": [ { "token": "t", "title": "buy milk" } ]  // a secret name in a list
       }
       """
@@ -162,6 +197,7 @@ Feature: Masking the payload
       {
         "user": "ann",
         "password": "***",
+        "note": null,
         "items": [ { "token": "***", "title": "buy milk" } ]
       }
       """
@@ -179,6 +215,21 @@ Feature: Masking the payload
       """json
       {
         "meta": { "token": "***", "size": 1 }
+      }
+      """
+
+  @category/happy
+  Scenario: [L08] A text holding JSON inside a JSON body is parsed and masked as well
+    When the payload is the body:
+      """jsonc
+      {
+        "meta": "{\"token\":\"t\"}"   // a text holding JSON, inside a body
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "meta": { "token": "***" }
       }
       """
 
@@ -210,6 +261,33 @@ Feature: Masking the payload
     When the payload is a map with "body" holding the body 'user=ann&password=s3cret'
     Then the masked payload should be '{"body":"<unparsed body, 24 bytes>"}'
     And the mask should report the unparsed body "$.body" of 24 bytes
+
+  @category/negative
+  Scenario: [L09] An unparsed body in a field of an object is reported by the field's JSON name
+    When the payload is an Upload:
+      """jsonc
+      {
+        "name": "a.txt",
+        "content": "a=b"       // a body: its bytes, not JSON
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "name": "a.txt",
+        "content": "<unparsed body, 3 bytes>"
+      }
+      """
+    And the mask should report the unparsed body "$.content" of 3 bytes
+
+  @category/negative
+  Scenario: [L09] Unparsed bodies in a list are reported by their index
+    When the payload is a map with "parts" holding the bodies 'a=1', '{"x":1}', and 'b=22'
+    Then the masked payload should be '{"parts":["<unparsed body, 3 bytes>",{"x":1},"<unparsed body, 4 bytes>"]}'
+    And the mask should report these unparsed bodies:
+      | path        | bytes |
+      | $.parts[0]  | 3     |
+      | $.parts[2]  | 4     |
 
   @category/boundary
   Scenario: [L10] An empty body is an empty text, not an unparsed one
@@ -260,6 +338,17 @@ Feature: Masking the payload
       """
 
   @category/boundary
+  Scenario Outline: [L11] A proto field is written as proto JSON writes it: when set, not at its default
+    When the payload is a Wallet message given as '<given>'
+    Then the masked payload should be '<written>'
+
+    Examples:
+      | given                                  | written                     |
+      | {"owner":"ann","count":2}              | {"owner":"ann","count":2}   |
+      | {"owner":"ann","count":0,"kind":0}     | {"owner":"ann"}             |
+      | {"owner":"","blobs":[],"files":{}}     | {}                          |
+
+  @category/boundary
   Scenario: [L11] An enum value the message does not know is written as its number
     When the payload is a Wallet message:
       """jsonc
@@ -293,6 +382,27 @@ Feature: Masking the payload
       }
       """
     And the mask should report the unparsed body "$.blob" of 3 bytes
+
+  @category/negative
+  Scenario: [L13] Proto bytes in a repeated field and a map are reported by their path
+    When the payload is a Wallet message:
+      """jsonc
+      {
+        "blobs": [ "e30=", "YWJj" ],   // base64 of "{}" (JSON) and of "abc" (not JSON)
+        "files": { "a": "YWJj" }       // base64 of "abc"
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "blobs": [ {}, "<unparsed body, 3 bytes>" ],
+        "files": { "a": "<unparsed body, 3 bytes>" }
+      }
+      """
+    And the mask should report these unparsed bodies:
+      | path       | bytes |
+      | $.blobs[1] | 3     |
+      | $.files.a  | 3     |
 
   @category/happy
   Scenario: [L14] An Any of a known type is unpacked and masked like its message
@@ -391,6 +501,10 @@ Feature: Masking the payload
       | maps                                  | 33     | mention     |
       | lists                                 | 32     | not mention |
       | lists                                 | 33     | mention     |
+      | a JSON body of objects                | 32     | not mention |
+      | a JSON body of objects                | 33     | mention     |
+      | a JSON body of lists                  | 32     | not mention |
+      | a JSON body of lists                  | 33     | mention     |
       | Node messages linked by next          | 32     | not mention |
       | Node messages linked by next          | 33     | mention     |
       | Node messages each in children        | 40     | mention     |

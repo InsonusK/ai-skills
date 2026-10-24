@@ -16,6 +16,7 @@ The Go base plateau writes `{"time","level","msg",...attributes}` and drops the 
 # Selected variant
 [[#Own ILoggerProvider]]
 - Owner decision, 2026-10-21: Serilog is reconsidered with the logging variation point.
+- Owner decision, 2026-10-22: the logging variation point masks with code of its own, not Serilog ([own-masking-not-serilog](library/architecture/dotnet/vp-logging-in-dotnet.skill/adr/own-masking-not-serilog.md)); the line format moved into `JsonLogLine`, which both providers write through.
 
 # Searched variants
 

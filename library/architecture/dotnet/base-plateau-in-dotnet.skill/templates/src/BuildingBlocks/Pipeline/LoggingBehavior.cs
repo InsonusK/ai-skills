@@ -30,11 +30,8 @@ public sealed class LoggingBehavior<TCommand, TResult>(ILogger<LoggingBehavior<T
     : IPipelineBehavior<TCommand, TResult>
     where TCommand : notnull
 {
-    // The command's name in the log: the operation, without the type's
-    // "Command" suffix (PlanItemsCommand -> "PlanItems"), as every stack logs it.
-    private static readonly string Name = typeof(TCommand).Name is var type && type.EndsWith("Command", StringComparison.Ordinal)
-        ? type[..^"Command".Length]
-        : typeof(TCommand).Name;
+    // The command's name in the log: the operation, as every stack logs it.
+    private static readonly string Name = OperationName(typeof(TCommand).Name);
 
     public async Task<TResult> Handle(TCommand command, RequestHandlerDelegate<TResult> next, CancellationToken cancellationToken)
     {
@@ -58,4 +55,8 @@ public sealed class LoggingBehavior<TCommand, TResult>(ILogger<LoggingBehavior<T
             LogAttr.Failed(false), LogAttr.Payload(result));
         return result;
     }
+
+    // PlanItemsCommand -> PlanItems; a type without the suffix keeps its name.
+    private static string OperationName(string type) =>
+        type.EndsWith("Command", StringComparison.Ordinal) ? type[..^"Command".Length] : type;
 }

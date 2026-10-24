@@ -2,7 +2,7 @@
 name: base-plateau-in-dotnet
 description: The base plateau in dotnet — the projects of its layers, MediatR 12 handlers with pipeline behaviors as the decorators, the error kinds as exceptions, the startup entry, the runner of the entry points with the exit codes, the JSON log provider that drops the payload, the composition root on a plain ServiceCollection with its three marked sections, and the Reqnroll scenarios that cover each project
 whenToUse: when you create a new dotnet service from the architecture catalog, or when you attach a variation point to, or review, a dotnet application built on the base plateau
-updated: 20261021
+updated: 20261022
 tags:
   - stack/dotnet
   - concern/architecture
@@ -41,7 +41,7 @@ Create the projects and folders [app-layers-in-dotnet](library/develop/dotnet/ap
 | handlers — one file each | `src/Modules/{Module}/{Module}.Application/Commands` |
 | entities, domain services, `{Module}Errors` | `src/Modules/{Module}/{Module}.Domain/{Entities,Services,Errors}` |
 | [pipeline behaviors](./glossary/pipeline-behavior.md) | `src/BuildingBlocks/Pipeline` |
-| [logging](./glossary/logging.md): `LogAttr`, `Write`, `JsonLogProvider`, `RequestId` | `src/BuildingBlocks/Logging` |
+| [logging](./glossary/logging.md): `LogAttr`, `Write`, `JsonLogLine`, `JsonLogProvider`, `RequestId` | `src/BuildingBlocks/Logging` |
 | error kinds | `src/Shared/Errors`, per [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md) |
 | one test project per project above, but `Shared` and `Commands` | `{Project}.Tests` beside the project it tests (`src/Modules/Todo/Todo.Domain.Tests`), per [cucumber-testing-in-dotnet](library/testing/dotnet/cucumber-testing-in-dotnet.skill/cucumber-testing-in-dotnet.skill.md) |
 | solution, versions | `{App}.slnx`, `Directory.Build.props`, `Directory.Packages.props` (central package versions) |
@@ -50,7 +50,7 @@ Create the projects and folders [app-layers-in-dotnet](library/develop/dotnet/ap
 - Fix: move the code to the project and folder in the table.
 
 ### Copy the fixed code
-Copy, unchanged, [BuildingBlocks.csproj](./templates/src/BuildingBlocks/BuildingBlocks.csproj), [LoggingBehavior.cs](./templates/src/BuildingBlocks/Pipeline/LoggingBehavior.cs), [LogAttr.cs](./templates/src/BuildingBlocks/Logging/LogAttr.cs), [JsonLogProvider.cs](./templates/src/BuildingBlocks/Logging/JsonLogProvider.cs), [RequestId.cs](./templates/src/BuildingBlocks/Logging/RequestId.cs), [Entry.cs](./templates/src/App/App.Host/Api/Core/Entry/Entry.cs), [EntryRunner.cs](./templates/src/App/App.Host/Api/Core/Entry/EntryRunner.cs), and [StartupEntry.cs](./templates/src/App/App.Host/Api/Startup/StartupEntry.cs) to the same paths under the solution root, and the `Shared` project from [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md).
+Copy, unchanged, [BuildingBlocks.csproj](./templates/src/BuildingBlocks/BuildingBlocks.csproj), [LoggingBehavior.cs](./templates/src/BuildingBlocks/Pipeline/LoggingBehavior.cs), [LogAttr.cs](./templates/src/BuildingBlocks/Logging/LogAttr.cs), [JsonLogLine.cs](./templates/src/BuildingBlocks/Logging/JsonLogLine.cs), [JsonLogProvider.cs](./templates/src/BuildingBlocks/Logging/JsonLogProvider.cs), [RequestId.cs](./templates/src/BuildingBlocks/Logging/RequestId.cs), [Entry.cs](./templates/src/App/App.Host/Api/Core/Entry/Entry.cs), [EntryRunner.cs](./templates/src/App/App.Host/Api/Core/Entry/EntryRunner.cs), and [StartupEntry.cs](./templates/src/App/App.Host/Api/Startup/StartupEntry.cs) to the same paths under the solution root, and the `Shared` project from [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md).
 - Risk: retyped code drifts from the one every variation point's behavior and entry point is written against.
 - Fix: copy the templates; the namespaces (`BuildingBlocks`, `Shared`, `App.Host`) are the same in every application, so there is nothing to fill.
 
