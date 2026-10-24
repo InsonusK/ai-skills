@@ -21,7 +21,7 @@ namespace MaskedLogging;
 /// <param name="output">Where the lines go: standard error.</param>
 /// <param name="minimum">The level the logging builder filters at; a warning this provider adds is written only when that level lets it.</param>
 /// <param name="config">The payload rules.</param>
-public sealed class MaskedLogProvider(TextWriter output, LogLevel minimum, MaskedLogConfig config) : ILoggerProvider
+public sealed class MaskedLogProvider : ILoggerProvider
 {
     /// <summary>The attribute the request id of the call is written under.</summary>
     public const string RequestIdKey = "request_id";
@@ -32,16 +32,46 @@ public sealed class MaskedLogProvider(TextWriter output, LogLevel minimum, Maske
     /// </summary>
     public const string NotParsedMessage = "log payload not parsed";
 
+    /// <summary>
+    /// The WARN record written when the provider is built with
+    /// <see cref="MaskedLogConfig.Unmasked"/>, and then once per request -
+    /// before its first record with a payload - and before every such record
+    /// outside a request.
+    /// </summary>
+    public const string UnmaskedMessage = "log payload unmasked";
+
+    // How many request ids are remembered as warned about unmasking; an older
+    // request may be warned about again.
+    private const int RecentRequests = 4096;
+
     private static readonly JsonSerializerOptions PayloadOptions = new()
     {
         // "<" and ">" as they are, so the size a payload is cut at is the size every stack counts.
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
     };
 
-    private readonly JsonLogLine _line = new(output);
+    private readonly JsonLogLine _line;
+    private readonly LogLevel _minimum;
+    private readonly MaskedLogConfig _config;
 
     // "message\0path" of every unparsed body already warned about.
     private readonly ConcurrentDictionary<string, byte> _warned = new();
+
+    // The request ids already warned about unmasking, oldest first.
+    private readonly HashSet<string> _unmaskedRequests = [];
+    private readonly Queue<string> _unmaskedOrder = new();
+    private readonly Lock _unmasking = new();
+
+    public MaskedLogProvider(TextWriter output, LogLevel minimum, MaskedLogConfig config)
+    {
+        _line = new JsonLogLine(output);
+        _minimum = minimum;
+        _config = config;
+        if (config.Unmasked)
+        {
+            _line.Write(LogLevel.Warning, UnmaskedMessage, [], null); // at once: masking is off
+        }
+    }
 
     public ILogger CreateLogger(string categoryName) => new MaskedLogger(this);
 
@@ -49,7 +79,7 @@ public sealed class MaskedLogProvider(TextWriter output, LogLevel minimum, Maske
     {
     }
 
-    private bool IsEnabled(LogLevel level) => level != LogLevel.None && level >= minimum;
+    private bool IsEnabled(LogLevel level) => level != LogLevel.None && level >= _minimum;
 
     // Writes the record with its payload rendered, or without it, then a
     // warning for each body of it not yet warned about.
@@ -81,6 +111,10 @@ public sealed class MaskedLogProvider(TextWriter output, LogLevel minimum, Maske
                 if (Keeps(failed))
                 {
                     attributes.Add(LogAttr.Payload(Payload(value, unparsed)));
+                    if (_config.Unmasked)
+                    {
+                        WarnUnmasked();
+                    }
                 }
             }
         }
@@ -93,7 +127,7 @@ public sealed class MaskedLogProvider(TextWriter output, LogLevel minimum, Maske
     }
 
     // Whether a record of this outcome keeps its payload.
-    private bool Keeps(bool failed) => config.Payload switch
+    private bool Keeps(bool failed) => _config.Payload switch
     {
         MaskedLogConfig.PayloadOff => false,
         MaskedLogConfig.PayloadErrors => failed,
@@ -108,7 +142,7 @@ public sealed class MaskedLogProvider(TextWriter output, LogLevel minimum, Maske
         MaskedPayload masked;
         try
         {
-            masked = PayloadMask.Apply(value);
+            masked = _config.Unmasked ? new MaskedPayload(PayloadMask.Unmask(value), []) : PayloadMask.Apply(value);
         }
         catch (Exception error)
         {
@@ -120,11 +154,36 @@ public sealed class MaskedLogProvider(TextWriter output, LogLevel minimum, Maske
             return null;
         }
         var encoded = Encoding.UTF8.GetBytes(masked.Value.ToJsonString(PayloadOptions));
-        if (encoded.Length > config.MaxBytes)
+        if (encoded.Length > _config.MaxBytes)
         {
-            return $"{Encoding.UTF8.GetString(encoded, 0, config.MaxBytes)}... (cut, {encoded.Length} bytes)";
+            return $"{Encoding.UTF8.GetString(encoded, 0, _config.MaxBytes)}... (cut, {encoded.Length} bytes)";
         }
         return masked.Value;
+    }
+
+    // A WARN record before the first record of a request that carries an
+    // unmasked payload, and before every such record outside a request (with
+    // no request id), so nobody reads an unmasked log unwarned.
+    private void WarnUnmasked()
+    {
+        var id = RequestId.Current;
+        if (id is not null)
+        {
+            lock (_unmasking)
+            {
+                if (!_unmaskedRequests.Add(id))
+                {
+                    return;
+                }
+                _unmaskedOrder.Enqueue(id);
+                if (_unmaskedOrder.Count > RecentRequests)
+                {
+                    _unmaskedRequests.Remove(_unmaskedOrder.Dequeue());
+                }
+            }
+        }
+        List<KeyValuePair<string, object?>> attributes = id is null ? [] : [LogAttr.Of(RequestIdKey, id)];
+        _line.Write(LogLevel.Warning, UnmaskedMessage, attributes, null);
     }
 
     // A WARN record for each unparsed body the first time a record of this

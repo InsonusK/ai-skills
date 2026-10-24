@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"os"
 	"reflect"
+	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -27,7 +28,7 @@ import (
 	"github.com/example/todo/internal/logging/masked"
 )
 
-var variables = []string{"LOG_PAYLOAD", "LOG_PAYLOAD_MAX_BYTES"}
+var variables = []string{"LOG_PAYLOAD", "LOG_PAYLOAD_MAX_BYTES", "LOG_PAYLOAD_UNMASKED"}
 
 // The types masking.feature gives as a payload.
 
@@ -211,11 +212,13 @@ func registerSteps(sc *godog.ScenarioContext) {
 	var ctx context.Context
 	var cfg masked.Config
 	var level slog.Level
+	var unmasked bool
 	var loadErr error
 	sc.Before(func(c context.Context, _ *godog.Scenario) (context.Context, error) {
 		rendered, unparsed, logger, ctx, level = "", nil, nil, context.Background(), slog.LevelInfo
 		out.Reset()
 		cfg = masked.Config{Payload: masked.PayloadAlways, MaxBytes: 4096}
+		unmasked = false
 		for _, name := range variables {
 			_ = os.Unsetenv(name)
 		}
@@ -226,7 +229,11 @@ func registerSteps(sc *godog.ScenarioContext) {
 
 	render := func(v any) error {
 		var value any
-		value, unparsed = masked.Mask(v)
+		if unmasked {
+			value = masked.Unmask(v)
+		} else {
+			value, unparsed = masked.Mask(v)
+		}
 		rendered = encode(value)
 		fmt.Printf("when: Mask -> %s, unparsed %v\n", rendered, unparsed)
 		return nil
@@ -330,6 +337,13 @@ func registerSteps(sc *godog.ScenarioContext) {
 		}
 		return render(t)
 	})
+	sc.Step(`^masking is switched off$`, func() error { unmasked, cfg.Unmasked = true, true; return nil })
+	sc.Step(`^the payload should be written as:$`, func(want *godog.DocString) error {
+		if !sameJSON(rendered, want.Content) {
+			return fmt.Errorf("written: got %s, want %s", rendered, want.Content)
+		}
+		return nil
+	})
 	sc.Step(`^the masked payload should be:$`, func(want *godog.DocString) error {
 		if !sameJSON(rendered, want.Content) {
 			return fmt.Errorf("masked: got %s, want %s", rendered, want.Content)
@@ -363,7 +377,12 @@ func registerSteps(sc *godog.ScenarioContext) {
 			}
 			want = append(want, masked.Unparsed{Path: row.Cells[0].Value, Bytes: size})
 		}
-		if !reflect.DeepEqual(unparsed, want) {
+		// in any order: a proto message is walked in no fixed order of its fields
+		got := slices.Clone(unparsed)
+		byPath := func(a, b masked.Unparsed) int { return strings.Compare(a.Path, b.Path) }
+		slices.SortFunc(got, byPath)
+		slices.SortFunc(want, byPath)
+		if !reflect.DeepEqual(got, want) {
 			return fmt.Errorf("unparsed: got %v, want %v", unparsed, want)
 		}
 		return nil
@@ -400,13 +419,18 @@ func registerSteps(sc *godog.ScenarioContext) {
 		fmt.Printf("then: log\n%s\n", strings.Join(text, "\n"))
 		return all, text
 	}
-	isWarning := func(rec map[string]any) bool { return rec["msg"] == masked.NotParsedMessage }
+	isWarning := func(rec map[string]any) bool {
+		return rec["msg"] == masked.NotParsedMessage || rec["msg"] == masked.UnmaskedMessage
+	}
+	// the record is the first line that is not a warning of the handler
 	firstRecord := func() (map[string]any, string, error) {
 		all, text := lines()
-		if len(all) == 0 {
-			return nil, "", fmt.Errorf("nothing was logged")
+		for i, rec := range all {
+			if !isWarning(rec) {
+				return rec, text[i], nil
+			}
 		}
-		return all[0], text[0], nil
+		return nil, "", fmt.Errorf("nothing was logged")
 	}
 	sc.Step(`^the request id "([^"]*)" is in the context$`, func(id string) error { ctx = logging.WithRequestID(ctx, id); return nil })
 	sc.Step(`^the log is written from the level "([^"]*)"$`, func(name string) error { return level.UnmarshalText([]byte(name)) })
@@ -416,6 +440,39 @@ func registerSteps(sc *godog.ScenarioContext) {
 	})
 	sc.Step(`^LOG_PAYLOAD is "([^"]*)"$`, func(mode string) error { cfg.Payload = mode; return nil })
 	sc.Step(`^LOG_PAYLOAD_MAX_BYTES is (\d+)$`, func(n int) error { cfg.MaxBytes = n; return nil })
+	sc.Step(`^a record is logged with the payload password "([^"]*)" and title "([^"]*)" in the request "([^"]*)"$`, func(password, title, id string) error {
+		within := ctx
+		ctx = logging.WithRequestID(ctx, id)
+		logRecord("command called", false, map[string]string{"password": password, "title": title})
+		ctx = within
+		return nil
+	})
+	sc.Step(`^the log should hold these "([^"]*)" warnings:$`, func(message string, table *godog.Table) error {
+		var want, got []string
+		for _, row := range table.Rows[1:] {
+			want = append(want, row.Cells[0].Value)
+		}
+		all, _ := lines()
+		for _, rec := range all {
+			if rec["msg"] == message {
+				id, _ := rec["request_id"].(string)
+				got = append(got, id)
+			}
+		}
+		if !reflect.DeepEqual(got, want) {
+			return fmt.Errorf("%q warnings for the requests %q, want %q", message, got, want)
+		}
+		return nil
+	})
+	sc.Step(`^the log should hold no "([^"]*)" warning$`, func(message string) error {
+		all, text := lines()
+		for i, rec := range all {
+			if rec["msg"] == message {
+				return fmt.Errorf("warning %s", text[i])
+			}
+		}
+		return nil
+	})
 	sc.Step(`^a record is logged with the payload password "([^"]*)" and title "([^"]*)"$`, func(password, title string) error {
 		logRecord("command called", false, map[string]string{"password": password, "title": title})
 		return nil
@@ -506,7 +563,7 @@ func registerSteps(sc *godog.ScenarioContext) {
 		all, _ := lines()
 		var got []string
 		for _, rec := range all {
-			if isWarning(rec) {
+			if rec["msg"] == masked.NotParsedMessage {
 				got = append(got, fmt.Sprintf("%v %v|%v|%v", rec["level"], rec["record"], rec["field"], rec["bytes"]))
 			}
 		}
@@ -536,7 +593,21 @@ func registerSteps(sc *godog.ScenarioContext) {
 	// settings.feature
 
 	sc.Step(`^the environment variable "([^"]*)" is "([^"]*)"$`, func(name, value string) error { return os.Setenv(name, value) })
-	sc.Step(`^the logging settings are loaded$`, func() error { cfg, loadErr = masked.LoadConfig(); return nil })
+	sc.Step(`^the logging settings are loaded$`, func() error { cfg, loadErr = masked.LoadConfig(slog.LevelInfo); return nil })
+	sc.Step(`^the logging settings are loaded for the level "([^"]*)"$`, func(name string) error {
+		var at slog.Level
+		if err := at.UnmarshalText([]byte(name)); err != nil {
+			return err
+		}
+		cfg, loadErr = masked.LoadConfig(at)
+		return nil
+	})
+	sc.Step(`^masking should be (on|off)$`, func(state string) error {
+		if loadErr != nil || cfg.Unmasked != (state == "off") {
+			return fmt.Errorf("config %+v (err %v), want masking %s", cfg, loadErr, state)
+		}
+		return nil
+	})
 	sc.Step(`^LOG_PAYLOAD should be "([^"]*)" and the limit (\d+)$`, func(mode string, limit int) error {
 		if loadErr != nil || cfg.Payload != mode || cfg.MaxBytes != limit {
 			return fmt.Errorf("config %+v (err %v), want %s and %d", cfg, loadErr, mode, limit)

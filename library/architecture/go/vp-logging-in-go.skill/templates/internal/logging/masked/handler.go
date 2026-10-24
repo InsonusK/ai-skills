@@ -22,6 +22,15 @@ const RequestIDKey = "request_id"
 // message holds a body the mask could not read in one place of its payload.
 const NotParsedMessage = "log payload not parsed"
 
+// UnmaskedMessage is the WARN record written when the handler is built with
+// Config.Unmasked, and then once per request - before its first record with a
+// payload - and before every such record outside a request.
+const UnmaskedMessage = "log payload unmasked"
+
+// recentRequests is how many request ids the handler remembers having warned
+// about unmasking; an older request may be warned about again.
+const recentRequests = 4096
+
 // Handler writes one JSON line per record like the base handler, but keeps
 // the payload: masked (see Mask), cut to Config.MaxBytes, and only on the
 // records Config.Payload allows. It adds the request id of the record's
@@ -35,12 +44,23 @@ type Handler struct {
 	// bound are the unparsed bodies of a payload given to logger.With, warned
 	// about with the records that logger writes.
 	bound []Unparsed
+	// boundUnmasked: a payload given to logger.With was written unmasked.
+	boundUnmasked bool
+	// unmaskedRequests are the request ids already warned about unmasking.
+	unmaskedRequests *recentIDs
 }
 
 // NewHandler is the handler the composition root builds in place of
 // logging.NewHandler when the logging variation point is attached.
 func NewHandler(w io.Writer, level slog.Leveler, cfg Config) *Handler {
-	return &Handler{next: slog.NewJSONHandler(w, &slog.HandlerOptions{Level: level}), cfg: cfg, warned: &sync.Map{}}
+	h := &Handler{
+		next: slog.NewJSONHandler(w, &slog.HandlerOptions{Level: level}), cfg: cfg,
+		warned: &sync.Map{}, unmaskedRequests: &recentIDs{seen: map[string]bool{}},
+	}
+	if cfg.Unmasked {
+		_ = h.next.Handle(context.Background(), slog.NewRecord(time.Now(), slog.LevelWarn, UnmaskedMessage, 0))
+	}
+	return h
 }
 
 func (h *Handler) Enabled(ctx context.Context, level slog.Level) bool {
@@ -59,7 +79,7 @@ func (h *Handler) Handle(ctx context.Context, r slog.Record) error {
 	})
 	out := slog.NewRecord(r.Time, r.Level, r.Message, r.PC)
 	addRequestID(ctx, &out)
-	unparsed := h.bound
+	unparsed, unmasked := h.bound, h.boundUnmasked
 	r.Attrs(func(a slog.Attr) bool {
 		if a.Key != logging.PayloadKey {
 			out.AddAttrs(a)
@@ -67,9 +87,15 @@ func (h *Handler) Handle(ctx context.Context, r slog.Record) error {
 			attr, found := h.payload(a.Value.Any())
 			out.AddAttrs(attr)
 			unparsed = append(unparsed[:len(unparsed):len(unparsed)], found...)
+			unmasked = unmasked || h.cfg.Unmasked
 		}
 		return true
 	})
+	if unmasked {
+		if err := h.warnUnmasked(ctx); err != nil {
+			return err
+		}
+	}
 	if err := h.next.Handle(ctx, out); err != nil {
 		return err
 	}
@@ -103,6 +129,41 @@ func (h *Handler) warn(ctx context.Context, message string, unparsed []Unparsed)
 	return nil
 }
 
+// warnUnmasked writes a WARN record before the first record of a request
+// that carries an unmasked payload, and before every such record outside a
+// request (with no request id), so nobody reads an unmasked log unwarned.
+func (h *Handler) warnUnmasked(ctx context.Context) error {
+	if id := logging.RequestID(ctx); id != "" && !h.unmaskedRequests.add(id) {
+		return nil
+	}
+	w := slog.NewRecord(time.Now(), slog.LevelWarn, UnmaskedMessage, 0)
+	addRequestID(ctx, &w)
+	return h.next.Handle(ctx, w)
+}
+
+// recentIDs remembers the last recentRequests ids added, oldest out first.
+type recentIDs struct {
+	mu    sync.Mutex
+	seen  map[string]bool
+	order []string
+}
+
+// add reports whether id is new, remembering it.
+func (r *recentIDs) add(id string) bool {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+	if r.seen[id] {
+		return false
+	}
+	r.seen[id] = true
+	r.order = append(r.order, id)
+	if len(r.order) > recentRequests {
+		delete(r.seen, r.order[0])
+		r.order = r.order[1:]
+	}
+	return true
+}
+
 // keeps reports whether a record of this outcome keeps its payload.
 func (h *Handler) keeps(failed bool) bool {
 	switch h.cfg.Payload {
@@ -119,7 +180,13 @@ func (h *Handler) keeps(failed bool) bool {
 // is the beginning of its JSON as a string, saying how long the whole was.
 // The mask runs before the cut, so a cut never leaves a secret unmasked.
 func (h *Handler) payload(v any) (slog.Attr, []Unparsed) {
-	masked, unparsed := Mask(v)
+	var masked any
+	var unparsed []Unparsed
+	if h.cfg.Unmasked {
+		masked = Unmask(v)
+	} else {
+		masked, unparsed = Mask(v)
+	}
 	encoded, err := encode(masked)
 	if err != nil {
 		return slog.String(logging.PayloadKey, "payload not written: "+err.Error()), unparsed
@@ -147,7 +214,7 @@ func encode(v any) ([]byte, error) {
 // records of the logger it returns.
 func (h *Handler) WithAttrs(attrs []slog.Attr) slog.Handler {
 	kept := make([]slog.Attr, 0, len(attrs))
-	bound := h.bound
+	bound, boundUnmasked := h.bound, h.boundUnmasked
 	for _, a := range attrs {
 		if a.Key != logging.PayloadKey {
 			kept = append(kept, a)
@@ -155,11 +222,16 @@ func (h *Handler) WithAttrs(attrs []slog.Attr) slog.Handler {
 			attr, found := h.payload(a.Value.Any())
 			kept = append(kept, attr)
 			bound = append(bound[:len(bound):len(bound)], found...)
+			boundUnmasked = boundUnmasked || h.cfg.Unmasked
 		}
 	}
-	return &Handler{next: h.next.WithAttrs(kept), cfg: h.cfg, warned: h.warned, bound: bound}
+	derived := *h
+	derived.next, derived.bound, derived.boundUnmasked = h.next.WithAttrs(kept), bound, boundUnmasked
+	return &derived
 }
 
 func (h *Handler) WithGroup(name string) slog.Handler {
-	return &Handler{next: h.next.WithGroup(name), cfg: h.cfg, warned: h.warned, bound: h.bound}
+	derived := *h
+	derived.next = h.next.WithGroup(name)
+	return &derived
 }

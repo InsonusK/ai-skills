@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Globalization;
 using System.Reflection;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -72,6 +73,15 @@ public static class PayloadMask
         return new MaskedPayload(value, walk.Unparsed);
     }
 
+    /// <summary>
+    /// <paramref name="payload"/> as JSON like <see cref="Apply"/>, but masked
+    /// nowhere: marks, secret names, and debug_redact are ignored, and a body
+    /// that is not JSON is its text. Only for debugging, with
+    /// LOG_PAYLOAD_UNMASKED: a property marked to omit or left out of its JSON
+    /// form stays out, and the depth limit holds.
+    /// </summary>
+    public static JsonNode? Unmask(object? payload) => new Walk(unmasked: true).Value(payload, "$", 0);
+
     /// <summary>Whether <paramref name="name"/> matches a safety-net name.</summary>
     public static bool IsSecret(string name)
     {
@@ -80,9 +90,12 @@ public static class PayloadMask
     }
 
     /// <summary>One walk over one payload, collecting the bodies it could not read.</summary>
-    private sealed class Walk
+    private sealed class Walk(bool unmasked = false)
     {
         public List<Unparsed> Unparsed { get; } = [];
+
+        // Whether name is masked in this walk.
+        private bool Secret(string name) => !unmasked && IsSecret(name);
 
         public JsonNode? Value(object? value, string path, int depth)
         {
@@ -148,7 +161,7 @@ public static class PayloadMask
             var result = new JsonObject();
             foreach (var (key, value) in entries)
             {
-                result[key] = IsSecret(key) ? Masked : Value(value, $"{path}.{key}", depth + 1);
+                result[key] = Secret(key) ? Masked : Value(value, $"{path}.{key}", depth + 1);
             }
             return result;
         }
@@ -162,7 +175,7 @@ public static class PayloadMask
                 {
                     continue;
                 }
-                if (property.Mask)
+                if (property.Mask && !unmasked)
                 {
                     result[property.Name] = Masked;
                     continue;
@@ -177,7 +190,7 @@ public static class PayloadMask
         // A text as it is, unless it holds a JSON object or array: then that
         // JSON masked by its keys. Nothing inside JSON can be unparsed, so the
         // walk below a text or a body needs no path.
-        private static JsonNode? Text(string text, int depth)
+        private JsonNode? Text(string text, int depth)
         {
             var trimmed = text.Trim();
             if (trimmed.StartsWith('{') || trimmed.StartsWith('['))
@@ -208,18 +221,24 @@ public static class PayloadMask
             }
             catch (JsonException)
             {
-                return Unreadable(bytes.Length, path);
+                return Unreadable(bytes, path);
             }
         }
 
-        private string Unreadable(int bytes, string path)
+        // Bytes nothing can be masked in: reported and written as their size
+        // only - or, unmasked, as their text.
+        private string Unreadable(byte[] bytes, string path)
         {
-            Unparsed.Add(new Unparsed(path, bytes));
-            return $"<unparsed body, {bytes} bytes>";
+            if (unmasked)
+            {
+                return Encoding.UTF8.GetString(bytes);
+            }
+            Unparsed.Add(new Unparsed(path, bytes.Length));
+            return $"<unparsed body, {bytes.Length} bytes>";
         }
 
         // JSON already parsed, walked like any value: keys checked, texts read.
-        private static JsonNode? Json(JsonNode? node, int depth)
+        private JsonNode? Json(JsonNode? node, int depth)
         {
             if (node is null)
             {
@@ -235,7 +254,7 @@ public static class PayloadMask
                     var result = new JsonObject();
                     foreach (var (key, value) in json)
                     {
-                        result[key] = IsSecret(key) ? Masked : Json(value, depth + 1);
+                        result[key] = Secret(key) ? Masked : Json(value, depth + 1);
                     }
                     return result;
                 case JsonArray json:
@@ -267,7 +286,7 @@ public static class PayloadMask
                     continue;
                 }
                 var name = field.JsonName;
-                result[name] = field.GetOptions()?.DebugRedact == true || IsSecret(name)
+                result[name] = !unmasked && field.GetOptions()?.DebugRedact == true || Secret(name)
                     ? Masked
                     : Field(field, value, $"{path}.{name}", depth + 1);
             }
@@ -282,7 +301,7 @@ public static class PayloadMask
             var descriptor = ProtoTypes.Find(Any.GetTypeName(any.TypeUrl));
             if (descriptor is null)
             {
-                return Unreadable(any.Value.Length, path);
+                return Unreadable(any.Value.ToByteArray(), path);
             }
             IMessage inner;
             try
@@ -291,7 +310,7 @@ public static class PayloadMask
             }
             catch (InvalidProtocolBufferException)
             {
-                return Unreadable(any.Value.Length, path);
+                return Unreadable(any.Value.ToByteArray(), path);
             }
             var written = Message(inner, path, depth);
             if (written is not JsonObject fields)
@@ -315,7 +334,7 @@ public static class PayloadMask
                 foreach (DictionaryEntry entry in (IDictionary)value)
                 {
                     var key = Key(entry.Key);
-                    entries[key] = IsSecret(key) ? Masked : Scalar(valueField, entry.Value!, $"{path}.{key}", depth + 1);
+                    entries[key] = Secret(key) ? Masked : Scalar(valueField, entry.Value!, $"{path}.{key}", depth + 1);
                 }
                 return entries;
             }

@@ -25,7 +25,7 @@ adr:
 src/
 ├── Shared/Logging/LogMarks.cs         [LogMask], [LogOmit]
 ├── MaskedLogging/                     copied from templates, never edited
-│   ├── MaskedLogConfig.cs             LOG_PAYLOAD, LOG_PAYLOAD_MAX_BYTES
+│   ├── MaskedLogConfig.cs             LOG_PAYLOAD, LOG_PAYLOAD_MAX_BYTES, LOG_PAYLOAD_UNMASKED
 │   ├── MaskedLogProvider.cs           payload kept, masked, cut; request_id; one warning per unparsed body
 │   ├── PayloadMask.cs                 marks, [JsonIgnore], debug_redact, secret names, JSON, Any, unparsed
 │   └── ProtoTypes.cs                  the proto messages of the process, for an Any
@@ -52,7 +52,8 @@ MaskedLogConfig loggingConfig;
 try
 {
     config = AppConfig.Load();
-    loggingConfig = MaskedLogConfig.Load(); // throws FormatException naming its variable
+    loggingConfig = MaskedLogConfig.Load(config.LogLevel); // throws FormatException naming its variable;
+                                                           // LOG_PAYLOAD_UNMASKED needs LOG_LEVEL=debug
 }
 // ...
 services.AddLogging(logging => logging.SetMinimumLevel(config.LogLevel)

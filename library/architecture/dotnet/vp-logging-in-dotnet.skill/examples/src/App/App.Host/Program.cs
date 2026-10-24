@@ -42,7 +42,7 @@ public static class Program
         try
         {
             config = AppConfig.Load();
-            loggingConfig = MaskedLogConfig.Load();
+            loggingConfig = MaskedLogConfig.Load(config.LogLevel);
         }
         catch (FormatException configError)
         {

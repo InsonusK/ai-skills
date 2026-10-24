@@ -14,7 +14,7 @@ namespace MaskedLogging.Tests.Steps;
 
 /// <summary>The steps of masking.feature: a payload given to <see cref="PayloadMask"/>, and what it wrote.</summary>
 [Binding]
-public sealed class MaskingSteps(ITestOutputHelper output)
+public sealed class MaskingSteps(ITestOutputHelper output, MaskingSwitch masking)
 {
     private static readonly JsonSerializerOptions Written = new() { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
 
@@ -27,7 +27,7 @@ public sealed class MaskingSteps(ITestOutputHelper output)
 
     private void Render(object? payload)
     {
-        var masked = PayloadMask.Apply(payload);
+        var masked = masking.Off ? new MaskedPayload(PayloadMask.Unmask(payload), []) : PayloadMask.Apply(payload);
         _rendered = masked.Value?.ToJsonString(Written) ?? "null";
         _unparsed = masked.Unparsed;
         output.WriteLine($"when: Apply -> {_rendered}, unparsed [{string.Join(", ", _unparsed)}]");
@@ -142,6 +142,12 @@ public sealed class MaskingSteps(ITestOutputHelper output)
         Render(link);
     }
 
+    [Given("masking is switched off")]
+    public void GivenMaskingIsSwitchedOff() => masking.Off = true;
+
+    [Then("the payload should be written as:")]
+    public void ThenThePayloadShouldBeWrittenAs(string want) => Assert.Equal(Canonical(want), Canonical(_rendered));
+
     [Then("the masked payload should be:")]
     public void ThenTheMaskedPayloadShouldBeGiven(string want) => Assert.Equal(Canonical(want), Canonical(_rendered));
 
@@ -159,7 +165,10 @@ public sealed class MaskingSteps(ITestOutputHelper output)
 
     [Then("the mask should report these unparsed bodies:")]
     public void ThenTheseUnparsedBodies(DataTable table) =>
-        Assert.Equal(table.Rows.Select(row => new Unparsed(row["path"], int.Parse(row["bytes"]))).ToList(), _unparsed);
+        // in any order: the order a payload is walked in is not part of the rule
+        Assert.Equal(
+            table.Rows.Select(row => new Unparsed(row["path"], int.Parse(row["bytes"]))).OrderBy(u => u.Path, StringComparer.Ordinal).ToList(),
+            _unparsed.OrderBy(u => u.Path, StringComparer.Ordinal).ToList());
 
     [Then("the mask should report the unparsed body {string} of {int} bytes")]
     public void ThenTheUnparsedBody(string path, int bytes) => Assert.Equal([new Unparsed(path, bytes)], _unparsed);

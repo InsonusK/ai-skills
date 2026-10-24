@@ -16,7 +16,7 @@ namespace MaskedLogging.Tests.Steps;
 /// and the lines it wrote.
 /// </summary>
 [Binding]
-public sealed class PayloadPolicySteps(ITestOutputHelper output)
+public sealed class PayloadPolicySteps(ITestOutputHelper output, MaskingSwitch masking)
 {
     private static readonly JsonSerializerOptions Written = new() { Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping };
 
@@ -34,7 +34,7 @@ public sealed class PayloadPolicySteps(ITestOutputHelper output)
     private ILogger Logger()
     {
         _factory ??= LoggerFactory.Create(logging => logging.SetMinimumLevel(_level)
-            .AddProvider(new MaskedLogProvider(_written, _level, _config)));
+            .AddProvider(new MaskedLogProvider(_written, _level, _config with { Unmasked = masking.Off })));
         return _factory.CreateLogger("test");
     }
 
@@ -71,6 +71,27 @@ public sealed class PayloadPolicySteps(ITestOutputHelper output)
 
     [Given("LOG_PAYLOAD_MAX_BYTES is {int}")]
     public void GivenLogPayloadMaxBytes(int bytes) => _config = _config with { MaxBytes = bytes };
+
+    [When("a record is logged with the payload password {string} and title {string} in the request {string}")]
+    public void WhenARecordInTheRequest(string password, string title, string id)
+    {
+        using (RequestId.Begin(id))
+        {
+            Logger().Write(LogLevel.Information, "command called", LogAttr.Of("command", "PlanItems"), LogAttr.Failed(false),
+                LogAttr.Payload(new Dictionary<string, object?> { ["password"] = password, ["title"] = title }));
+        }
+    }
+
+    [Then("the log should hold these {string} warnings:")]
+    public void ThenTheLogShouldHoldTheseWarningsOf(string message, DataTable table) =>
+        Assert.Equal(
+            table.Rows.Select(row => row["request_id"]).ToList(),
+            // a warning outside a request has no request_id at all, not an empty one
+            Lines().Where(l => Text(l.Line["msg"]) == message)
+                .Select(l => l.Line.ContainsKey("request_id") ? Text(l.Line["request_id"]) ?? "null" : "").ToList());
+
+    [Then("the log should hold no {string} warning")]
+    public void ThenTheLogShouldHoldNoWarningOf(string message) => Assert.DoesNotContain(Lines(), l => Text(l.Line["msg"]) == message);
 
     [When("a record is logged with the payload password {string} and title {string}")]
     public void WhenARecordWithPasswordAndTitle(string password, string title) =>
@@ -126,9 +147,14 @@ public sealed class PayloadPolicySteps(ITestOutputHelper output)
         return lines;
     }
 
-    private static bool IsWarning(JsonObject line) => line["msg"]?.GetValue<string>() == MaskedLogProvider.NotParsedMessage;
+    private static bool IsWarning(JsonObject line) =>
+        line["msg"]?.GetValue<string>() is MaskedLogProvider.NotParsedMessage or MaskedLogProvider.UnmaskedMessage;
 
-    private (JsonObject Line, string Text) Record() => Lines() is { Count: > 0 } lines ? lines[0] : throw new Xunit.Sdk.XunitException("nothing was logged");
+    private static bool IsNotParsed(JsonObject line) => line["msg"]?.GetValue<string>() == MaskedLogProvider.NotParsedMessage;
+
+    // The record: the first line that is not a warning of the provider.
+    private (JsonObject Line, string Text) Record() =>
+        Lines().FirstOrDefault(l => !IsWarning(l.Line)) is { Line: not null } record ? record : throw new Xunit.Sdk.XunitException("nothing was logged");
 
     private static string? Text(JsonNode? value) => value?.GetValueKind() == JsonValueKind.String ? value.GetValue<string>() : value?.ToJsonString();
 
@@ -158,7 +184,7 @@ public sealed class PayloadPolicySteps(ITestOutputHelper output)
     public void ThenEveryWarningShouldHave(string key, string value) =>
         Assert.All(Lines().Where(l => IsWarning(l.Line)), line => Assert.Equal(value, Text(line.Line[key])));
 
-    private List<string> Warnings() => Lines().Where(l => IsWarning(l.Line))
+    private List<string> Warnings() => Lines().Where(l => IsNotParsed(l.Line))
         .Select(l => $"{Text(l.Line["level"])} {Text(l.Line["record"])}|{Text(l.Line["field"])}|{Text(l.Line["bytes"])}")
         .ToList();
 
