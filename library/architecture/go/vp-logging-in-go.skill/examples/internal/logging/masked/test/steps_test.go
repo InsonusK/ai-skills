@@ -132,6 +132,62 @@ func nestedNodes(field string, levels int) string {
 	return v
 }
 
+// withoutComments drops what follows "//" outside a JSON string on each line
+// of a doc string: the scenarios say there what is special about a field.
+func withoutComments(text string) string {
+	lines := strings.Split(text, "\n")
+	for n, line := range lines {
+		inString, escaped := false, false
+		for i := 0; i < len(line); i++ {
+			switch c := line[i]; {
+			case escaped:
+				escaped = false
+			case inString && c == '\\':
+				escaped = true
+			case c == '"':
+				inString = !inString
+			case !inString && c == '/' && i+1 < len(line) && line[i+1] == '/':
+				line, i = line[:i], len(line)
+			}
+		}
+		lines[n] = strings.TrimRight(line, " ")
+	}
+	return strings.Join(lines, "\n")
+}
+
+// fixture builds the type a scenario names from the JSON of its fields; a
+// field left out of the type's JSON form (Person.draft) or a body
+// (Upload.content) is set by its name.
+func fixture(name, given string) (any, error) {
+	var value any
+	var fields map[string]any
+	if err := json.Unmarshal([]byte(given), &fields); err != nil {
+		return nil, err
+	}
+	switch name {
+	case "Upload":
+		// content is a body: the scenario gives its text, json would read base64
+		content, _ := fields["content"].(string)
+		name, _ := fields["name"].(string)
+		return upload{Name: name, Content: []byte(content)}, nil
+	case "Person":
+		value = &person{}
+	case "Team":
+		value = &team{}
+	case "Account":
+		value = &account{}
+	default:
+		value = &login{}
+	}
+	if err := json.Unmarshal([]byte(given), value); err != nil {
+		return nil, err
+	}
+	if p, ok := value.(*person); ok {
+		p.Draft, _ = fields["draft"].(string)
+	}
+	return value, nil
+}
+
 // encode writes JSON as the handler does, "<" and ">" as they are.
 func encode(v any) string {
 	var b bytes.Buffer
@@ -175,29 +231,35 @@ func registerSteps(sc *godog.ScenarioContext) {
 		fmt.Printf("when: Mask -> %s, unparsed %v\n", rendered, unparsed)
 		return nil
 	}
-	sc.Step(`^the payload is a person with the name "([^"]*)", the pin "([^"]*)", the note "([^"]*)", and the draft "([^"]*)"$`,
-		func(name, pin, note, draft string) error {
-			return render(person{Name: name, PIN: pin, Note: note, Draft: draft})
-		})
-	sc.Step(`^the payload is a team "([^"]*)" led by "([^"]*)" with the pin "([^"]*)", a member "([^"]*)" with the pin "([^"]*)", and the vault code "([^"]*)"$`,
-		func(title, lead, leadPIN, member, memberPIN, code string) error {
-			return render(team{Title: title, Lead: person{Name: lead, PIN: leadPIN},
-				Members: []person{{Name: member, PIN: memberPIN}}, Vault: vault{Code: code}})
-		})
-	sc.Step(`^the payload is a login with the user "([^"]*)" and the password "([^"]*)"$`,
-		func(user, password string) error { return render(login{User: user, Password: password}) })
-	sc.Step(`^the payload is an account with the user "([^"]*)" and the password "([^"]*)"$`,
-		func(user, password string) error { return render(account{User: user, Password: password}) })
-	sc.Step(`^the payload is a map with "([^"]*)" holding nothing$`, func(key string) error { return render(map[string]any{key: nil}) })
+	sc.Step(`^the payload is an? (Person|Team|Login|Account|Upload):$`, func(name string, given *godog.DocString) error {
+		value, err := fixture(name, withoutComments(given.Content))
+		if err != nil {
+			return err
+		}
+		return render(value)
+	})
+	sc.Step(`^the payload is the body:$`, func(given *godog.DocString) error {
+		return render([]byte(strings.TrimSpace(withoutComments(given.Content))))
+	})
+	sc.Step(`^the payload is a map:$`, func(given *godog.DocString) error {
+		var entries map[string]any
+		if err := json.Unmarshal([]byte(withoutComments(given.Content)), &entries); err != nil {
+			return err
+		}
+		return render(entries)
+	})
+	sc.Step(`^the payload is a map of lists:$`, func(given *godog.DocString) error {
+		var entries map[string][]string
+		if err := json.Unmarshal([]byte(withoutComments(given.Content)), &entries); err != nil {
+			return err
+		}
+		return render(entries)
+	})
 	sc.Step(`^the payload is a map with "([^"]*)" holding the bodies '([^']*)', '([^']*)', and '([^']*)'$`,
 		func(key, b1, b2, b3 string) error { return render(map[string]any{key: [][]byte{[]byte(b1), []byte(b2), []byte(b3)}}) })
 	sc.Step(`^the payload is a map with "([^"]*)" = "([^"]*)" and "([^"]*)" = "([^"]*)"$`,
 		func(k1, v1, k2, v2 string) error { return render(map[string]string{k1: v1, k2: v2}) })
-	sc.Step(`^the payload is a map of lists with "([^"]*)" = "([^"]*)" and "([^"]*)" = "([^"]*)"$`,
-		func(k1, v1, k2, v2 string) error { return render(map[string][]string{k1: {v1}, k2: {v2}}) })
 	sc.Step(`^the payload is the body '([^']*)'$`, func(body string) error { return render([]byte(body)) })
-	sc.Step(`^the payload is a map with "([^"]*)" holding the text '([^']*)'$`,
-		func(key, text string) error { return render(map[string]any{key: text}) })
 	sc.Step(`^the payload is a map with "([^"]*)" holding the body '([^']*)'$`,
 		func(key, body string) error { return render(map[string]any{key: []byte(body)}) })
 	sc.Step(`^the payload is a (\w+) message given as '([^']*)'$`, func(name, given string) error {
@@ -206,6 +268,16 @@ func registerSteps(sc *godog.ScenarioContext) {
 			return err
 		}
 		if err := (protojson.UnmarshalOptions{Resolver: protoregistry.GlobalTypes}).Unmarshal([]byte(given), msg); err != nil {
+			return err
+		}
+		return render(msg)
+	})
+	sc.Step(`^the payload is a (\w+) message:$`, func(name string, given *godog.DocString) error {
+		msg, err := newMessage(name)
+		if err != nil {
+			return err
+		}
+		if err := (protojson.UnmarshalOptions{Resolver: protoregistry.GlobalTypes}).Unmarshal([]byte(withoutComments(given.Content)), msg); err != nil {
 			return err
 		}
 		return render(msg)
@@ -236,8 +308,6 @@ func registerSteps(sc *godog.ScenarioContext) {
 		}
 		return render([]byte(strings.Repeat(open, levels) + `"end"` + strings.Repeat(end, levels)))
 	})
-	sc.Step(`^the payload is an upload "([^"]*)" with the content '([^']*)'$`,
-		func(name, content string) error { return render(upload{Name: name, Content: []byte(content)}) })
 	sc.Step(`^the payload is Node messages (?:linked by|each in) (next|children|named) nested (\d+) levels deep$`, func(field string, levels int) error {
 		msg, err := newMessage("Node")
 		if err != nil {
@@ -259,6 +329,12 @@ func registerSteps(sc *godog.ScenarioContext) {
 			return err
 		}
 		return render(t)
+	})
+	sc.Step(`^the masked payload should be:$`, func(want *godog.DocString) error {
+		if !sameJSON(rendered, want.Content) {
+			return fmt.Errorf("masked: got %s, want %s", rendered, want.Content)
+		}
+		return nil
 	})
 	sc.Step(`^the masked payload should be '([^']*)'$`, func(want string) error {
 		if !sameJSON(rendered, want) {

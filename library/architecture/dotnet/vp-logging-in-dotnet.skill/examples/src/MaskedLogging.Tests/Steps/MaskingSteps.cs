@@ -33,21 +33,23 @@ public sealed class MaskingSteps(ITestOutputHelper output)
         output.WriteLine($"when: Apply -> {_rendered}, unparsed [{string.Join(", ", _unparsed)}]");
     }
 
-    [When("the payload is a person with the name {string}, the pin {string}, the note {string}, and the draft {string}")]
-    public void WhenAPerson(string name, string pin, string note, string draft) => Render(new Person(name, pin, note, draft));
+    // Payloads given as JSON in a doc string; "// ..." says what is special about a field.
 
-    [When("the payload is a team {string} led by {string} with the pin {string}, a member {string} with the pin {string}, and the vault code {string}")]
-    public void WhenATeam(string title, string lead, string leadPin, string member, string memberPin, string code) =>
-        Render(new Team(title, new Person(lead, leadPin, "", ""), [new Person(member, memberPin, "", "")], new Vault(code)));
+    [When(@"^the payload is an? (Person|Team|Login|Account|Upload):$")]
+    public void WhenAFixture(string type, string given) => Render(Fixture(type, Given(given)!.AsObject()));
 
-    [When("the payload is a login with the user {string} and the password {string}")]
-    public void WhenALogin(string user, string password) => Render(new Login(user, password));
+    [When("the payload is the body:")]
+    public void WhenTheBodyGiven(string given) => Render(Encoding.UTF8.GetBytes(WithoutComments(given).Trim()));
 
-    [When("the payload is an account with the user {string} and the password {string}")]
-    public void WhenAnAccount(string user, string password) => Render(new Account(user, password));
+    [When("the payload is a map:")]
+    public void WhenAMapGiven(string given) => Render(Plain(Given(given)));
 
-    [When("the payload is a map with {string} holding nothing")]
-    public void WhenAMapHoldingNothing(string key) => Render(new Dictionary<string, object?> { [key] = null });
+    [When("the payload is a map of lists:")]
+    public void WhenAMapOfListsGiven(string given) => Render(JsonSerializer.Deserialize<Dictionary<string, string[]>>(WithoutComments(given)));
+
+    [When(@"^the payload is a (\w+) message:$")]
+    public void WhenAMessageGiven(string name, string given) =>
+        Render(ProtoJson.Parse(WithoutComments(given), MaskingReflection.Descriptor.MessageTypes.Single(m => m.Name == name)));
 
     [When("the payload is a map with {string} holding the bodies {string}, {string}, and {string}")]
     public void WhenAMapHoldingBodies(string key, string b1, string b2, string b3) =>
@@ -56,15 +58,8 @@ public sealed class MaskingSteps(ITestOutputHelper output)
     [When("the payload is a map with {string} = {string} and {string} = {string}")]
     public void WhenAMap(string k1, string v1, string k2, string v2) => Render(new Dictionary<string, string> { [k1] = v1, [k2] = v2 });
 
-    [When("the payload is a map of lists with {string} = {string} and {string} = {string}")]
-    public void WhenAMapOfLists(string k1, string v1, string k2, string v2) =>
-        Render(new Dictionary<string, string[]> { [k1] = [v1], [k2] = [v2] });
-
     [When("the payload is the body {string}")]
     public void WhenTheBody(string body) => Render(Encoding.UTF8.GetBytes(body));
-
-    [When("the payload is a map with {string} holding the text {string}")]
-    public void WhenAMapHoldingTheText(string key, string text) => Render(new Dictionary<string, object?> { [key] = text });
 
     [When("the payload is a map with {string} holding the body {string}")]
     public void WhenAMapHoldingTheBody(string key, string body) => Render(new Dictionary<string, object?> { [key] = Encoding.UTF8.GetBytes(body) });
@@ -95,9 +90,6 @@ public sealed class MaskingSteps(ITestOutputHelper output)
         var (open, end) = shape == "lists" ? ("[", ']') : ("{\"next\":", '}');
         Render(Encoding.UTF8.GetBytes(string.Concat(Enumerable.Repeat(open, levels)) + "\"end\"" + new string(end, levels)));
     }
-
-    [When("the payload is an upload {string} with the content {string}")]
-    public void WhenAnUpload(string name, string content) => Render(new Upload(name, Encoding.UTF8.GetBytes(content)));
 
     [When("the payload is a non-generic dictionary with {string} = {string} and {string} = {string}")]
     public void WhenAHashtable(string k1, string v1, string k2, string v2) => Render(new System.Collections.Hashtable { [k1] = v1, [k2] = v2 });
@@ -150,6 +142,9 @@ public sealed class MaskingSteps(ITestOutputHelper output)
         Render(link);
     }
 
+    [Then("the masked payload should be:")]
+    public void ThenTheMaskedPayloadShouldBeGiven(string want) => Assert.Equal(Canonical(want), Canonical(_rendered));
+
     [Then("the masked payload should be {string}")]
     public void ThenTheMaskedPayloadShouldBe(string want) => Assert.Equal(Canonical(want), Canonical(_rendered));
 
@@ -168,6 +163,67 @@ public sealed class MaskingSteps(ITestOutputHelper output)
 
     [Then("the mask should report the unparsed body {string} of {int} bytes")]
     public void ThenTheUnparsedBody(string path, int bytes) => Assert.Equal([new Unparsed(path, bytes)], _unparsed);
+
+    // The doc string without what follows "//" outside a JSON string on each line.
+    internal static string WithoutComments(string text) => string.Join('\n', text.Split('\n').Select(line =>
+    {
+        var (inString, escaped) = (false, false);
+        for (var i = 0; i < line.Length; i++)
+        {
+            var c = line[i];
+            if (escaped)
+            {
+                escaped = false;
+            }
+            else if (inString && c == '\\')
+            {
+                escaped = true;
+            }
+            else if (c == '"')
+            {
+                inString = !inString;
+            }
+            else if (!inString && c == '/' && i + 1 < line.Length && line[i + 1] == '/')
+            {
+                return line[..i].TrimEnd();
+            }
+        }
+        return line.TrimEnd();
+    }));
+
+    private static JsonNode? Given(string text) => JsonNode.Parse(WithoutComments(text));
+
+    // JSON as the plain values a part of the application logs: a dictionary, a list, a text, a number.
+    private static object? Plain(JsonNode? node) => node switch
+    {
+        null => null,
+        JsonObject json => json.ToDictionary(p => p.Key, p => Plain(p.Value)),
+        JsonArray json => json.Select(Plain).ToList(),
+        JsonValue value when value.GetValueKind() == JsonValueKind.String => value.GetValue<string>(),
+        JsonValue value when value.GetValueKind() is JsonValueKind.True or JsonValueKind.False => value.GetValue<bool>(),
+        _ => node.GetValue<decimal>(),
+    };
+
+    // The type a scenario names, built from the JSON of its fields; a field
+    // left out of the type's JSON form (Person.draft) or a body (Upload.content)
+    // is set by its name.
+    private static object Fixture(string type, JsonObject fields)
+    {
+        string Text(JsonObject from, string key) => from[key]?.GetValue<string>() ?? "";
+        Person PersonOf(JsonObject from) => new(Text(from, "name"), Text(from, "pin"), Text(from, "note"), Text(from, "draft"));
+        return type switch
+        {
+            "Person" => PersonOf(fields),
+            "Team" => new Team(
+                Text(fields, "title"),
+                PersonOf(fields["lead"]!.AsObject()),
+                fields["members"]!.AsArray().Select(m => PersonOf(m!.AsObject())).ToList(),
+                new Vault(Text(fields["vault"]!.AsObject(), "code"))),
+            "Login" => new Login(Text(fields, "user"), Text(fields, "password")),
+            "Account" => new Account(Text(fields, "user"), Text(fields, "p")),
+            _ => new Upload(Text(fields, "name"), Encoding.UTF8.GetBytes(Text(fields, "content"))),
+        };
+    }
 
     // A JSON text with the keys of every object sorted, so two texts compare by
     // what they say, not by the order of their keys.

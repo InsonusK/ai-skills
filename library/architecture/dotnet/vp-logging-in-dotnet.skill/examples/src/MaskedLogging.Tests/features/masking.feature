@@ -14,32 +14,92 @@ Feature: Masking the payload
   #   Vault  { code }
   #   Login  { user; password }    nothing marked
   #   Account { user; password, whose JSON name is "p" }
-  #   Upload { name; content: a body }
+  #   Upload { name; content: a body, given in the JSON as its text }
   #   Link   { name; next: Link }  may refer to itself
   #   Pin, Wallet, Node            the proto messages of masking.proto
   # "N levels deep" is N maps, lists, JSON objects of a body, or Node messages,
   # the innermost holding the text "end": the text is N levels below the payload.
   # A "body" is raw bytes, as an entry point reads them; a "text" is a string.
+  #
+  # A payload is given as JSON in a doc string: the fields of the type it is
+  # built into, a body as its bytes, a map as its entries, a proto message in
+  # proto JSON. "// ..." after a value says what is special about the field -
+  # how it is marked, why it is masked; the steps drop it before parsing. The
+  # masked payload is compared as JSON, whatever the order of its keys.
 
   @category/happy
   Scenario: [L01 L02 L03] A field marked to mask is masked, one marked to omit or left out of its JSON form is not written
-    When the payload is a person with the name "Ann", the pin "1234", the note "x", and the draft "d"
-    Then the masked payload should be '{"name":"Ann","pin":"***"}'
+    When the payload is a Person:
+      """jsonc
+      {
+        "name": "Ann",
+        "pin": "1234",     // marked to mask
+        "note": "x",       // marked to omit
+        "draft": "d"       // left out of the type's JSON form
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "name": "Ann",
+        "pin": "***"
+      }
+      """
 
   @category/happy
   Scenario: [L01 L06] Marks hold at every depth, and a marked object is masked whole
-    When the payload is a team "core" led by "Ann" with the pin "1234", a member "Bob" with the pin "5678", and the vault code "9999"
-    Then the masked payload should be '{"title":"core","lead":{"name":"Ann","pin":"***"},"members":[{"name":"Bob","pin":"***"}],"vault":"***"}'
+    When the payload is a Team:
+      """jsonc
+      {
+        "title": "core",
+        "lead": { "name": "Ann", "pin": "1234" },          // a Person: its pin is marked to mask
+        "members": [ { "name": "Bob", "pin": "5678" } ],   // Persons in a list
+        "vault": { "code": "9999" }                        // marked to mask: the whole object
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "title": "core",
+        "lead": { "name": "Ann", "pin": "***" },
+        "members": [ { "name": "Bob", "pin": "***" } ],
+        "vault": "***"
+      }
+      """
 
   @category/happy
   Scenario: [L04] A field named like a secret is masked though nobody marked it
-    When the payload is a login with the user "ann" and the password "s3cret"
-    Then the masked payload should be '{"user":"ann","password":"***"}'
+    When the payload is a Login:
+      """jsonc
+      {
+        "user": "ann",
+        "password": "s3cret"   // not marked: masked by its name
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "user": "ann",
+        "password": "***"
+      }
+      """
 
   @category/happy
   Scenario: [L04] A field named like a secret is masked though its JSON name is not
-    When the payload is an account with the user "ann" and the password "s3cret"
-    Then the masked payload should be '{"user":"ann","p":"***"}'
+    When the payload is an Account:
+      """jsonc
+      {
+        "user": "ann",
+        "p": "s3cret"          // the field Password: its JSON name hides the secret name
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "user": "ann",
+        "p": "***"
+      }
+      """
 
   @category/happy
   Scenario Outline: [L04] A key named like a secret is masked whatever its case, separators, and affixes
@@ -73,39 +133,119 @@ Feature: Masking the payload
 
   @category/happy
   Scenario: [L05] A key named like a secret is masked whole when it holds an object
-    When the payload is the body '{"user":"ann","credentials":{"name":"ann","value":"s3cret"}}'
-    Then the masked payload should be '{"user":"ann","credentials":"***"}'
+    When the payload is the body:
+      """jsonc
+      {
+        "user": "ann",
+        "credentials": { "name": "ann", "value": "s3cret" }   // a secret name: the whole object
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "user": "ann",
+        "credentials": "***"
+      }
+      """
 
   @category/happy
   Scenario: [L15] A header named like a secret is masked with all its values
-    When the payload is a map of lists with "Authorization" = "Bearer s3cret" and "Accept" = "text/plain"
-    Then the masked payload should be '{"Accept":["text/plain"],"Authorization":"***"}'
+    When the payload is a map of lists:
+      """jsonc
+      {
+        "Authorization": [ "Bearer s3cret" ],   // a secret name: every value
+        "Accept": [ "text/plain" ]
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "Authorization": "***",
+        "Accept": [ "text/plain" ]
+      }
+      """
 
   @category/boundary
   Scenario: [L06] A value that is not set is written as null
-    When the payload is a map with "note" holding nothing
-    Then the masked payload should be '{"note":null}'
+    When the payload is a map:
+      """jsonc
+      {
+        "note": null           // a value that is not set
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "note": null
+      }
+      """
 
   @category/happy
   Scenario: [L07] A JSON body is parsed and masked by its keys at every depth
-    When the payload is the body '{"user":"ann","password":"s3cret","note":null,"items":[{"token":"t","title":"buy milk"}]}'
-    Then the masked payload should be '{"user":"ann","password":"***","note":null,"items":[{"token":"***","title":"buy milk"}]}'
+    When the payload is the body:
+      """jsonc
+      {
+        "user": "ann",
+        "password": "s3cret",                               // a secret name
+        "note": null,
+        "items": [ { "token": "t", "title": "buy milk" } ]  // a secret name in a list
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "user": "ann",
+        "password": "***",
+        "note": null,
+        "items": [ { "token": "***", "title": "buy milk" } ]
+      }
+      """
     And the mask should report no unparsed body
 
   @category/happy
   Scenario: [L08] A text holding a JSON object is parsed and masked by its keys
-    When the payload is a map with "meta" holding the text '{"token":"t","size":1}'
-    Then the masked payload should be '{"meta":{"token":"***","size":1}}'
+    When the payload is a map:
+      """jsonc
+      {
+        "meta": "{\"token\":\"t\",\"size\":1}"   // a text that holds JSON
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "meta": { "token": "***", "size": 1 }
+      }
+      """
 
   @category/happy
   Scenario: [L08] A text holding JSON inside a JSON body is parsed and masked as well
-    When the payload is the body '{"meta":"{\"token\":\"t\"}"}'
-    Then the masked payload should be '{"meta":{"token":"***"}}'
+    When the payload is the body:
+      """jsonc
+      {
+        "meta": "{\"token\":\"t\"}"   // a text holding JSON, inside a body
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "meta": { "token": "***" }
+      }
+      """
 
   @category/boundary
   Scenario: [L08] A text that is not JSON stays as it is, though it starts like JSON
-    When the payload is a map with "title" holding the text '[urgent] buy milk'
-    Then the masked payload should be '{"title":"[urgent] buy milk"}'
+    When the payload is a map:
+      """jsonc
+      {
+        "title": "[urgent] buy milk"   // starts like a JSON list, is not one
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "title": "[urgent] buy milk"
+      }
+      """
     And the mask should report no unparsed body
 
   @category/negative
@@ -123,8 +263,20 @@ Feature: Masking the payload
 
   @category/negative
   Scenario: [L09] An unparsed body in a field of an object is reported by the field's JSON name
-    When the payload is an upload "a.txt" with the content 'a=b'
-    Then the masked payload should be '{"name":"a.txt","content":"<unparsed body, 3 bytes>"}'
+    When the payload is an Upload:
+      """jsonc
+      {
+        "name": "a.txt",
+        "content": "a=b"       // a body: its bytes, not JSON
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "name": "a.txt",
+        "content": "<unparsed body, 3 bytes>"
+      }
+      """
     And the mask should report the unparsed body "$.content" of 3 bytes
 
   @category/negative
@@ -144,13 +296,45 @@ Feature: Masking the payload
 
   @category/happy
   Scenario: [L11] A proto field marked debug_redact is masked
-    When the payload is a Pin message given as '{"title":"buy milk","pin":"1234"}'
-    Then the masked payload should be '{"title":"buy milk","pin":"***"}'
+    When the payload is a Pin message:
+      """jsonc
+      {
+        "title": "buy milk",
+        "pin": "1234"          // [debug_redact = true]
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "title": "buy milk",
+        "pin": "***"
+      }
+      """
 
   @category/happy
   Scenario: [L11 L12] debug_redact holds in nested and repeated messages; a map key and a field named like a secret are masked
-    When the payload is a Wallet message given as '{"owner":"ann","main":{"title":"a","pin":"1"},"spare":[{"title":"b","pin":"2"}],"labels":{"token":"t","color":"red"},"apiKey":"k","kind":"KIND_GOLD"}'
-    Then the masked payload should be '{"owner":"ann","main":{"title":"a","pin":"***"},"spare":[{"title":"b","pin":"***"}],"labels":{"token":"***","color":"red"},"apiKey":"***","kind":"KIND_GOLD"}'
+    When the payload is a Wallet message:
+      """jsonc
+      {
+        "owner": "ann",
+        "main": { "title": "a", "pin": "1" },             // a Pin: pin is debug_redact
+        "spare": [ { "title": "b", "pin": "2" } ],        // Pins in a repeated field
+        "labels": { "token": "t", "color": "red" },       // a map: token is a secret name
+        "apiKey": "k",                                     // api_key: a secret name
+        "kind": "KIND_GOLD"
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "owner": "ann",
+        "main": { "title": "a", "pin": "***" },
+        "spare": [ { "title": "b", "pin": "***" } ],
+        "labels": { "token": "***", "color": "red" },
+        "apiKey": "***",
+        "kind": "KIND_GOLD"
+      }
+      """
 
   @category/boundary
   Scenario Outline: [L11] A proto field is written as proto JSON writes it: when set, not at its default
@@ -165,19 +349,55 @@ Feature: Masking the payload
 
   @category/boundary
   Scenario: [L11] An enum value the message does not know is written as its number
-    When the payload is a Wallet message given as '{"owner":"ann","kind":7}'
-    Then the masked payload should be '{"owner":"ann","kind":7}'
+    When the payload is a Wallet message:
+      """jsonc
+      {
+        "owner": "ann",
+        "kind": 7              // no value of Kind has the number 7
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "owner": "ann",
+        "kind": 7
+      }
+      """
 
   @category/negative
   Scenario: [L13] A proto bytes field that is not JSON is written as unparsed
-    When the payload is a Wallet message given as '{"owner":"ann","blob":"YWJj"}'
-    Then the masked payload should be '{"owner":"ann","blob":"<unparsed body, 3 bytes>"}'
+    When the payload is a Wallet message:
+      """jsonc
+      {
+        "owner": "ann",
+        "blob": "YWJj"         // bytes in proto JSON: base64 of "abc", which is not JSON
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "owner": "ann",
+        "blob": "<unparsed body, 3 bytes>"
+      }
+      """
     And the mask should report the unparsed body "$.blob" of 3 bytes
 
   @category/negative
   Scenario: [L13] Proto bytes in a repeated field and a map are reported by their path
-    When the payload is a Wallet message given as '{"blobs":["e30=","YWJj"],"files":{"a":"YWJj"}}'
-    Then the masked payload should be '{"blobs":[{},"<unparsed body, 3 bytes>"],"files":{"a":"<unparsed body, 3 bytes>"}}'
+    When the payload is a Wallet message:
+      """jsonc
+      {
+        "blobs": [ "e30=", "YWJj" ],   // base64 of "{}" (JSON) and of "abc" (not JSON)
+        "files": { "a": "YWJj" }       // base64 of "abc"
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "blobs": [ {}, "<unparsed body, 3 bytes>" ],
+        "files": { "a": "<unparsed body, 3 bytes>" }
+      }
+      """
     And the mask should report these unparsed bodies:
       | path       | bytes |
       | $.blobs[1] | 3     |
@@ -185,8 +405,26 @@ Feature: Masking the payload
 
   @category/happy
   Scenario: [L14] An Any of a known type is unpacked and masked like its message
-    When the payload is a Wallet message given as '{"extra":{"@type":"type.googleapis.com/conformance.masking.Pin","title":"t","pin":"1234"}}'
-    Then the masked payload should be '{"extra":{"@type":"type.googleapis.com/conformance.masking.Pin","title":"t","pin":"***"}}'
+    When the payload is a Wallet message:
+      """jsonc
+      {
+        "extra": {             // an Any holding a Pin
+          "@type": "type.googleapis.com/conformance.masking.Pin",
+          "title": "t",
+          "pin": "1234"
+        }
+      }
+      """
+    Then the masked payload should be:
+      """json
+      {
+        "extra": {
+          "@type": "type.googleapis.com/conformance.masking.Pin",
+          "title": "t",
+          "pin": "***"
+        }
+      }
+      """
 
   @category/negative
   Scenario: [L14] An Any of an unknown type is written as unparsed
