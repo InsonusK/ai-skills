@@ -8,7 +8,7 @@ which stay untouched until this one replaces them.
 ## Model
 
 The layers and who may call whom are defined once in `library/develop/core/app-layers`
-(Go: `library/develop/go/app-layers-in-go`, dotnet: `library/develop/dotnet/app-layers-in-dotnet`). The base plateau fills api, command and domain;
+(Go: `library/develop/go/app-layers-in-go`, dotnet: `library/develop/dotnet/app-layers-in-dotnet`, Python: `library/develop/python/app-layers-in-python`). The base plateau fills api, command and domain;
 variation points add entries above and services below.
 
 ```
@@ -50,17 +50,17 @@ the `spec/` skills come along because every stack skill links its spec.
 
 ## Layer names per stack
 
-| Layer | Go | Python (draft) | dotnet |
+| Layer | Go | Python | dotnet |
 |---|---|---|---|
 | Entity | `internal/domain/entity` | `src/{package}/domain/entity` | `src/Modules/{Module}/{Module}.Domain/Entities` |
 | Domain service | `internal/domain/service` | `src/{package}/domain/service` | `src/Modules/{Module}/{Module}.Domain/Services` |
-| Commands + handlers | `internal/command` (contract and decorators in `internal/command/pipeline`) | `src/{package}/command` | `src/Modules/{Module}/{Module}.Application/Commands` (command types in `{Module}.Commands`, behaviors in `src/BuildingBlocks/Pipeline`) |
+| Commands + handlers | `internal/command` (contract and decorators in `internal/command/pipeline`) | `src/{package}/command` (contract and decorators in `src/{package}/command/pipeline`) | `src/Modules/{Module}/{Module}.Application/Commands` (command types in `{Module}.Commands`, behaviors in `src/BuildingBlocks/Pipeline`) |
 | API (entries) | `internal/api/{transport}`: `pipeline/` (fixed), `endpoint/` (`{Resource}Handler` per file), `routes.go` / `services.go` / `commands.go` (registration) | `src/{package}/api/{transport}` | `src/App/App.Host/Api/{Transport}`: `Pipeline/` (fixed), `Endpoint/` (`{Resource}Handler` per file), `Routes.cs` / `Services.cs` (registration) |
-| API — shared by the entries | `internal/api/core/{entry,rpcstatus}` | `src/{package}/api/core` | `src/App/App.Host/Api/Core/{Entry,Errors,Hosting}` |
+| API — shared by the entries | `internal/api/core/{entry,rpcstatus}` | `src/{package}/api/core/{entry,rpcstatus}` | `src/App/App.Host/Api/Core/{Entry,Errors,Hosting}` |
 | Service | `internal/service` | `src/{package}/service` | `src/Modules/{Module}/{Module}.Application/Services` (interface beside its consumer) |
 | Infrastructure | `internal/infrastructure/{kind}` | `src/{package}/infrastructure/{kind}` | `src/Infrastructure/{Infra}/{Infra}.Abstractions` + `{Infra}` |
 | Composition root | `cmd/{app}/main.go` | `src/{package}/main.py` | `src/App/App.Host/Program.cs` (`RunAsync`) |
-| Error kinds | `internal/domain/entity/kinds.go` | | `src/Shared/Errors` |
+| Error kinds | `internal/domain/entity/kinds.go` | `src/{package}/domain/entity/kinds.py` (exceptions) | `src/Shared/Errors` |
 
 ## Variation points by application type
 
@@ -78,14 +78,14 @@ the `spec/` skills come along because every stack skill links its spec.
 
 | Step | Content | Go | dotnet | Python |
 |---|---|:-:|:-:|:-:|
-| 1a | base plateau (on `app-layers`) | ✅ | ✅ | |
-| 1b | API: HTTP (`vp-http-api`) | ✅ | ✅ | |
+| 1a | base plateau (on `app-layers`) | ✅ | ✅ | ✅ |
+| 1b | API: HTTP (`vp-http-api`) | ✅ | ✅ | ✅ (FastAPI) |
 | 1c-1 | API: gRPC (`vp-grpc-api`) | ✅ | ✅ | |
-| — | error kinds (`library/develop/core/error-kinds`) | ✅ | ✅ (exceptions) | |
+| — | error kinds (`library/develop/core/error-kinds`) | ✅ | ✅ (exceptions) | ✅ (exceptions) |
 | — | health (`vp-health`, `:8081`) + one runner for every entry point (`entry.RunAll`) | ✅ | ✅ | |
 | 1c-2 | HTTP form of a gRPC contract (`vp-http-api`, proto mode) | ✅ | ✅ | |
 | 1d | API: CLI (`vp-cli-api`, cobra) | ✅ | | |
-| — | logging: one logger, payload attribute, base handler drops it; every entry point logs its calls; `vp-logging` masks and writes the payload | ✅ | base ✅ | |
+| — | logging: one logger, payload attribute, base handler drops it; every entry point logs its calls; `vp-logging` masks and writes the payload | ✅ | base ✅ | base ✅ |
 | 2 | clients: HTTP, gRPC | | | |
 | 3 | DB | | | |
 | 4 | TaskBox, Inbox, Outbox | | | |
@@ -115,6 +115,7 @@ Agreed with the owner; written into the variation point's skill and ADR when it 
 | Decision | Goes to | Agreed |
 |---|---|---|
 | **dotnet logging VP: own masking or Serilog + `Destructurama.Attributed`** — the base has its own `JsonLogProvider`; the logging variation point replaces only its `AddProvider` line, so the choice is made there (ADR `own-json-log-provider`). | dotnet logging (B4) | 2026-10-21 |
+| **Python stack**: async handlers and entry points (asyncio), FastAPI for the HTTP variation point, the standard library's `logging` with a formatter of its own (ADRs `async-handlers`, `stdlib-logging` of `base-plateau-in-python`). | Python | 2026-10-22 |
 | **Order of B**: B1 dotnet base → B2 HTTP + health → B3 gRPC + HTTP form → B4 logging VP; then Python base → HTTP → gRPC → CLI → health → logging. dotnet has no CLI. | B | 2026-10-21 |
 | **Unit of work at the command.** Optional, available once the DB variation point is attached; the outermost command opens it, nested commands and notification handlers join, services never commit. A simple service may skip it; once any command changes data in several places at once (nested commands, notification handlers, outbox task), every command is wrapped. Rejected: each service method owning its transaction (breaks atomicity across handlers); mandatory for every application. dotnet: pipeline behavior + EF change tracking (one short transaction at the end). Go: handler decorator, unit of work in `context.Context`, transaction opened on the first write, every storage method takes its executor from the context. | DB (step 3) | 2026-10-17 |
 | **In-process notifications in Go** (the counterpart of MediatR notifications), joining the command's unit of work. | DB (step 3) | 2026-10-17 |

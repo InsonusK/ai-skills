@@ -28,7 +28,7 @@ adr:
 - **Interfaces where I/O starts** - A caller reaches a service, and a service reaches its infrastructure, through an interface; code with no I/O behind it is called directly.
 
 # Scope
-- Covers the layer split of one application in any stack. The stack-specific packages and interface placement are described in its stack-specialized extensions: `app-layers-in-go`, `app-layers-in-dotnet`; `app-layers-in-python` is planned.
+- Covers the layer split of one application in any stack. The stack-specific packages and interface placement are described in its stack-specialized extensions: `app-layers-in-go`, `app-layers-in-dotnet`, `app-layers-in-python`.
 
 # Rule
 
