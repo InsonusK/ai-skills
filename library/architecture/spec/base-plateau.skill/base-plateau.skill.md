@@ -2,7 +2,7 @@
 name: base-plateau
 description: The base plateau every application of the architecture catalog starts from — a program that starts, runs exactly one command, reports its result and exits — with its four layers, the direction of their dependencies, and the extension points a variation point attaches to without editing the base
 whenToUse: when you create a new service or CLI application from the architecture catalog, when you write or review a variation point (an API, a client, a store, TaskBox, ...) that attaches to the base plateau, or when you check whether an application still keeps the base plateau's layer and dependency rules
-updated: 20261021
+updated: 20261022
 tags:
   - stack
   - concern/architecture
@@ -25,7 +25,7 @@ adr:
 
 # Scope
 - Covers what the base plateau contains and how a variation point attaches to it, for every stack; the layer rules themselves are [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md)'s.
-- The implementation for each stack is described in its stack-specialized extension: `base-plateau-in-go`, `base-plateau-in-dotnet`; `base-plateau-in-python` is planned.
+- The implementation for each stack is described in its stack-specialized extension: `base-plateau-in-go`, `base-plateau-in-dotnet`, `base-plateau-in-python`.
 
 # Rule
 
