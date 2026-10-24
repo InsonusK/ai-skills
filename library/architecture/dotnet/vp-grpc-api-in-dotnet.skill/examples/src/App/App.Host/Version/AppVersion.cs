@@ -4,7 +4,7 @@ namespace App.Host.Version;
 
 /// <summary>
 /// The version of this build: the &lt;Version&gt; of Directory.Build.props,
-/// per devops-project-version-in-dotnet; a snapshot build overrides it with
+/// per project-version-in-dotnet; a snapshot build overrides it with
 /// -p:Version=...
 /// </summary>
 public static class AppVersion

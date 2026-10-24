@@ -2,7 +2,7 @@
 name: devops-project-version
 description: How a project records its one version and exposes it to developers and CI — `make version` prints it, `make version-check` fails unless it was raised against a base ref — through a shared tools/version/ folder whose only stack-specific file is read-version.sh
 whenToUse: when a project needs its version readable by CI or a build, when you add or review `tools/version/` or the `version`/`version-check` make targets, or when a build must put the version into an artifact
-updated: 20261010
+updated: 20261024
 tags:
   - stack
   - concern/ci
@@ -19,7 +19,7 @@ adr:
 - Every build that stamps a version taking it from `make version`.
 
 # Core Principle
-- A project has one recorded version, in the place its stack's own tooling reads.
+- **Built on project-version** - Where the version is recorded, how the program reports it, and how a snapshot overrides it are [project-version](library/develop/core/project-version.skill.md)'s and its stack extensions'; this skill makes that one place readable by developers and CI.
 - Only `read-version.sh` knows that place; `version.sh`, the `Makefile`, and CI do not.
 - **Stack extensions** - The implementation for a stack is described in the stack-specialized extensions `devops-project-version-in-go`, `devops-project-version-in-python`, `devops-project-version-in-typescript` (also for Angular), `devops-project-version-in-dotnet`; ask the user which one to load.
 - Decision recorded in [[./adr/version-behind-make.md|version-behind-make]].
@@ -45,11 +45,11 @@ Copy `read-version.sh` from the extension for the project's stack, and never wri
 - Risk: when the version moves, one reader is updated and the other keeps reporting the old place.
 - Fix: every reader calls `make version`.
 
-### Record MAJOR.MINOR.PATCH and nothing else
-Record the version as three dot-separated numbers without a prefix or a suffix.
-- Violation: `v1.4.0`, `1.4`, `1.4.0-rc1` in the version source.
-- Risk: `make version` refuses it, and a suffix recorded in the source collides with the snapshot suffix a publishing step adds.
-- Fix: record `1.4.0`; a snapshot build appends its own suffix to what `make version` prints.
+### Read the place project-version names
+Point `read-version.sh` at the one place [project-version](library/develop/core/project-version.skill.md)'s stack extension records the version, and let `version.sh` accept only `MAJOR.MINOR.PATCH` from it.
+- Violation: a `read-version.sh` that reads a `VERSION` file, a tag, or a second copy of the number.
+- Risk: `make version` prints a number the program and the package do not carry.
+- Fix: the stack extension's `read-version.sh` reads the place of `project-version-in-{stack}`; a snapshot build appends its own suffix to what `make version` prints.
 
 ### Take the version of an artifact from make version
 Pass the output of `make -s version` into every build that stamps a version — an image's `VERSION` build argument, a binary's linker flag, a package's version override.
@@ -69,4 +69,4 @@ Set `DELTA_BASE` to the tip of the branch the change is merged into, with that r
 - [ ] The `Makefile` has `include tools/version/version.mk` and no own `version`/`version-check` recipe.
 - [ ] `make -s version` prints one line, `MAJOR.MINOR.PATCH`.
 - [ ] `make version-check DELTA_BASE={ref}` fails for an unchanged version and passes for a raised one.
-- [ ] No file but the version source holds the version number; builds take it from `make version`.
+- [ ] The version is recorded per [project-version](library/develop/core/project-version.skill.md); builds take it from `make version`.
