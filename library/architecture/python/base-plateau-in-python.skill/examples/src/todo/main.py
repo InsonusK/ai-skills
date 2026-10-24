@@ -6,6 +6,7 @@ marked sections below - never by editing another module.
 import asyncio
 import signal
 import sys
+from importlib.metadata import version
 from typing import TextIO
 
 from todo import config
@@ -14,7 +15,6 @@ from todo.api.core.entry import Entry, exit_code, run_all
 from todo.command import PlanItemsCommand, PlanItemsHandler, PlanItemsResult
 from todo.command.pipeline import Handler, with_logging
 from todo.log import attrs, new_logger
-from todo.version import VERSION
 
 
 def main() -> None:
@@ -40,7 +40,9 @@ async def run(stdout: TextIO, stderr: TextIO, stopping: asyncio.Event) -> int:
     # The handler decides what reaches the log: the base plateau's leaves out
     # every payload; the logging variation point replaces this line.
     logger = new_logger(stderr, settings.log_level)
-    logger.info("starting", extra=attrs(version=VERSION))
+    # The version of the installed package: project.version of pyproject.toml
+    # (skill project-version-in-python).
+    logger.info("starting", extra=attrs(version=version("todo")))
 
     # [services] - infrastructure and the services over it; none in the base plateau.
 

@@ -26,7 +26,6 @@ adr:
 src/{package}/
 ├── main.py                        composition root: run(stdout, stderr, stopping) -> exit code
 ├── __main__.py                    python -m {package}
-├── version.py                     VERSION from the package metadata
 ├── config/                        LOG_LEVEL
 ├── log/                           copied: attrs(), JsonFormatter, new_logger, request id
 ├── api/startup/                   copied: run(handler, command, out), env_list
@@ -54,7 +53,7 @@ Create the packages [app-layers-in-python](library/develop/python/app-layers-in-
 | composition root | `main.py` |
 | base settings (`LOG_LEVEL` only) | `config` |
 | [logging](./glossary/logging.md): `attrs`, `JsonFormatter`, `new_logger`, the request id | `log` |
-| version of the build | `version.py`, per `devops-project-version-in-python` |
+| version of the build | `importlib.metadata.version` in `main.py`, no module of its own, per `project-version-in-python` |
 
 - Risk: a part in a package of its own choosing breaks every variation point's instruction that names the module to edit.
 - Fix: move the code to the package in the table.
