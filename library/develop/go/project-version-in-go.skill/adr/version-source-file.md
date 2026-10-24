@@ -5,7 +5,7 @@ problem: Python, TypeScript, and .NET record the version in a manifest their bui
 decision: The version is the string of `var Version` in `internal/version/version.go`; there is no `VERSION` file, and `-ldflags -X` is used only to override it for a snapshot build.
 tags:
   - stack/go
-  - concern/ci
+  - concern/coding
   - concern/documentation
   - concern/documentation/adr
 ---

@@ -36,7 +36,7 @@ Create the projects and folders [app-layers-in-dotnet](library/develop/dotnet/ap
 | [runner of the entry points](./glossary/entry-runner.md): `Entry`, `EntryRunner.RunAllAsync`, `ExitCode` | `src/App/App.Host/Api/Core/Entry` |
 | composition root | `src/App/App.Host/Program.cs` |
 | base settings (`LOG_LEVEL` only) | `src/App/App.Host/Config/AppConfig.cs` |
-| version of the build | `src/App/App.Host/Version/AppVersion.cs`, the `<Version>` of `Directory.Build.props` per `devops-project-version-in-dotnet` |
+| version of the build | `src/App/App.Host/Version/AppVersion.cs`, the `<Version>` of `Directory.Build.props` per `project-version-in-dotnet` |
 | commands and their results — one file each | `src/Modules/{Module}/{Module}.Commands` |
 | handlers — one file each | `src/Modules/{Module}/{Module}.Application/Commands` |
 | entities, domain services, `{Module}Errors` | `src/Modules/{Module}/{Module}.Domain/{Entities,Services,Errors}` |

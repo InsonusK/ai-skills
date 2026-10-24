@@ -6,7 +6,7 @@ decision: The root `package.json` records the one version of the repository; wor
 tags:
   - stack/typescript
   - framework/angular
-  - concern/ci
+  - concern/coding
   - concern/documentation
   - concern/documentation/adr
 ---
