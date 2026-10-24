@@ -10,7 +10,8 @@ Feature: Writing the payload of a record
 
   # A record is logged at INFO with the message "command called" unless a step
   # names another, the attribute command = "PlanItems", failed, and the payload.
-  # "The record" is the first line written; "the log" is every line written.
+  # "The record" is the first line written that is not a warning of the
+  # handler; "the log" is every line written.
 
   @category/happy
   Scenario: [H01 H02] A record keeps its payload, masked, and gets the request id of its context
@@ -74,3 +75,40 @@ Feature: Writing the payload of a record
     Given LOG_PAYLOAD is "off"
     When a record "http request received" is logged with the payload body 'user=ann&password=s3cret'
     Then the log should hold no warning
+
+  @category/security
+  Scenario: [U01] Masking switched off is warned at start, then once per request
+    Given masking is switched off
+    When a record is logged with the payload password "s3cret" and title "buy milk" in the request "req-1"
+    And a record is logged with the payload password "s3cret" and title "buy milk" in the request "req-1"
+    And a record is logged with the payload password "s3cret" and title "buy milk" in the request "req-2"
+    Then the record should mention "s3cret"
+    And the log should hold these "log payload unmasked" warnings:
+      | request_id |
+      |            |
+      | req-1      |
+      | req-2      |
+
+  @category/security
+  Scenario: [U01] With masking off, a record outside a request is warned every time
+    Given masking is switched off
+    When a record is logged with the payload password "s3cret" and title "buy milk"
+    And a record is logged with the payload password "s3cret" and title "buy milk"
+    Then the log should hold these "log payload unmasked" warnings:
+      | request_id |
+      |            |
+      |            |
+      |            |
+
+  @category/security
+  Scenario: [U01] With masking off, a body that is not JSON is written as it came and not warned as unparsed
+    Given masking is switched off
+    When a record "http request received" is logged with the payload body 'user=ann&password=s3cret'
+    Then the record should mention "user=ann&password=s3cret"
+    And the log should hold no "log payload not parsed" warning
+
+  @category/boundary
+  Scenario: [U01] With masking on, nothing is warned about unmasking
+    When a record is logged with the payload password "s3cret" and title "buy milk"
+    Then the log should hold these "log payload unmasked" warnings:
+      | request_id |

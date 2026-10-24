@@ -8,9 +8,10 @@ Feature: Logging settings
   So that a busy service logs only the payloads of failed calls without a rebuild
 
   @category/boundary
-  Scenario: [S01] Nothing set means every payload, cut at 4096 bytes
+  Scenario: [S01] Nothing set means every payload, cut at 4096 bytes, masked
     When the logging settings are loaded
     Then LOG_PAYLOAD should be "always" and the limit 4096
+    And masking should be on
 
   @category/happy
   Scenario Outline: [S01] A usable value is taken
@@ -37,3 +38,33 @@ Feature: Logging settings
       | LOG_PAYLOAD_MAX_BYTES | ten    |
       | LOG_PAYLOAD_MAX_BYTES | 63     |
       | LOG_PAYLOAD_MAX_BYTES | -1     |
+
+  @category/security
+  Scenario: [U01] Masking is switched off only together with the debug level
+    Given the environment variable "LOG_PAYLOAD_UNMASKED" is "true"
+    When the logging settings are loaded for the level "DEBUG"
+    Then masking should be off
+
+  @category/security
+  Scenario Outline: [U01] Masking switched off at another level stops the start, naming both variables
+    Given the environment variable "LOG_PAYLOAD_UNMASKED" is "true"
+    When the logging settings are loaded for the level "<level>"
+    Then loading should fail mentioning "LOG_PAYLOAD_UNMASKED"
+    And loading should fail mentioning "LOG_LEVEL"
+
+    Examples:
+      | level |
+      | INFO  |
+      | WARN  |
+      | ERROR |
+
+  @category/negative
+  Scenario Outline: [U01] LOG_PAYLOAD_UNMASKED is true or false
+    Given the environment variable "LOG_PAYLOAD_UNMASKED" is "<value>"
+    When the logging settings are loaded for the level "DEBUG"
+    Then <outcome>
+
+    Examples:
+      | value | outcome                                             |
+      | false | masking should be on                                |
+      | yes   | loading should fail mentioning "LOG_PAYLOAD_UNMASKED" |

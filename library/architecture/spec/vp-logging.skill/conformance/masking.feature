@@ -15,6 +15,7 @@ Feature: Masking the payload
   #   Login  { user; password }    nothing marked
   #   Link   { name; next: Link }  may refer to itself
   #   Pin, Wallet, Node            the proto messages of masking.proto
+  # Team.lead given with a note shows the note left out: a Person's note is marked to omit.
   # "N levels deep" is N maps, lists, or Node messages, the innermost holding
   # the text "end": the text is N levels below the payload.
   # A "body" is raw bytes, as an entry point reads them; a "text" is a string.
@@ -321,6 +322,63 @@ Feature: Masking the payload
     When the payload is a Wallet message whose extra is an Any of the type "type.googleapis.com/unknown.Thing" holding 5 bytes
     Then the masked payload should be '{"extra":"<unparsed body, 5 bytes>"}'
     And the mask should report the unparsed body "$.extra" of 5 bytes
+
+  # With LOG_PAYLOAD_UNMASKED, for debugging only, nothing is masked: the
+  # payload is written as the data it is. What is not data of the call stays
+  # out - a field marked to omit, a field left out of the type's JSON form -
+  # and the depth limit still holds.
+
+  @category/security
+  Scenario: [U02] With masking off, marked fields and secret names are written as they are
+    Given masking is switched off
+    When the payload is a Team:
+      """jsonc
+      {
+        "title": "core",
+        "lead": { "name": "Ann", "pin": "1234", "note": "x" },   // pin marked to mask, note marked to omit
+        "members": [],
+        "vault": { "code": "9999" }                               // marked to mask
+      }
+      """
+    Then the payload should be written as:
+      """json
+      {
+        "title": "core",
+        "lead": { "name": "Ann", "pin": "1234" },
+        "members": [],
+        "vault": { "code": "9999" }
+      }
+      """
+
+  @category/security
+  Scenario: [U02] With masking off, a body is written as it came, JSON or not
+    Given masking is switched off
+    When the payload is a map with "body" holding the body 'user=ann&password=s3cret'
+    Then the payload should be written as:
+      """json
+      { "body": "user=ann&password=s3cret" }
+      """
+    And the mask should report no unparsed body
+
+  @category/security
+  Scenario: [U02] With masking off, debug_redact and secret names of a proto message are written as they are
+    Given masking is switched off
+    When the payload is a Wallet message:
+      """jsonc
+      {
+        "main": { "title": "a", "pin": "1" },   // pin is debug_redact
+        "apiKey": "k",                           // a secret name
+        "blob": "YWJj"                           // base64 of "abc", not JSON
+      }
+      """
+    Then the payload should be written as:
+      """json
+      {
+        "main": { "title": "a", "pin": "1" },
+        "apiKey": "k",
+        "blob": "abc"
+      }
+      """
 
   @category/boundary
   Scenario Outline: [F01] A value deeper than 32 levels is written as too deep, so a cycle cannot overflow the stack

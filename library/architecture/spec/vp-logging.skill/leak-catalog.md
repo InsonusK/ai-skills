@@ -43,6 +43,15 @@ How the catalog is proven:
 |---|---|---|
 | F01 | A payload that refers to itself (an object graph with a cycle) or is nested without bound overflows the stack and stops the process | A value more than 32 levels below the payload is written `<too deep>`, for maps, lists, objects, and proto messages alike |
 
+## Masking switched off — [payload-policy.feature](./conformance/payload-policy.feature), [masking.feature](./conformance/masking.feature)
+
+`LOG_PAYLOAD_UNMASKED=true` writes payloads as they are, to debug a service; it is a leak on purpose, so its defects are the ways it could be on without anyone knowing or wanting it.
+
+| Id | Defect | The answer |
+|---|---|---|
+| U01 | The switch is left on in a deployment, or read at a level where nobody debugs | Off by default; refused at start unless `LOG_LEVEL=debug`, naming both variables; a WARN `log payload unmasked` at start, before the first record with a payload of each request, and before every such record outside a request |
+| U02 | Unmasked writes more than the data of the call, or less | Marks, secret names, `debug_redact` ignored; a body that is not JSON written as its text; a field marked not to log or left out of its JSON form stays out; depth limit and cut hold |
+
 ## Settings — [settings.feature](./conformance/settings.feature)
 
 | Id | Defect | The answer |
@@ -67,8 +76,9 @@ How the catalog is proven:
 | Go | `handler.go`: the error of writing a warning ignored | The warning is written after its record; failing to write it loses the warning, never masks less |
 | Go | `mask.go`: `case tag == "omit"` / `case tag == "mask"` reported not covered | gremlins does not attribute coverage to `case` expressions; both negations were run by hand and are killed |
 | Go | `mask.go`: the depth of a struct field not increased, reported timed out | Killed: the self-referring link of F01 then never ends |
+| Go | `handler.go`: the bound of the request ids remembered for U01 (4096) moved by one | Only how many requests are remembered: an older request is warned about again, never less |
 
-Run in Go from the example (2026-10-22: 52 killed, 1 timed out, 1 lived, 2 not covered, as listed):
+Run in Go from the example (2026-10-24: 59 killed, 1 timed out, 2 lived, 2 not covered, as listed):
 
 ```bash
 gremlins unleash --integration --workers 2 --timeout-coefficient 30 \

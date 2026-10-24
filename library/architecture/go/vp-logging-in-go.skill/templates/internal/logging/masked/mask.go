@@ -70,9 +70,24 @@ func secret(name string) bool {
 	return false
 }
 
+// Unmask returns v as plain data like Mask, but masks nothing: marks, secret
+// names, and debug_redact are ignored, and a body that is not JSON is its
+// text. Only for debugging, with LOG_PAYLOAD_UNMASKED: a field marked to omit
+// or left out of its JSON form stays out, and the depth limit holds.
+func Unmask(v any) any {
+	m := &masker{unmasked: true}
+	return m.value(reflect.ValueOf(v), "$", 0)
+}
+
 // masker walks one payload, collecting the bodies it could not read.
 type masker struct {
 	unparsed []Unparsed
+	unmasked bool // Unmask: nothing is masked
+}
+
+// secret reports whether name is masked in this walk.
+func (m *masker) secret(name string) bool {
+	return !m.unmasked && secret(name)
 }
 
 func (m *masker) value(v reflect.Value, path string, depth int) any {
@@ -109,7 +124,7 @@ func (m *masker) value(v reflect.Value, path string, depth int) any {
 		iter := v.MapRange()
 		for iter.Next() {
 			key := toString(iter.Key())
-			if secret(key) {
+			if m.secret(key) {
 				out[key] = Masked
 			} else {
 				out[key] = m.value(iter.Value(), path+"."+key, depth+1)
@@ -164,7 +179,7 @@ func (m *masker) object(v reflect.Value, path string, depth int) map[string]any 
 		switch tag := field.Tag.Get("log"); {
 		case tag == "omit":
 			continue
-		case tag == "mask", secret(name):
+		case !m.unmasked && tag == "mask", m.secret(name):
 			out[name] = Masked
 		default:
 			out[name] = m.value(v.Field(i), path+"."+name, depth+1)
@@ -195,12 +210,17 @@ func (m *masker) body(b []byte, path string, depth int) any {
 	if parsed, ok := parseJSON(b); ok {
 		return m.value(reflect.ValueOf(parsed), path, depth)
 	}
-	return m.unreadable(len(b), path)
+	return m.unreadable(b, path)
 }
 
-func (m *masker) unreadable(size int, path string) string {
-	m.unparsed = append(m.unparsed, Unparsed{Path: path, Bytes: size})
-	return fmt.Sprintf("<unparsed body, %d bytes>", size)
+// unreadable is bytes nothing can be masked in: reported and written as their
+// size only - or, unmasked, as their text.
+func (m *masker) unreadable(raw []byte, path string) string {
+	if m.unmasked {
+		return string(raw)
+	}
+	m.unparsed = append(m.unparsed, Unparsed{Path: path, Bytes: len(raw)})
+	return fmt.Sprintf("<unparsed body, %d bytes>", len(raw))
 }
 
 // parseJSON keeps numbers as they were written, so a large id is not rounded.
@@ -224,7 +244,7 @@ func (m *masker) message(msg protoreflect.Message, path string, depth int) any {
 	msg.Range(func(fd protoreflect.FieldDescriptor, value protoreflect.Value) bool {
 		name := fd.JSONName()
 		options, _ := fd.Options().(*descriptorpb.FieldOptions)
-		if options.GetDebugRedact() || secret(name) {
+		if !m.unmasked && options.GetDebugRedact() || m.secret(name) {
 			out[name] = Masked
 			return true
 		}
@@ -243,11 +263,11 @@ func (m *masker) anyMessage(msg protoreflect.Message, path string, depth int) an
 	value := msg.Get(fields.ByName("value")).Bytes()
 	mt, err := protoregistry.GlobalTypes.FindMessageByURL(url)
 	if err != nil {
-		return m.unreadable(len(value), path)
+		return m.unreadable(value, path)
 	}
 	inner := mt.New()
 	if proto.Unmarshal(value, inner.Interface()) != nil {
-		return m.unreadable(len(value), path)
+		return m.unreadable(value, path)
 	}
 	out, _ := m.message(inner, path, depth).(map[string]any)
 	out["@type"] = url
@@ -270,7 +290,7 @@ func (m *masker) field(fd protoreflect.FieldDescriptor, value protoreflect.Value
 		entries := map[string]any{}
 		value.Map().Range(func(k protoreflect.MapKey, v protoreflect.Value) bool {
 			key := k.String()
-			if secret(key) {
+			if m.secret(key) {
 				entries[key] = Masked
 			} else {
 				entries[key] = m.scalar(fd.MapValue(), v, path+"."+key, depth+1)

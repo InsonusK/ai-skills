@@ -20,7 +20,7 @@ tags:
 
 ```
 internal/logging/masked/      copied from templates, never edited
-├── config.go                 LOG_PAYLOAD, LOG_PAYLOAD_MAX_BYTES
+├── config.go                 LOG_PAYLOAD, LOG_PAYLOAD_MAX_BYTES, LOG_PAYLOAD_UNMASKED
 ├── handler.go                Handler: payload kept, masked, cut; request_id added
 ├── mask.go                   Mask: tags, debug_redact, secret names, JSON, Any, unparsed
 ├── features/                 the shared scenarios (conformance.copy) + go-payload.feature
@@ -40,7 +40,7 @@ Fill and copy [config.go](./templates/internal/logging/masked/config.go), [handl
 Replace `logger := slog.New(logging.NewHandler(stderr, cfg.LogLevel))` in `run` with the settings and the masked handler.
 
 ```go
-maskedCfg, err := masked.LoadConfig()
+maskedCfg, err := masked.LoadConfig(cfg.LogLevel) // LOG_PAYLOAD_UNMASKED needs LOG_LEVEL=debug
 if err != nil {
 	slog.New(slog.NewJSONHandler(stderr, nil)).Error("startup failed", "error", err)
 	return 1
@@ -87,7 +87,7 @@ Set `LOG_PAYLOAD=errors` in the deployment of a service whose request volume mak
 
 # Check list
 - [ ] `internal/logging/masked/{config,handler,mask}.go` are filled copies of the templates; no placeholder is left.
-- [ ] `main.go` builds `masked.NewHandler` with `masked.LoadConfig()` in place of `logging.NewHandler`.
+- [ ] `main.go` builds `masked.NewHandler` with `masked.LoadConfig(cfg.LogLevel)` in place of `logging.NewHandler`.
 - [ ] Every secret field is tagged `log:"mask"` or marked `[debug_redact = true]`; fields not to log are tagged `log:"omit"`.
 - [ ] `make test` passes; `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow); `bash test/check-conformance.sh` reports the copies match.
 - [ ] After a change to `masked/`, the mutation run of the [leak catalog](library/architecture/spec/vp-logging.skill/leak-catalog.md) leaves only the survivors it lists for Go.

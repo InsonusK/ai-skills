@@ -67,8 +67,14 @@ Attach the variation point by replacing the construction of the base log handler
 - Risk: a part that logs differently once the handler is attached must be described together with it.
 - Fix: the stack extension lists the base files it changes; a check compares its example with the base example against that list.
 
+### Switch masking off only to debug
+Write the payload unmasked only with `LOG_PAYLOAD_UNMASKED=true` (default `false`) together with `LOG_LEVEL=debug`, refusing to start with it at any other level and naming both variables; then write one WARN record `log payload unmasked` when the handler is built, one before the first record with a payload of each request (by its request id), and one before every such record outside a request. Unmasked, marks, secret names, and `debug_redact` are ignored and a body that is not JSON is written as its text; a field marked not to log or left out of its JSON form stays out, and the depth limit and the cut still hold ([leak catalog](./leak-catalog.md) U01, U02).
+- Violation: `LOG_PAYLOAD_UNMASKED=true` honoured at info level; the warning written once at start only; unmasking through a code change or a second handler.
+- Risk: one debug variable left in a deployment writes every password and token of every request into a log kept for months, and nobody reading it is told.
+- Fix: two variables needed at once, and a warning in every request's records.
+
 ### Read its own settings
-Read `LOG_PAYLOAD` and `LOG_PAYLOAD_MAX_BYTES` in the handler's own package, rejecting an unusable value with an error naming its variable.
+Read `LOG_PAYLOAD`, `LOG_PAYLOAD_MAX_BYTES`, and `LOG_PAYLOAD_UNMASKED` in the handler's own package, rejecting an unusable value with an error naming its variable.
 - Risk: settings added to the base settings outlive the variation point and make it edit a base file.
 - Fix: a settings loader beside the handler, called by the composition root before it builds the logger.
 
@@ -89,5 +95,6 @@ Run a mutation test over the stack's masking code and kill every mutant, or list
 - [ ] Every other way the stack hands the handler a payload has a scenario of its own.
 - [ ] A mutation run over the masking code leaves no survivor missing from the leak catalog.
 - [ ] An unreadable body is written `<unparsed body, N bytes>` and warned about once per record message and path.
+- [ ] `LOG_PAYLOAD_UNMASKED` is off by default, refused without `LOG_LEVEL=debug`, and warned at start and once per request.
 - [ ] `LOG_PAYLOAD` (`always` default, `errors`, `off`) and `LOG_PAYLOAD_MAX_BYTES` (4096) are read by the handler's package.
 - [ ] Every record of a call carries its request id.
