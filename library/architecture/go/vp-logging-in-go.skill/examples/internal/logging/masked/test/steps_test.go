@@ -27,7 +27,7 @@ import (
 	"github.com/example/todo/internal/logging/masked"
 )
 
-var variables = []string{"LOG_PAYLOAD", "LOG_PAYLOAD_MAX_BYTES"}
+var variables = []string{"LOG_PAYLOAD", "LOG_PAYLOAD_MAX_BYTES", "LOG_PAYLOAD_UNMASKED"}
 
 // The types masking.feature gives as a payload.
 
