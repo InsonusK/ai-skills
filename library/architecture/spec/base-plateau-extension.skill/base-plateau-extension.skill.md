@@ -105,6 +105,12 @@ Let the answer-failures middleware answer every error that reaches it — an err
 - Risk: a failure outside the command — binding the request, mapping the result, an API middleware, the framework — escapes the error format and the log however the commands behave; the command layer reports its errors by raising them and cannot answer them itself.
 - Fix: the fixed middleware of every API kind, tested by a scenario of a route that fails.
 
+### Keep a middleware free of the state of a call
+Build every middleware once and let it serve every call, several at the same time: keep in it only what it was built with — its settings, a logger, a factory — carry what belongs to one call in the call's context, and obtain a dependency that lives for one call (a database session) per call.
+- Violation: a field written on one call and read on the next; a database session given to the middleware when it is built.
+- Risk: two calls served at the same time see each other's caller or share one session that is not safe to share, and the fault shows only under load.
+- Fix: Go — the closure keeps only what `Middleware(...)` was given, the call's values travel in `context.Context`; Python — the instance keeps only what `__init__` was given, the call's values travel in a `ContextVar`; dotnet — `base-plateau-extension-in-dotnet`'s rule on scoped dependencies.
+
 ### Reject by an error kind
 Let a middleware reject a call with an error of a kind of [error-kinds](library/develop/core/error-kinds.skill/error-kinds.skill.md), answered by the API's answer failures like any error of a handler; never write an answer of its own.
 - Violation: an authentication middleware that writes `401` with a text body; a limit middleware that returns an empty result.
@@ -142,6 +148,7 @@ Add a cross-cutting step (logging, a unit of work, a metric, an access check) as
 - [ ] Each API's entry is built by its entry factory from the registry, the logger, and its list of API middleware.
 - [ ] Every list is ordered first = outermost; the request log and answer failures are built by the entry itself from its logger, stay outside the API middleware, and answer every failure in the API's error format ([fixed-middleware-inside-the-entry](./adr/fixed-middleware-inside-the-entry.md)).
 - [ ] A middleware rejects with an error kind, and a filtered middleware selects commands by a mark.
+- [ ] No middleware keeps the state of a call; a dependency that lives for one call is obtained per call.
 - [ ] Authentication is an API middleware; the access check is a command middleware.
 - [ ] The variation point reads its own settings in its own directory.
 

@@ -189,6 +189,27 @@ services.AddHttpApi(middlewares: [typeof(AuthenticationMiddleware)]);
 - Risk: the rejection is answered outside `google.rpc.Status` or outside the request log; a command middleware that reads the HTTP context does nothing for gRPC; a fixed middleware given twice logs every request twice.
 - Fix: the HTTP server puts `RequestLogMiddleware` outermost and `AnswerFailuresMiddleware` inside it, and runs the list only for the contract's routes; the gRPC server runs `CallLogMiddleware` and `AnswerFailuresMiddleware` before the list.
 
+### Keep a middleware without state, a scoped dependency from a scope of its own
+Keep an API middleware (`IMiddleware`, `Interceptor`) and a command middleware without fields written per call — `HttpServer.Activate` and `GrpcServer.Activate` build an API middleware once from the application's container, and it serves every request at the same time — and take a dependency registered as scoped per call, from a scope it opens through the application's `IServiceScopeFactory`, never from `context.RequestServices`.
+
+```csharp
+// an API middleware with a scoped dependency: one scope per request
+public sealed class AuditMiddleware(IServiceScopeFactory scopes) : IMiddleware
+{
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+    {
+        await using var scope = scopes.CreateAsyncScope();
+        var audit = scope.ServiceProvider.GetRequiredService<IAuditLog>(); // lives as long as this request
+        await next(context);
+        await audit.WriteAsync(context.Request.Path, context.Response.StatusCode);
+    }
+}
+```
+
+- Violation: `context.RequestServices.GetRequiredService<IAuditLog>()`; a scoped service (`DbContext`) taken in the constructor; a field set in `InvokeAsync`.
+- Risk: `context.RequestServices` is the web host's own container (`WebHost.CreateBuilder`), which holds none of the application's services, so the call fails at run time; a scoped service taken in the constructor lives as long as the process and is shared by every request at once — a `DbContext` is not safe for that; a field is overwritten by the request served beside it.
+- Fix: the constructor takes singletons and `IServiceScopeFactory` only; the scope a middleware opens is its own, not the command's — a unit of work shared with the handler is the DB variation point's scope per command (README backlog).
+
 ### Read the settings in the variation point's folder
 Read a variation point's settings with `{VariationPoint}Config.Load()` from one of its folders, called in the `try` of `AppConfig.Load()`, and register the result in `// [services]`; a `FormatException` stops the start with `startup failed` and exit code `1`.
 
@@ -232,6 +253,7 @@ change README.md
 - [ ] A filtered middleware selects by an interface of `Shared`; the marked command implements it with `[JsonIgnore]` properties.
 - [ ] `AddCommandMiddleware` lists every command middleware, `LoggingMiddleware<,>` first.
 - [ ] Every entry point is registered as an `Entry`; each API's registration gets its list of middleware; no fixed middleware is in a list.
+- [ ] No middleware keeps a field written per call; a scoped dependency comes from a scope opened through `IServiceScopeFactory`, never from `context.RequestServices`.
 - [ ] The variation point's settings are loaded with `AppConfig` and registered in `// [services]`.
 - [ ] `attach.allow` names every changed base file; `bash test/check-vp-attach.sh` and `make test` pass.
 
