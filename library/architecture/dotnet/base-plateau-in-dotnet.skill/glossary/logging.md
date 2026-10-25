@@ -5,7 +5,7 @@ Every part writes its records through `ILogger` with **fixed text and attributes
 ## How it works
 
 ```
-LoggingBehavior ─┐   logger.Write(Information, "command called",
+LoggingMiddleware ─┐   logger.Write(Information, "command called",
 entry points    ─┼─►     LogAttr.Of("command", "PlanItems"), LogAttr.Payload(command))
 clients (later) ─┘                     │
                                        ▼
@@ -34,7 +34,7 @@ Each layer writes a pair of records, so the log reads top-down as the call ran: 
 
 ## Related concepts
 
-- [Pipeline behavior](./pipeline-behavior.md) — `LoggingBehavior` writes the command's pair.
+- [Command middleware](./command-middleware.md) — `LoggingMiddleware` writes the command's pair.
 
 ## Sources
 

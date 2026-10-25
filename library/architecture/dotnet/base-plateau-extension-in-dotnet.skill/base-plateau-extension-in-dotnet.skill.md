@@ -1,7 +1,7 @@
 ---
 name: base-plateau-extension-in-dotnet
-description: How a variation point extends the base plateau in dotnet — one registration method per module, API, and variation point called in order in the three sections of Program.cs (AddTodoModule, AddCommandDecorators with the list of MediatR pipeline behaviors, AddHttpApi and AddGrpcApi with their lists of middlewares and interceptors, every entry point registered as an Entry), marks as interfaces of Shared a command implements, rejections as ErrorKindException, the variation point's own project and settings, and attach.allow — with a sample access variation point attached to the HTTP example
-whenToUse: when you write, attach, or review a variation point of a dotnet application built on the base plateau, when you add a pipeline behavior around commands or a middleware or interceptor around requests, or when you add a command or a module to such an application
+description: How a variation point extends the base plateau in dotnet — one registration method per module, API, and variation point called in order in the three sections of Program.cs (AddTodoModule, AddCommandMiddleware with the list of command middleware, AddHttpApi and AddGrpcApi with their lists of API middleware, every entry point registered as an Entry), every middleware in a folder of its own named {Name}Middleware — the command middleware as MediatR pipeline behaviors in the Middleware project, an API's in App.Host/Api/{Api}/Middleware inside its fixed RequestLogMiddleware and AnswerFailuresMiddleware — marks as interfaces of Shared a command implements, rejections as ErrorKindException, the variation point's own settings, and attach.allow, with a sample access variation point attached to the HTTP example
+whenToUse: when you write, attach, or review a variation point of a dotnet application built on the base plateau, when you add a middleware around commands or around the requests or calls of an API, or when you add a command or a module to such an application
 updated: 20261025
 tags:
   - stack/dotnet
@@ -13,24 +13,39 @@ adr:
 
 # Goal
 - **The extension points in dotnet** - A dotnet application that keeps every property of [base-plateau-extension](library/architecture/spec/base-plateau-extension.skill/base-plateau-extension.skill.md); this skill details that skill's implementation for dotnet and restates none of its rules.
-- **A sample to copy from** - [examples/](./examples/README.md) attaches a sample access variation point to the HTTP example of [vp-http-api-in-dotnet](library/architecture/dotnet/vp-http-api-in-dotnet.skill/vp-http-api-in-dotnet.skill.md): one middleware and two pipeline behaviors, with the attach check proving that only the composition root, the project files, the marked command, and the readme and Makefile changed.
+- **A sample to copy from** - [examples/](./examples/README.md) attaches a sample access variation point to the HTTP example of [vp-http-api-in-dotnet](library/architecture/dotnet/vp-http-api-in-dotnet.skill/vp-http-api-in-dotnet.skill.md): one HTTP middleware and two command middleware, with the attach check proving that only the composition root, the marked command with its project, and the readme and Makefile changed.
 
 # Core Principle
 - **Program.cs reads as a list of registrations** - Each module, API, and variation point brings one `Add{Part}()` extension method of `IServiceCollection`; `Program.cs` calls them in order in its three sections, and the order of a list argument is the order of wrapping ([ADR](./adr/registration-methods-in-program.md)).
-- **MediatR is the command registry** - A module's `Add{Module}Module()` lets MediatR find every handler of its assembly, so a new command adds no line anywhere; `ISender` is what an entry point takes, and every behavior of the list wraps every handler.
-- **A mark is an interface of Shared** - `Shared` references nothing, so a module's `Commands` project implements a mark (`IRestricted`) without referencing the variation point, and a behavior asks `command is IRestricted`.
+- **A folder per middleware** - A command middleware is `src/Middleware/{Name}/{Name}Middleware.cs`, an open generic MediatR pipeline behavior; an API's is `src/App/App.Host/Api/{Api}/Middleware/{Name}/{Name}Middleware.cs`. The `Middleware` project knows no ASP.NET, so a command middleware works for every API.
+- **MediatR is the command registry** - A module's `Add{Module}Module()` lets MediatR find every handler of its assembly, so a new command adds no line anywhere; `ISender` is what an entry point takes, and every middleware of the list wraps every handler.
+- **A mark is an interface of Shared** - `Shared` references nothing, so a module's `Commands` project implements a mark (`IRestricted`) without referencing the variation point, and a middleware asks `command is IRestricted`.
 
 ```
+src/
+├── Shared/Access/              IRestricted, IBatch             the marks (sample VP)
+├── BuildingBlocks/Pipeline/    AddCommandMiddleware            the registration of the list
+├── Middleware/                 one folder per command middleware - no ASP.NET
+│   ├── Logging/                LoggingMiddleware<,>            base plateau
+│   ├── Access/                 AccessMiddleware<,>, settings   sample VP
+│   └── BatchLimit/             BatchLimitMiddleware<,>         sample VP
+├── Middleware.Tests/
+└── App/App.Host/Api/Http/
+    ├── Pipeline/               HttpServer: the fixed middleware around all, the list around the contract
+    └── Middleware/
+        ├── RequestLog/         RequestLogMiddleware            fixed, outermost
+        ├── AnswerFailures/     AnswerFailuresMiddleware        fixed: every exception as google.rpc.Status
+        └── Authentication/     AuthenticationMiddleware        sample VP
+
 src/App/App.Host/Program.cs
-  accessConfig = AccessConfig.Load()                       the variation point's own settings (in the try of AppConfig)
+  accessConfig = AccessConfig.Load()                          the variation point's own settings (in the try of AppConfig)
   // [services]  services.AddSingleton(accessConfig)
-  // [handlers]  services.AddTodoModule()                  Todo.Application/TodoModule.cs: handlers + module services
-                 services.AddCommandDecorators(
-                     typeof(LoggingBehavior<,>),           every command      (base plateau)
-                     typeof(AccessCheckBehavior<,>),       by the mark        IRestricted
-                     typeof(BatchLimitBehavior<,>))        by a value         IBatch
-  // [entries]   services.AddHttpApi(middlewares: [typeof(Authentication)])   entry decorator (inside the request log)
-  EntryRunner.RunAllAsync(logger, stopping, [.. provider.GetServices<Entry>()])
+  // [handlers]  services.AddTodoModule()
+                 services.AddCommandMiddleware(
+                     typeof(LoggingMiddleware<,>),            every command      (base plateau)
+                     typeof(AccessMiddleware<,>),             by the mark        IRestricted
+                     typeof(BatchLimitMiddleware<,>))         by a value         IBatch
+  // [entries]   services.AddHttpApi(middlewares: [typeof(AuthenticationMiddleware)])
 ```
 
 # Rule
@@ -49,15 +64,21 @@ public static IServiceCollection AddTodoModule(this IServiceCollection services)
 ```
 
 - Violation: `services.AddMediatR(...)` in `Program.cs`; a handler registered by hand; a behavior given to `AddMediatR`'s configuration.
-- Risk: a behavior registered with the module wraps only some commands, or is registered twice once a second module arrives.
-- Fix: the module registers handlers and services only; its infrastructure (`IListStore`) is registered in `// [services]`; the behaviors are listed once in `AddCommandDecorators`.
+- Risk: a middleware registered with the module wraps only some commands, or is registered twice once a second module arrives.
+- Fix: the module registers handlers and services only; its infrastructure (`IListStore`) is registered in `// [services]`; the middleware are listed once in `AddCommandMiddleware`.
 
-### Write a command decorator as a pipeline behavior
-Write a command decorator as an open generic `{Step}Behavior<TCommand, TResult> : IPipelineBehavior<TCommand, TResult>` in its own file, taking what it needs from the container through its constructor; let it call `next(cancellationToken)` once, or throw an `ErrorKindException` of a factory method of its errors class to reject the command.
+### One folder per middleware
+Put each command middleware in `src/Middleware/{Name}/` with the settings, identity, and errors it uses, its scenarios in `src/Middleware.Tests/`, and each API middleware in `src/App/App.Host/Api/{Api}/Middleware/{Name}/`, the class named `{Name}Middleware` and the namespace `Middleware.{Name}` or `App.Host.Api.{Api}.Middleware.{Name}`; put the marks in `src/Shared/{VariationPoint}/`.
+- Violation: `AccessMiddleware` added to `BuildingBlocks/Pipeline`; an HTTP middleware in `Api/Http/Pipeline`, which is copied from templates; a project of its own per variation point.
+- Risk: a variation point edits a base project or a template, and a reader looking for a step finds it under another name.
+- Fix: a new folder needs no project edit — the SDK compiles every file of the project's folders; a middleware that needs a package the `Middleware` project lacks adds it there, as a listed change.
+
+### Write a command middleware as a pipeline behavior
+Write a command middleware as an open generic `{Name}Middleware<TCommand, TResult> : IPipelineBehavior<TCommand, TResult>`, taking what it needs from the container through its constructor; let it call `next(cancellationToken)` once, or throw an `ErrorKindException` of a factory method of its errors class to reject the command.
 
 ```csharp
-// by the command's mark: src/Access/AccessCheckBehavior.cs
-public sealed class AccessCheckBehavior<TCommand, TResult> : IPipelineBehavior<TCommand, TResult>
+// by the command's mark: src/Middleware/Access/AccessMiddleware.cs
+public sealed class AccessMiddleware<TCommand, TResult> : IPipelineBehavior<TCommand, TResult>
     where TCommand : notnull
 {
     private static readonly string Name = typeof(TCommand).Name.Replace("Command", "");
@@ -77,8 +98,8 @@ public sealed class AccessCheckBehavior<TCommand, TResult> : IPipelineBehavior<T
     }
 }
 
-// by a value of the command: src/Access/BatchLimitBehavior.cs
-public sealed class BatchLimitBehavior<TCommand, TResult>(AccessConfig config) : IPipelineBehavior<TCommand, TResult>
+// by a value of the command: src/Middleware/BatchLimit/BatchLimitMiddleware.cs
+public sealed class BatchLimitMiddleware<TCommand, TResult>(AccessConfig config) : IPipelineBehavior<TCommand, TResult>
     where TCommand : notnull
 {
     private static readonly string Name = typeof(TCommand).Name.Replace("Command", "");
@@ -90,9 +111,9 @@ public sealed class BatchLimitBehavior<TCommand, TResult>(AccessConfig config) :
 }
 ```
 
-- Violation: `where TCommand : IRestricted` as the filter; `if (command is PlanItemsCommand)`; a behavior that answers a rejection with a result.
-- Risk: a constraint the container cannot satisfy fails the resolution of every other command, depending on the container's version; a behavior that names the commands misses the next one that needs it.
-- Fix: one behavior per step that passes every unmarked command on; the simple form — every command — is the base plateau's [LoggingBehavior](library/architecture/dotnet/base-plateau-in-dotnet.skill/templates/src/BuildingBlocks/Pipeline/LoggingBehavior.cs).
+- Violation: `where TCommand : IRestricted` as the filter; `if (command is PlanItemsCommand)`; a middleware that answers a rejection with a result.
+- Risk: a constraint the container cannot satisfy fails the resolution of every other command, depending on the container's version; a middleware that names the commands misses the next one that needs it.
+- Fix: one middleware per step that passes every unmarked command on; the simple form — every command — is the base plateau's [LoggingMiddleware](library/architecture/dotnet/base-plateau-in-dotnet.skill/templates/src/Middleware/Logging/LoggingMiddleware.cs).
 
 ### Mark a command with an interface of Shared
 Give a command a mark by implementing the mark's interface of `Shared` on its record, with the property's body and `[JsonIgnore]`, and a reference from the module's `Commands` project to `Shared`.
@@ -111,33 +132,33 @@ public sealed record PlanItemsCommand(IReadOnlyList<string> Titles) : IRequest<P
 }
 ```
 
-- Violation: the mark's interface in the variation point's project; a mark without `[JsonIgnore]`.
-- Risk: a `Commands` project referencing a variation point pulls its packages into every entry point; a mark without `[JsonIgnore]` is logged as data of the command.
+- Violation: the mark's interface in the `Middleware` project; a mark without `[JsonIgnore]`.
+- Risk: a `Commands` project referencing the middleware pulls MediatR's behaviors into every entry point; a mark without `[JsonIgnore]` is logged as data of the command.
 - Fix: marks in `src/Shared/{VariationPoint}/`, as the logging variation point's `[LogMask]` is.
 
-### List the behaviors in AddCommandDecorators
-Give every pipeline behavior as one element of the `AddCommandDecorators` call in `// [handlers]` of `Program.cs`, `typeof(LoggingBehavior<,>)` first, so every rejection of a behavior after it is logged as `command failed`.
+### List the command middleware in AddCommandMiddleware
+Give every command middleware as one element of the `AddCommandMiddleware` call in `// [handlers]` of `Program.cs`, `typeof(LoggingMiddleware<,>)` first, so every rejection of a middleware after it is logged as `command failed`.
 
 ```csharp
 // [handlers] - the handler of every command of each module, and the
-// decorators wrapped around every one of them, the first the outermost.
+// command middleware wrapped around every one of them, the first the outermost.
 services.AddTodoModule();
-services.AddCommandDecorators(
-    typeof(LoggingBehavior<,>),
-    typeof(AccessCheckBehavior<,>), // by the command's mark: IRestricted
-    typeof(BatchLimitBehavior<,>)); // by a value of the command: IBatch
+services.AddCommandMiddleware(
+    typeof(LoggingMiddleware<,>),
+    typeof(AccessMiddleware<,>),      // by the command's mark: IRestricted
+    typeof(BatchLimitMiddleware<,>)); // by a value of the command: IBatch
 ```
 
-- Violation: `services.AddTransient(typeof(IPipelineBehavior<,>), ...)` of its own; a second `AddCommandDecorators` call.
-- Risk: the order of the behaviors depends on where a line happens to stand, and a behavior placed before the logging rejects calls that leave no trace.
-- Fix: one list; `AddCommandDecorators` refuses a type that is no open generic pipeline behavior at start.
+- Violation: `services.AddTransient(typeof(IPipelineBehavior<,>), ...)` of its own; a second `AddCommandMiddleware` call.
+- Risk: the order of the middleware depends on where a line happens to stand, and a middleware placed before the logging rejects calls that leave no trace.
+- Fix: one list; `AddCommandMiddleware` refuses a type that is no open generic pipeline behavior at start.
 
-### Give an API's decorators to its registration
-Give an API's entry decorators as the list argument of its registration in `// [entries]`: `AddHttpApi(middlewares: [...])` with ASP.NET `IMiddleware` types, `AddGrpcApi(interceptors: [...])` with `Interceptor` types, each built from the application's services; let one reject by throwing an `ErrorKindException` and pass a value to the command layer through an `AsyncLocal` it begins around `next`.
+### Give an API's middleware to its registration
+Give an API's middleware as the list argument of its registration in `// [entries]`: `AddHttpApi(middlewares: [...])` with ASP.NET `IMiddleware` types, `AddGrpcApi(interceptors: [...])` with `Interceptor` types, each built from the application's services; let one reject by throwing an `ErrorKindException` and pass a value to the command layer through an `AsyncLocal` it begins around `next`.
 
 ```csharp
-// src/App/App.Host/Api/Http/Access/Authentication.cs
-public sealed class Authentication(AccessConfig config) : IMiddleware
+// src/App/App.Host/Api/Http/Middleware/Authentication/AuthenticationMiddleware.cs
+public sealed class AuthenticationMiddleware(AccessConfig config) : IMiddleware
 {
     private const string Scheme = "Bearer ";
 
@@ -161,21 +182,15 @@ public sealed class Authentication(AccessConfig config) : IMiddleware
 }
 
 // Program.cs, [entries]
-services.AddHttpApi(middlewares: [typeof(Authentication)]);
+services.AddHttpApi(middlewares: [typeof(AuthenticationMiddleware)]);
 ```
 
-- Violation: `context.Response.StatusCode = 401` written by the middleware; `app.UseMiddleware` in an API's fixed code; `IHttpContextAccessor` read in a behavior.
-- Risk: the rejection is answered outside `google.rpc.Status` or outside the request log; a behavior that reads the HTTP context does nothing for gRPC.
-- Fix: the HTTP server runs the middlewares only for the contract's routes, inside the request log and the error answers; the gRPC server runs the interceptors after the call log and the error answers.
+- Violation: `context.Response.StatusCode = 401` written by the middleware; `app.UseMiddleware` in an API's fixed code; `IHttpContextAccessor` read in a command middleware; `typeof(RequestLogMiddleware)` given in the list.
+- Risk: the rejection is answered outside `google.rpc.Status` or outside the request log; a command middleware that reads the HTTP context does nothing for gRPC; a fixed middleware given twice logs every request twice.
+- Fix: the HTTP server puts `RequestLogMiddleware` outermost and `AnswerFailuresMiddleware` inside it, and runs the list only for the contract's routes; the gRPC server runs `CallLogMiddleware` and `AnswerFailuresMiddleware` before the list.
 
-### Put the variation point in its own project
-Put a variation point's behaviors, settings, identity, and errors in `src/{VariationPoint}/` with its tests in `src/{VariationPoint}.Tests/`, its marks in `src/Shared/{VariationPoint}/`, and its transport half in `src/App/App.Host/Api/{Transport}/{VariationPoint}/`.
-- Violation: `AccessCheckBehavior` added to `BuildingBlocks/Pipeline`; a middleware in `Api/Http/Pipeline`, which is copied from templates.
-- Risk: a variation point edits a base project or a template, and two variation points edit the same one.
-- Fix: the sample's `src/Access`, `src/Shared/Access`, and `Api/Http/Access`; the solution and `App.Host.csproj` reference the new project.
-
-### Read the settings in the variation point's project
-Read a variation point's settings with `{VariationPoint}Config.Load()` in its own project, called in the `try` of `AppConfig.Load()`, and register the result in `// [services]`; a `FormatException` stops the start with `startup failed` and exit code `1`.
+### Read the settings in the variation point's folder
+Read a variation point's settings with `{VariationPoint}Config.Load()` from one of its folders, called in the `try` of `AppConfig.Load()`, and register the result in `// [services]`; a `FormatException` stops the start with `startup failed` and exit code `1`.
 
 ```csharp
 AppConfig config;
@@ -201,10 +216,8 @@ Give the variation point's example an `attach.allow` beside its `examples/`, nam
 # skill folder / attach.allow
 base library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples
 change src/App/App.Host/Program.cs
-change src/App/App.Host/App.Host.csproj
 change src/Modules/Todo/Todo.Commands/Todo.Commands.csproj
 change src/Modules/Todo/Todo.Commands/PlanItemsCommand.cs
-change Todo.slnx
 change Makefile
 change README.md
 ```
@@ -214,11 +227,12 @@ change README.md
 
 # Check list
 - [ ] Every module has its `Add{Module}Module()`; `Program.cs` has no `AddMediatR`.
-- [ ] Every command decorator is an open generic pipeline behavior in its own file that passes every unmarked command on and rejects with an `ErrorKindException`.
-- [ ] A filtered behavior selects by an interface of `Shared`; the marked command implements it with `[JsonIgnore]` properties.
-- [ ] `AddCommandDecorators` lists every behavior, `LoggingBehavior<,>` first.
-- [ ] Every entry point is registered as an `Entry`; each API's registration gets its list of middlewares or interceptors.
-- [ ] The variation point lives in its own project; its settings are loaded with `AppConfig` and registered in `// [services]`.
+- [ ] Every middleware is in a folder of its own, named `{Name}Middleware`: a command middleware in `src/Middleware/{Name}/`, an API's in `Api/{Api}/Middleware/{Name}/`.
+- [ ] Every command middleware is an open generic pipeline behavior that passes every unmarked command on and rejects with an `ErrorKindException`.
+- [ ] A filtered middleware selects by an interface of `Shared`; the marked command implements it with `[JsonIgnore]` properties.
+- [ ] `AddCommandMiddleware` lists every command middleware, `LoggingMiddleware<,>` first.
+- [ ] Every entry point is registered as an `Entry`; each API's registration gets its list of middleware; no fixed middleware is in a list.
+- [ ] The variation point's settings are loaded with `AppConfig` and registered in `// [services]`.
 - [ ] `attach.allow` names every changed base file; `bash test/check-vp-attach.sh` and `make test` pass.
 
 # Example

@@ -2,7 +2,7 @@
 name: mediatr 12 as the handler contract
 description: What the one handler contract of the dotnet base plateau is — MediatR 12, MediatR 13+, or an own interface
 problem: Every dotnet handler must satisfy one contract that behaviors wrap and entry points call; should it be MediatR, and which version, given that MediatR 13 and later are commercial?
-decision: MediatR 12.5.0 (Apache-2.0), the last version before the commercial license — IRequestHandler as the contract, IPipelineBehavior as the decorator, ISender as the way entry points reach a handler; MediatR.Contracts 2.0.1 in the Commands project.
+decision: MediatR 12.5.0 (Apache-2.0), the last version before the commercial license — IRequestHandler as the contract, IPipelineBehavior as the middleware, ISender as the way entry points reach a handler; MediatR.Contracts 2.0.1 in the Commands project.
 tags:
   - stack/dotnet
   - concern/architecture
@@ -49,10 +49,10 @@ The current MediatR with a license key.
 ## Own handler interface
 
 ### Description
-`IHandler<TCommand, TResult>` and decorators registered by hand, as in Go.
+`IHandler<TCommand, TResult>` and middleware registered by hand, as in Go.
 
 ### Benefits
 - No dependency; the same shape as the Go base plateau.
 
 ### Costs
-- Decorator registration (Scrutor or hand-written wrappers per handler) is code every application carries; dotnet developers expect MediatR.
+- Middleware registration (Scrutor or hand-written wrappers per handler) is code every application carries; dotnet developers expect MediatR.

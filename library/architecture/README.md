@@ -21,12 +21,13 @@ entry with its own, the health variation point adds one, so variation points com
 listing, with no code written for a combination.
 
 How a variation point attaches — the extension points, the command registry, and the two
-ordered lists of decorators (around commands, around an API's requests) — is
+ordered lists of middleware (around commands, around an API's requests), every middleware
+in a directory of its own, `middleware/{name}/` — is
 `spec/base-plateau-extension` with its stack skills, each with a sample access variation point:
 
 ```
-request ─▶ request log ─▶ error answers ─▶ entry decorators ─▶ route ─▶ command decorators ─▶ handler
-           (fixed, the API's)               (the API's list)            (the registry's list)
+request ─▶ request log ─▶ answer failures ─▶ API middleware ─▶ route ─▶ command middleware ─▶ handler
+           (fixed, the API's)                 (the API's list)           (the registry's list)
 ```
 
 ## Layout
@@ -47,8 +48,8 @@ the `spec/` skills come along because every stack skill links its spec.
 |---|---|---|---|
 | Entity | `internal/domain/entity` | `src/{package}/domain/entity` | `src/Modules/{Module}/{Module}.Domain/Entities` |
 | Domain service | `internal/domain/service` | `src/{package}/domain/service` | `src/Modules/{Module}/{Module}.Domain/Services` |
-| Commands + handlers | `internal/command` (contract and decorators in `internal/command/pipeline`) | `src/{package}/command` (contract and decorators in `src/{package}/command/pipeline`) | `src/Modules/{Module}/{Module}.Application/Commands` (command types in `{Module}.Commands`, behaviors in `src/BuildingBlocks/Pipeline`) |
-| API (entries) | `internal/api/{transport}`: `pipeline/` (fixed), `endpoint/` (`{Resource}Handler` per file), `routes.go` / `services.go` / `commands.go` (registration) | `src/{package}/api/{transport}` | `src/App/App.Host/Api/{Transport}`: `Pipeline/` (fixed), `Endpoint/` (`{Resource}Handler` per file), `Routes.cs` / `Services.cs` (registration) |
+| Commands + handlers | `internal/command` (contract in `internal/command/pipeline`, middleware in `internal/command/middleware/{name}`) | `src/{package}/command` (contract in `src/{package}/command/pipeline`, middleware in `src/{package}/command/middleware/{name}`) | `src/Modules/{Module}/{Module}.Application/Commands` (command types in `{Module}.Commands`, command middleware in `src/Middleware/{Name}`) |
+| API (entries) | `internal/api/{transport}`: `pipeline/` (fixed), `middleware/{name}/` (fixed request log and answer failures, an application's), `endpoint/` (`{Resource}Handler` per file), `routes.go` / `services.go` / `commands.go` (registration) | `src/{package}/api/{transport}`: `pipeline/`, `middleware/{name}/`, `endpoint/`, `routes.py` | `src/App/App.Host/Api/{Transport}`: `Pipeline/` (fixed), `Middleware/{Name}/`, `Endpoint/` (`{Resource}Handler` per file), `Routes.cs` / `Services.cs` (registration) |
 | API — shared by the entries | `internal/api/core/{entry,rpcstatus}` | `src/{package}/api/core/{entry,rpcstatus}` | `src/App/App.Host/Api/Core/{Entry,Errors,Hosting}` |
 | Service | `internal/service` | `src/{package}/service` | `src/Modules/{Module}/{Module}.Application/Services` (interface beside its consumer) |
 | Infrastructure | `internal/infrastructure/{kind}` | `src/{package}/infrastructure/{kind}` | `src/Infrastructure/{Infra}/{Infra}.Abstractions` + `{Infra}` |
@@ -79,7 +80,7 @@ the `spec/` skills come along because every stack skill links its spec.
 | 1c-2 | HTTP form of a gRPC contract (`vp-http-api`, proto mode) | ✅ | ✅ | |
 | 1d | API: CLI (`vp-cli-api`, cobra) | ✅ | | |
 | — | logging: one logger, payload attribute, base handler drops it; every entry point logs its calls; `vp-logging` masks and writes the payload | ✅ | base ✅ | base ✅ |
-| — | extension of the base (`base-plateau-extension`): command registry, decorator lists for commands and entries, sample access VP | ✅ | ✅ | ✅ |
+| — | extension of the base (`base-plateau-extension`): command registry, middleware lists for commands and entries, one directory per middleware, sample access VP | ✅ | ✅ | ✅ |
 | 2 | clients: HTTP, gRPC | | | |
 | 3 | DB | | | |
 | 4 | TaskBox, Inbox, Outbox | | | |
@@ -92,14 +93,14 @@ variation points are formed (2026-10-18).
 
 | Candidate | Where it lives now | Why a library |
 |---|---|---|
-| Go handler contract + startup entry (`Handler[TCommand, TResult]`, `HandlerFunc`, `Decorator`, `Decorate`, `WithLogging`, `startup.Run`, `ExitCode`) | templates of `base-plateau-in-go` | identical in every Go application; a variation point's decorator or entry point would import one stable package |
+| Go handler contract + startup entry (`Handler[TCommand, TResult]`, `HandlerFunc`, `Middleware`, `Decorate`, `logging.Middleware`, `startup.Run`, `ExitCode`) | templates of `base-plateau-in-go` | identical in every Go application; a variation point's middleware or entry point would import one stable package |
 | Go HTTP entry point (`Endpoint`, `Server` with graceful stop, `LoadConfig`, docs routes, `proto.go` for a proto contract) | templates of `vp-http-api-in-go` | identical in every Go HTTP service except the module path and the contract's name; the docs routes could take the embedded spec as a parameter |
 | Go gRPC entry point (`Call`, `Server` with reflection, panic recovery, graceful stop, `LoadConfig`) | templates of `vp-grpc-api-in-go` | identical in every Go gRPC service except the module path |
 | Go CLI entry point (`Run`, `Command` over cobra, `--output`, usage errors as invalid) | templates of `vp-cli-api-in-go` | identical in every Go CLI except the module path |
 | Go logging (`internal/logging`, `internal/logging/masked`: payload attribute, masked handler) | templates of `base-plateau-in-go` and `vp-logging-in-go` | identical in every Go application; one masking for all services |
 | Go error kinds (`entity/kinds.go`, `pipeline/errors.go` with `KindOf`, `api/rpcstatus`) | templates of `error-kinds-in-go` | identical in every Go application; a service would import the kinds and the table instead of copying them; the skill would keep only when to choose each kind |
 | Testing tooling (`tools/testing`, `tools/normalize_*`, `tools/livingdoc`, `report-template`) | example of `solution-conformance-testing-in-go`; not copied into plateau or variation-point examples | ~2,000 lines copied into every real project; a version bump would update every project at once |
-| dotnet fixed code (`Shared`: error kinds; `BuildingBlocks`: `LoggingBehavior`, `AddCommandDecorators`, `JsonLogProvider`, `LogAttr`, `RequestId`; `Api/Core/Entry`, `Api/Startup`; `Api/Core/Errors/RpcStatus`, `Api/Core/Hosting/WebHost`, `Api/Http/Pipeline` with `ProtoJson`, `Api/Grpc/Pipeline`, `Api/Management`) | templates of `base-plateau-in-dotnet`, `error-kinds-in-dotnet`, `vp-http-api-in-dotnet`, `vp-grpc-api-in-dotnet`, `vp-health-in-dotnet` | no placeholder at all: one NuGet package (or two: `Shared` with no dependency, the rest over MediatR) |
+| dotnet fixed code (`Shared`: error kinds; `BuildingBlocks`: `AddCommandMiddleware`, `JsonLogProvider`, `LogAttr`, `RequestId`; `Middleware`: `LoggingMiddleware`; `Api/Core/Entry`, `Api/Startup`; `Api/Core/Errors/RpcStatus`, `Api/Core/Hosting/WebHost`, `Api/Http/Pipeline` with `ProtoJson`, `Api/Grpc/Pipeline`, `Api/Management`) | templates of `base-plateau-in-dotnet`, `error-kinds-in-dotnet`, `vp-http-api-in-dotnet`, `vp-grpc-api-in-dotnet`, `vp-health-in-dotnet` | no placeholder at all: one NuGet package (or two: `Shared` with no dependency, the rest over MediatR) |
 | TaskBox | `taskbox-spec` published; `taskbox-go` code proven, not yet packaged | already decided as a library (ADR `contract-vp-realized-by-libraries`) |
 
 ## Decisions waiting for their variation point
@@ -111,7 +112,7 @@ Agreed with the owner; written into the variation point's skill and ADR when it 
 | **dotnet logging VP: own masking or Serilog + `Destructurama.Attributed`** — the base has its own `JsonLogProvider`; the logging variation point replaces only its `AddProvider` line, so the choice is made there (ADR `own-json-log-provider`). | dotnet logging (B4) | 2026-10-21 |
 | **Python stack**: async handlers and entry points (asyncio), FastAPI for the HTTP variation point, the standard library's `logging` with a formatter of its own (ADRs `async-handlers`, `stdlib-logging` of `base-plateau-in-python`). | Python | 2026-10-22 |
 | **Order of B**: B1 dotnet base → B2 HTTP + health → B3 gRPC + HTTP form → B4 logging VP; then Python base → HTTP → gRPC → CLI → health → logging. dotnet has no CLI. | B | 2026-10-21 |
-| **Unit of work at the command.** Optional, available once the DB variation point is attached; the outermost command opens it, nested commands and notification handlers join, services never commit. A simple service may skip it; once any command changes data in several places at once (nested commands, notification handlers, outbox task), every command is wrapped. Rejected: each service method owning its transaction (breaks atomicity across handlers); mandatory for every application. dotnet: pipeline behavior + EF change tracking (one short transaction at the end). Go: handler decorator, unit of work in `context.Context`, transaction opened on the first write, every storage method takes its executor from the context. | DB (step 3) | 2026-10-17 |
+| **Unit of work at the command.** Optional, available once the DB variation point is attached; the outermost command opens it, nested commands and notification handlers join, services never commit. A simple service may skip it; once any command changes data in several places at once (nested commands, notification handlers, outbox task), every command is wrapped. Rejected: each service method owning its transaction (breaks atomicity across handlers); mandatory for every application. dotnet: pipeline behavior + EF change tracking (one short transaction at the end). Go: command middleware, unit of work in `context.Context`, transaction opened on the first write, every storage method takes its executor from the context. | DB (step 3) | 2026-10-17 |
 | **In-process notifications in Go** (the counterpart of MediatR notifications), joining the command's unit of work. | DB (step 3) | 2026-10-17 |
 
 ## Backlog
@@ -124,7 +125,7 @@ Agreed with the owner; written into the variation point's skill and ADR when it 
 | The verification `curl` of the `devops-service-deploy` guides calls `/health/ready` on the published API port; for a service with the management port it needs that port published or port-forwarded | with the next change of `devops-service-deploy` |
 | Review [Library candidates](#library-candidates) with the owner: turn fixed Go code (handler contract, error kinds + `rpcstatus`, HTTP/gRPC entry points) into libraries services import instead of copying templates | after the last variation point (step 4) |
 | Move `library/common-workflow/develop/*` to `library/develop/{core,stack}` | later pass |
-| Go HTTP: `http.ServeMux` answers an unknown route (404) and another method (405) with plain text, not `google.rpc.Status`; the dotnet `ErrorAnswers` fills both — add the same to the Go pipeline | with the next change of `vp-http-api-in-go` |
+| Go HTTP: `http.ServeMux` answers an unknown route (404) and another method (405) with plain text, not `google.rpc.Status`; the dotnet `AnswerFailuresMiddleware` fills both — add the same to Go's `answerfailures` middleware | with the next change of `vp-http-api-in-go` |
 | The old dotnet catalog (`library/dotnet/architecture/...`: plateau examples, `*.Tests.csproj.create.md`) still keeps test projects in a root `tests/`; `cucumber-testing-in-dotnet` now puts each beside its project (ADR `test-location`) | when the old dotnet catalog is replaced |
 | dotnet: one DI scope per command, for a scoped `DbContext` — entries send through a sender that opens a scope per call; today they take `ISender` from the root provider | DB (step 3) |
 | `api-develop-in-go` still says the contract's routes are one list in `internal/api/http/server.go` exposed as `ContractRoutes()`; the HTTP variation point now keeps them in `internal/api/http/endpoint` (`Routes`) | with the move of `library/common-workflow/develop/*` |

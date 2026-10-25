@@ -18,7 +18,7 @@ adr:
 
 # Core Principle
 - **One contract, two forms** - With a gRPC contract, the proto file is the only contract: the routes read and write its generated messages and the spec is generated from its annotations by the Go catalog's generator, so the HTTP and gRPC forms — and a Go and a dotnet service of one contract — cannot describe different operations, statuses, or shapes. Decision recorded in [http-form-by-routes-over-generated-messages](./adr/http-form-by-routes-over-generated-messages.md).
-- **A route is written for its success** - A route binds its request type, sends one command, and returns `TypedResults`; every error it lets out is answered once, by the pipeline's `ErrorAnswers`, as `google.rpc.Status`. Decision recorded in [minimal-api-with-binding-and-one-error-middleware](./adr/minimal-api-with-binding-and-one-error-middleware.md).
+- **A route is written for its success** - A route binds its request type, sends one command, and returns `TypedResults`; every error it lets out is answered once, by the fixed `AnswerFailuresMiddleware`, as `google.rpc.Status`. Decision recorded in [minimal-api-with-binding-and-one-error-middleware](./adr/minimal-api-with-binding-and-one-error-middleware.md).
 - **Copied once, written per command** - The entry point is split as [app-layers-in-dotnet](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md#split-each-entry-point-into-pipeline-endpoint-and-registration) requires: `Pipeline/` is copied from templates and never edited; per command the application writes, in its resource's class of `Endpoint/`, a route line, a method, and a request and a response record.
 
 ```
@@ -27,10 +27,12 @@ src/App/App.Host/Api/
 ├── Hosting/WebHost.cs         copied; the same in every web entry point (HTTP, management, gRPC)
 └── Http/
     ├── Pipeline/              copied from templates, never edited
-    │   ├── HttpConfig.cs  HttpServer.cs  HttpDocs.cs   HttpServer: the middlewares around the contract's routes
-    │   ├── RequestLog.cs      the request log: received / sent, request id
-    │   ├── ErrorAnswers.cs    every error as google.rpc.Status
+    │   ├── HttpConfig.cs  HttpServer.cs  HttpDocs.cs   HttpServer: the fixed middleware around all, the list around the contract
     │   └── ProtoJson.cs       only for a proto contract: the generated messages in proto-JSON
+    ├── Middleware/            one folder per middleware
+    │   ├── RequestLog/        copied, fixed, outermost: RequestLogMiddleware, request id
+    │   ├── AnswerFailures/    copied, fixed: AnswerFailuresMiddleware, every exception as google.rpc.Status
+    │   └── {Name}/            an application's {Name}Middleware, given in AddHttpApi's list
     ├── Endpoint/              written per application, grows with the API
     │   └── ItemsHandler.cs    one class per resource ≈ a controller
     └── Routes.cs              HttpEndpoints (one parameter per resource), Map, HttpApi.AddHttpApi
@@ -43,7 +45,7 @@ docs/integration/api/{contract-name}/openapi.json    the hand-written contract, 
 ## MUST
 
 ### Copy the entry point from templates
-Copy, unchanged, [HttpConfig.cs](./templates/src/App/App.Host/Api/Http/Pipeline/HttpConfig.cs), [HttpServer.cs](./templates/src/App/App.Host/Api/Http/Pipeline/HttpServer.cs), [RequestLog.cs](./templates/src/App/App.Host/Api/Http/Pipeline/RequestLog.cs), [ErrorAnswers.cs](./templates/src/App/App.Host/Api/Http/Pipeline/ErrorAnswers.cs), and [HttpDocs.cs](./templates/src/App/App.Host/Api/Http/Pipeline/HttpDocs.cs) to `src/App/App.Host/Api/Http/Pipeline/`, [WebHost.cs](./templates/src/App/App.Host/Api/Core/Hosting/WebHost.cs) to `Api/Core/Hosting/`, and `RpcStatus.cs` of [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md) to `Api/Core/Errors/`, unless another entry point already put the last two there.
+Copy, unchanged, [HttpConfig.cs](./templates/src/App/App.Host/Api/Http/Pipeline/HttpConfig.cs), [HttpServer.cs](./templates/src/App/App.Host/Api/Http/Pipeline/HttpServer.cs), and [HttpDocs.cs](./templates/src/App/App.Host/Api/Http/Pipeline/HttpDocs.cs) to `src/App/App.Host/Api/Http/Pipeline/`, [RequestLogMiddleware.cs](./templates/src/App/App.Host/Api/Http/Middleware/RequestLog/RequestLogMiddleware.cs) and [AnswerFailuresMiddleware.cs](./templates/src/App/App.Host/Api/Http/Middleware/AnswerFailures/AnswerFailuresMiddleware.cs) to `src/App/App.Host/Api/Http/Middleware/{RequestLog,AnswerFailures}/`, [WebHost.cs](./templates/src/App/App.Host/Api/Core/Hosting/WebHost.cs) to `Api/Core/Hosting/`, and `RpcStatus.cs` of [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md) to `Api/Core/Errors/`, unless another entry point already put the last two there.
 - Risk: a retyped server drifts in its error answers, its request log, or its shutdown from every other dotnet service of the catalog.
 - Fix: copy the files; they hold no placeholder — the namespaces are the same in every application, and Swagger UI's title is the contract's `info.title`.
 
@@ -139,7 +141,7 @@ Copy the example's `src/App/App.Host.Tests/features/Http/` scenarios of the fixe
 Serve a further command of an existing resource by adding its route line to `Map`, its method, and its request and response records to the resource's class, its path to `openapi.json`, and its scenario to the resource's feature; the command itself joins its module, and `Program.cs` does not change. A new resource adds its class and feature, one parameter of `HttpEndpoints`, and one line each of its constructor from `ISender` and of `Map`.
 
 # Check list
-- [ ] `Api/Http/Pipeline/{HttpConfig,HttpServer,RequestLog,ErrorAnswers,HttpDocs}.cs`, `Api/Core/Hosting/WebHost.cs`, and `Api/Core/Errors/RpcStatus.cs` are copies of the templates.
+- [ ] `Api/Http/Pipeline/{HttpConfig,HttpServer,HttpDocs}.cs`, `Api/Http/Middleware/{RequestLog,AnswerFailures}/`, `Api/Core/Hosting/WebHost.cs`, and `Api/Core/Errors/RpcStatus.cs` are copies of the templates.
 - [ ] `App.Host.csproj` references `Microsoft.AspNetCore.App` and `Swashbuckle.AspNetCore.SwaggerUI` and embeds the contract as `openapi.json`.
 - [ ] Each resource is one `{Resource}Handler` class in `Api/Http/Endpoint/` mapping its group; every route binds a record of its own, sends one command, and returns `TypedResults` with no error handling of its own.
 - [ ] `Routes.cs` holds only `HttpEndpoints` with its constructor from `ISender`, its `Map`, and `HttpApi.AddHttpApi`.

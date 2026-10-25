@@ -15,7 +15,7 @@ RunAsync
   AddLogging(...)        the one provider (the logging VP replaces this line)
   // [services]          infrastructure and the services over it (DB, clients)
   // [handlers]          AddTodoModule(): the module's handlers and services
-                         AddCommandDecorators(typeof(LoggingBehavior<,>), ...): first = outermost
+                         AddCommandMiddleware(typeof(LoggingMiddleware<,>), ...): first = outermost
   // [entries]           AddStartupEntry(...) / AddHttpApi(middlewares: [...]) / AddManagement(): one Entry each
   BuildServiceProvider()
   EntryRunner.RunAllAsync(logger, stopping, [.. provider.GetServices<Entry>()]) → ExitCode
@@ -24,17 +24,17 @@ RunAsync
 | Section | A variation point adds |
 |---|---|
 | `[services]` | its infrastructure: `services.AddSingleton<IListStore, MemoryListStore>()` |
-| `[handlers]` | one element of the `AddCommandDecorators` list: `typeof(UnitOfWorkBehavior<,>)`; a module adds its `Add{Module}Module()` |
+| `[handlers]` | one element of the `AddCommandMiddleware` list: `typeof(UnitOfWorkMiddleware<,>)`; a module adds its `Add{Module}Module()` |
 | `[entries]` | `services.AddHttpApi(middlewares: [])` replacing `AddStartupEntry`; `services.AddManagement()` beside it; an element of an API's list of middlewares |
 
 ## Example
 
 ```csharp
 // [handlers] - the handler of every command of each module, and the
-// decorators wrapped around every one of them, the first the outermost.
+// middleware wrapped around every one of them, the first the outermost.
 services.AddTodoModule();
-services.AddCommandDecorators(
-    typeof(LoggingBehavior<,>));
+services.AddCommandMiddleware(
+    typeof(LoggingMiddleware<,>));
 
 // [entries] - every entry point, registered as an Entry and run together by EntryRunner.
 services.AddStartupEntry(() => new PlanItemsCommand(StartupEntry.EnvList("STARTUP_TITLES")), stdout);
@@ -44,7 +44,7 @@ services.AddStartupEntry(() => new PlanItemsCommand(StartupEntry.EnvList("STARTU
 
 - [Entry runner](./entry-runner.md) — what runs the entries `[entries]` registers.
 - [base-plateau-extension-in-dotnet](library/architecture/dotnet/base-plateau-extension-in-dotnet.skill/base-plateau-extension-in-dotnet.skill.md) — how a variation point uses the sections.
-- [Pipeline behavior](./pipeline-behavior.md) — what `[handlers]` registers.
+- [Command middleware](./command-middleware.md) — what `[handlers]` registers.
 
 ## Sources
 

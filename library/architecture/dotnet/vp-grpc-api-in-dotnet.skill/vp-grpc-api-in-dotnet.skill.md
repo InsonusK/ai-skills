@@ -16,7 +16,7 @@ adr:
 - **Attached by the listed changes only** - Attaching it adds files and changes only the base files [attach.allow](./attach.allow) names, which the repository's attach check verifies against [base-plateau-in-dotnet](library/architecture/dotnet/base-plateau-in-dotnet.skill/base-plateau-in-dotnet.skill.md)'s example.
 
 # Core Principle
-- **A method is written for its success** - A method maps its request message to the command, sends it, and maps the result to the response message; every exception it lets out is answered once, by the `ErrorAnswers` interceptor, through [RpcStatus](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md) — the same table as the HTTP variation point's.
+- **A method is written for its success** - A method maps its request message to the command, sends it, and maps the result to the response message; every exception it lets out is answered once, by the fixed `AnswerFailuresMiddleware` interceptor, through [RpcStatus](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md) — the same table as the HTTP variation point's.
 - **Copied once, written per command** - The entry point is split as [app-layers-in-dotnet](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md#split-each-entry-point-into-pipeline-endpoint-and-registration) requires: `Pipeline/` is copied from templates and never edited; per command the application writes, in its service's class of `Endpoint/`, one override.
 
 ```
@@ -26,9 +26,11 @@ src/App/App.Host/Api/
 ├── Hosting/WebHost.cs         copied; the same in every web entry point (HTTP, management, gRPC)
 └── Grpc/
     ├── Pipeline/              copied from templates, never edited
-    │   ├── GrpcConfig.cs  GrpcServer.cs  GrpcService.cs   GrpcServer: the application's interceptors after the fixed ones
-    │   ├── CallLog.cs         interceptor: received / answered, request id
-    │   └── ErrorAnswers.cs    interceptor: every exception as its kind's status
+    │   └── GrpcConfig.cs  GrpcServer.cs  GrpcService.cs   GrpcServer: the application's interceptors after the fixed ones
+    ├── Middleware/            one folder per middleware (gRPC interceptors)
+    │   ├── CallLog/           copied, fixed, outermost: CallLogMiddleware, request id
+    │   ├── AnswerFailures/    copied, fixed: AnswerFailuresMiddleware, every exception as its kind's status
+    │   └── {Name}/            an application's {Name}Middleware, given in AddGrpcApi's list
     ├── Endpoint/              written per application, grows with the API
     │   └── ItemsHandler.cs    one class per proto service ≈ a controller
     └── Services.cs            GrpcEndpoints (one parameter per service), Services, GrpcApi.AddGrpcApi
@@ -39,7 +41,7 @@ src/App/App.Host/Api/
 ## MUST
 
 ### Copy the entry point from templates
-Copy, unchanged, [GrpcConfig.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/GrpcConfig.cs), [GrpcServer.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/GrpcServer.cs), [GrpcService.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/GrpcService.cs), [CallLog.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/CallLog.cs), and [ErrorAnswers.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/ErrorAnswers.cs) to `src/App/App.Host/Api/Grpc/Pipeline/`, [WebHost.cs](./templates/src/App/App.Host/Api/Core/Hosting/WebHost.cs) to `Api/Core/Hosting/`, and `RpcStatus.cs` of [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md) to `Api/Core/Errors/`, unless another entry point already put the last two there.
+Copy, unchanged, [GrpcConfig.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/GrpcConfig.cs), [GrpcServer.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/GrpcServer.cs), and [GrpcService.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/GrpcService.cs) to `src/App/App.Host/Api/Grpc/Pipeline/`, [CallLogMiddleware.cs](./templates/src/App/App.Host/Api/Grpc/Middleware/CallLog/CallLogMiddleware.cs) and [AnswerFailuresMiddleware.cs](./templates/src/App/App.Host/Api/Grpc/Middleware/AnswerFailures/AnswerFailuresMiddleware.cs) to `src/App/App.Host/Api/Grpc/Middleware/{CallLog,AnswerFailures}/`, [WebHost.cs](./templates/src/App/App.Host/Api/Core/Hosting/WebHost.cs) to `Api/Core/Hosting/`, and `RpcStatus.cs` of [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md) to `Api/Core/Errors/`, unless another entry point already put the last two there.
 - Risk: a retyped server drifts in its error answers, its call log, or its shutdown from every other dotnet service of the catalog; a second, different `WebHost.cs` breaks the HTTP or management entry point it is shared with.
 - Fix: copy the files; `bash test/check-vp-attach.sh` in this repository fails when two variation points add a shared file differently.
 
@@ -81,7 +83,7 @@ Copy the example's `src/App/App.Host.Tests/features/Grpc/` scenarios of the fixe
 Serve a further command of an existing service by adding its rpc and messages to the proto file and its override to the service's class, and its scenario to the service's feature; the command itself joins its module, and `Program.cs` does not change. A new service adds its class and feature, one parameter of `GrpcEndpoints`, one line each of its constructor from `ISender` and of `Services`, and one row of the contract scenario.
 
 # Check list
-- [ ] `Api/Grpc/Pipeline/{GrpcConfig,GrpcServer,GrpcService,CallLog,ErrorAnswers}.cs`, `Api/Core/Hosting/WebHost.cs`, and `Api/Core/Errors/RpcStatus.cs` are copies of the templates.
+- [ ] `Api/Grpc/Pipeline/{GrpcConfig,GrpcServer,GrpcService}.cs`, `Api/Grpc/Middleware/{CallLog,AnswerFailures}/`, `Api/Core/Hosting/WebHost.cs`, and `Api/Core/Errors/RpcStatus.cs` are copies of the templates.
 - [ ] The proto file is versioned per api-develop under `docs/integration/api/`, compiled by `<Protobuf ... GrpcServices="Both">`; no generated file is committed.
 - [ ] Each proto service is one `{Service}Handler` class in `Api/Grpc/Endpoint/` overriding every rpc with no error handling of its own; `Services.cs` holds only `GrpcEndpoints` with its constructor from `ISender`, `Services`, and `GrpcApi.AddGrpcApi`.
 - [ ] `// [entries]` has `services.AddGrpcApi(interceptors: [...])`; `Api/Startup/` is deleted.
