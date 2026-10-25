@@ -13,7 +13,7 @@ from todo import config
 from todo.api import http as http_api
 from todo.api.core.entry import exit_code, run_all
 from todo.command import build_handlers
-from todo.command.pipeline import with_logging
+from todo.command.middleware.logging import LoggingMiddleware
 from todo.log import attrs, new_logger
 
 
@@ -47,11 +47,12 @@ async def run(stdout: TextIO, stderr: TextIO, stopping: asyncio.Event) -> int:
     # [services] - infrastructure and the services over it; none in the base plateau.
 
     # [handlers] - the handler of every command, built by the command registry
-    # and wrapped by these decorators, the first the outermost. A variation
-    # point adds its decorator to this list at the place its skill names.
+    # and wrapped by this command middleware, the first the outermost. A
+    # variation point adds its middleware to this list at the place its skill
+    # names.
     handlers = build_handlers(
         [
-            with_logging(logger),
+            LoggingMiddleware(logger),
         ]
     )
 

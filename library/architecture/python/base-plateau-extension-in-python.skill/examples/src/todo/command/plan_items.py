@@ -16,7 +16,7 @@ class PlanItemsCommand:
         return "planner"
 
     def batch_size(self) -> int:
-        """Marks PlanItemsCommand access.Batch: its size is the number of titles."""
+        """Marks PlanItemsCommand batch_limit.Batch: its size is the number of titles."""
         return len(self.titles)
 
 

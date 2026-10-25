@@ -17,7 +17,8 @@ from pytest_bdd import given, parsers, then, when
 
 from todo.api.http.pipeline import HttpConfig, Middleware, Server
 from todo.api.http.pipeline.docs import find_contract
-from todo.command.pipeline import Handler, HandlerFunc, Kind, KindError, decorate, with_logging
+from todo.command.middleware.logging import LoggingMiddleware
+from todo.command.pipeline import Handler, HandlerFunc, Kind, KindError, decorate
 from todo.log import attributes_of, request_id
 
 
@@ -130,7 +131,7 @@ def the_command_fails(world: World, message: str) -> None:
 
 @given("the command is wrapped with logging")
 def the_command_is_wrapped_with_logging(world: World) -> None:
-    world.handler = decorate("Echo", HandlerFunc(world.echo.handle), [with_logging(world.logger())])
+    world.handler = decorate("Echo", HandlerFunc(world.echo.handle), [LoggingMiddleware(world.logger())])
 
 
 @given("the docs are enabled")

@@ -12,9 +12,12 @@ from typing import TextIO
 from todo import config
 from todo.api import http as http_api
 from todo.api.core.entry import exit_code, run_all
-from todo.api.http import access as http_access
-from todo.command import access, build_handlers
-from todo.command.pipeline import with_logging
+from todo.api.http.middleware.authentication import AuthenticationMiddleware
+from todo.command import build_handlers
+from todo.command.middleware.access import AccessMiddleware
+from todo.command.middleware.access import load_config as load_access_config  # its own settings
+from todo.command.middleware.batch_limit import BatchLimitMiddleware
+from todo.command.middleware.logging import LoggingMiddleware
 from todo.log import attrs, new_logger
 
 
@@ -49,19 +52,20 @@ async def run(stdout: TextIO, stderr: TextIO, stopping: asyncio.Event) -> int:
     # plateau. The access variation point reads its own settings: the
     # callers' tokens and the batch limit.
     try:
-        access_settings = access.load_config()
+        access_settings = load_access_config()
     except ValueError as error:
         logger.error("startup failed", exc_info=error)
         return 1
 
     # [handlers] - the handler of every command, built by the command registry
-    # and wrapped by these decorators, the first the outermost. A variation
-    # point adds its decorator to this list at the place its skill names.
+    # and wrapped by this command middleware, the first the outermost. A
+    # variation point adds its middleware to this list at the place its skill
+    # names.
     handlers = build_handlers(
         [
-            with_logging(logger),
-            access.with_access_check(),  # by the command's mark: access.Restricted
-            access.with_batch_limit(access_settings.max_batch),  # by a value of the command: access.Batch
+            LoggingMiddleware(logger),
+            AccessMiddleware(),  # by the command's mark: Restricted
+            BatchLimitMiddleware(access_settings.max_batch),  # by a value of the command: Batch
         ]
     )
 
@@ -77,7 +81,7 @@ async def run(stdout: TextIO, stderr: TextIO, stopping: asyncio.Event) -> int:
             handlers,
             logger,
             [
-                http_access.authenticate(access_settings.tokens),
+                AuthenticationMiddleware(access_settings.tokens),
             ],
         ),
     )

@@ -4,14 +4,14 @@ The HTTP example of the base plateau in Python (`vp-http-api-in-python`) with a 
 **access** variation point attached through the extension points of
 `base-plateau-extension-in-python`:
 
-| Step | Kind | Where |
+| Middleware | Kind | Where |
 |---|---|---|
-| `authenticate` | entry decorator (HTTP middleware): the bearer token → the caller | `src/todo/api/http/access` |
-| `with_access_check` | command decorator, by the command's mark `Restricted` | `src/todo/command/access` |
-| `with_batch_limit` | command decorator, by a value of the command (`Batch`) | `src/todo/command/access` |
+| `AuthenticationMiddleware` | API middleware (HTTP): the bearer token → the caller | `src/todo/api/http/middleware/authentication` |
+| `AccessMiddleware` | command middleware, by the command's mark `Restricted` | `src/todo/command/middleware/access` |
+| `BatchLimitMiddleware` | command middleware, by a value of the command (`Batch`) | `src/todo/command/middleware/batch_limit` |
 
 `PlanItemsCommand` carries both marks (`src/todo/command/plan_items.py`); `src/todo/main.py`
-lists the decorators. Nothing else of the HTTP example changed (`attach.allow`).
+lists the middleware. Nothing else of the HTTP example changed (`attach.allow`).
 
 ```bash
 make init    # once: a virtual environment with the package and its dev tools

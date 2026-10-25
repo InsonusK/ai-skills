@@ -18,8 +18,9 @@ from starlette.types import ASGIApp, Receive, Scope, Send
 
 from todo.api.http.pipeline.config import HttpConfig, load_config
 from todo.api.http.pipeline.docs import add_docs
-from todo.api.http.pipeline.errors import AnswerFailures, add_error_answers
-from todo.api.http.pipeline.logging import RequestLog
+from todo.api.http.middleware.answer_failures import AnswerFailuresMiddleware
+from todo.api.http.middleware.request_log import RequestLogMiddleware
+from todo.api.http.pipeline.errors import add_error_answers
 from todo.log import attrs
 
 SHUTDOWN_TIMEOUT_SECONDS = 10
@@ -27,8 +28,8 @@ SHUTDOWN_TIMEOUT_SECONDS = 10
 
 type CallNext = Callable[[Request], Awaitable[Response]]
 type Middleware = Callable[[Request, CallNext], Awaitable[Response]]
-# A Middleware is a decorator of the requests of the contract's routes - the
-# HTTP form of an entry decorator (skill base-plateau-extension): an async
+# A Middleware is a middleware of the requests of the contract's routes - the
+# HTTP form of an API middleware (skill base-plateau-extension): an async
 # function of the request and call_next, the shape of FastAPI's
 # @app.middleware("http"), that does its step around call_next, e.g. reads
 # the caller's credentials into a ContextVar. It rejects a request by raising
@@ -70,8 +71,8 @@ class Server:
         if self._middlewares:
             contract = [route for router in self._routers for route in router.routes]
             app.add_middleware(ContractMiddlewares, routes=contract, middlewares=self._middlewares)
-        app.add_middleware(AnswerFailures, logger=self._logger)
-        app.add_middleware(RequestLog, logger=self._logger)  # added last: the outermost
+        app.add_middleware(AnswerFailuresMiddleware, logger=self._logger)
+        app.add_middleware(RequestLogMiddleware, logger=self._logger)  # added last: the outermost
         return app
 
     async def serve(self, stop: asyncio.Event) -> None:
@@ -118,7 +119,7 @@ class ContractMiddlewares:
     """ASGI middleware running a request of a contract route through the
     application's middlewares, the first the outermost; any other request -
     the docs, an unknown path - goes past them. It stands inside the request
-    log and AnswerFailures, so a KindError a middleware raises is answered by
+    log and AnswerFailuresMiddleware, so a KindError a middleware raises is answered by
     its kind and logged like any other."""
 
     def __init__(self, app: ASGIApp, routes: Sequence[BaseRoute], middlewares: Sequence[Middleware]) -> None:

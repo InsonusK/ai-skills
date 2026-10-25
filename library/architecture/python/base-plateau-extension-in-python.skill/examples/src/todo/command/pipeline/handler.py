@@ -15,7 +15,7 @@ class Handler[TCommand, TResult](Protocol):
     PlanItemsHandler is a Handler[PlanItemsCommand, PlanItemsResult].
 
     Because every handler has this one shape, code that is not about a
-    specific command - an entry point that serves commands, a decorator that
+    specific command - an entry point that serves commands, a middleware that
     wraps them - is written once for Handler[TCommand, TResult] and works with
     any handler. The context of the call is the running task's: its
     cancellation, and its contextvars (the request id).
@@ -31,7 +31,7 @@ class HandlerFunc[TCommand, TResult]:
     """Turns an ordinary async function into a Handler: the function is the
     handle method. A handler with its own dependencies is a class
     (PlanItemsHandler); HandlerFunc is for handlers built on the fly -
-    decorate returns one wrapping the chain of decorators, and a test writes a
+    decorate returns one wrapping the chain of middleware, and a test writes a
     stub handler in one line.
     """
 

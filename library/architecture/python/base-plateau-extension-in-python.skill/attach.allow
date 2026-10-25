@@ -1,6 +1,7 @@
 # The sample access variation point attaches to the HTTP example: it adds its
-# packages (todo.command.access, todo.api.http.access) and changes only the
-# composition root, the command it marks, and the readme and Makefile.
+# middleware packages (todo.command.middleware.{access,batch_limit},
+# todo.api.http.middleware.authentication) and changes only the composition
+# root, the command it marks, and the readme and Makefile.
 base library/architecture/python/vp-http-api-in-python.skill/examples
 change src/todo/main.py
 change src/todo/command/plan_items.py
