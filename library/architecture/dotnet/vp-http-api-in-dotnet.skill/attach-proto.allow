@@ -4,7 +4,7 @@
 # in-memory store (a service in Todo.Application/Services, the store in
 # src/Infrastructure/Memory) so it shows a path parameter, 201, 404, 409, and a
 # deprecated method; those commands are why the gRPC endpoint, its scenarios,
-# and the module's projects change.
+# the module's projects, and its registration (TodoModule.cs) change.
 base library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/examples
 examples examples-proto
 change src/App/App.Host/Program.cs
@@ -19,4 +19,5 @@ change src/App/App.Host/Api/Grpc/Endpoint/ItemsHandler.cs
 change src/App/App.Host.Tests/features/Grpc/Items.feature
 change src/App/App.Host.Tests/Steps/Grpc/ItemsServiceSteps.cs
 change src/Modules/Todo/Todo.Application/Todo.Application.csproj
+change src/Modules/Todo/Todo.Application/TodoModule.cs
 change src/Modules/Todo/Todo.Domain/Errors/TodoErrors.cs

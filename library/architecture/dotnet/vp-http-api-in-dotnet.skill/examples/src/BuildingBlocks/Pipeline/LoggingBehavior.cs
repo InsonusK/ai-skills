@@ -22,8 +22,9 @@ namespace BuildingBlocks.Pipeline;
 /// the result its handler returns (for example <c>PlanItemsResult</c>).
 /// MediatR closes the behavior for every command, so it is written once.
 ///
-/// Every cross-cutting step (a unit of work, a metric, ...) follows the same
-/// pattern: one behavior per file in BuildingBlocks/Pipeline, added in the
+/// Every cross-cutting step (a unit of work, a metric, an access check, ...)
+/// follows the same pattern: one behavior per file, listed in the
+/// <see cref="CommandDecorators.AddCommandDecorators"/> call of the
 /// "// [handlers]" section of Program.cs.
 /// </summary>
 public sealed class LoggingBehavior<TCommand, TResult>(ILogger<LoggingBehavior<TCommand, TResult>> logger)

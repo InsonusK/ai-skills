@@ -1,11 +1,13 @@
 // Source: skill vp-health-in-dotnet
 
+using App.Host.Api.Core.Entry;
 using App.Host.Api.Core.Hosting;
 using App.Host.Version;
 using BuildingBlocks.Logging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 
@@ -33,7 +35,17 @@ public static class ManagementServer
     public const string LogCategory = "App.Host.Api.Management";
 
     /// <summary>
-    /// The management entry point's one call from the composition root: reads
+    /// Registers the management entry point: an <see cref="Entry"/> named
+    /// "management" that serves the health endpoints until the process stops
+    /// (see <see cref="RunAsync"/>). <paramref name="checks"/> are the
+    /// readiness checks the service variation points add.
+    /// </summary>
+    public static IServiceCollection AddManagement(this IServiceCollection services, params ReadinessCheck[] checks) =>
+        services.AddSingleton(provider => new Entry("management", stopping =>
+            RunAsync(provider.GetRequiredService<ILoggerFactory>(), stopping, checks)));
+
+    /// <summary>
+    /// The management entry point's run: reads
     /// the settings, builds the server, and serves until
     /// <paramref name="stopping"/> is cancelled. <paramref name="checks"/> are
     /// the readiness checks the service variation points add.
@@ -41,7 +53,7 @@ public static class ManagementServer
     public static Task RunAsync(ILoggerFactory loggers, CancellationToken stopping, params ReadinessCheck[] checks) =>
         ServeAsync(ManagementConfig.Load(), loggers, stopping, checks);
 
-    /// <summary>Serves with the given settings; tests call it, the composition root calls <see cref="RunAsync"/>.</summary>
+    /// <summary>Serves with the given settings; tests call it, the composition root registers <see cref="AddManagement"/>.</summary>
     public static Task ServeAsync(ManagementConfig config, ILoggerFactory loggers, CancellationToken stopping, params ReadinessCheck[] checks) =>
         WebHost.RunAsync(Build(config, AppVersion.Value, loggers, null, checks), "management", loggers.CreateLogger(LogCategory), stopping);
 

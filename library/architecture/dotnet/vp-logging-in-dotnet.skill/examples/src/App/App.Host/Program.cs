@@ -10,10 +10,9 @@ using App.Host.Version;
 using BuildingBlocks.Logging;
 using BuildingBlocks.Pipeline;
 using MaskedLogging;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Todo.Application.Commands;
+using Todo.Application;
 using Todo.Commands;
 
 namespace App.Host;
@@ -59,26 +58,24 @@ public static class Program
 
         // [services] - infrastructure and the services over it; none in the base plateau.
 
-        // [handlers] - every command handler of the modules, and the pipeline
-        // behaviors that wrap each of them, outermost first.
-        services.AddMediatR(mediatr =>
-        {
-            mediatr.RegisterServicesFromAssemblyContaining<PlanItemsHandler>();
-            mediatr.AddOpenBehavior(typeof(LoggingBehavior<,>));
-        });
+        // [handlers] - the handler of every command of each module, and the
+        // decorators wrapped around every one of them, the first the
+        // outermost. A variation point adds its decorator to this list at the
+        // place its skill names.
+        services.AddTodoModule();
+        services.AddCommandDecorators(
+            typeof(LoggingBehavior<,>));
+
+        // [entries] - every entry point, registered as an Entry and run
+        // together by EntryRunner until the first one ends. The base plateau
+        // has only the startup command; an API variation point replaces its
+        // registration, the health variation point adds one.
+        services.AddStartupEntry(() => new PlanItemsCommand(StartupEntry.EnvList("STARTUP_TITLES")), stdout);
 
         await using var provider = services.BuildServiceProvider();
         var logger = provider.GetRequiredService<ILoggerFactory>().CreateLogger("App.Host");
         logger.Write(LogLevel.Information, "starting", LogAttr.Of("version", AppVersion.Value));
-        var sender = provider.GetRequiredService<ISender>();
-
-        // [entries] - every entry point, one Entry each, run together by
-        // EntryRunner until the first one ends. The base plateau has only the
-        // startup command; an API variation point replaces its Entry, the
-        // health variation point adds one.
-        var error = await EntryRunner.RunAllAsync(logger, stopping,
-            new Entry("startup", stopping =>
-                StartupEntry.RunAsync(sender, new PlanItemsCommand(StartupEntry.EnvList("STARTUP_TITLES")), stdout, stopping)));
+        var error = await EntryRunner.RunAllAsync(logger, stopping, [.. provider.GetServices<Entry>()]);
         return EntryRunner.ExitCode(error);
     }
 }

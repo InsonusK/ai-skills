@@ -8,6 +8,7 @@
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="Reqnroll.xUnit" />
     <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BuildingBlocks\BuildingBlocks.csproj" />

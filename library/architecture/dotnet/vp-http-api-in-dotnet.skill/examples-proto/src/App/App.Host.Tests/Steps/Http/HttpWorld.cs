@@ -50,6 +50,8 @@ public sealed class HttpWorld : IDisposable
     public ServiceCollection Handlers { get; } = new();
     /// <summary>Wraps every handler with the base plateau's logging behavior.</summary>
     public bool WithLogging { get; set; }
+    /// <summary>The application's middlewares around the contract's routes, the first the outermost.</summary>
+    public List<IMiddleware> Middlewares { get; } = [];
     /// <summary>The routes under test, given the sender to the fake handlers.</summary>
     public Action<IEndpointRouteBuilder, ISender> Routes { get; set; } = MapEcho;
 
@@ -82,7 +84,7 @@ public sealed class HttpWorld : IDisposable
     public WebApplication BuildApp()
     {
         var sender = Sender();
-        return HttpServer.Build(Config, routes => Routes(routes, sender), Logs.Factory, host => host.UseTestServer());
+        return HttpServer.Build(Config, routes => Routes(routes, sender), Logs.Factory, host => host.UseTestServer(), Middlewares);
     }
 
     private async Task<HttpClient> ClientAsync()
