@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Middleware.Logging;
 
 namespace App.Host.Tests.Steps.Http;
 
@@ -48,7 +49,7 @@ public sealed class HttpWorld : IDisposable
     public FakeEcho Echo { get; } = new();
     /// <summary>The handlers the routes reach, registered before the server is built.</summary>
     public ServiceCollection Handlers { get; } = new();
-    /// <summary>Wraps every handler with the base plateau's logging behavior.</summary>
+    /// <summary>Wraps every handler with the base plateau's logging middleware.</summary>
     public bool WithLogging { get; set; }
     /// <summary>The application's middlewares around the contract's routes, the first the outermost.</summary>
     public List<IMiddleware> Middlewares { get; } = [];
@@ -63,20 +64,17 @@ public sealed class HttpWorld : IDisposable
         routes.MapPost("/v1/echo", async (EchoBody body, CancellationToken cancellationToken) =>
             TypedResults.Created((string?)null, new EchoBody(await sender.Send(new Echo(body.Text ?? ""), cancellationToken))));
 
-    /// <summary>The sender to the fake handlers, through the logging behavior when asked.</summary>
+    /// <summary>The sender to the fake handlers, through the logging middleware when asked.</summary>
     public ISender Sender()
     {
         Handlers.AddSingleton<IRequestHandler<Echo, string>>(Echo);
         Handlers.AddSingleton(Logs.Factory);
         Handlers.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
-        Handlers.AddMediatR(mediatr =>
+        Handlers.AddMediatR(mediatr => mediatr.RegisterServicesFromAssembly(typeof(Unit).Assembly)); // no handler: they are the fakes above
+        if (WithLogging)
         {
-            mediatr.RegisterServicesFromAssembly(typeof(Unit).Assembly); // no handler: they are the fakes above
-            if (WithLogging)
-            {
-                mediatr.AddOpenBehavior(typeof(LoggingBehavior<,>));
-            }
-        });
+            Handlers.AddCommandMiddleware(typeof(LoggingMiddleware<,>));
+        }
         return Handlers.BuildServiceProvider().GetRequiredService<ISender>();
     }
 

@@ -11,6 +11,7 @@ using BuildingBlocks.Logging;
 using BuildingBlocks.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Middleware.Logging;
 using Todo.Application;
 
 namespace App.Host;
@@ -54,12 +55,12 @@ public static class Program
         // [services] - infrastructure and the services over it; none in the base plateau.
 
         // [handlers] - the handler of every command of each module, and the
-        // decorators wrapped around every one of them, the first the
-        // outermost. A variation point adds its decorator to this list at the
-        // place its skill names.
+        // command middleware wrapped around every one of them, the first the
+        // outermost. A variation point adds its middleware to this list at
+        // the place its skill names.
         services.AddTodoModule();
-        services.AddCommandDecorators(
-            typeof(LoggingBehavior<,>));
+        services.AddCommandMiddleware(
+            typeof(LoggingMiddleware<,>));
 
         // [entries] - every entry point, registered as an Entry and run
         // together by EntryRunner until the first one ends. The HTTP variation

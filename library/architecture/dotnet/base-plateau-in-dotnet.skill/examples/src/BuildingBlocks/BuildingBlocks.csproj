@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- The fixed code every module's commands run through: the pipeline
-       behaviors and the logging. Copied from the templates of
+  <!-- The fixed code every module's commands run through: the registration
+       of the command middleware (AddCommandMiddleware) and the logging. Copied from the templates of
        base-plateau-in-dotnet, never edited by an application. -->
   <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.csproj" />

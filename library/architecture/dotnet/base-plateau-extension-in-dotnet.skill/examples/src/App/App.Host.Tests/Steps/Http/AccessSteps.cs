@@ -1,9 +1,8 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using Access;
 using App.Host.Api.Http;
-using App.Host.Api.Http.Access;
+using App.Host.Api.Http.Middleware.Authentication;
 using App.Host.Api.Http.Pipeline;
 using BuildingBlocks.Pipeline;
 using MediatR;
@@ -11,6 +10,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Middleware.Access;
+using Middleware.BatchLimit;
+using Middleware.Logging;
 using Reqnroll;
 using Todo.Application;
 using Xunit;
@@ -20,8 +22,8 @@ namespace App.Host.Tests.Steps.Http;
 
 /// <summary>
 /// The steps of Access.feature: the application as Program.cs builds it with
-/// the access variation point attached - the same decorators and middleware in
-/// the same order, over the real module and routes - served on a test server.
+/// the access variation point attached - the same command and HTTP middleware
+/// in the same order, over the real module and routes - served on a test server.
 /// </summary>
 [Binding]
 public sealed class AccessSteps(ITestOutputHelper output) : IDisposable
@@ -44,14 +46,14 @@ public sealed class AccessSteps(ITestOutputHelper output) : IDisposable
             .AddLogging(logging => logging.SetMinimumLevel(LogLevel.Trace).AddProvider(_logs))
             .AddSingleton(config)
             .AddTodoModule()
-            .AddCommandDecorators(typeof(LoggingBehavior<,>), typeof(AccessCheckBehavior<,>), typeof(BatchLimitBehavior<,>))
+            .AddCommandMiddleware(typeof(LoggingMiddleware<,>), typeof(AccessMiddleware<,>), typeof(BatchLimitMiddleware<,>))
             .BuildServiceProvider();
         _app = HttpServer.Build(
             new HttpConfig(8080, "", false),
             new HttpEndpoints(_services.GetRequiredService<ISender>()).Map,
             _logs.Factory,
             host => host.UseTestServer(),
-            HttpServer.Activate(_services, [typeof(Authentication)]));
+            HttpServer.Activate(_services, [typeof(AuthenticationMiddleware)]));
         await _app.StartAsync();
         _client = _app.GetTestClient();
     }

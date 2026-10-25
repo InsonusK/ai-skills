@@ -1,6 +1,8 @@
 // Source: skill vp-http-api-in-dotnet
 
 using App.Host.Api.Core.Hosting;
+using App.Host.Api.Http.Middleware.RequestLog;
+using App.Host.Api.Http.Middleware.AnswerFailures;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -67,15 +69,15 @@ public static class HttpServer
         Action<IWebHostBuilder>? configureHost = null, IReadOnlyList<IMiddleware>? middlewares = null)
     {
         var builder = WebHost.CreateBuilder(config.ListenPort, loggers);
-        // A body that cannot be bound throws, so ErrorAnswers answers it as
+        // A body that cannot be bound throws, so AnswerFailuresMiddleware answers it as
         // INVALID_ARGUMENT instead of ASP.NET's empty 400.
         builder.Services.Configure<RouteHandlerOptions>(options => options.ThrowOnBadRequest = true);
         configureHost?.Invoke(builder.WebHost);
 
         var app = builder.Build();
         var logger = loggers.CreateLogger(LogCategory);
-        app.UseMiddleware<RequestLog>(logger);
-        app.UseMiddleware<ErrorAnswers>(logger);
+        app.UseMiddleware<RequestLogMiddleware>(logger);
+        app.UseMiddleware<AnswerFailuresMiddleware>(logger);
         // Routing runs here, so each request knows its route before the
         // middlewares, which run only for a route of the contract.
         app.UseRouting();

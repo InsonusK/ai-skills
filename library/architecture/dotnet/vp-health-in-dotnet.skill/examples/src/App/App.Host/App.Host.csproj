@@ -7,6 +7,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Shared.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks.csproj" />
+    <ProjectReference Include="..\..\Middleware\Middleware.csproj" />
     <ProjectReference Include="..\..\Modules\Todo\Todo.Commands\Todo.Commands.csproj" />
     <ProjectReference Include="..\..\Modules\Todo\Todo.Application\Todo.Application.csproj" />
   </ItemGroup>

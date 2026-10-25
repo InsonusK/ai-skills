@@ -1,6 +1,8 @@
 // Source: skill vp-grpc-api-in-dotnet
 
 using App.Host.Api.Core.Hosting;
+using App.Host.Api.Grpc.Middleware.CallLog;
+using App.Host.Api.Grpc.Middleware.AnswerFailures;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
 using Microsoft.AspNetCore.Builder;
@@ -14,7 +16,7 @@ namespace App.Host.Api.Grpc.Pipeline;
 /// <summary>
 /// The fixed part of the gRPC entry point, copied from templates and never
 /// edited: the settings, this server, and one interceptor per step around
-/// every call (CallLog, ErrorAnswers). Like every entry point it knows only
+/// every call (CallLogMiddleware, AnswerFailuresMiddleware). Like every entry point it knows only
 /// the modules' Commands and <c>ISender</c> - never a handler or the domain.
 /// The services are the application's: <c>Api/Grpc/Services.cs</c> passes them
 /// in, with the application's interceptors - the entry decorators of skill
@@ -69,11 +71,11 @@ public static class GrpcServer
         var logger = loggers.CreateLogger(LogCategory);
         builder.Services.AddGrpc(grpc =>
         {
-            // In this order: the call log sees the status ErrorAnswers chose,
-            // and ErrorAnswers answers what an interceptor of the application
+            // In this order: the call log sees the status AnswerFailuresMiddleware chose,
+            // and AnswerFailuresMiddleware answers what an interceptor of the application
             // throws.
-            grpc.Interceptors.Add<CallLog>(logger);
-            grpc.Interceptors.Add<ErrorAnswers>(logger);
+            grpc.Interceptors.Add<CallLogMiddleware>(logger);
+            grpc.Interceptors.Add<AnswerFailuresMiddleware>(logger);
             foreach (var interceptor in interceptors ?? [])
             {
                 grpc.Interceptors.Add<ApplicationInterceptor>(interceptor);

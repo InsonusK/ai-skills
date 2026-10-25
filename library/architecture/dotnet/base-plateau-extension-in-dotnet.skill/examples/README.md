@@ -4,15 +4,15 @@ The HTTP example of the base plateau in dotnet (`vp-http-api-in-dotnet`) with a 
 **access** variation point attached through the extension points of
 `base-plateau-extension-in-dotnet`:
 
-| Step | Kind | Where |
+| Middleware | Kind | Where |
 |---|---|---|
-| `Authentication` | entry decorator (ASP.NET `IMiddleware`): the bearer token → the caller | `src/App/App.Host/Api/Http/Access` |
-| `AccessCheckBehavior<,>` | command decorator, by the command's mark `IRestricted` | `src/Access` |
-| `BatchLimitBehavior<,>` | command decorator, by a value of the command (`IBatch`) | `src/Access` |
+| `AuthenticationMiddleware` | API middleware (ASP.NET `IMiddleware`): the bearer token → the caller | `src/App/App.Host/Api/Http/Middleware/Authentication` |
+| `AccessMiddleware<,>` | command middleware, by the command's mark `IRestricted` | `src/Middleware/Access` |
+| `BatchLimitMiddleware<,>` | command middleware, by a value of the command (`IBatch`) | `src/Middleware/BatchLimit` |
 
 The marks live in `src/Shared/Access`; `PlanItemsCommand` carries both
-(`src/Modules/Todo/Todo.Commands/PlanItemsCommand.cs`); `Program.cs` lists the decorators and
-the middleware. Nothing else of the HTTP example changed but the project files (`attach.allow`).
+(`src/Modules/Todo/Todo.Commands/PlanItemsCommand.cs`); `Program.cs` lists the middleware.
+Nothing else of the HTTP example changed but the project of the marked command (`attach.allow`).
 
 ```bash
 make init    # once: the packages of every project

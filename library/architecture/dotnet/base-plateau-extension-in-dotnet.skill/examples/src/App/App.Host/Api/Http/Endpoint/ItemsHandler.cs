@@ -15,7 +15,7 @@ namespace App.Host.Api.Http.Endpoint;
 /// <summary>
 /// The items resource. It sends its commands through <see cref="ISender"/>, so
 /// every pipeline behavior runs; an exception it lets out is answered by the
-/// pipeline's ErrorAnswers, so each route is written for its success alone.
+/// pipeline's AnswerFailuresMiddleware, so each route is written for its success alone.
 /// </summary>
 public sealed class ItemsHandler(ISender sender)
 {

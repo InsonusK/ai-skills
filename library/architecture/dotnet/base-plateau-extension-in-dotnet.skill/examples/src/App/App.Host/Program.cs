@@ -3,16 +3,18 @@
 // the marked sections below - never by editing another file.
 
 using System.Runtime.InteropServices;
-using Access;
 using App.Host.Api.Core.Entry;
 using App.Host.Api.Http;
-using App.Host.Api.Http.Access;
+using App.Host.Api.Http.Middleware.Authentication;
 using App.Host.Config;
 using App.Host.Version;
 using BuildingBlocks.Logging;
 using BuildingBlocks.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Middleware.Access;
+using Middleware.BatchLimit;
+using Middleware.Logging;
 using Todo.Application;
 
 namespace App.Host;
@@ -61,14 +63,14 @@ public static class Program
         services.AddSingleton(accessConfig);
 
         // [handlers] - the handler of every command of each module, and the
-        // decorators wrapped around every one of them, the first the
-        // outermost. A variation point adds its decorator to this list at the
-        // place its skill names.
+        // command middleware wrapped around every one of them, the first the
+        // outermost. A variation point adds its middleware to this list at
+        // the place its skill names.
         services.AddTodoModule();
-        services.AddCommandDecorators(
-            typeof(LoggingBehavior<,>),
-            typeof(AccessCheckBehavior<,>), // by the command's mark: IRestricted
-            typeof(BatchLimitBehavior<,>)); // by a value of the command: IBatch
+        services.AddCommandMiddleware(
+            typeof(LoggingMiddleware<,>),
+            typeof(AccessMiddleware<,>),      // by the command's mark: IRestricted
+            typeof(BatchLimitMiddleware<,>)); // by a value of the command: IBatch
 
         // [entries] - every entry point, registered as an Entry and run
         // together by EntryRunner until the first one ends. The HTTP variation
@@ -76,7 +78,7 @@ public static class Program
         // point adds one.
         // The HTTP API: its contract routes wrapped by these middlewares, the
         // first the outermost, inside the request log.
-        services.AddHttpApi(middlewares: [typeof(Authentication)]);
+        services.AddHttpApi(middlewares: [typeof(AuthenticationMiddleware)]);
 
         await using var provider = services.BuildServiceProvider();
         var logger = provider.GetRequiredService<ILoggerFactory>().CreateLogger("App.Host");
