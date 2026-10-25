@@ -25,7 +25,7 @@ Go writes `command.PlanItems`, so the package names the layer at every use; but 
 **Selected.**
 
 ### Description
-`PlanItemsCommand` / `PlanItemsResult` / `ItemView` / `PlanItemsHandler`; dotnet's logging behavior writes the operation without the suffix (`"command":"PlanItems"`), as Go's `WithLogging("PlanItems", ...)` does.
+`PlanItemsCommand` / `PlanItemsResult` / `ItemView` / `PlanItemsHandler`; dotnet's logging behavior writes the operation without the suffix (`"command":"PlanItems"`), as Go's command registry names it (`pipeline.Decorate("PlanItems", ...)`).
 
 ### Benefits
 - The role is in the name wherever the type appears, in both stacks the same way.

@@ -1,8 +1,8 @@
 ---
 name: vp-http-api-in-dotnet
-description: The HTTP API variation point in dotnet — Api/Http/Pipeline copied from templates (settings, the server on its own WebApplication, the request log, the error answers as google.rpc.Status, the docs), one {Resource}Handler class per resource in Api/Http/Endpoint written as Minimal API routes, the registration in Api/Http/Routes.cs, one http Entry in Program.cs, and the contract either hand-written in OpenAPI with routes over records of their own, or, as the HTTP form of a gRPC contract, generated from the proto file's google.api.http annotations with the routes over the generated messages (ProtoJson)
+description: The HTTP API variation point in dotnet — Api/Http/Pipeline copied from templates (settings, the server on its own WebApplication, the request log, the error answers as google.rpc.Status, the docs), one {Resource}Handler class per resource in Api/Http/Endpoint written as Minimal API routes, the registration in Api/Http/Routes.cs with AddHttpApi and its list of middlewares in Program.cs, and the contract either hand-written in OpenAPI with routes over records of their own, or, as the HTTP form of a gRPC contract, generated from the proto file's google.api.http annotations with the routes over the generated messages (ProtoJson)
 whenToUse: when a dotnet application built on the base plateau must be served over HTTP, when a dotnet service with a gRPC contract needs its HTTP form, when you serve a new command over HTTP in such an application, or when you review its Api/Http folders
-updated: 20261021
+updated: 20261025
 tags:
   - stack/dotnet
   - concern/architecture
@@ -27,13 +27,13 @@ src/App/App.Host/Api/
 ├── Hosting/WebHost.cs         copied; the same in every web entry point (HTTP, management, gRPC)
 └── Http/
     ├── Pipeline/              copied from templates, never edited
-    │   ├── HttpConfig.cs  HttpServer.cs  HttpDocs.cs
+    │   ├── HttpConfig.cs  HttpServer.cs  HttpDocs.cs   HttpServer: the middlewares around the contract's routes
     │   ├── RequestLog.cs      the request log: received / sent, request id
     │   ├── ErrorAnswers.cs    every error as google.rpc.Status
     │   └── ProtoJson.cs       only for a proto contract: the generated messages in proto-JSON
     ├── Endpoint/              written per application, grows with the API
     │   └── ItemsHandler.cs    one class per resource ≈ a controller
-    └── Routes.cs              HttpEndpoints (one parameter per resource), Map, HttpApi.RunAsync
+    └── Routes.cs              HttpEndpoints (one parameter per resource), Map, HttpApi.AddHttpApi
 docs/integration/api/{contract-name}/openapi.json    the hand-written contract, embedded into App.Host
   — or, for a proto contract: {file}.proto and {file}.swagger.json generated beside it (make proto-gen)
 ```
@@ -60,7 +60,7 @@ Write each resource of the API — the first path segment after the version, its
 - Fix: follow the example's [ItemsHandler.cs](./examples/src/App/App.Host/Api/Http/Endpoint/ItemsHandler.cs); a bound record of the route's own (`PlanItemsRequest`), mapped to the command and back from the result.
 
 ### Register the resources in Routes.cs
-Keep in `Api/Http/Routes.cs` only `sealed record HttpEndpoints({Resource}Handler {Resource}, ...)`, its `Map`, which calls each resource's `Map`, and `HttpApi.RunAsync(endpoints, loggers, stopping)`, which serves them.
+Keep in `Api/Http/Routes.cs` only `sealed record HttpEndpoints({Resource}Handler {Resource}, ...)` with its constructor from `ISender`, its `Map`, which calls each resource's `Map`, and `HttpApi.AddHttpApi(params Type[] middlewares)`, which registers the `Entry` that serves them.
 - Risk: a resource left out of `Map` is served by nothing while its class and its scenarios pass.
 - Fix: follow the example's [Routes.cs](./examples/src/App/App.Host/Api/Http/Routes.cs); the contract scenario holds `Map` against the spec.
 
@@ -103,37 +103,32 @@ Mark an rpc that is kept but no longer served `option deprecated = true`, and an
 - Fix: keep the rpc until the next major version; the table answers 501 / `UNIMPLEMENTED`.
 
 ### Serve both forms from the same handlers
-In a service with the gRPC variation point, add the `http` entry beside the `grpc` one in `// [entries]`, both built with the same `ISender`.
+In a service with the gRPC variation point, register the `http` entry beside the `grpc` one in `// [entries]`; both build their resources over the one `ISender`.
 
 ```csharp
-var grpcEndpoints = new GrpcEndpoints(Items: new GrpcEndpoint.ItemsHandler(sender));
-var httpEndpoints = new HttpEndpoints(Items: new HttpEndpoint.ItemsHandler(sender), Lists: new HttpEndpoint.ListsHandler(sender));
-var error = await EntryRunner.RunAllAsync(logger, stopping,
-    new Entry("grpc", stopping => GrpcApi.RunAsync(grpcEndpoints, loggers, stopping)),
-    new Entry("http", stopping => HttpApi.RunAsync(httpEndpoints, loggers, stopping)));
+services.AddGrpcApi(interceptors: []);
+services.AddHttpApi(middlewares: []);
 ```
 
 - Risk: a form that reaches the commands another way runs a different chain of behaviors.
-- Fix: both forms send through the one `ISender`; the two `ItemsHandler` classes are told apart by a namespace alias in `Program.cs`.
+- Fix: both registrations take `ISender` from the container; `Program.cs` names no resource class.
 
 ### Replace the startup entry in Program.cs
-Replace the startup `Entry` in `// [entries]` of `Program.cs` with an `http` one calling `HttpApi.RunAsync` with `HttpEndpoints` built from `ISender`, and delete `Api/Startup/` with its feature and steps.
+Replace `AddStartupEntry` in `// [entries]` of `Program.cs` with `services.AddHttpApi(middlewares: [])` — the list of `IMiddleware` types empty until a variation point adds one, as [base-plateau-extension-in-dotnet](library/architecture/dotnet/base-plateau-extension-in-dotnet.skill/base-plateau-extension-in-dotnet.skill.md) describes — and delete `Api/Startup/` with its feature and steps.
 
 ```csharp
-// [entries] - every entry point, one Entry each, run together by EntryRunner.
-var loggers = provider.GetRequiredService<ILoggerFactory>();
-var httpEndpoints = new HttpEndpoints(Items: new ItemsHandler(sender));
-var error = await EntryRunner.RunAllAsync(logger, stopping,
-    new Entry("http", stopping => HttpApi.RunAsync(httpEndpoints, loggers, stopping)));
-return EntryRunner.ExitCode(error);
+// [entries] - every entry point, registered as an Entry and run together by EntryRunner.
+// The HTTP API: its contract routes wrapped by these middlewares, the
+// first the outermost, inside the request log.
+services.AddHttpApi(middlewares: []);
 ```
 
-- Violation: the settings loaded or the `WebApplication` built in `Program.cs`; `HttpApi.RunAsync` awaited outside `RunAllAsync`; the startup entry kept beside it.
+- Violation: the settings loaded or the `WebApplication` built in `Program.cs`; the server run outside `RunAllAsync`; the startup entry kept beside it.
 - Risk: every line of the entry point's start in `Program.cs` is a line each later variation point's instruction must step around; a server started outside the list is not stopped when another entry point fails.
-- Fix: `HttpApi.RunAsync` reads the settings, builds the server, and serves until `stopping` is cancelled; other entries of the list (health, gRPC) stay as they are.
+- Fix: the registered entry reads the settings, builds the server, and serves until `stopping` is cancelled, each contract route wrapped by the middlewares — built from the application's services — inside the request log and the error answers, the docs outside them; other entries of the list (health, gRPC) stay as they are.
 
 ### Cover the entry point with scenarios
-Copy the example's `src/App/App.Host.Tests/features/Http/` scenarios of the fixed code (`Endpoint`, `RequestLog`, `HttpConfig`, `HttpServe`, `Docs`) with their steps (`Steps/Http/HttpWorld.cs`, `HttpRequestSteps`, `RequestLogSteps`, `HttpConfigSteps`, `HttpServeSteps`, `DocsSteps`), `Steps/CapturedLogs.cs`, `Steps/FreePort.cs`, and `features/RpcStatus.feature` with its steps, and add `Microsoft.AspNetCore.TestHost` to the test project; write one feature per resource with its handlers faked (a `IRequestHandler` registered in `HttpWorld.Handlers`) and the contract scenario; tag them `@type/api/http` and `@type/tech-check`.
+Copy the example's `src/App/App.Host.Tests/features/Http/` scenarios of the fixed code (`Endpoint`, `RequestLog`, `Middleware`, `HttpConfig`, `HttpServe`, `Docs`) with their steps (`Steps/Http/HttpWorld.cs`, `HttpRequestSteps`, `RequestLogSteps`, `MiddlewareSteps`, `HttpConfigSteps`, `HttpServeSteps`, `DocsSteps`), `Steps/CapturedLogs.cs`, `Steps/FreePort.cs`, and `features/RpcStatus.feature` with its steps, and add `Microsoft.AspNetCore.TestHost` to the test project; write one feature per resource with its handlers faked (a `IRequestHandler` registered in `HttpWorld.Handlers`) and the contract scenario; tag them `@type/api/http` and `@type/tech-check`.
 - Violation: a step text without "HTTP" in it (`the status should be 200`); a resource feature that repeats the error answers.
 - Risk: every entry point of `App.Host` shares one test project, so a step text two variation points both define makes Reqnroll fail as ambiguous once both are attached; a resource feature that repeats the error mapping grows the suite with every resource and tests nothing new.
 - Fix: name the entry point in every step (`the HTTP status should be 200`, `the management status should be 200`); a resource feature checks only its own binding and mapping; `make test` passes.
@@ -141,16 +136,16 @@ Copy the example's `src/App/App.Host.Tests/features/Http/` scenarios of the fixe
 ## SHOULD
 
 ### Serve a new command in its resource's class
-Serve a further command of an existing resource by adding its route line to `Map`, its method, and its request and response records to the resource's class, its path to `openapi.json`, and its scenario to the resource's feature; a new resource adds its class and feature, one parameter of `HttpEndpoints`, and one line of `Map`.
+Serve a further command of an existing resource by adding its route line to `Map`, its method, and its request and response records to the resource's class, its path to `openapi.json`, and its scenario to the resource's feature; the command itself joins its module, and `Program.cs` does not change. A new resource adds its class and feature, one parameter of `HttpEndpoints`, and one line each of its constructor from `ISender` and of `Map`.
 
 # Check list
 - [ ] `Api/Http/Pipeline/{HttpConfig,HttpServer,RequestLog,ErrorAnswers,HttpDocs}.cs`, `Api/Core/Hosting/WebHost.cs`, and `Api/Core/Errors/RpcStatus.cs` are copies of the templates.
 - [ ] `App.Host.csproj` references `Microsoft.AspNetCore.App` and `Swashbuckle.AspNetCore.SwaggerUI` and embeds the contract as `openapi.json`.
 - [ ] Each resource is one `{Resource}Handler` class in `Api/Http/Endpoint/` mapping its group; every route binds a record of its own, sends one command, and returns `TypedResults` with no error handling of its own.
-- [ ] `Routes.cs` holds only `HttpEndpoints`, its `Map`, and `HttpApi.RunAsync`.
+- [ ] `Routes.cs` holds only `HttpEndpoints` with its constructor from `ISender`, its `Map`, and `HttpApi.AddHttpApi`.
 - [ ] `docs/integration/api/{contract-name}/` holds one spec: the hand-written `openapi.json`, or, for a proto contract, the generated `{file}.swagger.json`; the contract scenario passes.
 - [ ] For a proto contract: every rpc has `google.api.http` and `openapiv2_operation`; `make proto-gen` leaves no diff; the routes use the generated messages through `ProtoJson` and the spec's path-parameter names; every path variable is a whole segment; a deprecated rpc answers 501 / `UNIMPLEMENTED` in both forms.
-- [ ] `// [entries]` has an `http` entry calling `HttpApi.RunAsync`; `Api/Startup/` is deleted.
+- [ ] `// [entries]` has `services.AddHttpApi(middlewares: [...])`; `Api/Startup/` is deleted.
 - [ ] Every step text names its entry point; `make test` passes.
 - [ ] `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow) and [attach-proto.allow](./attach-proto.allow).
 

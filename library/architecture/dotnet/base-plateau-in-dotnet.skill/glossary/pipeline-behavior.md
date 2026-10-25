@@ -6,14 +6,14 @@ MediatR gives the dotnet base plateau its **handler contract** and its **decorat
 
 ```
 entry point ── sender.Send(new PlanItemsCommand(...)) ──► LoggingBehavior ──► (UnitOfWorkBehavior, later) ──► PlanItemsHandler
-                                                       ▲ outermost first, the order of AddOpenBehavior
+                                                       ▲ outermost first, the order of the AddCommandDecorators list
 ```
 
 | Go base plateau | dotnet |
 |---|---|
 | `Handler[TCommand, TResult]` | `IRequestHandler<TCommand, TResult>` |
-| `WithLogging(name, logger, handler)` per handler in `main.go` | `LoggingBehavior<,>` once, `AddOpenBehavior` in `// [handlers]` |
-| a handler variable passed to the entry point | `ISender`, which finds the handler by the command's type |
+| `pipeline.WithLogging(logger)` in the list given to `command.NewHandlers` | `typeof(LoggingBehavior<,>)` in the list given to `AddCommandDecorators` |
+| `command.Handlers`, the registry built by `command.NewHandlers` | `ISender` over the handlers `AddTodoModule()` registered, which finds the handler by the command's type |
 
 `TCommand` is the command record (`PlanItemsCommand`), `TResult` the result it declares with `IRequest<TResult>` (`PlanItemsResult`). MediatR closes the open behavior for every command, so a behavior is written once.
 
@@ -30,7 +30,8 @@ public async Task<TResult> Handle(TCommand command, RequestHandlerDelegate<TResu
 
 ## Related concepts
 
-- [Composition root](./composition-root.md) — where behaviors are added.
+- [Composition root](./composition-root.md) — where the behaviors are listed (`AddCommandDecorators`).
+- [base-plateau-extension-in-dotnet](library/architecture/dotnet/base-plateau-extension-in-dotnet.skill/base-plateau-extension-in-dotnet.skill.md) — a behavior for some commands, selected by a mark.
 - [Logging](./logging.md) — what `LoggingBehavior` writes.
 
 ## Sources

@@ -11,14 +11,13 @@ The management entry point knows no dependency: which ones a service has depends
 ## How it works
 
 1. A service variation point builds its infrastructure in `// [services]` of `Program.cs` (a connection string, an HTTP client).
-2. In `// [entries]`, the composition root passes one `ReadinessCheck` per dependency to `ManagementServer.RunAsync`.
+2. In `// [entries]`, the composition root passes one `ReadinessCheck` per dependency to `AddManagement`.
 3. On `GET /health/ready`, the server calls every check with the request's token; each failure is logged as "readiness check failed" with its name.
 
 ```csharp
 // [entries]
-new Entry("management", stopping =>
-    ManagementServer.RunAsync(loggers, stopping,
-        new ReadinessCheck("database", new NpgSqlHealthCheck(new NpgSqlHealthCheckOptions(connectionString)))))
+services.AddManagement(
+    new ReadinessCheck("database", new NpgSqlHealthCheck(new NpgSqlHealthCheckOptions(connectionString))));
 ```
 
 | Result of the check | `/health/ready` |

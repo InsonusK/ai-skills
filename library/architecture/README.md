@@ -20,6 +20,15 @@ by the base plateau's runner (Go: `entry.RunAll`, dotnet: `EntryRunner.RunAllAsy
 entry with its own, the health variation point adds one, so variation points combine by
 listing, with no code written for a combination.
 
+How a variation point attaches — the extension points, the command registry, and the two
+ordered lists of decorators (around commands, around an API's requests) — is
+`spec/base-plateau-extension` with its stack skills, each with a sample access variation point:
+
+```
+request ─▶ request log ─▶ error answers ─▶ entry decorators ─▶ route ─▶ command decorators ─▶ handler
+           (fixed, the API's)               (the API's list)            (the registry's list)
+```
+
 ## Layout
 
 | Folder | Holds |
@@ -70,6 +79,7 @@ the `spec/` skills come along because every stack skill links its spec.
 | 1c-2 | HTTP form of a gRPC contract (`vp-http-api`, proto mode) | ✅ | ✅ | |
 | 1d | API: CLI (`vp-cli-api`, cobra) | ✅ | | |
 | — | logging: one logger, payload attribute, base handler drops it; every entry point logs its calls; `vp-logging` masks and writes the payload | ✅ | base ✅ | base ✅ |
+| — | extension of the base (`base-plateau-extension`): command registry, decorator lists for commands and entries, sample access VP | ✅ | ✅ | ✅ |
 | 2 | clients: HTTP, gRPC | | | |
 | 3 | DB | | | |
 | 4 | TaskBox, Inbox, Outbox | | | |
@@ -82,14 +92,14 @@ variation points are formed (2026-10-18).
 
 | Candidate | Where it lives now | Why a library |
 |---|---|---|
-| Go handler contract + startup entry (`Handler[TCommand, TResult]`, `HandlerFunc`, `WithLogging`, `startup.Run`, `ExitCode`) | templates of `base-plateau-in-go` | identical in every Go application; a variation point's decorator or entry point would import one stable package |
+| Go handler contract + startup entry (`Handler[TCommand, TResult]`, `HandlerFunc`, `Decorator`, `Decorate`, `WithLogging`, `startup.Run`, `ExitCode`) | templates of `base-plateau-in-go` | identical in every Go application; a variation point's decorator or entry point would import one stable package |
 | Go HTTP entry point (`Endpoint`, `Server` with graceful stop, `LoadConfig`, docs routes, `proto.go` for a proto contract) | templates of `vp-http-api-in-go` | identical in every Go HTTP service except the module path and the contract's name; the docs routes could take the embedded spec as a parameter |
 | Go gRPC entry point (`Call`, `Server` with reflection, panic recovery, graceful stop, `LoadConfig`) | templates of `vp-grpc-api-in-go` | identical in every Go gRPC service except the module path |
 | Go CLI entry point (`Run`, `Command` over cobra, `--output`, usage errors as invalid) | templates of `vp-cli-api-in-go` | identical in every Go CLI except the module path |
 | Go logging (`internal/logging`, `internal/logging/masked`: payload attribute, masked handler) | templates of `base-plateau-in-go` and `vp-logging-in-go` | identical in every Go application; one masking for all services |
 | Go error kinds (`entity/kinds.go`, `pipeline/errors.go` with `KindOf`, `api/rpcstatus`) | templates of `error-kinds-in-go` | identical in every Go application; a service would import the kinds and the table instead of copying them; the skill would keep only when to choose each kind |
 | Testing tooling (`tools/testing`, `tools/normalize_*`, `tools/livingdoc`, `report-template`) | example of `solution-conformance-testing-in-go`; not copied into plateau or variation-point examples | ~2,000 lines copied into every real project; a version bump would update every project at once |
-| dotnet fixed code (`Shared`: error kinds; `BuildingBlocks`: `LoggingBehavior`, `JsonLogProvider`, `LogAttr`, `RequestId`; `Api/Core/Entry`, `Api/Startup`; `Api/Core/Errors/RpcStatus`, `Api/Core/Hosting/WebHost`, `Api/Http/Pipeline` with `ProtoJson`, `Api/Grpc/Pipeline`, `Api/Management`) | templates of `base-plateau-in-dotnet`, `error-kinds-in-dotnet`, `vp-http-api-in-dotnet`, `vp-grpc-api-in-dotnet`, `vp-health-in-dotnet` | no placeholder at all: one NuGet package (or two: `Shared` with no dependency, the rest over MediatR) |
+| dotnet fixed code (`Shared`: error kinds; `BuildingBlocks`: `LoggingBehavior`, `AddCommandDecorators`, `JsonLogProvider`, `LogAttr`, `RequestId`; `Api/Core/Entry`, `Api/Startup`; `Api/Core/Errors/RpcStatus`, `Api/Core/Hosting/WebHost`, `Api/Http/Pipeline` with `ProtoJson`, `Api/Grpc/Pipeline`, `Api/Management`) | templates of `base-plateau-in-dotnet`, `error-kinds-in-dotnet`, `vp-http-api-in-dotnet`, `vp-grpc-api-in-dotnet`, `vp-health-in-dotnet` | no placeholder at all: one NuGet package (or two: `Shared` with no dependency, the rest over MediatR) |
 | TaskBox | `taskbox-spec` published; `taskbox-go` code proven, not yet packaged | already decided as a library (ADR `contract-vp-realized-by-libraries`) |
 
 ## Decisions waiting for their variation point
