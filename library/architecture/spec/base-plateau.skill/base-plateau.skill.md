@@ -1,8 +1,8 @@
 ---
 name: base-plateau
-description: The base plateau every application of the architecture catalog starts from — a program that starts, runs exactly one command, reports its result and exits — with its four layers, the direction of their dependencies, and the extension points a variation point attaches to without editing the base
+description: The base plateau every application of the architecture catalog starts from — a program that starts, runs exactly one command, reports its result and exits — with its four layers, the direction of their dependencies, the command registry, the runner of the entry points, and the composition root a variation point attaches to
 whenToUse: when you create a new service or CLI application from the architecture catalog, when you write or review a variation point (an API, a client, a store, TaskBox, ...) that attaches to the base plateau, or when you check whether an application still keeps the base plateau's layer and dependency rules
-updated: 20261022
+updated: 20261025
 tags:
   - stack
   - concern/architecture
@@ -16,7 +16,7 @@ adr:
 - **Runs with no variation point** - The application starts, runs its one startup command, reports the result, and exits with a code that tells success, a rejected command, and a failure apart.
 - **Layers from the start** - The application already has the api, command, and domain layers of [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md), so a variation point adds to a layer instead of inventing one.
 - **One surface for every entry** - Every entry point — the startup command here, an API variation point later — reaches the application only through commands and their handlers.
-- **Variation points attach, never edit** - A variation point joins the application with its own package plus lines in the composition root; no other file of the base plateau changes.
+- **Variation points attach, never edit** - A variation point joins the application with its own package plus lines in the composition root; no other file of the base plateau changes — how, in [base-plateau-extension](library/architecture/spec/base-plateau-extension.skill/base-plateau-extension.skill.md).
 
 # Core Principle
 - **Nothing outside the process** - The base plateau uses no store, client, broker, or listener; each of them arrives as a variation point. Decision recorded in [one-startup-command](./adr/one-startup-command.md).
@@ -24,7 +24,7 @@ adr:
 - **The composition root is the seam** - Every concrete type is built in one place, so a variation point attaches by adding lines there.
 
 # Scope
-- Covers what the base plateau contains and how a variation point attaches to it, for every stack; the layer rules themselves are [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md)'s.
+- Covers what the base plateau contains, for every stack; the layer rules themselves are [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md)'s, and how a variation point attaches is [base-plateau-extension](library/architecture/spec/base-plateau-extension.skill/base-plateau-extension.skill.md)'s.
 - The implementation for each stack is described in its stack-specialized extension: `base-plateau-in-go`, `base-plateau-in-dotnet`, `base-plateau-in-python`.
 
 # Rule
@@ -37,7 +37,7 @@ Build the base plateau following [app-layers](library/develop/core/app-layers.sk
 | Layer | In the base plateau |
 |---|---|
 | api | the startup entry only; every API variation point adds an entry beside it |
-| command | the commands, their results and handlers, the handler contract, handler decorators, the error kinds |
+| command | the commands, their results and handlers, the command registry, the handler contract, handler decorators, the error kinds |
 | domain | the entities and domain services |
 | service, infrastructure | empty — each arrives with a service variation point |
 | composition root | construction of every concrete type, the base settings |
@@ -73,47 +73,29 @@ Start the entry points in the composition root's `entries` section as a list run
 - Fix: a variation point adds its entry point to the list, or replaces the startup entry with it; it never starts one itself.
 
 ### Concrete types built only in the composition root
-Construct every concrete type — handlers, decorators, entry points, services — only in the composition root, in its three marked sections `services`, `handlers`, and `entries`.
+Construct every concrete type — services, decorators, entry points — in the composition root, in its three marked sections `services`, `handlers`, and `entries`; the handlers are built by the command registry the `handlers` section calls, from the services and decorators the composition root gives it.
 - Violation: a handler that constructs its own store, or an entry point that constructs its handler.
 - Risk: a variation point cannot replace or wrap what another package builds for itself, so it has to edit that package.
 - Fix: the composition root builds the object and passes it in; a variation point adds its lines to the matching section.
 
 ### Variation points attach only through the extension points
-Attach a variation point through its own package plus lines at these extension points; never edit another file of the base plateau to attach it.
-
-| Extension point | What a variation point adds there |
-|---|---|
-| Composition root, `services` section | constructs its infrastructure and the service over it |
-| Composition root, `handlers` section | wraps handlers with its decorator (a unit of work, a metric, ...) |
-| Composition root, `entries` section | adds its entry point (HTTP server, gRPC server, health endpoints, listener) to the list the runner starts; an API variation point replaces the startup entry with it |
-| Handler constructor | a new interface parameter, through which the handler uses the service the variation point brings |
-| Command-layer error kinds | an entry point maps each kind to its own response — a status code, an exit code |
-| Its own package's settings | reads its settings itself; the base settings never grow a field for it |
-
-- Violation: an HTTP variation point that adds its port to the base settings, or a store variation point that edits the startup entry.
+Attach a variation point only as [base-plateau-extension](library/architecture/spec/base-plateau-extension.skill/base-plateau-extension.skill.md) describes — its own packages plus lines at the extension points, decorators given as ordered lists — and never by editing another file of the base plateau.
 - Risk: two variation points editing the same base file must be described together, and every combination becomes a separate project description.
-- Fix: the variation point reads its settings in its own package and joins at the extension points above; a handler gaining a service parameter is using the variation point, not attaching it.
+- Fix: follow base-plateau-extension's rules and its attach check.
 
 ### Examples show the build, not the testing contract
 Give the base plateau's example and every variation point's example the scenarios that prove their code and one command that runs them, and no testing tooling — test kinds, reports, badges, mutation testing.
 - Risk: a change of the testing skills must be repeated in every example of the catalog, and the examples drift from them.
 - Fix: the project's testing contract comes from the stack's conformance-testing skill; the stack extension names it.
 
-## SHOULD
-
-### Decorators wrap, handlers stay plain
-Add a cross-cutting step (logging, a unit of work, a metric) as a decorator over the handler contract, wrapped in the composition root, not as code inside each handler.
-- Risk: a step written into every handler is repeated per command and cannot be added or removed in one place.
-- Fix: write one decorator per step and wrap the handlers that need it in the `handlers` section.
-
 # Check list
 - [ ] The application starts, runs its one startup command, writes the result as one line to standard output, logs to standard error, and exits `0`, `2`, or `1`.
 - [ ] The api, command, and domain layers exist and follow [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md)'s check list.
 - [ ] Every command has one handler; every handler satisfies the one handler contract.
 - [ ] Every error a caller can act on carries one kind of error-kinds.
-- [ ] Every concrete type is constructed in the composition root, in the `services`, `handlers`, or `entries` section.
+- [ ] Every concrete type is constructed in the composition root, in the `services`, `handlers`, or `entries` section; the handlers by the command registry it calls.
 - [ ] The `entries` section lists every entry point for the one runner; no entry point is started on its own.
 - [ ] Every part logs through the composition root's logger with the data as the payload attribute; the base handler drops the payload.
 - [ ] The base settings hold only the base plateau's own settings.
-- [ ] A variation point attached to the application changed no base file other than the composition root.
+- [ ] A variation point attached to the application passes [base-plateau-extension](library/architecture/spec/base-plateau-extension.skill/base-plateau-extension.skill.md)'s check list.
 - [ ] The examples hold scenarios and one command to run them, no testing tooling.
