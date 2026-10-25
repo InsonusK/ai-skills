@@ -2,7 +2,7 @@
 name: vp-http-api
 description: The HTTP API variation point — an entry point attached to the base plateau that serves commands as versioned HTTP routes, answers errors by their kind, publishes its OpenAPI contract and Swagger UI, stops gracefully, and replaces the startup entry without editing any other base file
 whenToUse: when an application built on the base plateau must be reachable over HTTP — adding the HTTP entry point, serving a new command over HTTP, or reviewing the HTTP entry point of such an application
-updated: 20261021
+updated: 20261022
 tags:
   - stack
   - concern/architecture
@@ -23,7 +23,7 @@ tags:
 # Scope
 - Covers an HTTP API whose contract is written by hand in OpenAPI, and the HTTP form of a gRPC contract — the same proto file served over HTTP, as [api-develop](library/common-workflow/develop/api-develop.skill/api-develop.skill.md) recommends — in a service that also has [vp-grpc-api](library/architecture/spec/vp-grpc-api.skill/vp-grpc-api.skill.md).
 - Serves no health endpoints: they come from [vp-health](library/architecture/spec/vp-health.skill/vp-health.skill.md) on a port of their own, the same in every service, and never published through the ingress.
-- The implementation for each stack is described in its stack-specialized extension: `vp-http-api-in-go`, `vp-http-api-in-dotnet`; `vp-http-api-in-python` is planned.
+- The implementation for each stack is described in its stack-specialized extension: `vp-http-api-in-go`, `vp-http-api-in-dotnet`, `vp-http-api-in-python` (hand-written contract; the proto form comes with the gRPC variation point).
 
 # Rule
 

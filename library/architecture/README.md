@@ -63,7 +63,7 @@ the `spec/` skills come along because every stack skill links its spec.
 | Step | Content | Go | dotnet | Python |
 |---|---|:-:|:-:|:-:|
 | 1a | base plateau (on `app-layers`) | ✅ | ✅ | ✅ |
-| 1b | API: HTTP (`vp-http-api`) | ✅ | ✅ | |
+| 1b | API: HTTP (`vp-http-api`) | ✅ | ✅ | ✅ (FastAPI) |
 | 1c-1 | API: gRPC (`vp-grpc-api`) | ✅ | ✅ | |
 | — | error kinds (`library/develop/core/error-kinds`) | ✅ | ✅ (exceptions) | ✅ (exceptions) |
 | — | health (`vp-health`, `:8081`) + one runner for every entry point (`entry.RunAll`) | ✅ | ✅ | |

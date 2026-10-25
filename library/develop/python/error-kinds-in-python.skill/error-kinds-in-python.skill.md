@@ -22,6 +22,7 @@ tags:
 src/{package}/domain/entity/kinds.py       Kind, KindError, kind_of
 src/{package}/domain/entity/errors.py      the application's errors, one KindError subclass each
 src/{package}/command/pipeline/errors.py   the kinds re-exported for the entry points
+src/{package}/api/core/rpcstatus/          kind → google.rpc.Code → HTTP status, message
 ```
 
 # Rule
@@ -52,13 +53,19 @@ Wrap an error passed up as `raise {Other}Error(...) from error`, and read a kind
 - Risk: the kind is lost on the way up, and the caller's mistake is answered as a crash.
 - Fix: `from error` at every wrap, or let the `KindError` propagate.
 
+### Answer through rpcstatus in every network entry point
+Copy [api/core/rpcstatus/](./templates/src/{package}/api/core/rpcstatus/) with the first network entry point, and answer every error with `rpcstatus.of(error)`: over HTTP as `http_status(code)` with a `google.rpc.Status` body, over gRPC as the same code with the message.
+- Violation: an entry point with its own `dict` of kinds; a second `rpcstatus` that differs from the first.
+- Risk: the HTTP and gRPC forms of one service answer the same kind differently; the message of a wrapper is sent instead of the error's own.
+- Fix: the HTTP and gRPC variation points copy the same package; `of` answers with the message of the `KindError` itself.
+
 ### Exit by kind in a CLI entry point
 Map an error to the exit code of the table in a command-line entry point: `0` for none, `1` when `kind_of(error)` is `None` or `Kind.UNAVAILABLE`, `2` otherwise.
 - Risk: a script retries a request that can never succeed, or gives up on one that a retry would fix.
 - Fix: follow `exit_code` of [base-plateau-in-python](library/architecture/python/base-plateau-in-python.skill/base-plateau-in-python.skill.md)'s runner of the entry points.
 
 # Check list
-- [ ] `src/{package}/domain/entity/kinds.py` and `src/{package}/command/pipeline/errors.py` are filled copies of the templates.
+- [ ] `src/{package}/domain/entity/kinds.py`, `src/{package}/command/pipeline/errors.py`, and, in a service with a network entry point, `src/{package}/api/core/rpcstatus/` are filled copies of the templates.
 - [ ] Every error a caller can act on is a `KindError` subclass with its kind and message, raised as an instance.
 - [ ] Every wrap uses `raise ... from error`; no code checks an error by its text.
 - [ ] A CLI entry point exits by `kind_of`.
