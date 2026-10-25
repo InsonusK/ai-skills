@@ -1,0 +1,7 @@
+{
+  "stryker-config": {
+    "project": "MaskedLogging.csproj",
+    "coverage-analysis": "off",
+    "reporters": ["progress", "html"]
+  }
+}

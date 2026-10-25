@@ -37,7 +37,7 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 	}
 	// The handler decides what reaches the log: the logging variation point's
 	// writes every payload masked, with the request id of the call.
-	maskedCfg, err := masked.LoadConfig()
+	maskedCfg, err := masked.LoadConfig(cfg.LogLevel)
 	if err != nil {
 		slog.New(slog.NewJSONHandler(stderr, nil)).Error("startup failed", "error", err)
 		return 1

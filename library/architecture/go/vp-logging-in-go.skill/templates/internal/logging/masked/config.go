@@ -8,6 +8,7 @@ package masked
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"strconv"
 )
@@ -27,10 +28,16 @@ type Config struct {
 	// MaxBytes is LOG_PAYLOAD_MAX_BYTES, the size a payload is cut to once
 	// written as JSON; default 4096.
 	MaxBytes int
+	// Unmasked is LOG_PAYLOAD_UNMASKED: write every payload as it is, for
+	// debugging only; allowed only with LOG_LEVEL=debug, warned at start and
+	// once per request. Default false.
+	Unmasked bool
 }
 
-// LoadConfig reads the settings from the environment.
-func LoadConfig() (Config, error) {
+// LoadConfig reads the settings from the environment. level is the
+// application's LOG_LEVEL: masking is switched off only at debug level, so
+// one variable forgotten in a deployment cannot write every secret.
+func LoadConfig(level slog.Level) (Config, error) {
 	cfg := Config{Payload: PayloadAlways, MaxBytes: 4096}
 	if raw := os.Getenv("LOG_PAYLOAD"); raw != "" {
 		if raw != PayloadAlways && raw != PayloadErrors && raw != PayloadOff {
@@ -44,6 +51,16 @@ func LoadConfig() (Config, error) {
 			return Config{}, fmt.Errorf("logging config: LOG_PAYLOAD_MAX_BYTES %q is not a number of 64 or more", raw)
 		}
 		cfg.MaxBytes = n
+	}
+	if raw := os.Getenv("LOG_PAYLOAD_UNMASKED"); raw != "" {
+		unmasked, err := strconv.ParseBool(raw)
+		if err != nil {
+			return Config{}, fmt.Errorf("logging config: LOG_PAYLOAD_UNMASKED %q is not true or false", raw)
+		}
+		if unmasked && level > slog.LevelDebug {
+			return Config{}, fmt.Errorf("logging config: LOG_PAYLOAD_UNMASKED is true, which needs LOG_LEVEL=debug, not %s", level)
+		}
+		cfg.Unmasked = unmasked
 	}
 	return cfg, nil
 }
