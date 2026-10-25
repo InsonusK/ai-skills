@@ -1,0 +1,12 @@
+# The sample access variation point attaches to the HTTP example: it adds its
+# project (src/Access with its tests), the marks in Shared, and the HTTP
+# middleware, and changes only the composition root, the projects that
+# reference them, the command it marks, and the readme and Makefile.
+base library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples
+change src/App/App.Host/Program.cs
+change src/App/App.Host/App.Host.csproj
+change src/Modules/Todo/Todo.Commands/Todo.Commands.csproj
+change src/Modules/Todo/Todo.Commands/PlanItemsCommand.cs
+change Todo.slnx
+change Makefile
+change README.md
