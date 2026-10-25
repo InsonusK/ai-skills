@@ -15,12 +15,12 @@ Go has no dependency-injection container by default; the composition root is pla
 ```mermaid
 flowchart TB
     C["config.Load + logger"] --> S["// [services]<br/>stores, clients, TaskBox<br/>(none in the base)"]
-    S --> H["// [handlers]<br/>command.NewHandlers(decorators, services...)"]
+    S --> H["// [handlers]<br/>command.NewHandlers(middlewares, services...)"]
     H --> E["// [entries]<br/>entry.RunAll(startup Entry)<br/>later: HTTP, gRPC, health, listener"]
 ```
 
 1. **services** — infrastructure objects (a DB variation point adds its repository here).
-2. **handlers** — one call of the [command registry](./command-registry.md), given the list of [decorators](./handler-decorator.md) and the services; it builds and wraps the handler of every command.
+2. **handlers** — one call of the [command registry](./command-registry.md), given the list of [command middleware](./command-middleware.md) and the services; it builds and wraps the handler of every command.
 3. **entries** — the entry points that call the handlers, one `Entry` each, run together by the [entry runner](./entry-runner.md).
 
 `main` only creates a context that is cancelled on `SIGINT`/`SIGTERM` and calls `run(ctx, os.Stdout, os.Stderr)`, so a long-running entry point stops gracefully and `run` can be called with any output streams.
@@ -30,16 +30,16 @@ flowchart TB
 | Section comment | Who adds lines there |
 |---|---|
 | `// [services]` | service variation points: DB, HTTP/gRPC client, producer, TaskBox |
-| `// [handlers]` | decorator variation points, one element of the list each; a service variation point passes its service to `command.NewHandlers` (a new command changes only `internal/command`) |
-| `// [entries]` | API variation points (HTTP, gRPC, CLI, listener) replace the startup `Entry` with the one their entry factory builds; the health variation point adds its own; an entry decorator variation point adds to an API's list of middlewares |
+| `// [handlers]` | middleware variation points, one element of the list each; a service variation point passes its service to `command.NewHandlers` (a new command changes only `internal/command`) |
+| `// [entries]` | API variation points (HTTP, gRPC, CLI, listener) replace the startup `Entry` with the one their entry factory builds; the health variation point adds its own; an API middleware variation point adds to an API's list of middlewares |
 
 ## Example
 
 ```go
 // [handlers] - the handler of every command, built by the command registry
-// and wrapped by these decorators, the first the outermost.
-handlers := command.NewHandlers([]pipeline.Decorator{
-	pipeline.WithLogging(logger),
+// and wrapped by this command middleware, the first the outermost.
+handlers := command.NewHandlers([]pipeline.Middleware{
+	commandlogging.Middleware(logger),
 })
 
 // [entries] - every entry point, one Entry each; the base plateau has only the startup command.
@@ -53,7 +53,7 @@ return entry.ExitCode(err)
 
 ## Related concepts
 
-- [Handler decorator](./handler-decorator.md)
+- [Command middleware](./command-middleware.md)
 - [Command registry](./command-registry.md)
 - [Startup entry](./startup-entry.md)
 - [Entry runner](./entry-runner.md)

@@ -3,14 +3,14 @@
 The HTTP example of the base plateau in Go (`vp-http-api-in-go`) with a sample **access**
 variation point attached through the extension points of `base-plateau-extension-in-go`:
 
-| Step | Kind | Where |
+| Middleware | Kind | Where |
 |---|---|---|
-| `access.Authenticate` | entry decorator (HTTP middleware): the bearer token → the caller | `internal/api/http/access` |
-| `access.WithAccessCheck` | command decorator, by the command's mark `access.Restricted` | `internal/command/access` |
-| `access.WithBatchLimit` | command decorator, by a value of the command (`access.Batch`) | `internal/command/access` |
+| `authentication.Middleware` | API middleware (HTTP): the bearer token → the caller | `internal/api/http/middleware/authentication` |
+| `access.Middleware` | command middleware, by the command's mark `access.Restricted` | `internal/command/middleware/access` |
+| `batchlimit.Middleware` | command middleware, by a value of the command (`batchlimit.Batch`) | `internal/command/middleware/batchlimit` |
 
 `PlanItemsCommand` carries both marks (`internal/command/plan_items.go`); `cmd/todo/main.go`
-lists the decorators. Nothing else of the HTTP example changed (`attach.allow`).
+lists the middleware. Nothing else of the HTTP example changed (`attach.allow`).
 
 ```bash
 make init    # once: module dependencies

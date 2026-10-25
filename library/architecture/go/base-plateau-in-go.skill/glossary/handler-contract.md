@@ -4,7 +4,7 @@ The **handler contract** is the one Go interface every command handler of the ap
 
 ## Why it exists
 
-An application has many commands, each with its own input and output types. Without a shared shape, every piece of code that is *not* about one specific command — an entry point that serves commands (startup, HTTP, CLI), a decorator that logs or opens a transaction — would have to be written again for every command.
+An application has many commands, each with its own input and output types. Without a shared shape, every piece of code that is *not* about one specific command — an entry point that serves commands (startup, HTTP, CLI), a middleware that logs or opens a transaction — would have to be written again for every command.
 
 With one contract, that code is written once against `Handler[TCommand, TResult]` and works for any handler. This is what lets a variation point attach by adding a few lines instead of editing every handler.
 
@@ -25,7 +25,7 @@ type Handler[TCommand, TResult any] interface {
 ```mermaid
 flowchart LR
     E["Entry point<br/>startup.Run[TCommand, TResult]"] -->|"Handle(ctx, cmd)"| H{{"Handler[TCommand, TResult]"}}
-    D["Decorate[TCommand, TResult]<br/>with the decorators' list"] -->|wraps| H
+    D["Decorate[TCommand, TResult]<br/>with the middleware list"] -->|wraps| H
     H -. satisfied by .-> P["*PlanItemsHandler<br/>TCommand = PlanItemsCommand<br/>TResult = PlanItemsResult"]
 ```
 
@@ -52,7 +52,7 @@ PlanItems pipeline.Handler[PlanItemsCommand, PlanItemsResult]
 ## Related concepts
 
 - [HandlerFunc](./handler-func.md) — how a plain function satisfies the contract.
-- [Handler decorator](./handler-decorator.md) — code written once for every handler.
+- [Command middleware](./command-middleware.md) — code written once for every handler.
 - [Error kind](./error-kind.md) — what the returned error means to an entry point.
 
 ## Sources

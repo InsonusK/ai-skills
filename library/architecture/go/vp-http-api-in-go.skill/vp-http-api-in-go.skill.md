@@ -21,10 +21,13 @@ tags:
 internal/api/core/rpcstatus/          copied from error-kinds-in-go; the same in every network entry point
 internal/api/http/
 ├── pipeline/                    copied from templates, never edited (httppipeline)
-│   ├── config.go  server.go  endpoint.go  docs.go      server.go: Middleware; endpoint.go: WriteError
-│   ├── logging.go               the request log: received / sent, request id
+│   ├── config.go  server.go  endpoint.go  docs.go      server.go: Middleware, the fixed middleware around all
 │   ├── proto.go                 only for a proto contract: DecodeProto, ProtoJSON, Unimplemented
 │   └── features/  test/         the fixed code's scenarios, with a test command of their own
+├── middleware/                  one package per middleware
+│   ├── requestlog/              copied, fixed, outermost: received / sent, request id
+│   ├── answerfailures/          copied, fixed: WriteError, WriteStatus, a panic as INTERNAL
+│   └── {name}/                  a variation point's, given in Entry's list
 ├── endpoint/                    written per application, grows with the API
 │   ├── items.go                 ItemsHandler: one file per resource ≈ an ASP.NET controller
 │   └── features/  test/         one feature per resource + the contract scenario
@@ -36,7 +39,7 @@ internal/api/http/
 ## MUST
 
 ### Copy the entry point from templates
-Fill and copy [config.go](./templates/internal/api/http/pipeline/config.go), [server.go](./templates/internal/api/http/pipeline/server.go), [endpoint.go](./templates/internal/api/http/pipeline/endpoint.go), [logging.go](./templates/internal/api/http/pipeline/logging.go), and [docs.go](./templates/internal/api/http/pipeline/docs.go) to `internal/api/http/pipeline/` and `rpcstatus.go` of [error-kinds-in-go](library/develop/go/error-kinds-in-go.skill/error-kinds-in-go.skill.md) with its scenarios (the example's `internal/api/core/rpcstatus/`) unless another entry point already put them there, replacing:
+Fill and copy [config.go](./templates/internal/api/http/pipeline/config.go), [server.go](./templates/internal/api/http/pipeline/server.go), [endpoint.go](./templates/internal/api/http/pipeline/endpoint.go), and [docs.go](./templates/internal/api/http/pipeline/docs.go) to `internal/api/http/pipeline/`, [requestlog.go](./templates/internal/api/http/middleware/requestlog/requestlog.go) and [answerfailures.go](./templates/internal/api/http/middleware/answerfailures/answerfailures.go) to `internal/api/http/middleware/{requestlog,answerfailures}/`, and `rpcstatus.go` of [error-kinds-in-go](library/develop/go/error-kinds-in-go.skill/error-kinds-in-go.skill.md) with its scenarios (the example's `internal/api/core/rpcstatus/`) unless another entry point already put them there, replacing:
 
 | Placeholder | Substitute |
 |---|---|
@@ -108,7 +111,7 @@ err = entry.RunAll(ctx, logger,
 )
 ```
 
-- Risk: a handler built twice gets two decorator chains, and the two forms behave differently.
+- Risk: a handler built twice gets two middleware chains, and the two forms behave differently.
 - Fix: one `command.NewHandlers` call, its result passed to both entry factories.
 
 ### Replace the startup entry in main.go
@@ -134,7 +137,7 @@ Add `github.com/swaggest/swgui` at `v1.8.9` with `go get` and run `go mod tidy`.
 - Fix: commit `go.mod` and `go.sum` with the version above.
 
 ### Cover the entry point with scenarios
-Copy the example's `internal/api/http/pipeline/features/` and `test/` — of [examples-proto/](./examples-proto/README.md) for a proto contract, which add `proto.feature` for `proto.go` — unchanged but for the module path and the contract's package (`todo`) in their imports: they cover the fixed code — the error mapping through a test command of their own, the middlewares in their order and outside the docs, the docs under a prefix and switched off, the settings, and `Run` with its graceful stop. In `internal/api/http/endpoint/` write one feature per resource with its handlers faked (`pipeline.HandlerFunc`), and the contract scenario of api-develop-in-go; tag them `@type/api/http` and `@type/tech-check`.
+Copy the example's `internal/api/http/pipeline/features/` and `test/` — of [examples-proto/](./examples-proto/README.md) for a proto contract, which add `proto.feature` for `proto.go` — unchanged but for the module path and the contract's package (`todo`) in their imports: they cover the fixed code — the error mapping through a test command of their own, the middlewares in their order and outside the docs, a route that panics answered INTERNAL, the docs under a prefix and switched off, the settings, and `Run` with its graceful stop. In `internal/api/http/endpoint/` write one feature per resource with its handlers faked (`pipeline.HandlerFunc`), and the contract scenario of api-develop-in-go; tag them `@type/api/http` and `@type/tech-check`.
 - Risk: a variation point without scenarios lets a change in the error mapping or the shutdown reach production unnoticed; a resource feature that repeats the error mapping grows the suite with every resource and tests nothing new.
 - Fix: a resource feature checks only its own decoding and encoding; `make test` passes.
 
@@ -144,7 +147,7 @@ Copy the example's `internal/api/http/pipeline/features/` and `test/` — of [ex
 Serve a further command of an existing resource by adding its field, its line of `New{Resource}Handler`, its route line, and its request and response types with `decode` and `encode` to the resource's file in `endpoint/`, its path to `openapi.json`, and its scenario to the resource's feature; the command itself joins the command registry; `main.go` does not change. A new resource adds its file and feature, one field of `Endpoints`, and one line each of `NewEndpoints` and `Routes`.
 
 # Check list
-- [ ] `internal/api/http/pipeline/{config,server,endpoint,logging,docs}.go` and `internal/api/core/rpcstatus/rpcstatus.go` are filled copies of the templates; no placeholder is left.
+- [ ] `internal/api/http/pipeline/{config,server,endpoint,docs}.go`, `internal/api/http/middleware/{requestlog,answerfailures}/` and `internal/api/core/rpcstatus/rpcstatus.go` are filled copies of the templates; no placeholder is left.
 - [ ] `internal/api/http/pipeline/` holds only filled template files and their copied scenarios; each resource has its own file in `endpoint/` with its `{Resource}Handler`, its `Routes()`, and per route its request and response types with `decode` and `encode`; `routes.go` holds only `Endpoints`, `NewEndpoints`, `Routes`, `Middleware`, and `Entry`.
 - [ ] `docs/integration/api/{contract-name}/` holds `embed.go` and one spec: the hand-written `openapi.json`, or, for a proto contract, the generated `{file}.swagger.json`; the contract scenario passes.
 - [ ] For a proto contract: every rpc has `google.api.http` and `openapiv2_operation`; the routes use the generated messages through `proto.go` and the spec's path-parameter names; every path variable is a whole segment; a deprecated rpc answers 501 / `UNIMPLEMENTED` in both forms.

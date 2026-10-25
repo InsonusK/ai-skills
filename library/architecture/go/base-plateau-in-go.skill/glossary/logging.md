@@ -4,7 +4,7 @@
 
 ## Why it exists
 
-Three kinds of part log: the command decorator (a command was called, handled, failed), each entry point (an HTTP request, a gRPC call, a CLI run arrived), and later each client (a call went out). If each formatted its own data, no one place could mask a password in all of them, and the records of one request could not be tied together.
+Three kinds of part log: the command logging middleware (a command was called, handled, failed), each entry point (an HTTP request, a gRPC call, a CLI run arrived), and later each client (a call went out). If each formatted its own data, no one place could mask a password in all of them, and the records of one request could not be tied together.
 
 ## Who writes what
 
@@ -20,7 +20,7 @@ http response sent      200, duration               payload: the response body a
 
 | Part | In | Out | Payload in / out |
 |---|---|---|---|
-| `pipeline.WithLogging` | `command called` | `command handled` / `command failed` (WARN) | the command / the result; a failure repeats the command |
+| `commandlogging.Middleware` | `command called` | `command handled` / `command failed` (WARN) | the command / the result; a failure repeats the command |
 | HTTP entry point | `http request received` | `http response sent` (`status`, `duration`, `failed`) | query, headers, body / the response body as written |
 | gRPC entry point | `grpc call received` | `grpc call answered` (`code`, `duration`, `failed`) | the request message / the response message |
 | CLI entry point | `cli call received` (once parsed) | `cli call answered` (`duration`, `failed`) | the flags given / the output as printed |
@@ -31,7 +31,7 @@ The out record of a **failure** repeats the input, so it is in the log even when
 
 ```mermaid
 flowchart LR
-    P["decorator / entry point / client"] -->|"logger.LogAttrs(ctx, ..., logging.Payload(v), logging.Failed(..))"| L["*slog.Logger"]
+    P["middleware / entry point / client"] -->|"logger.LogAttrs(ctx, ..., logging.Payload(v), logging.Failed(..))"| L["*slog.Logger"]
     L --> H{"slog.Handler built in main.go"}
     H -->|"logging.NewHandler (base)"| B["JSON line: who, what, how long, how it ended<br/>payload dropped"]
     H -->|"logging variation point"| V["JSON line + payload masked<br/>+ request_id"]
@@ -59,7 +59,7 @@ The base handler drops the payload so that no data — and no secret in it — i
 
 ## Related concepts
 
-- [Handler decorator](./handler-decorator.md) — `WithLogging` writes the command's records.
+- [Command middleware](./command-middleware.md) — `commandlogging.Middleware` writes the command's records.
 - [Composition root](./composition-root.md) — builds the one logger.
 
 ## Sources
