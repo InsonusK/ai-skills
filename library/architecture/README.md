@@ -49,7 +49,7 @@ the `spec/` skills come along because every stack skill links its spec.
 | Entity | `internal/domain/entity` | `src/{package}/domain/entity` | `src/Modules/{Module}/{Module}.Domain/Entities` |
 | Domain service | `internal/domain/service` | `src/{package}/domain/service` | `src/Modules/{Module}/{Module}.Domain/Services` |
 | Commands + handlers | `internal/command` (contract in `internal/command/pipeline`, middleware in `internal/command/middleware/{name}`) | `src/{package}/command` (contract in `src/{package}/command/pipeline`, middleware in `src/{package}/command/middleware/{name}`) | `src/Modules/{Module}/{Module}.Application/Commands` (command types in `{Module}.Commands`, command middleware in `src/Middleware/{Name}`) |
-| API (entries) | `internal/api/{transport}`: `pipeline/` (fixed), `middleware/{name}/` (fixed request log and answer failures, an application's), `endpoint/` (`{Resource}Handler` per file), `routes.go` / `services.go` / `commands.go` (registration) | `src/{package}/api/{transport}`: `pipeline/`, `middleware/{name}/`, `endpoint/`, `routes.py` | `src/App/App.Host/Api/{Transport}`: `Pipeline/` (fixed), `Middleware/{Name}/`, `Endpoint/` (`{Resource}Handler` per file), `Routes.cs` / `Services.cs` (registration) |
+| API (entries) | `internal/api/{transport}`: `pipeline/` (fixed), `middleware/{name}/` (fixed request log and answer failures, an application's), `endpoint/` (`{Resource}Handler` per file), `routes.go` / `services.go` / `commands.go` (registration) | `src/{package}/api/{transport}`: `pipeline/`, `middleware/{name}/`, `endpoint/`, `routes.py` / `services.py`; generated gRPC code in `src/{package}/gen/api/{contract}` | `src/App/App.Host/Api/{Transport}`: `Pipeline/` (fixed), `Middleware/{Name}/`, `Endpoint/` (`{Resource}Handler` per file), `Routes.cs` / `Services.cs` (registration) |
 | API — shared by the entries | `internal/api/core/{entry,rpcstatus}` | `src/{package}/api/core/{entry,rpcstatus}` | `src/App/App.Host/Api/Core/{Entry,Errors,Hosting}` |
 | Service | `internal/service` | `src/{package}/service` | `src/Modules/{Module}/{Module}.Application/Services` (interface beside its consumer) |
 | Infrastructure | `internal/infrastructure/{kind}` | `src/{package}/infrastructure/{kind}` | `src/Infrastructure/{Infra}/{Infra}.Abstractions` + `{Infra}` |
@@ -74,7 +74,7 @@ the `spec/` skills come along because every stack skill links its spec.
 |---|---|:-:|:-:|:-:|
 | 1a | base plateau (on `app-layers`) | ✅ | ✅ | ✅ |
 | 1b | API: HTTP (`vp-http-api`) | ✅ | ✅ | ✅ (FastAPI) |
-| 1c-1 | API: gRPC (`vp-grpc-api`) | ✅ | ✅ | |
+| 1c-1 | API: gRPC (`vp-grpc-api`) | ✅ | ✅ | ✅ (grpc.aio) |
 | — | error kinds (`library/develop/core/error-kinds`) | ✅ | ✅ (exceptions) | ✅ (exceptions) |
 | — | health (`vp-health`, `:8081`) + one runner for every entry point (`entry.RunAll`) | ✅ | ✅ | |
 | 1c-2 | HTTP form of a gRPC contract (`vp-http-api`, proto mode) | ✅ | ✅ | |
