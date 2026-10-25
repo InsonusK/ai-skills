@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 import pytest
 from pytest_bdd import given, parsers, scenarios, then, when
 
-from todo.command.pipeline import Handler, HandlerFunc, with_logging
+from todo.command.pipeline import Handler, HandlerFunc, decorate, with_logging
 from todo.log import FAILED_KEY, PAYLOAD_KEY, attributes_of, level_name
 
 scenarios("../features/handler_logging.feature")
@@ -46,7 +46,7 @@ def a_succeeding_handler(world: World, name: str) -> None:
     async def succeed(command: str) -> str:
         return "ok"
 
-    world.wrapped = with_logging(name, world.logger(), HandlerFunc(succeed))
+    world.wrapped = decorate(name, HandlerFunc(succeed), [with_logging(world.logger())])
 
 
 @given(parsers.parse('a handler that fails with "{message}", wrapped with logging as "{name}"'))
@@ -54,7 +54,7 @@ def a_failing_handler(world: World, message: str, name: str) -> None:
     async def fail(command: str) -> str:
         raise RuntimeError(message)
 
-    world.wrapped = with_logging(name, world.logger(), HandlerFunc(fail))
+    world.wrapped = decorate(name, HandlerFunc(fail), [with_logging(world.logger())])
 
 
 @when(parsers.parse('the wrapped handler handles the command "{command}"'))

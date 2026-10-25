@@ -1,8 +1,8 @@
 ---
 name: base-plateau-in-python
-description: The base plateau in Python — the package layout of its four layers under src/{package}/, the async Handler protocol with its decorators, the error kinds, the startup entry, the runner of the entry points with the exit codes, the stdlib logger writing one JSON line per record, the composition root with its three marked sections, and the pytest-bdd scenarios that cover each layer
+description: The base plateau in Python — the package layout of its four layers under src/{package}/, the async Handler protocol, the Decorator list with decorate, the command registry build_handlers, the error kinds, the startup entry, the runner of the entry points with the exit codes, the stdlib logger writing one JSON line per record, the composition root with its three marked sections, and the pytest-bdd scenarios that cover each layer
 whenToUse: when you create a new Python service or Python CLI application from the architecture catalog, or when you attach a variation point to, or review, a Python application built on the base plateau
-updated: 20261022
+updated: 20261025
 tags:
   - stack/python
   - concern/architecture
@@ -15,12 +15,12 @@ adr:
 
 # Goal
 - **The base plateau in Python** - A Python package that keeps every property of [base-plateau](library/architecture/spec/base-plateau.skill/base-plateau.skill.md); this skill details that skill's implementation for Python and restates none of its rules.
-- **Same shape in every Python application** - The [handler contract](./glossary/handler-contract.md), the [runner of the entry points](./glossary/entry-runner.md), the [logging](./glossary/logging.md), and the composition-root sections are identical across Python applications, so a variation point's instructions name the same module and the same section everywhere.
+- **Same shape in every Python application** - The [handler contract](./glossary/handler-contract.md), the [command registry](./glossary/command-registry.md), the [runner of the entry points](./glossary/entry-runner.md), the [logging](./glossary/logging.md), and the composition-root sections are identical across Python applications, so a variation point's instructions name the same module and the same section everywhere — how a variation point uses them is [base-plateau-extension-in-python](library/architecture/python/base-plateau-extension-in-python.skill/base-plateau-extension-in-python.skill.md).
 
 # Core Principle
 - **Layers per app-layers-in-python** - Packages, protocols, entities, and fakes follow [app-layers-in-python](library/develop/python/app-layers-in-python.skill.md); this skill adds only what the base plateau itself contains.
 - **Async from the entry to the handler** - Every handler is `async def handle`; an entry point runs as an asyncio task and stops when the event it is given is set ([ADR](./adr/async-handlers.md)).
-- **Delivered, not retyped** - The fixed code is copied from templates; only the domain, the commands, and the composition-root lines are written per application.
+- **Delivered, not retyped** - The fixed code is copied from templates; only the domain, the commands, the command registry, and the composition-root lines are written per application.
 
 ```
 src/{package}/
@@ -31,7 +31,8 @@ src/{package}/
 ├── api/startup/                   copied: run(handler, command, out), env_list
 ├── api/core/entry/                copied: Entry, run_all, exit_code
 ├── command/                       one module per command: command, result, handler
-├── command/pipeline/              copied: Handler, HandlerFunc, with_logging, the error kinds
+│   └── handlers.py                the command registry: Handlers, build_handlers
+├── command/pipeline/              copied: Handler, HandlerFunc, Decorator, decorate, with_logging, the error kinds
 └── domain/entity, domain/service  entities, kinds.py and the rule errors; domain services
 ```
 
@@ -46,8 +47,9 @@ Create the packages [app-layers-in-python](library/develop/python/app-layers-in-
 |---|---|
 | startup entry | `api/startup` |
 | [runner of the entry points](./glossary/entry-runner.md): `Entry`, `run_all`, `exit_code` | `api/core/entry` |
-| commands — one module each, nothing else | `command` |
-| [handler contract](./glossary/handler-contract.md), `HandlerFunc`, decorators, the error kinds re-exported | `command/pipeline` |
+| commands — one module each | `command` |
+| [command registry](./glossary/command-registry.md): `Handlers`, `build_handlers` | `command/handlers.py` |
+| [handler contract](./glossary/handler-contract.md), `HandlerFunc`, `Decorator` with `decorate`, `with_logging`, the error kinds re-exported | `command/pipeline` |
 | entities, the error kinds (`kinds.py`) and the rule errors | `domain/entity` |
 | domain services | `domain/service` |
 | composition root | `main.py` |
@@ -63,20 +65,25 @@ Copy [command/pipeline/](./templates/src/{package}/command/pipeline/), [api/star
 - Risk: a retyped contract drifts from the one every variation point's decorator and entry point is written against.
 - Fix: copy the templates; after filling, searching the copied files for `{package}` returns nothing.
 
-### One module per decorator
-Put each decorator in its own module of `command/pipeline` — `logging.py` for `with_logging`, `{step}.py` for `with_{step}` — re-exported by the package's `__init__.py`, and never add one to `handler.py` or to another decorator's module.
-- Risk: a variation point that brings a decorator edits a base file, and two such variation points edit the same one.
-- Fix: the variation point adds `command/pipeline/{step}.py` and wraps the handlers in the `# [handlers]` section, importing the decorator from its module.
-
 ### One module per command
-Write a command, its result types, and its handler in `command/{operation}.py` per [app-layers-in-python](library/develop/python/app-layers-in-python.skill.md), the handler satisfying `Handler[{Operation}Command, {Operation}Result]`.
+Write a command, its result types, and its handler in `command/{operation}.py` per [app-layers-in-python](library/develop/python/app-layers-in-python.skill.md), the handler satisfying `Handler[{Operation}Command, {Operation}Result]`, and register it with a field and a line of the [command registry](./glossary/command-registry.md).
 - Risk: a handler whose method differs from the protocol cannot be wrapped or served without an adapter written for it alone.
 - Fix: `async def handle(self, command)`; every service the handler uses is a constructor parameter typed by a protocol.
 
 ### Compose in the three marked sections
 Build every concrete type in `run(stdout, stderr, stopping)` of `main.py` under the comments `# [services]`, `# [handlers]`, and `# [entries]`, in this order, with `main` only running it under `asyncio.run` with `stopping` set on `SIGINT`/`SIGTERM` and exiting with its code.
 - Risk: a variation point whose instruction says "add after `# [handlers]`" finds no such line and guesses where its code goes.
-- Fix: keep the three comments even when a section is empty; annotate each handler variable as `Handler[TCommand, TResult]` so a decorator can rewrap it.
+- Fix: keep the three comments even when a section is empty; `# [handlers]` is one `build_handlers` call with the list of decorators, `with_logging(logger)` first.
+
+```python
+# [handlers] - the handler of every command, built by the command registry
+# and wrapped by these decorators, the first the outermost.
+handlers = build_handlers(
+    [
+        with_logging(logger),
+    ]
+)
+```
 
 ### Build the logger with new_logger
 Build the one logger in `run` as `new_logger(stderr, settings.log_level)`, pass it to every decorator and entry point, and log every value as an attribute — `logger.info("command called", extra=attrs(command=name, payload=command))` — with the data of a call only under `payload` and `failed` on the record that ends it.
@@ -92,14 +99,14 @@ End `run` with one `run_all` call listing an `Entry(name, run)` per entry point,
 ended_by = await run_all(
     logger,
     stopping,
-    Entry("startup", lambda _: startup.run(plan_items, PlanItemsCommand(titles=startup.env_list("STARTUP_TITLES")), stdout)),
+    Entry("startup", lambda _: startup.run(handlers.plan_items, PlanItemsCommand(titles=startup.env_list("STARTUP_TITLES")), stdout)),
 )
 return exit_code(ended_by)
 ```
 
 - Violation: an entry point awaited outside `run_all`; an exit code computed in `main.py`.
 - Risk: the next variation point's entry point is never started, or the process keeps running with one entry point dead.
-- Fix: a variation point adds its `Entry` to the list (health) or replaces the startup `Entry` with its own (an API); `run_all` and `exit_code` stay as they are.
+- Fix: a variation point adds its `Entry` to the list (health) or replaces the startup `Entry` with its own (an API), built by its entry factory (`http_api.entry(handlers, logger, middlewares)`); `run_all` and `exit_code` stay as they are.
 
 ### Cover each layer with scenarios
 Cover `domain/entity`, `domain/service`, `command`, `command/pipeline`, `api/startup`, `api/core/entry`, `log`, and `config` with Cucumber scenarios per [cucumber-testing-in-python](library/testing/python/cucumber-testing-in-python.skill/cucumber-testing-in-python.skill.md), tagged `@type/domain`, `@type/service` (commands), `@type/tech-check` (decorators, settings, the runner, the logger), and `@type/api/cli` (startup entry), run by one `pytest`.
@@ -122,12 +129,11 @@ Name a type parameter after what it stands for (`TCommand`, `TResult`), never by
 - [ ] Packages follow [Base packages](#base-packages) and [app-layers-in-python](library/develop/python/app-layers-in-python.skill.md).
 - [ ] `command/pipeline`, `api/startup`, `api/core/entry`, `log`, and the error-kinds modules are filled copies of the templates; none contains `{package}`.
 - [ ] Every business-rule error is a `KindError` subclass; code outside the domain checks kinds only through `command.pipeline`.
-- [ ] Every command lives in its own module in `command` with a handler matching `Handler[TCommand, TResult]`.
-- [ ] Each decorator is in its own module of `command/pipeline`.
-- [ ] `run` in `main.py` has the `# [services]`, `# [handlers]`, `# [entries]` sections in this order; `[entries]` is one `run_all` call returning `exit_code(...)`.
+- [ ] Every command lives in its own module in `command` with a handler matching `Handler[TCommand, TResult]`, and has a field and a line in `command/handlers.py`.
+- [ ] `run` in `main.py` has the `# [services]`, `# [handlers]`, `# [entries]` sections in this order; `[handlers]` is one `build_handlers` call; `[entries]` is one `run_all` call returning `exit_code(...)`.
 - [ ] Every record is written through the logger of `new_logger` with fixed text and `attrs(...)`.
 - [ ] The example holds no testing tooling; `make test` and `make lint` pass.
 
 # Example
 - [examples/](./examples/README.md) — the base plateau as a runnable to-do planner: `make init`, `make run`, `make test`, `make lint`.
-- [glossary/](./glossary/README.md) — how the handler contract, the runner of the entry points, and the logging work.
+- [glossary/](./glossary/README.md) — how the handler contract, the decorators with the command registry, the runner of the entry points, and the logging work.

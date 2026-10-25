@@ -12,8 +12,8 @@ from typing import TextIO
 from todo import config
 from todo.api import startup
 from todo.api.core.entry import Entry, exit_code, run_all
-from todo.command import PlanItemsCommand, PlanItemsHandler, PlanItemsResult
-from todo.command.pipeline import Handler, with_logging
+from todo.command import PlanItemsCommand, build_handlers
+from todo.command.pipeline import with_logging
 from todo.log import attrs, new_logger
 
 
@@ -46,9 +46,14 @@ async def run(stdout: TextIO, stderr: TextIO, stopping: asyncio.Event) -> int:
 
     # [services] - infrastructure and the services over it; none in the base plateau.
 
-    # [handlers] - one per command, wrapped by its decorators.
-    plan_items: Handler[PlanItemsCommand, PlanItemsResult] = PlanItemsHandler()
-    plan_items = with_logging("PlanItems", logger, plan_items)
+    # [handlers] - the handler of every command, built by the command registry
+    # and wrapped by these decorators, the first the outermost. A variation
+    # point adds its decorator to this list at the place its skill names.
+    handlers = build_handlers(
+        [
+            with_logging(logger),
+        ]
+    )
 
     # [entries] - every entry point, one Entry each, run together by run_all
     # until the first one ends. The base plateau has only the startup command;
@@ -57,6 +62,6 @@ async def run(stdout: TextIO, stderr: TextIO, stopping: asyncio.Event) -> int:
     ended_by = await run_all(
         logger,
         stopping,
-        Entry("startup", lambda _: startup.run(plan_items, PlanItemsCommand(titles=startup.env_list("STARTUP_TITLES")), stdout)),
+        Entry("startup", lambda _: startup.run(handlers.plan_items, PlanItemsCommand(titles=startup.env_list("STARTUP_TITLES")), stdout)),
     )
     return exit_code(ended_by)

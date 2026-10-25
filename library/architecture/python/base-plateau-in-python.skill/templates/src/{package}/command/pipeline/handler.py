@@ -30,9 +30,9 @@ class Handler[TCommand, TResult](Protocol):
 class HandlerFunc[TCommand, TResult]:
     """Turns an ordinary async function into a Handler: the function is the
     handle method. A handler with its own dependencies is a class
-    (PlanItemsHandler); HandlerFunc is for handlers built on the fly - a
-    decorator returns one wrapping the next handler, and a test writes a stub
-    handler in one line.
+    (PlanItemsHandler); HandlerFunc is for handlers built on the fly -
+    decorate returns one wrapping the chain of decorators, and a test writes a
+    stub handler in one line.
     """
 
     def __init__(self, function: Callable[[TCommand], Awaitable[TResult]]) -> None:

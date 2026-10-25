@@ -9,6 +9,16 @@ only the command layer - never domain, service, or infrastructure."""
 from {package}.api.http.pipeline.config import HttpConfig, load_config, normalize_base_path
 from {package}.api.http.pipeline.errors import status_response
 from {package}.api.http.pipeline.logging import REQUEST_ID_HEADER
-from {package}.api.http.pipeline.server import Server, run
+from {package}.api.http.pipeline.server import CallNext, Middleware, Server, run
 
-__all__ = ["REQUEST_ID_HEADER", "HttpConfig", "Server", "load_config", "normalize_base_path", "run", "status_response"]
+__all__ = [
+    "REQUEST_ID_HEADER",
+    "CallNext",
+    "HttpConfig",
+    "Middleware",
+    "Server",
+    "load_config",
+    "normalize_base_path",
+    "run",
+    "status_response",
+]

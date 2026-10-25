@@ -15,9 +15,9 @@ from httpx2 import Response
 from pydantic import BaseModel
 from pytest_bdd import given, parsers, then, when
 
-from todo.api.http.pipeline import HttpConfig, Server
+from todo.api.http.pipeline import HttpConfig, Middleware, Server
 from todo.api.http.pipeline.docs import find_contract
-from todo.command.pipeline import Handler, HandlerFunc, Kind, KindError, with_logging
+from todo.command.pipeline import Handler, HandlerFunc, Kind, KindError, decorate, with_logging
 from todo.log import attributes_of, request_id
 
 
@@ -63,6 +63,7 @@ class World:
     handler: Handler[str, str] | None = None
     recorder: Recorder = field(default_factory=Recorder)
     config: HttpConfig = field(default_factory=HttpConfig)
+    middlewares: list[Middleware] = field(default_factory=list)
     response: Response | None = None
 
     def logger(self) -> logging.Logger:
@@ -82,7 +83,7 @@ class World:
         return router
 
     def request(self, method: str, path: str, **kwargs: Any) -> None:
-        app = Server(self.config, [self.router()], self.logger()).app()
+        app = Server(self.config, [self.router()], self.logger(), self.middlewares).app()
         with TestClient(app, raise_server_exceptions=False, follow_redirects=False) as client:
             self.response = client.request(method, path, **kwargs)
         print(f"when: {method} {path} -> {self.response.status_code} {self.response.text[:200]!r}")
@@ -129,7 +130,7 @@ def the_command_fails(world: World, message: str) -> None:
 
 @given("the command is wrapped with logging")
 def the_command_is_wrapped_with_logging(world: World) -> None:
-    world.handler = with_logging("Echo", world.logger(), HandlerFunc(world.echo.handle))
+    world.handler = decorate("Echo", HandlerFunc(world.echo.handle), [with_logging(world.logger())])
 
 
 @given("the docs are enabled")
