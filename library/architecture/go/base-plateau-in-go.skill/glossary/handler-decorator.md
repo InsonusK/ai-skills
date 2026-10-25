@@ -1,65 +1,78 @@
 # Handler decorator
 
-A **handler decorator** is a function that takes a handler and returns a new handler of the same type, which does something extra around the call — logs it, times it, opens and commits a transaction. In the base plateau it is `pipeline.WithLogging`.
+A **handler decorator** is one step done around every command call — log it, check the caller's access, open and commit a transaction — written once and wrapped around every handler. In Go it is a `pipeline.Decorator`; in the base plateau the only one is `pipeline.WithLogging(logger)`.
 
 ## Why it exists
 
-Some steps belong to every command but to no command in particular: logging, metrics, a database transaction. Written inside each handler they repeat in every file, and adding one (say, when the DB variation point arrives) means editing every handler.
+Some steps belong to every command but to no command in particular. Written inside each handler they repeat in every file, and adding one (say, when the DB variation point arrives) means editing every handler.
 
-A decorator writes the step once. The [composition root](./composition-root.md) wraps the handlers that need it — so a variation point adds a decorator with one line in the `// [handlers]` section, and no handler changes.
+A decorator writes the step once. The [composition root](./composition-root.md) lists the decorators once, and the [command registry](./command-registry.md) wraps every handler with that list — so a variation point adds its decorator as one element of the list, and no handler, and no other variation point, changes.
 
 ## How it works
 
-The decorator receives the next handler, and returns a [HandlerFunc](./handler-func.md) that does its work before and after calling `next.Handle`:
+A decorator is a plain function. It is called with the command's name, the command, and `next` — the rest of the chain — and decides what to do around the call:
 
 ```go
-func WithLogging[TCommand, TResult any](name string, logger *slog.Logger, next Handler[TCommand, TResult]) Handler[TCommand, TResult] {
-    return HandlerFunc[TCommand, TResult](func(ctx context.Context, cmd TCommand) (TResult, error) {
-        start := time.Now()
-        res, err := next.Handle(ctx, cmd)          // the wrapped handler does the real work
-        // ... one log record: "command handled" or "command failed"
-        return res, err
-    })
+// Decorator is one cross-cutting step around every command handler.
+type Decorator func(ctx context.Context, name string, cmd any, next Next) (any, error)
+
+// the step that logs every command (internal/command/pipeline/logging.go, shortened)
+func WithLogging(logger *slog.Logger) Decorator {
+	return func(ctx context.Context, name string, cmd any, next Next) (any, error) {
+		logger.LogAttrs(ctx, slog.LevelInfo, "command called", slog.String("command", name), logging.Payload(cmd))
+		res, err := next(ctx, cmd) // the decorators inside this one, then the handler
+		// ... "command handled" or "command failed"
+		return res, err
+	}
 }
 ```
 
-Because input and output types are the same `Handler[TCommand, TResult]`, decorators stack: each one wraps the previous.
+Why `any`, when handlers are typed `Handler[TCommand, TResult]`? Because a Go generic function cannot be put into a slice, and the decorators must stand in one list. `pipeline.Decorate` is the adapter between the two worlds: it builds the chain around one typed handler and asserts the command and the result back to their types, so the handler and the entry points stay typed.
 
 ```mermaid
 sequenceDiagram
+    autonumber
     participant E as Entry point
+    participant D as Decorate (typed → any)
     participant L as WithLogging
-    participant T as WithTransaction (future DB VP)
+    participant A as WithAccessCheck (access VP)
     participant H as PlanItemsHandler
-    E->>L: Handle(cmd)
-    L->>T: Handle(cmd)
-    T->>H: Handle(cmd)
-    H-->>T: result, err
-    T-->>L: result, err (committed or rolled back)
-    L-->>E: result, err (logged)
+    E->>+D: Handle(ctx, PlanItemsCommand)
+    D->>+L: (ctx, "PlanItems", cmd, next)
+    L->>+A: next(ctx, cmd)
+    A->>+H: next(ctx, cmd) → Handle(ctx, cmd.(PlanItemsCommand))
+    H-->>-A: result, err
+    A-->>-L: result, err
+    L-->>-D: result, err (logged)
+    D-->>-E: result.(PlanItemsResult), err
 ```
+
+A decorator that applies to some commands only asks the command for a mark — an interface the command has a method of — and passes every other command on unchanged; the three kinds are in [base-plateau-extension-in-go](library/architecture/go/base-plateau-extension-in-go.skill/base-plateau-extension-in-go.skill.md).
 
 ## How it is structured
 
 | Part | Rule |
 |---|---|
-| Signature | `func With{Step}[TCommand, TResult any](..., next Handler[TCommand, TResult]) Handler[TCommand, TResult]` |
-| Body | returns a `HandlerFunc` that calls `next.Handle` exactly once |
-| Order | the decorator applied last runs first (outermost) |
-| Where applied | `cmd/{app}/main.go`, section `// [handlers]` |
+| Signature | `func With{Step}(what the step needs) pipeline.Decorator` |
+| Body | calls `next(ctx, cmd)` at most once, with the same command; returns an error of a kind to reject the command |
+| Order | the list's first decorator is the outermost: first on the way in, last on the way out |
+| Where listed | `cmd/{app}/main.go`, section `// [handlers]`, the argument of `command.NewHandlers` |
+| Where applied | `internal/command/handlers.go`, by `pipeline.Decorate` for every command |
 
 ## Example
 
 ```go
 // cmd/todo/main.go
-var planItems pipeline.Handler[command.PlanItemsCommand, command.PlanItemsResult] = command.NewPlanItemsHandler()
-planItems = pipeline.WithLogging("PlanItems", logger, planItems)
+handlers := command.NewHandlers([]pipeline.Decorator{
+	pipeline.WithLogging(logger),
+})
 ```
 
 This is the Go counterpart of a MediatR pipeline behavior in the dotnet catalog.
 
 ## Related concepts
 
+- [Command registry](./command-registry.md)
 - [Handler contract](./handler-contract.md)
 - [HandlerFunc](./handler-func.md)
 - [Composition root](./composition-root.md)
@@ -67,4 +80,4 @@ This is the Go counterpart of a MediatR pipeline behavior in the dotnet catalog.
 ## Sources
 
 - Decorator pattern: https://refactoring.guru/design-patterns/decorator
-- [logging.go](../templates/internal/command/pipeline/logging.go)
+- [decorator.go](../templates/internal/command/pipeline/decorator.go), [logging.go](../templates/internal/command/pipeline/logging.go)

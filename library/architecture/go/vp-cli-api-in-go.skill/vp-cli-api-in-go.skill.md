@@ -1,8 +1,8 @@
 ---
 name: vp-cli-api-in-go
-description: The CLI API variation point in Go — internal/api/cli/pipeline copied from templates (Run building the cobra command line with --output, --version, usage errors as the invalid kind, the generic Command adapter, the run log), one {Resource}Handler per resource in internal/api/cli/endpoint, the registration in internal/api/cli/commands.go with each action's flags, JSON output, and text form, and the startup entry replaced by one cli Entry in main.go
+description: The CLI API variation point in Go — internal/api/cli/pipeline copied from templates (Run building the cobra command line with --output, --version, usage errors as the invalid kind, the generic Command adapter, the run log), one {Resource}Handler per resource in internal/api/cli/endpoint, the registration in internal/api/cli/commands.go with each action's flags, JSON output, and text form, and the startup entry replaced by cliapi.Entry in main.go
 whenToUse: when a Go application built on the base plateau must be run from a command line, when you offer a new command as an action of such an application, or when you review its internal/api/cli package
-updated: 20261021
+updated: 20261025
 tags:
   - stack/go
   - concern/architecture
@@ -26,7 +26,7 @@ internal/api/cli/
 ├── endpoint/                  written per application, grows with the command line
 │   ├── items.go               ItemsHandler: one file per resource, `todo items plan`
 │   └── features/  test/       one feature per resource
-└── commands.go                Endpoints (one field per resource), Resources, Run (cliapi)
+└── commands.go                Endpoints, NewEndpoints, Resources, Entry, Run (cliapi)
 ```
 
 # Rule
@@ -39,7 +39,7 @@ Fill and copy [cli.go](./templates/internal/api/cli/pipeline/cli.go), [command.g
 - Fix: copy the files; after filling, searching them for `{module-path}` returns nothing.
 
 ### One file per resource in the endpoint package
-Write each resource in its own file `internal/api/cli/endpoint/{resource}.go`: an exported `{Resource}Handler` struct (`ItemsHandler`) with one `pipeline.Handler[TCommand, TResult]` field per command, its method `Resource() clipipeline.Resource` returning `{Name, Short, Actions}` with one `clipipeline.Command(use, short, handler, bind, encode, text)` per command, and per action its `bind`, its output type with `encode`, and its `text` (or `nil` for indented JSON). Keep in `internal/api/cli/commands.go` only `Endpoints`, one field per resource, `Resources(e Endpoints)`, and `Run`.
+Write each resource in its own file `internal/api/cli/endpoint/{resource}.go`: an exported `{Resource}Handler` struct (`ItemsHandler`) with one `pipeline.Handler[TCommand, TResult]` field per command, filled from the command registry by `New{Resource}Handler(handlers command.Handlers)`, its method `Resource() clipipeline.Resource` returning `{Name, Short, Actions}` with one `clipipeline.Command(use, short, handler, bind, encode, text)` per command, and per action its `bind`, its output type with `encode`, and its `text` (or `nil` for indented JSON). Keep in `internal/api/cli/commands.go` only `Endpoints`, one field per resource, `NewEndpoints(handlers command.Handlers)`, `Resources(e Endpoints)`, `Entry`, the entry factory, and `Run`, which the scenarios call.
 
 ```go
 // bind declares the flags and returns how to read them into the command.
@@ -56,22 +56,19 @@ func bindPlanItems(flags *pflag.FlagSet) func() (command.PlanItemsCommand, error
 - Fix: follow the example's [items.go](./examples/internal/api/cli/endpoint/items.go); an error `read` returns is a usage error (exit `2`); a repeated value is a `StringArray`, not a comma-separated string.
 
 ### Replace the startup entry in main.go
-Replace the startup `entry.Entry` in the `// [entries]` list of `cmd/{app}/main.go` with a `cli` one calling `cliapi.Run` with the application's name, the version, `os.Args[1:]`, `cliapi.Endpoints`, and the output streams, and delete `internal/api/startup/`.
+Replace the startup `entry.Entry` in the `// [entries]` list of `cmd/{app}/main.go` with `cliapi.Entry`, given the command registry, the logger, the application's name, the version, `os.Args[1:]`, and the output streams, and delete `internal/api/startup/`.
 
 ```go
 // [entries] - every entry point, one Entry each, run together by entry.RunAll.
-endpoints := cliapi.Endpoints{Items: endpoint.ItemsHandler{PlanItems: planItems}}
 err = entry.RunAll(ctx, logger,
-	entry.Entry{Name: "cli", ReportsErrors: true, Run: func(ctx context.Context) error {
-		return cliapi.Run(ctx, logger, "todo", version.Version, os.Args[1:], endpoints, stdout, stderr)
-	}},
+	cliapi.Entry(handlers, logger, "todo", version.Version, os.Args[1:], stdout, stderr),
 )
 return entry.ExitCode(err)
 ```
 
 - Violation: `cobra.Command.Execute` called in `main.go`, an `os.Exit` inside the CLI package, or the startup entry kept beside the CLI.
 - Risk: an exit code computed outside `entry.ExitCode` ignores the error kind; an `os.Exit` skips the graceful stop of every other entry.
-- Fix: import `cliapi "{module-path}/internal/api/cli"` and `"{module-path}/internal/api/cli/endpoint"`; `cliapi.Run` prints the error as `Error: ...` and returns it, `ReportsErrors: true` keeps `RunAll` from logging it a second time, and `entry.ExitCode` turns it into the exit code. The logs of the command's run stay on stderr.
+- Fix: import `cliapi "{module-path}/internal/api/cli"`; the entry prints the error as `Error: ...` and returns it, its `ReportsErrors: true` keeps `RunAll` from logging it a second time, and `entry.ExitCode` turns it into the exit code. The logs of the command's run stay on stderr.
 
 ### Add the cobra module
 Add `github.com/spf13/cobra` at `v1.10.2` with `go get` and run `go mod tidy`.
@@ -86,12 +83,12 @@ Copy the example's `internal/api/cli/pipeline/features/` and `test/` unchanged b
 ## SHOULD
 
 ### Offer a new command in its resource's file
-Offer a further command of an existing resource by adding its field, its action line, and its `bind`, `encode`, and `text` to the resource's file, its scenario to the resource's feature, and its handler to the resource's `{Resource}Handler` in `main.go`; a new resource adds its file and feature, one field of `Endpoints`, and one line of `Resources`.
+Offer a further command of an existing resource by adding its field, its line of `New{Resource}Handler`, its action line, and its `bind`, `encode`, and `text` to the resource's file, and its scenario to the resource's feature; the command itself joins the command registry; `main.go` does not change. A new resource adds its file and feature, one field of `Endpoints`, and one line each of `NewEndpoints` and `Resources`. The command line has no entry decorators: a step on every action is a command decorator ([base-plateau-extension-in-go](library/architecture/go/base-plateau-extension-in-go.skill/base-plateau-extension-in-go.skill.md)).
 
 # Check list
 - [ ] `internal/api/cli/pipeline/{cli,command,logging}.go` are filled copies of the templates; no placeholder is left.
-- [ ] Each resource has its own file in `endpoint/` with its `{Resource}Handler` and `Resource()`, its actions built by `clipipeline.Command`, and per action its `bind`, `encode`, and `text`; `commands.go` holds only `Endpoints`, `Resources`, and `Run`.
-- [ ] The `// [entries]` list of `main.go` has a `cli` entry with `ReportsErrors: true` calling `cliapi.Run` with `os.Args[1:]`; `internal/api/startup/` is deleted.
+- [ ] Each resource has its own file in `endpoint/` with its `{Resource}Handler` and `Resource()`, its actions built by `clipipeline.Command`, and per action its `bind`, `encode`, and `text`; `commands.go` holds only `Endpoints`, `NewEndpoints`, `Resources`, `Entry`, and `Run`.
+- [ ] The `// [entries]` list of `main.go` has `cliapi.Entry(handlers, ..., os.Args[1:], ...)`; `internal/api/startup/` is deleted.
 - [ ] `github.com/spf13/cobra` is pinned at `v1.10.2`.
 - [ ] `make test` passes with the fixed code's feature and one feature per resource.
 - [ ] `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).

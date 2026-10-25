@@ -1,6 +1,6 @@
 # Pipeline
 
-The **pipeline** (`internal/command/pipeline`) is the path every command takes from an entry point to its handler, and the package that holds that path's parts: the [handler contract](./handler-contract.md), [HandlerFunc](./handler-func.md), the [decorators](./handler-decorator.md), and the [error kind](./error-kind.md). It holds no command.
+The **pipeline** (`internal/command/pipeline`) is the path every command takes from an entry point to its handler, and the package that holds that path's parts: the [handler contract](./handler-contract.md), [HandlerFunc](./handler-func.md), the [decorators](./handler-decorator.md) with the adapter `Decorate`, and the [error kind](./error-kind.md). It holds no command.
 
 ## Why it exists
 
@@ -13,12 +13,12 @@ A call goes through the pipeline like water through a pipe with fittings: the en
 ```mermaid
 flowchart LR
     E["Entry point<br/>(startup, HTTP)"] -->|command| L["WithLogging"]
-    L --> U["WithUnitOfWork<br/>(DB variation point)"]
+    L --> U["WithUnitOfWork<br/>(a store variation point)"]
     U --> H["PlanItemsHandler<br/>internal/command"]
     H -. result or error .-> E
 ```
 
-The fittings are added in the composition root's `// [handlers]` section; the entry point and the handler never know which ones are there.
+The fittings are listed in the composition root's `// [handlers]` section and fitted to every handler by the [command registry](./command-registry.md); the entry point and the handler never know which ones are there.
 
 ## How it is structured
 
@@ -26,15 +26,18 @@ The fittings are added in the composition root's `// [handlers]` section; the en
 |---|---|---|
 | `Handler[TCommand, TResult]` | the contract | every handler (implements), every entry point and decorator (calls) |
 | `HandlerFunc` | a function as a handler | decorators, test stubs |
-| `WithLogging`, later more `With...` — one file each (`logging.go`, ...) | decorators | the composition root |
+| `Decorator`, `Next`, `Decorate` (`decorator.go`) | a step around every command, and the adapter that wraps a typed handler with a list of them | decorators (`Decorator`), the command registry (`Decorate`) |
+| `WithLogging` (`logging.go`) | the base plateau's decorator; a variation point's live in its own package | the composition root |
 | `ErrInvalid`, `ErrNotFound`, ..., `KindOf` | the error kinds | entry points, to choose their response |
 
 ## Example
 
 ```go
+// internal/command/handlers.go - every handler wrapped by the list main.go gives
+PlanItems: pipeline.Decorate("PlanItems", NewPlanItemsHandler(), decorators),
+
 // cmd/todo/main.go
-var planItems pipeline.Handler[command.PlanItemsCommand, command.PlanItemsResult] = command.NewPlanItemsHandler()
-planItems = pipeline.WithLogging("PlanItems", logger, planItems)
+handlers := command.NewHandlers([]pipeline.Decorator{pipeline.WithLogging(logger)})
 ```
 
 In dotnet the same role is played by MediatR: `IRequestHandler<TRequest, TResponse>` is the contract and an `IPipelineBehavior` is a decorator — hence the name.
@@ -47,5 +50,5 @@ In dotnet the same role is played by MediatR: `IRequestHandler<TRequest, TRespon
 
 ## Sources
 
-- [handler.go](../templates/internal/command/pipeline/handler.go), [logging.go](../templates/internal/command/pipeline/logging.go)
+- [handler.go](../templates/internal/command/pipeline/handler.go), [decorator.go](../templates/internal/command/pipeline/decorator.go), [logging.go](../templates/internal/command/pipeline/logging.go)
 - MediatR pipeline behaviors: https://github.com/jbogard/MediatR/wiki/Behaviors

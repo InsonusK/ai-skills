@@ -2,7 +2,7 @@
 name: vp-health-in-go
 description: The health variation point in Go — the internal/api/management package copied from templates (MANAGEMENT_LISTEN_PORT, /health/live, /health/ready, /health, readiness checks, graceful stop) and one management entry added to the entry.RunAll list in main.go
 whenToUse: when a Go application built on the base plateau runs as a long-running service, when a Go service variation point adds a readiness check, or when you review a Go service's health endpoints
-updated: 20261018
+updated: 20261025
 tags:
   - stack/go
   - concern/architecture
@@ -34,17 +34,13 @@ Fill and copy [config.go](./templates/internal/api/management/config.go) and [se
 - Fix: copy the files; after filling, searching them for `{module-path}` returns nothing; `make test` passes.
 
 ### Add the management entry in main.go
-Add a `management` `entry.Entry` calling `management.Run` to the `// [entries]` list of `cmd/{app}/main.go`, beside the entries already there; how the list runs is the base plateau's [entry runner](library/architecture/go/base-plateau-in-go.skill/glossary/entry-runner.md).
+Add `management.Entry(logger)` to the `// [entries]` list of `cmd/{app}/main.go`, beside the entries already there; how the list runs is the base plateau's [entry runner](library/architecture/go/base-plateau-in-go.skill/glossary/entry-runner.md).
 
 ```go
 // [entries] - every entry point, one Entry each, run together by entry.RunAll.
 err = entry.RunAll(ctx, logger,
-	entry.Entry{Name: "http", Run: func(ctx context.Context) error { // already there
-		return httpapi.Run(ctx, endpoints, logger)
-	}},
-	entry.Entry{Name: "management", Run: func(ctx context.Context) error {
-		return management.Run(ctx, logger)
-	}},
+	httpapi.Entry(handlers, logger, []httpapi.Middleware{}), // already there
+	management.Entry(logger),
 )
 return entry.ExitCode(err)
 ```
@@ -54,12 +50,12 @@ return entry.ExitCode(err)
 - Fix: import `"{module-path}/internal/api/management"`; one entry, nothing else in `main.go`.
 
 ### Add a readiness check as one argument
-Pass a dependency's [readiness check](./glossary/readiness-check.md) as a `management.Check{Name, Check}` argument of `management.Run`, built in `// [services]` by the service variation point that brings the dependency.
+Pass a dependency's [readiness check](./glossary/readiness-check.md) as a `management.Check{Name, Check}` argument of `management.Entry`, built in `// [services]` by the service variation point that brings the dependency.
 
 ```go
-return management.Run(ctx, logger,
+management.Entry(logger,
 	management.Check{Name: "database", Check: db.Ping},
-)
+),
 ```
 
 - Violation: a check written inside `internal/api/management`; a check that calls a command.
@@ -73,8 +69,8 @@ Fill the deployment templates of [devops-service-deploy](library/devops/core/dev
 
 # Check list
 - [ ] `internal/api/management/{config,server}.go` are filled copies of the templates; no placeholder is left.
-- [ ] The `// [entries]` list of `main.go` has a `management` entry calling `management.Run`; every other entry is unchanged.
-- [ ] Every readiness check is a `management.Check` argument of `management.Run`.
+- [ ] The `// [entries]` list of `main.go` has `management.Entry(logger, ...)`; every other entry is unchanged.
+- [ ] Every readiness check is a `management.Check` argument of `management.Entry`.
 - [ ] The deployment's probes name port 8081.
 - [ ] `make test` passes; `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).
 

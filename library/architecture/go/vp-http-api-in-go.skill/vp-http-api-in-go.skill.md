@@ -1,8 +1,8 @@
 ---
 name: vp-http-api-in-go
-description: The HTTP API variation point in Go — internal/api/http/pipeline copied from templates (settings, the generic Endpoint, the server with graceful stop, the request log, the docs), one {Resource}Handler per resource in internal/api/http/endpoint, the registration in internal/api/http/routes.go, the contract either hand-written in OpenAPI or, as the HTTP form of a gRPC contract, generated from the proto file's google.api.http annotations with the routes over the generated messages, and one http Entry in main.go
+description: The HTTP API variation point in Go — internal/api/http/pipeline copied from templates (settings, the generic Endpoint, the server with graceful stop, the request log, the docs), one {Resource}Handler per resource in internal/api/http/endpoint, the registration in internal/api/http/routes.go, the contract either hand-written in OpenAPI or, as the HTTP form of a gRPC contract, generated from the proto file's google.api.http annotations with the routes over the generated messages, and one httpapi.Entry in main.go with its list of middlewares
 whenToUse: when a Go application built on the base plateau must be served over HTTP, when a Go service with a gRPC contract needs its HTTP form, when you serve a new command over HTTP in such an application, or when you review its internal/api/http packages
-updated: 20261021
+updated: 20261025
 tags:
   - stack/go
   - concern/architecture
@@ -21,14 +21,14 @@ tags:
 internal/api/core/rpcstatus/          copied from error-kinds-in-go; the same in every network entry point
 internal/api/http/
 ├── pipeline/                    copied from templates, never edited (httppipeline)
-│   ├── config.go  server.go  endpoint.go  docs.go
+│   ├── config.go  server.go  endpoint.go  docs.go      server.go: Middleware; endpoint.go: WriteError
 │   ├── logging.go               the request log: received / sent, request id
 │   ├── proto.go                 only for a proto contract: DecodeProto, ProtoJSON, Unimplemented
 │   └── features/  test/         the fixed code's scenarios, with a test command of their own
 ├── endpoint/                    written per application, grows with the API
 │   ├── items.go                 ItemsHandler: one file per resource ≈ an ASP.NET controller
 │   └── features/  test/         one feature per resource + the contract scenario
-└── routes.go                    Endpoints (one field per resource), Routes, Run (httpapi)
+└── routes.go                    Endpoints, NewEndpoints, Routes, Entry, Middleware (httpapi)
 ```
 
 # Rule
@@ -49,13 +49,13 @@ Fill and copy [config.go](./templates/internal/api/http/pipeline/config.go), [se
 - Fix: copy the files; after filling, searching them for `{module-path}`, `{contract-name}`, `{contract-package}`, and `{api-title}` returns nothing.
 
 ### One file per resource in the endpoint package
-Write each resource of the API — the first path segment after the version, with its collection and item paths together (`/v1/users` and `/v1/users/{id}` in `users.go`) — in its own file `internal/api/http/endpoint/{resource}.go`, the counterpart of an ASP.NET controller: an exported `{Resource}Handler` struct (`ItemsHandler`) with one `pipeline.Handler[TCommand, TResult]` field per command, its method `Routes() []httppipeline.Route` returning one `{Pattern: "METHOD /v1/...", Handler: httppipeline.Endpoint(handler, decode, encode, status)}` per command, and per route its request and response types with a `decode` and an `encode` function.
+Write each resource of the API — the first path segment after the version, with its collection and item paths together (`/v1/users` and `/v1/users/{id}` in `users.go`) — in its own file `internal/api/http/endpoint/{resource}.go`, the counterpart of an ASP.NET controller: an exported `{Resource}Handler` struct (`ItemsHandler`) with one `pipeline.Handler[TCommand, TResult]` field per command, filled from the command registry by `New{Resource}Handler(handlers command.Handlers)`, its method `Routes() []httppipeline.Route` returning one `{Pattern: "METHOD /v1/...", Handler: httppipeline.Endpoint(handler, decode, encode, status)}` per command, and per route its request and response types with a `decode` and an `encode` function.
 - Violation: a resource's routes written in `pipeline/`, every route in one file, a route registered outside `Routes`, or a command's result type encoded as the response.
 - Risk: one routes file grows with every command until no one reads it; a route outside the list escapes the contract scenario; an encoded command type ties the published contract to the command layer.
 - Fix: follow the example's [items.go](./examples/internal/api/http/endpoint/items.go); decode a JSON body with `httppipeline.DecodeJSON[TBody](r)`.
 
 ### Register the resources in routes.go
-Keep in `internal/api/http/routes.go` only `Endpoints`, one field per resource, `Routes(e Endpoints)`, which concatenates each resource's `Routes()`, and `Run(ctx, e, logger)`, which serves them.
+Keep in `internal/api/http/routes.go` only `Endpoints`, one field per resource, `NewEndpoints(handlers command.Handlers)`, which fills each resource from the command registry, `Routes(e Endpoints)`, which concatenates each resource's `Routes()`, `Middleware`, an alias of `httppipeline.Middleware`, and `Entry(handlers, logger, middlewares)`, the entry factory that serves them.
 - Risk: a resource left out of `Routes` is served by nothing while its file and its scenarios pass.
 - Fix: follow the example's [routes.go](./examples/internal/api/http/routes.go); the contract scenario holds `Routes` against the spec.
 
@@ -99,35 +99,34 @@ Mark an rpc that is kept but no longer served `option deprecated = true`, answer
 - Fix: keep the rpc until the next major version; 501 / `UNIMPLEMENTED` with `"{Rpc} is deprecated since {version}"`.
 
 ### Serve both forms from the same handlers
-In a service with the gRPC variation point, add the `http` entry beside the `grpc` one in `// [entries]`, both filled with the same handlers built in `// [handlers]`.
+In a service with the gRPC variation point, add the `http` entry beside the `grpc` one in `// [entries]`, both built from the same command registry.
 
 ```go
 err = entry.RunAll(ctx, logger,
-	entry.Entry{Name: "grpc", Run: func(ctx context.Context) error { return grpcapi.Run(ctx, grpcEndpoints, logger) }},
-	entry.Entry{Name: "http", Run: func(ctx context.Context) error { return httpapi.Run(ctx, httpEndpoints, logger) }},
+	grpcapi.Entry(handlers, logger, []grpcapi.Interceptor{}),
+	httpapi.Entry(handlers, logger, []httpapi.Middleware{}),
 )
 ```
 
 - Risk: a handler built twice gets two decorator chains, and the two forms behave differently.
-- Fix: one handler variable per command, passed to both `Endpoints` (`grpcendpoint`, `httpendpoint` in `main.go`).
+- Fix: one `command.NewHandlers` call, its result passed to both entry factories.
 
 ### Replace the startup entry in main.go
-Replace the startup `entry.Entry` in the `// [entries]` list of `cmd/{app}/main.go` with an `http` one calling `httpapi.Run` with `httpapi.Endpoints`, filled with the handlers built in `// [handlers]`, and delete `internal/api/startup/`.
+Replace the startup `entry.Entry` in the `// [entries]` list of `cmd/{app}/main.go` with `httpapi.Entry(handlers, logger, middlewares)`, given the command registry and the list of middlewares — empty until a variation point adds one, as [base-plateau-extension-in-go](library/architecture/go/base-plateau-extension-in-go.skill/base-plateau-extension-in-go.skill.md) describes — and delete `internal/api/startup/`.
 
 ```go
 // [entries] - every entry point, one Entry each, run together by entry.RunAll.
-endpoints := httpapi.Endpoints{Items: endpoint.ItemsHandler{PlanItems: planItems}}
 err = entry.RunAll(ctx, logger,
-	entry.Entry{Name: "http", Run: func(ctx context.Context) error {
-		return httpapi.Run(ctx, endpoints, logger)
-	}},
+	// the HTTP API: its contract routes wrapped by these middlewares, the
+	// first the outermost, inside the request log
+	httpapi.Entry(handlers, logger, []httpapi.Middleware{}),
 )
 return entry.ExitCode(err)
 ```
 
-- Violation: the settings loaded or the server built in `main.go`, `httpapi.Run` called outside `entry.RunAll`, or the startup entry kept beside it.
+- Violation: the settings loaded or the server built in `main.go`, the server run outside `entry.RunAll`, or the startup entry kept beside it.
 - Risk: every line of the entry point's start in `main.go` is a line each later variation point's instruction must step around; a server started outside the list is not stopped when another entry point fails.
-- Fix: import `httpapi "{module-path}/internal/api/http"` and `"{module-path}/internal/api/http/endpoint"`; `Run` reads the settings, builds the server, and serves the routes of every resource until `ctx` is cancelled; other entries of the list (health, gRPC) stay as they are.
+- Fix: import `httpapi "{module-path}/internal/api/http"`; the entry's `Run` reads the settings, builds the server, and serves the routes of every resource until `ctx` is cancelled, each route wrapped by the middlewares inside the request log, the docs outside them; other entries of the list (health, gRPC) stay as they are.
 
 ### Add the Swagger UI module
 Add `github.com/swaggest/swgui` at `v1.8.9` with `go get` and run `go mod tidy`.
@@ -135,21 +134,21 @@ Add `github.com/swaggest/swgui` at `v1.8.9` with `go get` and run `go mod tidy`.
 - Fix: commit `go.mod` and `go.sum` with the version above.
 
 ### Cover the entry point with scenarios
-Copy the example's `internal/api/http/pipeline/features/` and `test/` — of [examples-proto/](./examples-proto/README.md) for a proto contract, which add `proto.feature` for `proto.go` — unchanged but for the module path and the contract's package (`todo`) in their imports: they cover the fixed code — the error mapping through a test command of their own, the docs under a prefix and switched off, the settings, and `Run` with its graceful stop. In `internal/api/http/endpoint/` write one feature per resource with its handlers faked (`pipeline.HandlerFunc`), and the contract scenario of api-develop-in-go; tag them `@type/api/http` and `@type/tech-check`.
+Copy the example's `internal/api/http/pipeline/features/` and `test/` — of [examples-proto/](./examples-proto/README.md) for a proto contract, which add `proto.feature` for `proto.go` — unchanged but for the module path and the contract's package (`todo`) in their imports: they cover the fixed code — the error mapping through a test command of their own, the middlewares in their order and outside the docs, the docs under a prefix and switched off, the settings, and `Run` with its graceful stop. In `internal/api/http/endpoint/` write one feature per resource with its handlers faked (`pipeline.HandlerFunc`), and the contract scenario of api-develop-in-go; tag them `@type/api/http` and `@type/tech-check`.
 - Risk: a variation point without scenarios lets a change in the error mapping or the shutdown reach production unnoticed; a resource feature that repeats the error mapping grows the suite with every resource and tests nothing new.
 - Fix: a resource feature checks only its own decoding and encoding; `make test` passes.
 
 ## SHOULD
 
 ### Serve a new command in its resource's file
-Serve a further command of an existing resource by adding its field, its route line, and its request and response types with `decode` and `encode` to the resource's file in `endpoint/`, its path to `openapi.json`, its scenario to the resource's feature, and its handler to the resource's `{Resource}Handler` in `main.go`; a new resource adds its file and feature, one field of `Endpoints`, and one line of `Routes`.
+Serve a further command of an existing resource by adding its field, its line of `New{Resource}Handler`, its route line, and its request and response types with `decode` and `encode` to the resource's file in `endpoint/`, its path to `openapi.json`, and its scenario to the resource's feature; the command itself joins the command registry; `main.go` does not change. A new resource adds its file and feature, one field of `Endpoints`, and one line each of `NewEndpoints` and `Routes`.
 
 # Check list
 - [ ] `internal/api/http/pipeline/{config,server,endpoint,logging,docs}.go` and `internal/api/core/rpcstatus/rpcstatus.go` are filled copies of the templates; no placeholder is left.
-- [ ] `internal/api/http/pipeline/` holds only filled template files and their copied scenarios; each resource has its own file in `endpoint/` with its `{Resource}Handler`, its `Routes()`, and per route its request and response types with `decode` and `encode`; `routes.go` holds only `Endpoints`, `Routes`, and `Run`.
+- [ ] `internal/api/http/pipeline/` holds only filled template files and their copied scenarios; each resource has its own file in `endpoint/` with its `{Resource}Handler`, its `Routes()`, and per route its request and response types with `decode` and `encode`; `routes.go` holds only `Endpoints`, `NewEndpoints`, `Routes`, `Middleware`, and `Entry`.
 - [ ] `docs/integration/api/{contract-name}/` holds `embed.go` and one spec: the hand-written `openapi.json`, or, for a proto contract, the generated `{file}.swagger.json`; the contract scenario passes.
 - [ ] For a proto contract: every rpc has `google.api.http` and `openapiv2_operation`; the routes use the generated messages through `proto.go` and the spec's path-parameter names; every path variable is a whole segment; a deprecated rpc answers 501 / `UNIMPLEMENTED` in both forms.
-- [ ] The `// [entries]` list of `main.go` has an `http` entry calling `httpapi.Run` with `httpapi.Endpoints`; `internal/api/startup/` is deleted.
+- [ ] The `// [entries]` list of `main.go` has `httpapi.Entry(handlers, logger, []httpapi.Middleware{...})`; `internal/api/startup/` is deleted.
 - [ ] `github.com/swaggest/swgui` is pinned at `v1.8.9`.
 - [ ] `make test` passes with the fixed code's features and one feature per resource.
 - [ ] `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow) and [attach-proto.allow](./attach-proto.allow).

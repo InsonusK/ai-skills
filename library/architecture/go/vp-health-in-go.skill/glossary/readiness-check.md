@@ -9,7 +9,7 @@ The management entry point knows no dependency: which ones a service has depends
 ## How it works
 
 1. A service variation point builds its infrastructure in `// [services]` of `main.go` (a database pool, an HTTP client).
-2. In `// [entries]`, the composition root passes one `management.Check` per dependency to `management.Run`.
+2. In `// [entries]`, the composition root passes one `management.Check` per dependency to `management.Entry`.
 3. On `GET /health/ready`, the server calls every `Check` with the request's context; each failure is logged with its name.
 
 ```go
@@ -17,11 +17,9 @@ The management entry point knows no dependency: which ones a service has depends
 database, err := postgres.Open(ctx, postgres.LoadConfig())   // brought by the DB variation point
 
 // [entries]
-entry.Entry{Name: "management", Run: func(ctx context.Context) error {
-	return management.Run(ctx, logger,
-		management.Check{Name: "database", Check: database.Ping},
-	)
-}},
+management.Entry(logger,
+	management.Check{Name: "database", Check: database.Ping},
+),
 ```
 
 | Part | Role |

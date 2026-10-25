@@ -38,7 +38,7 @@ flowchart LR
 | | Struct handler | HandlerFunc |
 |---|---|---|
 | Use when | the handler has dependencies or state | the handler is a closure built in place |
-| Example | `PlanItemsHandler{planner}` | the handler `WithLogging` returns; a test stub |
+| Example | `PlanItemsHandler{planner}` | the handler `Decorate` returns; a test stub |
 | Satisfies `Handler` by | its own `Handle` method | the `Handle` method declared on `HandlerFunc` |
 
 ## Example

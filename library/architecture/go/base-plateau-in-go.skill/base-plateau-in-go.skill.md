@@ -1,8 +1,8 @@
 ---
 name: base-plateau-in-go
-description: The base plateau in Go — the package layout of its four layers, the generic Handler contract with its decorators, the error kinds, the startup entry, the runner of the entry points with the exit codes, the composition root with its three marked sections, and the scenarios that cover each layer
+description: The base plateau in Go — the package layout of its four layers, the generic Handler contract, the Decorator list and the typed adapter Decorate, the command registry command.Handlers, the error kinds, the startup entry, the runner of the entry points with the exit codes, the composition root with its three marked sections, and the scenarios that cover each layer
 whenToUse: when you create a new Go service or Go CLI application from the architecture catalog, or when you attach a variation point to, or review, a Go application built on the base plateau
-updated: 20261021
+updated: 20261025
 tags:
   - stack/go
   - concern/architecture
@@ -12,11 +12,11 @@ tags:
 
 # Goal
 - **The base plateau in Go** - A Go module that keeps every property of [base-plateau](library/architecture/spec/base-plateau.skill/base-plateau.skill.md); this skill details that skill's implementation for Go and restates none of its rules.
-- **Same shape in every Go application** - The [handler contract](./glossary/handler-contract.md), the [startup entry](./glossary/startup-entry.md), and the [composition-root](./glossary/composition-root.md) sections are identical across Go applications, so a variation point's instructions name the same file and the same section everywhere.
+- **Same shape in every Go application** - The [handler contract](./glossary/handler-contract.md), the [command registry](./glossary/command-registry.md), the [startup entry](./glossary/startup-entry.md), and the [composition-root](./glossary/composition-root.md) sections are identical across Go applications, so a variation point's instructions name the same file and the same section everywhere — how a variation point uses them is [base-plateau-extension-in-go](library/architecture/go/base-plateau-extension-in-go.skill/base-plateau-extension-in-go.skill.md).
 
 # Core Principle
 - **Layers per app-layers-in-go** - Packages, interfaces, entities, and fakes follow [app-layers-in-go](library/develop/go/app-layers-in-go.skill.md); this skill adds only what the base plateau itself contains.
-- **Delivered, not retyped** - The fixed code (handler contract, startup entry) is copied from templates; only the domain, the commands, and the composition-root lines are written per application.
+- **Delivered, not retyped** - The fixed code (handler contract, decorators, startup entry, runner) is copied from templates; only the domain, the commands, the command registry, and the composition-root lines are written per application.
 
 # Rule
 
@@ -29,8 +29,9 @@ Create the packages [app-layers-in-go](library/develop/go/app-layers-in-go.skill
 |---|---|
 | startup entry | `internal/api/startup` |
 | [runner of the entry points](./glossary/entry-runner.md): `Entry`, `RunAll`, `ExitCode` | `internal/api/core/entry` |
-| commands — one file each, nothing else | `internal/command` |
-| [pipeline](./glossary/pipeline.md): handler contract, `HandlerFunc`, decorators, the error kinds re-exported | `internal/command/pipeline` |
+| commands — one file each | `internal/command` |
+| [command registry](./glossary/command-registry.md): `Handlers`, `NewHandlers` | `internal/command/handlers.go` |
+| [pipeline](./glossary/pipeline.md): handler contract, `HandlerFunc`, `Decorator` with `Decorate`, `WithLogging`, the error kinds re-exported | `internal/command/pipeline` |
 | command factories, when an input needs one | `internal/command/factory` |
 | entities, the error kinds (`kinds.go`) and the rule errors | `internal/domain/entity` |
 | domain services | `internal/domain/service` |
@@ -43,15 +44,9 @@ Create the packages [app-layers-in-go](library/develop/go/app-layers-in-go.skill
 - Fix: move the code to the package in the table.
 
 ### Copy the handler contract, the startup entry, and the runner
-Fill and copy [handler.go](./templates/internal/command/pipeline/handler.go) and [logging.go](./templates/internal/command/pipeline/logging.go) to `internal/command/pipeline/`, [startup.go](./templates/internal/api/startup/startup.go) to `internal/api/startup/startup.go`, [entry.go](./templates/internal/api/core/entry/entry.go) to `internal/api/core/entry/entry.go`, and [logging.go](./templates/internal/logging/logging.go) to `internal/logging/logging.go`, replacing `{module-path}` with the module path from `go.mod`.
+Fill and copy [handler.go](./templates/internal/command/pipeline/handler.go), [decorator.go](./templates/internal/command/pipeline/decorator.go), and [logging.go](./templates/internal/command/pipeline/logging.go) to `internal/command/pipeline/`, [startup.go](./templates/internal/api/startup/startup.go) to `internal/api/startup/startup.go`, [entry.go](./templates/internal/api/core/entry/entry.go) to `internal/api/core/entry/entry.go`, and [logging.go](./templates/internal/logging/logging.go) to `internal/logging/logging.go`, replacing `{module-path}` with the module path from `go.mod`.
 - Risk: a retyped contract drifts from the one every variation point's decorator and entry point is written against.
 - Fix: copy the templates; after filling, searching the copied files for `{module-path}` returns nothing.
-
-### One file per decorator
-Put each decorator in its own file of `internal/command/pipeline` — `logging.go` for `WithLogging`, `{step}.go` for `With{Step}` — and never add one to `handler.go` or to another decorator's file.
-- Violation: `WithUnitOfWork` appended to `logging.go` or to `handler.go`.
-- Risk: a variation point that brings a decorator edits a base file, and two such variation points edit the same one.
-- Fix: the variation point adds `internal/command/pipeline/{step}.go` and wraps the handlers in the `// [handlers]` section.
 
 ### Errors carry a kind of error-kinds
 Copy `kinds.go` and `pipeline/errors.go` from the templates of [error-kinds-in-go](library/develop/go/error-kinds-in-go.skill/error-kinds-in-go.skill.md), and declare every business-rule error in `internal/domain/entity/errors.go` as `fmt.Errorf("%w: {what broke}", Err{Kind})`, the kind chosen by [error-kinds](library/develop/core/error-kinds.skill/error-kinds.skill.md)'s table — see the [error kind](./glossary/error-kind.md).
@@ -59,14 +54,22 @@ Copy `kinds.go` and `pipeline/errors.go` from the templates of [error-kinds-in-g
 - Fix: the example's `ErrAlreadyDone` wraps `ErrFailedPrecondition` (the input is valid, the item's state forbids it); the others wrap `ErrInvalid`.
 
 ### One file per command
-Write a command, its result types, and its handler in `internal/command/{command_name}.go`: the command and result as structs (results with `json` tags), the handler as a struct with a `New{Command}Handler` constructor and a `Handle(ctx context.Context, cmd {Command}) ({Command}Result, error)` method.
+Write a command, its result types, and its handler in `internal/command/{command_name}.go`: the command and result as structs (results with `json` tags), the handler as a struct with a `New{Command}Handler` constructor and a `Handle(ctx context.Context, cmd {Command}) ({Command}Result, error)` method; register it with a field and a line of the [command registry](./glossary/command-registry.md).
 - Risk: a handler whose method differs from `Handler[TCommand, TResult]` cannot be wrapped or served without an adapter written for it alone.
 - Fix: match the method to the contract; take every service the handler uses as a constructor parameter typed by an interface declared in `internal/command`.
 
 ### Compose in the three marked sections
 Build every concrete type in `run` of `cmd/{app}/main.go` under the comments `// [services]`, `// [handlers]`, and `// [entries]`, in this order, with `main` only creating a context cancelled on `SIGINT`/`SIGTERM` (`signal.NotifyContext`) and exiting with `run(ctx, os.Stdout, os.Stderr)`.
 - Risk: a variation point whose instruction says "add after `// [handlers]`" finds no such line and guesses where its code goes.
-- Fix: keep the three comments even when a section is empty; type each handler variable as `pipeline.Handler[TCommand, TResult]` so a [decorator](./glossary/handler-decorator.md) can rewrap it.
+- Fix: keep the three comments even when a section is empty; `// [handlers]` is one `command.NewHandlers` call with the list of [decorators](./glossary/handler-decorator.md), `pipeline.WithLogging(logger)` first.
+
+```go
+// [handlers] - the handler of every command, built by the command registry
+// and wrapped by these decorators, the first the outermost.
+handlers := command.NewHandlers([]pipeline.Decorator{
+	pipeline.WithLogging(logger),
+})
+```
 
 ### Build the logger from logging.NewHandler
 Build the one `*slog.Logger` in `run` as `slog.New(logging.NewHandler(stderr, cfg.LogLevel))`, pass it to every decorator and entry point, and log the data of a call only as `logging.Payload(v)` with `logging.Failed(err != nil)` on the record that ends it.
@@ -81,7 +84,7 @@ End `run` with one `entry.RunAll` call listing an `entry.Entry{Name, Run}` per e
 // [entries] - every entry point, one Entry each, run together by entry.RunAll.
 err = entry.RunAll(ctx, logger,
 	entry.Entry{Name: "startup", Run: func(ctx context.Context) error {
-		return startup.Run(ctx, planItems, command.PlanItemsCommand{Titles: startup.EnvList("STARTUP_TITLES")}, stdout)
+		return startup.Run(ctx, handlers.PlanItems, command.PlanItemsCommand{Titles: startup.EnvList("STARTUP_TITLES")}, stdout)
 	}},
 )
 return entry.ExitCode(err)
@@ -89,7 +92,7 @@ return entry.ExitCode(err)
 
 - Violation: an entry point's `Run` called outside `entry.RunAll`; an exit code computed in `main.go`.
 - Risk: the next variation point's entry point is never started, or the process keeps running with one entry point dead.
-- Fix: a variation point adds its `entry.Entry` to the list (health) or replaces the startup `Entry` with its own (an API); `RunAll` and `ExitCode` stay as they are. `RunAll` logs the error of an entry, unless the entry sets `ReportsErrors: true` because it shows the error itself (the CLI).
+- Fix: a variation point adds its `Entry` to the list (health) or replaces the startup `Entry` with its own (an API), built by its entry factory (`httpapi.Entry(handlers, logger, middlewares)`); `RunAll` and `ExitCode` stay as they are. `RunAll` logs the error of an entry, unless the entry sets `ReportsErrors: true` because it shows the error itself (the CLI).
 
 ### Cover each layer with scenarios
 Cover `internal/domain/entity`, `internal/domain/service`, `internal/command`, `internal/command/pipeline`, `internal/api/startup`, `internal/api/core/entry`, `internal/logging`, and `internal/config` with Cucumber scenarios per [cucumber-testing-in-go](library/testing/go/cucumber-testing-in-go.skill.md), tagged `@type/domain`, `@type/service` (commands), `@type/tech-check` (decorators, settings, the runner), and `@type/api/cli` (startup entry), run by `go test ./...`.
@@ -113,15 +116,14 @@ Read the base settings from environment variables in `config.Load() (Config, err
 
 # Check list
 - [ ] Packages follow [Base packages](#base-packages) and [app-layers-in-go](library/develop/go/app-layers-in-go.skill.md).
-- [ ] `internal/command/pipeline/{handler,logging}.go`, `internal/api/startup/startup.go`, `internal/api/core/entry/entry.go`, and `internal/logging/logging.go` are filled copies of the templates; none contains `{module-path}`.
+- [ ] `internal/command/pipeline/{handler,decorator,logging}.go`, `internal/api/startup/startup.go`, `internal/api/core/entry/entry.go`, and `internal/logging/logging.go` are filled copies of the templates; none contains `{module-path}`.
 - [ ] Every business-rule error wraps one kind of `kinds.go`; code outside the domain checks kinds only through `pipeline`.
-- [ ] Every command lives in its own file in `internal/command` with a handler matching `Handler[TCommand, TResult]`.
-- [ ] Each decorator is in its own file of `internal/command/pipeline`.
-- [ ] `run` in `cmd/{app}/main.go` has the `// [services]`, `// [handlers]`, `// [entries]` sections in this order; `[entries]` is one `entry.RunAll` call returning `entry.ExitCode(err)`.
+- [ ] Every command lives in its own file in `internal/command` with a handler matching `Handler[TCommand, TResult]`, and has a field and a line in `internal/command/handlers.go`.
+- [ ] `run` in `cmd/{app}/main.go` has the `// [services]`, `// [handlers]`, `// [entries]` sections in this order; `[handlers]` is one `command.NewHandlers` call; `[entries]` is one `entry.RunAll` call returning `entry.ExitCode(err)`.
 - [ ] The example holds no testing tooling; its `Makefile` runs `go test ./...`.
 - [ ] Type parameters are named by role, and every exported generic type or function has a comment explaining them.
 - [ ] `make test` passes, with scenarios in every package listed in [Cover each layer with scenarios](#cover-each-layer-with-scenarios).
 
 # Example
 - [examples/](./examples/README.md) — the base plateau as a runnable to-do planner: `make run`, `make test`.
-- [glossary/](./glossary/README.md) — how the handler contract, `HandlerFunc`, decorators, the error kind, the composition root, and the startup entry work.
+- [glossary/](./glossary/README.md) — how the handler contract, `HandlerFunc`, decorators, the command registry, the error kind, the composition root, and the startup entry work.

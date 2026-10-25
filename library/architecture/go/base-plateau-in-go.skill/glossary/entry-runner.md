@@ -4,18 +4,18 @@ The **entry runner** (`internal/api/core/entry`) starts every entry point of the
 
 ## Why it exists
 
-`httpapi.Run(ctx, ...)` blocks until the process is told to stop. Written one after another, the second entry point would never start:
+An HTTP server's `Run` blocks until the process is told to stop. Written one after another, the second entry point would never start:
 
 ```go
-httpapi.Run(ctx, endpoints, logger)   // blocks here until SIGTERM
-management.Run(ctx, logger)        // never reached
+httppipeline.Run(ctx, routes, logger, nil)   // blocks here until SIGTERM
+management.Run(ctx, logger)                  // never reached
 ```
 
 Starting both needs goroutines, and stopping the others when one fails. Written by each variation point, every pair of variation points (HTTP + health, gRPC + health, HTTP + gRPC) would become its own piece of code. Written once in the base, each variation point only adds an item to a list.
 
 ## How it works
 
-1. `[entries]` passes `RunAll` one `Entry{Name, Run}` per entry point.
+1. `[entries]` passes `RunAll` one `Entry{Name, Run}` per entry point — written in place (the startup entry) or built by the entry point's factory (`httpapi.Entry`, `management.Entry`).
 2. `RunAll` starts every `Run` at once, each with the same context.
 3. When the **first** one returns — a one-shot command done, a server that failed, or every server after SIGTERM — `RunAll` cancels the context, so the others stop gracefully, and waits for them.
 4. It returns the first error any entry returned, or `nil`.
@@ -60,12 +60,8 @@ sequenceDiagram
 ```go
 // [entries] - a service with HTTP and health: each variation point brought one Entry.
 err = entry.RunAll(ctx, logger,
-	entry.Entry{Name: "http", Run: func(ctx context.Context) error {
-		return httpapi.Run(ctx, endpoints, logger)
-	}},
-	entry.Entry{Name: "management", Run: func(ctx context.Context) error {
-		return management.Run(ctx, logger)
-	}},
+	httpapi.Entry(handlers, logger, []httpapi.Middleware{}),
+	management.Entry(logger),
 )
 return entry.ExitCode(err)
 ```
