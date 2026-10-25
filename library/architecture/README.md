@@ -11,28 +11,12 @@ The layers and who may call whom are defined once in `library/develop/core/app-l
 (Go: `library/develop/go/app-layers-in-go`, dotnet: `library/develop/dotnet/app-layers-in-dotnet`, Python: `library/develop/python/app-layers-in-python`). The base plateau fills api, command and domain;
 variation points add entries above and services below.
 
-```
-          ┌──────────── API variation points (entries) ─────────────┐
-          │ Startup* │ CLI │ HTTP │ gRPC │ Kafka/RabbitMQ listener    │
-          │ Health (management port 8081, no command)               │
-          └────┬─────────────────────────────────────────────────────┘
-               │ plain parameters → command
-               ▼
-┌──────────────────────── Base plateau ─────────────────────────────┐
-│ command (handlers, optional factory) ──► domain: entities,        │
-│      │                                     domain services        │
-│      │ through interfaces                       │                 │
-└──────┼──────────────────────────────────────────┼─────────────────┘
-       ▼                                          ▼
-          ┌──────────── Service variation points ───────────────────┐
-          │ service (business language) ──► infrastructure (technique)│
-          │ DB │ HTTP/gRPC client │ Kafka/RabbitMQ producer │ TaskBox │
-          └─────────────────────────────────────────────────────────┘
-  * Startup is part of the base plateau only: an API variation point replaces it.
-```
+@import "./diagrams/model.mmd" {as="mermaid"}
+
+\* Startup is part of the base plateau only: an API variation point replaces it.
 
 Every entry point is one `Entry` in the `[entries]` list of the composition root, run together
-by the base plateau's runner (Go: `entry.RunAll`, dotnet: `EntryRunner.RunAllAsync`): an API variation point replaces the startup
+by the base plateau's runner (Go: `entry.RunAll`, dotnet: `EntryRunner.RunAllAsync`, Python: `run_all`): an API variation point replaces the startup
 entry with its own, the health variation point adds one, so variation points combine by
 listing, with no code written for a combination.
 
