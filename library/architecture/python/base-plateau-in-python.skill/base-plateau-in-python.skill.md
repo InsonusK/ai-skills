@@ -53,7 +53,7 @@ Create the packages [app-layers-in-python](library/develop/python/app-layers-in-
 | composition root | `main.py` |
 | base settings (`LOG_LEVEL` only) | `config` |
 | [logging](./glossary/logging.md): `attrs`, `JsonFormatter`, `new_logger`, the request id | `log` |
-| version of the build | `importlib.metadata.version` in `main.py`, no module of its own, per `project-version-in-python` |
+| version of the build | `importlib.metadata.version` in `main.py`, no module of its own, per [project-version-in-python](library/develop/python/project-version-in-python.skill.md) |
 
 - Risk: a part in a package of its own choosing breaks every variation point's instruction that names the module to edit.
 - Fix: move the code to the package in the table.

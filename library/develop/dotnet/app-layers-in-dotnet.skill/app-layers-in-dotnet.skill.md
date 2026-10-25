@@ -60,7 +60,7 @@ Give each project only these references, so a call against [app-layers](library/
 |---|---|
 | `Shared` | nothing — no project, no package |
 | `{Module}.Domain` | `Shared` |
-| `{Module}.Commands` | the package `MediatR.Contracts` only |
+| `{Module}.Commands` | the package `MediatR.Contracts`; `Shared` for the log marks (`[LogMask]`, `[LogOmit]`) of a command's fields |
 | `{Module}.Application` | `{Module}.Commands`, `{Module}.Domain`, `MediatR`; the `{Other}.Commands` of a module it calls; the `{Infra}.Abstractions` its services use |
 | `{Infra}.Abstractions` | `Shared` at most — no package of the technique |
 | `{Infra}` | `{Infra}.Abstractions`, the packages of the technique (Npgsql, EF Core, a client SDK) |

@@ -11,14 +11,16 @@ clients (later) ─┘                     │
                                        ▼
                  JsonLogProvider (base): {"time":…,"level":"INFO","msg":"command called","command":"PlanItems"}
                                          payload dropped
-                 logging VP provider:   the same line + payload masked + request_id
+                 MaskedLogProvider (logging VP): the same line + payload masked + request_id
+                 both write the line through JsonLogLine, so the fields are the same
 ```
 
 | Piece | Role |
 |---|---|
 | `logger.Write(level, message, attrs...)` | one record: the message is fixed text, every value an attribute |
 | `LogAttr.Of`, `LogAttr.Payload`, `LogAttr.Failed` | an attribute; the data of a call; whether the call failed |
-| `JsonLogProvider` | the base provider: one JSON line, the fields of every stack, no payload |
+| `JsonLogLine` | one record as one JSON line: `time`, `level`, `msg`, the attributes given, the error; every provider writes through it |
+| `JsonLogProvider` | the base provider: every attribute but the payload, through `JsonLogLine` |
 | `RequestId.Begin(id)` | the id of the call being served, carried along its async calls |
 
 Each layer writes a pair of records, so the log reads top-down as the call ran: `command called` → `command handled` (with the result) or `command failed` (warning, with the command again).

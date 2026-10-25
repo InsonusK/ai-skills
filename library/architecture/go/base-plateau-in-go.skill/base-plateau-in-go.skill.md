@@ -37,7 +37,7 @@ Create the packages [app-layers-in-go](library/develop/go/app-layers-in-go.skill
 | composition root | `cmd/{app}/main.go` |
 | base settings (`LOG_LEVEL` only) | `internal/config` |
 | [logging](./glossary/logging.md): `NewHandler`, `Payload`, `Failed`, request id | `internal/logging` |
-| version of the build | `internal/version` — `var Version`, per `devops-project-version-in-go` |
+| version of the build | `internal/version` — `var Version`, per `project-version-in-go` |
 
 - Risk: a part in a package of its own choosing breaks every variation point's instruction that names the file to edit.
 - Fix: move the code to the package in the table.
