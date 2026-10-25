@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The logging variation point: the provider that writes the payload
+       masked, cut, and with the request id. Copied from the templates of
+       vp-logging-in-dotnet, never edited by an application. -->
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.csproj" />
+    <ProjectReference Include="..\BuildingBlocks\BuildingBlocks.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- Proto messages are walked by their descriptors (debug_redact, Any). -->
+    <PackageReference Include="Google.Protobuf" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
+</Project>
