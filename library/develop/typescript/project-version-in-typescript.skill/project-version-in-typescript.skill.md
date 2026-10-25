@@ -2,7 +2,7 @@
 name: project-version-in-typescript
 description: The version of a TypeScript or Angular repository — the version field of the root package.json, one version for the whole workspace, workspace packages carrying 0.0.0 and stamped with the root version at build time
 whenToUse: when you add or review the version of a package.json in a TypeScript, Angular, or Nx repository, or when a package built from a workspace project must carry the repository's version
-updated: 20261024
+updated: 20261025
 tags:
   - stack/typescript
   - concern/coding
@@ -25,13 +25,27 @@ adr:
 Keep the version in the `version` field of the `package.json` at the repository root, also when that file is `"private": true`.
 - Violation: a root `package.json` without `version`; the number kept in `projects/{library}/package.json` or a `VERSION` file.
 - Risk: the tools that read the version find none, or read one the published package does not carry.
-- Fix: add `"version": "1.4.0"` to the root `package.json`.
+- Fix: add the field to the root `package.json`.
+
+```json
+{
+  "name": "todo-workspace",
+  "private": true,
+  "version": "1.4.0"
+}
+```
 
 ### Keep 0.0.0 in workspace packages
 Keep `"version": "0.0.0"` in the `package.json` of every workspace project, and give the built package the root version at build time.
 - Violation: `projects/{library}/package.json` raised by hand next to the root one.
 - Risk: the two numbers part on the first forgotten bump, and the published package carries a version that was never checked.
-- Fix: the build stamps its output folder (`npm pkg set version=…`) with the root version.
+- Fix: the build stamps its output folder with the root version.
+
+```bash
+# projects/todo-lib/package.json keeps "version": "0.0.0"
+ng build todo-lib
+(cd dist/todo-lib && npm pkg set version="$(make -s version)")   # dist/todo-lib/package.json: "version": "1.4.0"
+```
 
 # Check list
 - [ ] The root `package.json` has a `version` field.

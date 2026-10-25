@@ -1,3 +1,5 @@
+// Source: skill project-version-in-dotnet
+
 using System.Reflection;
 
 namespace App.Host.Version;

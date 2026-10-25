@@ -2,7 +2,7 @@
 name: project-version
 description: Where an application keeps its one version and how its code reports it — MAJOR.MINOR.PATCH recorded once, in the place its stack's build reads, read by the running code from that same place, overridden only by a snapshot build and never by editing the source; the place and the reader of each stack are in its -in-{stack} extension
 whenToUse: when you create a project, when code must report the application's version (a startup log, a version endpoint, a CLI --version), when you add or review a version number anywhere in the source tree, or when a build must give an artifact another version than the recorded one
-updated: 20261024
+updated: 20261025
 tags:
   - stack
   - concern/coding
@@ -19,6 +19,15 @@ tags:
 - **Stack extensions** - The place, the reader, and the override of each stack are in `project-version-in-go`, `project-version-in-dotnet`, `project-version-in-python`, `project-version-in-typescript` (also for Angular). `devops-project-version` and its extensions build on them: they read the place this skill names for `make version` and CI.
 
 # Rule
+
+The place, the reader, and the override of each stack, detailed in its extension:
+
+| Stack | Recorded once in | The program reads it with | A snapshot build overrides it with |
+|---|---|---|---|
+| Go | `internal/version/version.go`: `var Version = "1.4.0"` | `version.Version` | `go build -ldflags "-X {module-path}/internal/version.Version=1.4.0-20261025"` |
+| .NET | `Directory.Build.props`: `<Version>1.4.0</Version>` | `AppVersion.Value` (assembly informational version) | `dotnet publish -p:Version=1.4.0-20261025` |
+| Python | `pyproject.toml`: `version = "1.4.0"` | `importlib.metadata.version("{package-name}")` | the line rewritten to `1.4.0.dev20261025` in the build's checkout |
+| TypeScript | root `package.json`: `"version": "1.4.0"` | — | `npm pkg set version=…` in a built package's folder |
 
 ## MUST
 

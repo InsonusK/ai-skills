@@ -2,7 +2,7 @@
 name: devops-project-version-in-typescript
 description: TypeScript implementation of devops-project-version, also used by Angular workspaces — the read-version.sh that prints the version field of the root package.json, where project-version-in-typescript records the version, and the stamping of built workspace packages with it
 whenToUse: when a TypeScript or Angular project needs `make version`/`make version-check`, or when you add or review the `version` of its root `package.json` or `tools/version/read-version.sh`
-updated: 20261024
+updated: 20261025
 tags:
   - stack/typescript
   - concern/ci
@@ -26,6 +26,12 @@ tags:
 Copy [[./assets/tools/version/read-version.sh|read-version.sh]] verbatim to `tools/version/read-version.sh`; do not modify it.
 - Risk: a `grep` for `"version"` also matches a dependency entry.
 - Fix: restore the file from the asset; it parses the file with Node.
+
+```
+"version": "1.4.0"          ← the root `package.json`, recorded per project-version-in-typescript
+$ sh tools/version/read-version.sh
+1.4.0
+```
 
 ### Stamp workspace packages at build time
 Set the version of a package built from a workspace project from `make -s version` in its build output, never in the project's own `package.json`.

@@ -2,7 +2,7 @@
 name: devops-project-version-in-python
 description: Python implementation of devops-project-version — the read-version.sh that prints project.version of the root pyproject.toml, where project-version-in-python records the version
 whenToUse: when a Python project needs `make version`/`make version-check`, when you add or review the `version` of its `pyproject.toml` or `tools/version/read-version.sh`, or when Python code must report its own version
-updated: 20261024
+updated: 20261025
 tags:
   - stack/python
   - concern/ci
@@ -25,6 +25,12 @@ tags:
 Copy [[./assets/tools/version/read-version.sh|read-version.sh]] verbatim to `tools/version/read-version.sh`; do not modify it.
 - Risk: a `grep` for `version =` also matches a `[tool.*]` table and prints a dependency's number.
 - Fix: restore the file from the asset; it parses the file with `tomllib` and needs Python 3.11 or later.
+
+```
+version = "1.4.0"          ← pyproject.toml, recorded per project-version-in-python
+$ sh tools/version/read-version.sh
+1.4.0
+```
 
 # Check list
 - [ ] `tools/version/read-version.sh` is byte-identical to this skill's asset.

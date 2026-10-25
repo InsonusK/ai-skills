@@ -2,7 +2,7 @@
 name: devops-project-version-in-go
 description: Go implementation of devops-project-version — the read-version.sh that prints the string of `var Version` in internal/version/version.go, where project-version-in-go records the version
 whenToUse: when a Go project needs `make version`/`make version-check`, when you add or review its `internal/version/version.go` or `tools/version/read-version.sh`, or when a Go build must carry a version other than the recorded one
-updated: 20261024
+updated: 20261025
 tags:
   - stack/go
   - concern/ci
@@ -25,6 +25,12 @@ tags:
 Copy [[./assets/tools/version/read-version.sh|read-version.sh]] verbatim to `tools/version/read-version.sh`; do not modify it.
 - Risk: a reader pointed at another file reports a number the binary does not carry.
 - Fix: restore the file from the asset.
+
+```
+var Version = "1.4.0"          ← internal/version/version.go, recorded per project-version-in-go
+$ sh tools/version/read-version.sh
+1.4.0
+```
 
 # Check list
 - [ ] `tools/version/read-version.sh` is byte-identical to this skill's asset.

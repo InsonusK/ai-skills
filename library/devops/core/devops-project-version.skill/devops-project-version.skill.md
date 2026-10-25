@@ -2,7 +2,7 @@
 name: devops-project-version
 description: How a project records its one version and exposes it to developers and CI — `make version` prints it, `make version-check` fails unless it was raised against a base ref — through a shared tools/version/ folder whose only stack-specific file is read-version.sh
 whenToUse: when a project needs its version readable by CI or a build, when you add or review `tools/version/` or the `version`/`version-check` make targets, or when a build must put the version into an artifact
-updated: 20261024
+updated: 20261025
 tags:
   - stack
   - concern/ci
@@ -39,6 +39,18 @@ Add the line `include tools/version/version.mk` to the project's `Makefile`.
 - Risk: the targets drift from the contract CI calls.
 - Fix: one `include` line; no recipe of these two targets in the `Makefile`.
 
+```
+tools/version/
+├── version.mk          copied from this skill: the targets version and version-check
+├── version.sh          copied from this skill: prints, validates, and compares
+└── read-version.sh     copied from the stack's extension: the one reader of the place
+
+Makefile:   include tools/version/version.mk
+
+$ make -s version
+1.4.0
+```
+
 ### Take read-version.sh from the stack's extension
 Copy `read-version.sh` from the extension for the project's stack, and never write the place of the version anywhere else.
 - Violation: a workflow step or a second script reading the manifest directly.
@@ -62,6 +74,22 @@ Set `DELTA_BASE` to the tip of the branch the change is merged into, with that r
 - Violation: `DELTA_BASE=HEAD~1`, or a shallow checkout that lacks the ref.
 - Risk: against the previous commit, a second commit in the same pull request fails the check or a stale branch passes with a version already released; without the ref the check stops with "is not a commit".
 - Fix: `make version-check DELTA_BASE=origin/master` on a checkout with full history.
+
+```
+$ make -s version-check DELTA_BASE=origin/master      # the version was not raised
+version-check: 1.4.0 must be greater than 1.4.0 at origin/master      (exit 2)
+$ make -s version-check DELTA_BASE=origin/master      # raised to 1.5.0
+version-check: 1.5.0 is greater than 1.4.0 at origin/master           (exit 0)
+$ make -s version                                     # recorded as v1.5
+version: 'v1.5' is not MAJOR.MINOR.PATCH                              (exit 2)
+```
+
+```yaml
+# a pull-request job
+- uses: actions/checkout@v4
+  with: { fetch-depth: 0 }
+- run: make version-check DELTA_BASE=origin/${{ github.base_ref }}
+```
 
 # Check list
 - [ ] `tools/version/version.mk` and `tools/version/version.sh` are byte-identical to this skill's assets.
