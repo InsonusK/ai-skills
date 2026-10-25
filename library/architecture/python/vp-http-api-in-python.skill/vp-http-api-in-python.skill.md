@@ -30,9 +30,12 @@ src/{package}/api/
     │   ├── config.py        HTTP_LISTEN_PORT, HTTP_BASE_PATH, HTTP_API_DOCS_ENABLED
     │   ├── server.py        Server: the app, uvicorn on its own socket, graceful stop; run();
     │   │                    Middleware, ContractMiddlewares: the middlewares around the contract's routes
-    │   ├── errors.py        exception handlers + AnswerFailures: every error as google.rpc.Status
-    │   ├── logging.py       RequestLog: two records per request, X-Request-Id
+    │   ├── errors.py        exception handlers: KindError, binding, the framework's 404/405
     │   └── docs.py          /openapi.json, Swagger UI at /swagger/
+    ├── middleware/          one package per middleware
+    │   ├── request_log/     copied, fixed, outermost: RequestLogMiddleware, X-Request-Id
+    │   ├── answer_failures/ copied, fixed: AnswerFailuresMiddleware, status_response
+    │   └── {name}/          an application's {Name}Middleware, given in entry()'s list
     ├── endpoint/            one module per resource: {Resource}Handler with router()
     └── routes.py            Endpoints with from_handlers, routes(), entry()
 docs/integration/api/{contract-name}/openapi.json   the hand-written contract
@@ -43,7 +46,7 @@ docs/integration/api/{contract-name}/openapi.json   the hand-written contract
 ## MUST
 
 ### Copy the entry point from templates
-Copy [api/http/pipeline/](./templates/src/{package}/api/http/pipeline/) and, from [error-kinds-in-python](library/develop/python/error-kinds-in-python.skill/error-kinds-in-python.skill.md), `api/core/rpcstatus/`, with the example's `features/` and `test/` of both, replacing `{package}` with the import name of the package and `{contract-name}` with the contract's folder name; add `fastapi==0.161.0`, `uvicorn==0.54.0`, and `swagger-ui-bundle==1.1.0` to the dependencies and `httpx2==2.16.0` to the dev dependencies of `pyproject.toml`.
+Copy [api/http/pipeline/](./templates/src/{package}/api/http/pipeline/) and [api/http/middleware/](./templates/src/{package}/api/http/middleware/) and, from [error-kinds-in-python](library/develop/python/error-kinds-in-python.skill/error-kinds-in-python.skill.md), `api/core/rpcstatus/`, with the example's `features/` and `test/` of both, replacing `{package}` with the import name of the package and `{contract-name}` with the contract's folder name; add `fastapi==0.161.0`, `uvicorn==0.54.0`, and `swagger-ui-bundle==1.1.0` to the dependencies and `httpx2==2.16.0` to the dev dependencies of `pyproject.toml`.
 - Risk: a retyped pipeline answers some error with FastAPI's `{"detail": ...}` body or lets uvicorn take the process's signals.
 - Fix: copy the templates; after filling, searching them for `{package}` and `{contract-name}` returns nothing; `make test` passes.
 

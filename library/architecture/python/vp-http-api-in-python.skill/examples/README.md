@@ -27,7 +27,7 @@ curl -s -X POST localhost:8080/v1/items/plan -H 'Content-Type: application/json'
 | `src/todo/api/http` | the HTTP entry point: `routes.py` (registration), `endpoint/` (one module per resource), `pipeline/` (fixed code) |
 | `src/todo/api/core/entry`, `src/todo/api/core/rpcstatus` | the runner of the entry points; the table from error kind to code and status |
 | `src/todo/command` | the commands, their results and handlers |
-| `src/todo/command/pipeline` | the handler contract, the decorators, the error kinds re-exported — fixed code |
+| `src/todo/command/pipeline` | the handler contract, the middleware, the error kinds re-exported — fixed code |
 | `src/todo/domain/entity`, `src/todo/domain/service` | entities with the error kinds and rule errors; domain services |
 | `src/todo/log` | the logger, its attributes, the request id — fixed code |
 | `src/todo/config` | the base settings (`LOG_LEVEL`) |

@@ -1,8 +1,8 @@
 ---
 name: middlewares by route match
 description: How the application's middlewares wrap the contract's routes of the Python HTTP entry point, and only them
-problem: An entry decorator - authentication, a rate limit - must wrap every request of the contract's routes, inside the request log and the error answers, and leave the docs open; FastAPI has no public hook that wraps the routes of included routers, and since 0.161 it includes a router lazily, so its routes are not in the application's route list to be wrapped one by one. Where do the middlewares go?
-decision: One ASGI layer, ContractMiddlewares, inside AnswerFailures and the request log, that matches the request against the contract routers' routes (BaseRoute.matches) and runs a matching request through the middlewares, each a Starlette BaseHTTPMiddleware dispatch function (request, call_next); any other request goes past them.
+problem: An API middleware - authentication, a rate limit - must wrap every request of the contract's routes, inside the request log and the error answers, and leave the docs open; FastAPI has no public hook that wraps the routes of included routers, and since 0.161 it includes a router lazily, so its routes are not in the application's route list to be wrapped one by one. Where do the middlewares go?
+decision: One ASGI layer, ContractMiddlewares, inside AnswerFailuresMiddleware and RequestLogMiddleware, that matches the request against the contract routers' routes (BaseRoute.matches) and runs a matching request through the middlewares, each a Starlette BaseHTTPMiddleware dispatch function (request, call_next); any other request goes past them.
 tags:
   - stack/python
   - concern/architecture
@@ -11,7 +11,7 @@ tags:
 ---
 
 # Problem
-The base-plateau-extension skill puts the entry decorators around the contract's routes only, inside the fixed request log and error answers. In Go every route is wrapped as it is registered on the `ServeMux`. In FastAPI the routes belong to `APIRouter`s that the resources build, and the application includes them; the framework offers middlewares for the whole application, dependencies for routes, and a custom route class chosen when a router is created.
+The base-plateau-extension skill puts the API middleware around the contract's routes only, inside the fixed request log and error answers. In Go every route is wrapped as it is registered on the `ServeMux`. In FastAPI the routes belong to `APIRouter`s that the resources build, and the application includes them; the framework offers middlewares for the whole application, dependencies for routes, and a custom route class chosen when a router is created.
 
 # Selected variant
 [[#One ASGI layer matching the contract's routes]]
@@ -24,11 +24,11 @@ The base-plateau-extension skill puts the entry decorators around the contract's
 **Selected.**
 
 ### Description
-`ContractMiddlewares(app, routes, middlewares)` is added with `app.add_middleware` before `AnswerFailures`, so it stands inside it. It builds the chain once — the last middleware wraps the application first — and for each HTTP request asks every contract route `route.matches(scope)`; a match (full, or the path with another method) runs the chain, anything else the application alone.
+`ContractMiddlewares(app, routes, middlewares)` is added with `app.add_middleware` before `AnswerFailuresMiddleware`, so it stands inside it. It builds the chain once — the last middleware wraps the application first — and for each HTTP request asks every contract route `route.matches(scope)`; a match (full, or the path with another method) runs the chain, anything else the application alone.
 
 ### Benefits
 - Public APIs only: `add_middleware`, `BaseRoute.matches`, `BaseHTTPMiddleware`.
-- A middleware has the familiar shape of `@app.middleware("http")`, and raising a `KindError` is answered by `AnswerFailures` as `google.rpc.Status` and logged by the request log.
+- A middleware has the familiar shape of `@app.middleware("http")`, and raising a `KindError` is answered by `AnswerFailuresMiddleware` as `google.rpc.Status` and logged by the request log.
 - A `ContextVar` set before `call_next` (the caller's identity) is seen by the route and its command.
 
 ### Costs

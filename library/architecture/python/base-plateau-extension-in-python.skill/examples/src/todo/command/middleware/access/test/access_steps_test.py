@@ -11,7 +11,7 @@ scenarios("../features/access.feature")
 
 
 # The commands of these tests: one with each mark, one with none, so the
-# decorators are tested without any command of the application.
+# middleware are tested without any command of the application.
 @dataclass(frozen=True)
 class RestrictedCommand:
     role: str

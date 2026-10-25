@@ -2,7 +2,7 @@
 
 """The one way the application writes logs.
 
-Every part that logs - the command decorator, an entry point, later a
+Every part that logs - the command logging middleware, an entry point, later a
 client - writes the same records through a logging.Logger with fixed text and
 its values as attributes: logger.info("command called",
 extra=attrs(command="PlanItems", payload=command)). Which attributes reach the

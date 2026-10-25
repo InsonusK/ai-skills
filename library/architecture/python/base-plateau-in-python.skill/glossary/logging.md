@@ -5,7 +5,7 @@ Every part writes its records through the **one logger** the composition root bu
 ## How it works
 
 ```
-with_logging    ─┐   logger.info("command called",
+LoggingMiddleware ┐   logger.info("command called",
 entry points    ─┼─►     extra=attrs(command="PlanItems", payload=command))
 clients (later) ─┘                     │
                                        ▼
@@ -33,7 +33,7 @@ Each layer writes a pair of records, so the log reads top-down as the call ran: 
 
 ## Related concepts
 
-- [Handler contract](./handler-contract.md) — `with_logging` writes the command's pair.
+- [Handler contract](./handler-contract.md) — `LoggingMiddleware` writes the command's pair.
 
 ## Sources
 
