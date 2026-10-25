@@ -7,7 +7,7 @@ An **error kind** (`ErrorKind` in `src/Shared/Errors`) tells an entry point what
 ```
 Item ctor ── throw TodoErrors.EmptyTitle() ──► ErrorKindException(Invalid, "item title is empty")
    ▲                                                   │ passes up unchanged (or as an inner exception)
-PlanItemsHandler ◄── LoggingBehavior ◄── ISender ◄── entry point
+PlanItemsHandler ◄── LoggingMiddleware ◄── ISender ◄── entry point
                                                        │
                                 ErrorKindException.KindOf(error) → Invalid → exit 2 / HTTP 400
 ```

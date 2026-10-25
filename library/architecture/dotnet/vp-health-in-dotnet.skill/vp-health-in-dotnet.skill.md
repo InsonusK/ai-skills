@@ -2,7 +2,7 @@
 name: vp-health-in-dotnet
 description: The health variation point in dotnet — Api/Management copied from templates (MANAGEMENT_LISTEN_PORT, /health/live, /health/ready, /health, readiness checks as ASP.NET IHealthCheck, graceful stop) on the shared web host, and one management entry added to the EntryRunner list in Program.cs
 whenToUse: when a dotnet application built on the base plateau runs as a long-running service, when a dotnet service variation point adds a readiness check, or when you review a dotnet service's health endpoints
-updated: 20261021
+updated: 20261025
 tags:
   - stack/dotnet
   - concern/architecture
@@ -37,27 +37,24 @@ Copy, unchanged, [ManagementConfig.cs](./templates/src/App/App.Host/Api/Manageme
 - Fix: copy the files; `bash test/check-vp-attach.sh` in this repository fails when two variation points add `WebHost.cs` differently.
 
 ### Add the management entry in Program.cs
-Add a `management` `Entry` calling `ManagementServer.RunAsync` to `// [entries]` of `Program.cs`, beside the entries already there; how the list runs is the base plateau's [entry runner](library/architecture/dotnet/base-plateau-in-dotnet.skill/glossary/entry-runner.md).
+Register the management entry with `services.AddManagement()` in `// [entries]` of `Program.cs`, beside the entries already there; how the list runs is the base plateau's [entry runner](library/architecture/dotnet/base-plateau-in-dotnet.skill/glossary/entry-runner.md).
 
 ```csharp
-// [entries] - every entry point, one Entry each, run together by EntryRunner.
-var loggers = provider.GetRequiredService<ILoggerFactory>();
-var error = await EntryRunner.RunAllAsync(logger, stopping,
-    new Entry("http", stopping => HttpApi.RunAsync(httpEndpoints, loggers, stopping)), // already there
-    new Entry("management", stopping => ManagementServer.RunAsync(loggers, stopping)));
-return EntryRunner.ExitCode(error);
+// [entries] - every entry point, registered as an Entry and run together by EntryRunner.
+services.AddHttpApi(middlewares: []); // already there
+services.AddManagement();
 ```
 
-- Violation: the health endpoints mapped on the HTTP API's application; `MapHealthChecks`; `ManagementServer.RunAsync` awaited outside `RunAllAsync`; another entry removed or changed.
+- Violation: the health endpoints mapped on the HTTP API's application; `MapHealthChecks`; `ManagementServer.RunAsync` awaited outside `RunAllAsync`; another registration removed or changed.
 - Risk: health served on the API port is published through the ingress; a server started outside the list keeps the process half-alive when another entry point fails.
-- Fix: one entry, nothing else in `Program.cs` but `using App.Host.Api.Management;`.
+- Fix: one registration, nothing else in `Program.cs` but `using App.Host.Api.Management;`.
 
 ### Add a readiness check as one argument
-Pass a dependency's [readiness check](./glossary/readiness-check.md) as a `new ReadinessCheck(name, healthCheck)` argument of `ManagementServer.RunAsync`, its `IHealthCheck` built in `// [services]` by the service variation point that brings the dependency.
+Pass a dependency's [readiness check](./glossary/readiness-check.md) as a `new ReadinessCheck(name, healthCheck)` argument of `AddManagement`, its `IHealthCheck` built in `// [services]` by the service variation point that brings the dependency.
 
 ```csharp
-ManagementServer.RunAsync(loggers, stopping,
-    new ReadinessCheck("database", new NpgSqlHealthCheck(new NpgSqlHealthCheckOptions(connectionString))))
+services.AddManagement(
+    new ReadinessCheck("database", new NpgSqlHealthCheck(new NpgSqlHealthCheckOptions(connectionString))));
 ```
 
 - Violation: a check written inside `Api/Management`; a check that sends a command; `services.AddHealthChecks()` in the root container.
@@ -76,8 +73,8 @@ Copy the example's `src/App/App.Host.Tests/features/Management/` and `Steps/Mana
 
 # Check list
 - [ ] `Api/Management/{ManagementConfig,ManagementServer}.cs` and `Api/Core/Hosting/WebHost.cs` are copies of the templates; `App.Host.csproj` references `Microsoft.AspNetCore.App`.
-- [ ] `// [entries]` has a `management` entry calling `ManagementServer.RunAsync`; every other entry is unchanged.
-- [ ] Every readiness check is a `ReadinessCheck` argument of `ManagementServer.RunAsync`.
+- [ ] `// [entries]` has `services.AddManagement(...)`; every other registration is unchanged.
+- [ ] Every readiness check is a `ReadinessCheck` argument of `AddManagement`.
 - [ ] The deployment's probes name port 8081.
 - [ ] `make test` passes; `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).
 

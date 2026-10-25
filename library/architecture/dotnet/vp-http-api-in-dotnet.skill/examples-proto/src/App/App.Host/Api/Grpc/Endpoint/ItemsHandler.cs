@@ -14,7 +14,7 @@ namespace App.Host.Api.Grpc.Endpoint;
 /// <summary>
 /// The ItemsService of the contract. It sends its commands through
 /// <see cref="ISender"/>, so every pipeline behavior runs; an exception it
-/// lets out is answered by the pipeline's ErrorAnswers, so each method is
+/// lets out is answered by the fixed AnswerFailuresMiddleware, so each method is
 /// written for its success alone. An rpc it does not override answers
 /// UNIMPLEMENTED; the contract scenario fails then.
 /// </summary>

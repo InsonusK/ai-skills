@@ -13,8 +13,8 @@ import (
 
 	"github.com/example/todo/internal/api/core/entry"
 	grpcapi "github.com/example/todo/internal/api/grpc"
-	"github.com/example/todo/internal/api/grpc/endpoint"
 	"github.com/example/todo/internal/command"
+	commandlogging "github.com/example/todo/internal/command/middleware/logging"
 	"github.com/example/todo/internal/command/pipeline"
 	"github.com/example/todo/internal/config"
 	"github.com/example/todo/internal/logging"
@@ -43,18 +43,21 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 
 	// [services] - infrastructure and the services over it; none in the base plateau.
 
-	// [handlers] - one per command, wrapped by its decorators.
-	var planItems pipeline.Handler[command.PlanItemsCommand, command.PlanItemsResult] = command.NewPlanItemsHandler()
-	planItems = pipeline.WithLogging("PlanItems", logger, planItems)
+	// [handlers] - the handler of every command, built by the command registry
+	// and wrapped by this command middleware, the first the outermost. A
+	// variation point adds its middleware to this list at the place its skill
+	// names.
+	handlers := command.NewHandlers([]pipeline.Middleware{
+		commandlogging.Middleware(logger),
+	})
 
 	// [entries] - every entry point, one Entry each, run together by
 	// entry.RunAll until the first one ends. The gRPC variation point replaced
 	// the startup Entry with its own; the health variation point adds one.
-	endpoints := grpcapi.Endpoints{Items: endpoint.ItemsHandler{PlanItems: planItems}}
 	err = entry.RunAll(ctx, logger,
-		entry.Entry{Name: "grpc", Run: func(ctx context.Context) error {
-			return grpcapi.Run(ctx, endpoints, logger)
-		}},
+		// the gRPC API: its calls wrapped by these interceptors, the first the
+		// outermost, inside the call log
+		grpcapi.Entry(handlers, logger, []grpcapi.Interceptor{}),
 	)
 	return entry.ExitCode(err)
 }

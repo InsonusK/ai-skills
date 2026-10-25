@@ -76,7 +76,7 @@ func Run(ctx context.Context, logger *slog.Logger, name, version string, args []
 	root.SetOut(io.MultiWriter(stdout, &output))
 	root.SetErr(stderr)
 
-	ran, err := root.ExecuteContextC(ctx)
+	ran, err := execute(ctx, logger, root, args)
 	defer func() { logCall(ctx, logger, ran, start, err, output.String()) }()
 	var handled handlerError
 	switch {
@@ -90,6 +90,25 @@ func Run(ctx context.Context, logger *slog.Logger, name, version string, args []
 	}
 	fmt.Fprintln(stderr, "Error:", err)
 	return err
+}
+
+// execute runs the command line. An action that panics is recovered and
+// answered as a failure with no kind - "Error: internal error", exit code 1,
+// the panic logged - so a bug never ends the process with the runtime's own
+// exit code 2, which a script reads as a rejected command. The CLI's answer of
+// every failure is fixed here, not left to the composition root (ADR
+// fixed-middleware-inside-the-entry of skill base-plateau-extension).
+func execute(ctx context.Context, logger *slog.Logger, root *cobra.Command, args []string) (ran *cobra.Command, err error) {
+	defer func() {
+		if p := recover(); p != nil {
+			logger.ErrorContext(ctx, "cli action panicked", slog.Any("panic", p))
+			if ran, _, _ = root.Find(args); ran == nil {
+				ran = root
+			}
+			err = handlerError{errors.New("internal error")}
+		}
+	}()
+	return root.ExecuteContextC(ctx)
 }
 
 // noArgs rejects an argument where an action is expected, so `todo items

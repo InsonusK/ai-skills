@@ -4,8 +4,8 @@ The **startup entry** (`src/App/App.Host/Api/Startup`) is the base plateau's onl
 
 ## How it works
 
-1. `[entries]` builds the command from the setting the entry owns: `new PlanItemsCommand(StartupEntry.EnvList("STARTUP_TITLES"))`.
-2. `StartupEntry.RunAsync(sender, command, stdout, stopping)` sends it through `ISender`, so every [pipeline behavior](./pipeline-behavior.md) runs.
+1. `[entries]` registers it with the command to send, built from the setting the entry owns when the entry runs: `services.AddStartupEntry(() => new PlanItemsCommand(StartupEntry.EnvList("STARTUP_TITLES")), stdout)`.
+2. Its `Entry` calls `StartupEntry.RunAsync(sender, command, stdout, stopping)`, which sends the command through `ISender`, so every [command middleware](./command-middleware.md) runs.
 3. On success it writes `{"items":[...]}` (camelCase, `JsonSerializerOptions.Web`); on error nothing is written and the exception goes to the [entry runner](./entry-runner.md), which sets the exit code.
 
 | Outcome | Output | Exit code |
@@ -14,7 +14,7 @@ The **startup entry** (`src/App/App.Host/Api/Startup`) is the base plateau's onl
 | rejected (a kind other than unavailable) | nothing | `2` |
 | failed (no kind, or unavailable) | nothing | `1` |
 
-An API variation point replaces the startup `Entry` and deletes `Api/Startup`.
+An API variation point replaces `AddStartupEntry` with its own registration and deletes `Api/Startup`.
 
 ## Related concepts
 

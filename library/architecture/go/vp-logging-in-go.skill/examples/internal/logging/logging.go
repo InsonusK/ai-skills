@@ -1,7 +1,7 @@
 // Source: skill base-plateau-in-go
 
 // Package logging is the one way the application writes logs. Every part that
-// logs - the command decorator, an entry point, later a client - writes the
+// logs - the command logging middleware, an entry point, later a client - writes the
 // same records through *slog.Logger with the keys below; which of their
 // attributes reach the output is decided only by the slog.Handler the
 // composition root builds:

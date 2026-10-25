@@ -1,12 +1,12 @@
 """The items resource (/v1/items/...): its command handlers, its routes, and
 the request and response types of each route with their mappings. A new
-command on items adds a handler, a route, and its types here, and its path in
-openapi.json."""
+command on items adds a handler, its line of from_handlers, a route, and its
+types here, and its path in openapi.json."""
 
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-from todo.command import PlanItemsCommand, PlanItemsResult
+from todo.command import Handlers, PlanItemsCommand, PlanItemsResult
 from todo.command.pipeline import Handler
 
 
@@ -33,11 +33,19 @@ class PlanItemsResponse(BaseModel):
 
 
 class ItemsHandler:
-    """The items resource: the command handlers its routes call. The
-    composition root builds it; router() lists its operations."""
+    """The items resource: the command handlers its routes call.
+    from_handlers takes them from the command registry; router() lists its
+    operations."""
 
     def __init__(self, plan_items: Handler[PlanItemsCommand, PlanItemsResult]) -> None:
         self._plan_items = plan_items
+
+    @classmethod
+    def from_handlers(cls, handlers: Handlers) -> "ItemsHandler":
+        """Takes the handlers of the items commands from the command registry."""
+        return cls(
+            plan_items=handlers.plan_items,
+        )
 
     def router(self) -> APIRouter:
         router = APIRouter()

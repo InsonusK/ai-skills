@@ -8,7 +8,7 @@ A handler with dependencies — a planner, later a repository — is a struct wi
 
 But some handlers are built on the fly and have nothing to hold in a struct:
 
-- a [decorator](./handler-decorator.md) returns a new handler that calls the wrapped one — writing a named struct type for each decorator would be boilerplate;
+- `pipeline.Decorate` returns a new handler that calls the chain of [command middleware](./command-middleware.md) — writing a named struct type for it would be boilerplate;
 - a test needs a stub handler that just fails with `"boom"`.
 
 `HandlerFunc` lets such a handler be written as one anonymous function.
@@ -38,7 +38,7 @@ flowchart LR
 | | Struct handler | HandlerFunc |
 |---|---|---|
 | Use when | the handler has dependencies or state | the handler is a closure built in place |
-| Example | `PlanItemsHandler{planner}` | the handler `WithLogging` returns; a test stub |
+| Example | `PlanItemsHandler{planner}` | the handler `Decorate` returns; a test stub |
 | Satisfies `Handler` by | its own `Handle` method | the `Handle` method declared on `HandlerFunc` |
 
 ## Example
@@ -53,7 +53,7 @@ failing := pipeline.HandlerFunc[string, string](func(context.Context, string) (s
 ## Related concepts
 
 - [Handler contract](./handler-contract.md)
-- [Handler decorator](./handler-decorator.md) — the main user of `HandlerFunc`.
+- [Command middleware](./command-middleware.md) — what `Decorate` wraps a handler with, returning a `HandlerFunc`.
 
 ## Sources
 

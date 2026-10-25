@@ -8,17 +8,32 @@ import (
 	"log/slog"
 	"slices"
 
+	"github.com/example/todo/internal/api/core/entry"
 	"github.com/example/todo/internal/api/http/endpoint"
 	httppipeline "github.com/example/todo/internal/api/http/pipeline"
+	"github.com/example/todo/internal/command"
 )
 
+// Middleware is an API middleware of the requests of every contract route (see
+// httppipeline.Middleware); the composition root lists them for Entry.
+type Middleware = httppipeline.Middleware
+
 // Endpoints are the resources this API serves, one field per resource file of
-// endpoint/. The composition root fills them. A new resource adds a field here
-// and a line to Routes; a new command of an existing resource changes only
-// that resource's file.
+// endpoint/. A new resource adds a field here and a line to NewEndpoints and
+// to Routes; a new command of an existing resource changes only that
+// resource's file.
 type Endpoints struct {
 	Items endpoint.ItemsHandler // endpoint/items.go
 	Lists endpoint.ListsHandler // endpoint/lists.go
+}
+
+// NewEndpoints gives every resource the handlers of its commands from the
+// command registry.
+func NewEndpoints(handlers command.Handlers) Endpoints {
+	return Endpoints{
+		Items: endpoint.NewItemsHandler(handlers),
+		Lists: endpoint.NewListsHandler(handlers),
+	}
 }
 
 // Routes are the operations of the published contract
@@ -31,8 +46,14 @@ func Routes(e Endpoints) []httppipeline.Route {
 	)
 }
 
-// Run is the HTTP entry point's one call from the composition root: it serves
-// the routes of every resource until ctx is cancelled (see httppipeline.Run).
-func Run(ctx context.Context, e Endpoints, logger *slog.Logger) error {
-	return httppipeline.Run(ctx, Routes(e), logger)
+// Entry is the HTTP entry point as the composition root lists it for
+// entry.RunAll: the routes of every resource over the handlers of the
+// registry, each wrapped by the middlewares - the first the outermost, all
+// inside the request log - served until the process stops (see
+// httppipeline.Run).
+func Entry(handlers command.Handlers, logger *slog.Logger, middlewares []Middleware) entry.Entry {
+	routes := Routes(NewEndpoints(handlers))
+	return entry.Entry{Name: "http", Run: func(ctx context.Context) error {
+		return httppipeline.Run(ctx, routes, logger, middlewares)
+	}}
 }

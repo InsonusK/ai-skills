@@ -13,10 +13,9 @@ import (
 
 	"github.com/example/todo/internal/api/core/entry"
 	grpcapi "github.com/example/todo/internal/api/grpc"
-	grpcendpoint "github.com/example/todo/internal/api/grpc/endpoint"
 	httpapi "github.com/example/todo/internal/api/http"
-	httpendpoint "github.com/example/todo/internal/api/http/endpoint"
 	"github.com/example/todo/internal/command"
+	commandlogging "github.com/example/todo/internal/command/middleware/logging"
 	"github.com/example/todo/internal/command/pipeline"
 	"github.com/example/todo/internal/config"
 	"github.com/example/todo/internal/infrastructure/memory"
@@ -49,31 +48,20 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 	// memory in this example; the DB variation point replaces these two lines.
 	itemLists := service.NewItemLists(memory.NewLists())
 
-	// [handlers] - one per command, wrapped by its decorators.
-	var planItems pipeline.Handler[command.PlanItemsCommand, command.PlanItemsResult] = command.NewPlanItemsHandler()
-	planItems = pipeline.WithLogging("PlanItems", logger, planItems)
-	var addItem pipeline.Handler[command.AddItemCommand, command.AddItemResult] = command.NewAddItemHandler(itemLists)
-	addItem = pipeline.WithLogging("AddItem", logger, addItem)
-	var listItems pipeline.Handler[command.ListItemsCommand, command.ListItemsResult] = command.NewListItemsHandler(itemLists)
-	listItems = pipeline.WithLogging("ListItems", logger, listItems)
+	// [handlers] - the handler of every command, built by the command registry
+	// over the services and wrapped by this command middleware, the first the
+	// outermost. A variation point adds its middleware to this list at the
+	// place its skill names.
+	handlers := command.NewHandlers([]pipeline.Middleware{
+		commandlogging.Middleware(logger),
+	}, itemLists)
 
 	// [entries] - every entry point, one Entry each, run together by
 	// entry.RunAll until the first one ends. The gRPC and HTTP forms of one
 	// proto contract serve the same handlers.
-	grpcEndpoints := grpcapi.Endpoints{Items: grpcendpoint.ItemsHandler{
-		PlanItems: planItems, AddItem: addItem, ListItems: listItems,
-	}}
-	httpEndpoints := httpapi.Endpoints{
-		Items: httpendpoint.ItemsHandler{PlanItems: planItems},
-		Lists: httpendpoint.ListsHandler{AddItem: addItem, ListItems: listItems},
-	}
 	err = entry.RunAll(ctx, logger,
-		entry.Entry{Name: "grpc", Run: func(ctx context.Context) error {
-			return grpcapi.Run(ctx, grpcEndpoints, logger)
-		}},
-		entry.Entry{Name: "http", Run: func(ctx context.Context) error {
-			return httpapi.Run(ctx, httpEndpoints, logger)
-		}},
+		grpcapi.Entry(handlers, logger, []grpcapi.Interceptor{}),
+		httpapi.Entry(handlers, logger, []httpapi.Middleware{}),
 	)
 	return entry.ExitCode(err)
 }

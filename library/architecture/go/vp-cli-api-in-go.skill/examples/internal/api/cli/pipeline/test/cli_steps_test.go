@@ -20,6 +20,7 @@ func registerCLISteps(sc *godog.ScenarioContext, w *World) {
 		return nil
 	})
 	sc.Step(`^the command fails with "([^"]*)"$`, func(message string) error { w.echoErr = errors.New(message); return nil })
+	sc.Step(`^the command panics$`, func() error { w.echoPanics = true; return nil })
 	sc.Step(`^I run "([^"]*)"$`, w.run)
 	sc.Step(`^stdout should be the line '([^']*)'$`, func(want string) error {
 		if got := w.stdout.String(); got != want+"\n" {

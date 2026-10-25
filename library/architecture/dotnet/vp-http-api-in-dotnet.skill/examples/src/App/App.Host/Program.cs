@@ -5,15 +5,14 @@
 using System.Runtime.InteropServices;
 using App.Host.Api.Core.Entry;
 using App.Host.Api.Http;
-using App.Host.Api.Http.Endpoint;
 using App.Host.Config;
 using App.Host.Version;
 using BuildingBlocks.Logging;
 using BuildingBlocks.Pipeline;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Todo.Application.Commands;
+using Middleware.Logging;
+using Todo.Application;
 
 namespace App.Host;
 
@@ -55,27 +54,26 @@ public static class Program
 
         // [services] - infrastructure and the services over it; none in the base plateau.
 
-        // [handlers] - every command handler of the modules, and the pipeline
-        // behaviors that wrap each of them, outermost first.
-        services.AddMediatR(mediatr =>
-        {
-            mediatr.RegisterServicesFromAssemblyContaining<PlanItemsHandler>();
-            mediatr.AddOpenBehavior(typeof(LoggingBehavior<,>));
-        });
+        // [handlers] - the handler of every command of each module, and the
+        // command middleware wrapped around every one of them, the first the
+        // outermost. A variation point adds its middleware to this list at
+        // the place its skill names.
+        services.AddTodoModule();
+        services.AddCommandMiddleware(
+            typeof(LoggingMiddleware<,>));
+
+        // [entries] - every entry point, registered as an Entry and run
+        // together by EntryRunner until the first one ends. The HTTP variation
+        // point replaced the startup entry with its own; the health variation
+        // point adds one.
+        // The HTTP API: its contract routes wrapped by these middlewares, the
+        // first the outermost, inside the request log.
+        services.AddHttpApi(middlewares: []);
 
         await using var provider = services.BuildServiceProvider();
         var logger = provider.GetRequiredService<ILoggerFactory>().CreateLogger("App.Host");
         logger.Write(LogLevel.Information, "starting", LogAttr.Of("version", AppVersion.Value));
-        var sender = provider.GetRequiredService<ISender>();
-
-        // [entries] - every entry point, one Entry each, run together by
-        // EntryRunner until the first one ends. The HTTP variation point
-        // replaced the startup Entry with its own; the health variation point
-        // adds one.
-        var loggers = provider.GetRequiredService<ILoggerFactory>();
-        var httpEndpoints = new HttpEndpoints(Items: new ItemsHandler(sender));
-        var error = await EntryRunner.RunAllAsync(logger, stopping,
-            new Entry("http", stopping => HttpApi.RunAsync(httpEndpoints, loggers, stopping)));
+        var error = await EntryRunner.RunAllAsync(logger, stopping, [.. provider.GetServices<Entry>()]);
         return EntryRunner.ExitCode(error);
     }
 }

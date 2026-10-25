@@ -1,7 +1,9 @@
 // Source: skill base-plateau-in-dotnet
 
 using System.Text.Json;
+using App.Host.Api.Core.Entry;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace App.Host.Api.Startup;
 
@@ -12,8 +14,9 @@ namespace App.Host.Api.Startup;
 /// and nothing below them.
 ///
 /// It exists only in the base plateau. When an API variation point is
-/// attached (HTTP, gRPC, a listener), its Entry replaces the startup Entry in
-/// the "// [entries]" section of Program.cs and this folder is deleted. The
+/// attached (HTTP, gRPC, a listener), its registration replaces
+/// <see cref="AddStartupEntry"/> in the "// [entries]" section of Program.cs
+/// and this folder is deleted. The
 /// exit code of the process is <see cref="Entry.EntryRunner"/>'s, which stays.
 /// It stays only in an application whose whole job is one command per run (a
 /// job started by a scheduler), or, rarely, beside a server that must run one
@@ -21,6 +24,16 @@ namespace App.Host.Api.Startup;
 /// </summary>
 public static class StartupEntry
 {
+    /// <summary>
+    /// Registers the startup entry: an <see cref="Entry"/> named "startup" that
+    /// sends the command <paramref name="command"/> builds - when the entry
+    /// runs, so the setting it reads is read then - and writes its result to
+    /// <paramref name="output"/> (see <see cref="RunAsync"/>).
+    /// </summary>
+    public static IServiceCollection AddStartupEntry<TResult>(this IServiceCollection services, Func<IRequest<TResult>> command, TextWriter output) =>
+        services.AddSingleton(provider => new Entry("startup", stopping =>
+            RunAsync(provider.GetRequiredService<ISender>(), command(), output, stopping)));
+
     /// <summary>
     /// Reads the comma-separated environment variable <paramref name="name"/>
     /// as a list - the way the startup command's input is given, since the

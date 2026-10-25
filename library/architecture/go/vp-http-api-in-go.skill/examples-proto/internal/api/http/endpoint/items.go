@@ -11,13 +11,21 @@ import (
 
 // This file is the items resource (/v1/items/...): its command handlers, its
 // routes, and per route the mapping of the generated messages to and from
-// the command. A new command on items adds a field, a route line, and its two
-// mappings here, and its rpc with its google.api.http annotation in todo.proto.
+// the command. A new command on items adds a field, a line of
+// NewItemsHandler, a route line, and its two mappings here, and its rpc with
+// its google.api.http annotation in todo.proto.
 
-// ItemsHandler is the items resource: the command handlers its routes call. The
-// composition root fills it; Routes lists its operations.
+// ItemsHandler is the items resource: the command handlers its routes call.
+// NewItemsHandler takes them from the command registry; Routes lists its operations.
 type ItemsHandler struct {
 	PlanItems pipeline.Handler[command.PlanItemsCommand, command.PlanItemsResult]
+}
+
+// NewItemsHandler takes the handlers of the items commands from the command registry.
+func NewItemsHandler(handlers command.Handlers) ItemsHandler {
+	return ItemsHandler{
+		PlanItems: handlers.PlanItems,
+	}
 }
 
 // Routes are the items operations of the HTTP form.

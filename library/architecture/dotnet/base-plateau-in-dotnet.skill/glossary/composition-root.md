@@ -14,33 +14,37 @@ RunAsync
   AppConfig.Load()       LOG_LEVEL
   AddLogging(...)        the one provider (the logging VP replaces this line)
   // [services]          infrastructure and the services over it (DB, clients)
-  // [handlers]          AddMediatR: the modules' handlers + AddOpenBehavior, outermost first
+  // [handlers]          AddTodoModule(): the module's handlers and services
+                         AddCommandMiddleware(typeof(LoggingMiddleware<,>), ...): first = outermost
+  // [entries]           AddStartupEntry(...) / AddHttpApi(middlewares: [...]) / AddManagement(): one Entry each
   BuildServiceProvider()
-  // [entries]           EntryRunner.RunAllAsync(new Entry(...), ...) → ExitCode
+  EntryRunner.RunAllAsync(logger, stopping, [.. provider.GetServices<Entry>()]) → ExitCode
 ```
 
 | Section | A variation point adds |
 |---|---|
-| `[services]` | `services.AddSingleton<IUsers, UserService>()` and its infrastructure |
-| `[handlers]` | `mediatr.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>))` |
-| `[entries]` | `new Entry("http", ...)` replacing the startup entry; `new Entry("management", ...)` beside it |
+| `[services]` | its infrastructure: `services.AddSingleton<IListStore, MemoryListStore>()` |
+| `[handlers]` | one element of the `AddCommandMiddleware` list: `typeof(UnitOfWorkMiddleware<,>)`; a module adds its `Add{Module}Module()` |
+| `[entries]` | `services.AddHttpApi(middlewares: [])` replacing `AddStartupEntry`; `services.AddManagement()` beside it; an element of an API's list of middlewares |
 
 ## Example
 
 ```csharp
-// [handlers] - every command handler of the modules, and the pipeline
-// behaviors that wrap each of them, outermost first.
-services.AddMediatR(mediatr =>
-{
-    mediatr.RegisterServicesFromAssemblyContaining<PlanItemsHandler>();
-    mediatr.AddOpenBehavior(typeof(LoggingBehavior<,>));
-});
+// [handlers] - the handler of every command of each module, and the
+// middleware wrapped around every one of them, the first the outermost.
+services.AddTodoModule();
+services.AddCommandMiddleware(
+    typeof(LoggingMiddleware<,>));
+
+// [entries] - every entry point, registered as an Entry and run together by EntryRunner.
+services.AddStartupEntry(() => new PlanItemsCommand(StartupEntry.EnvList("STARTUP_TITLES")), stdout);
 ```
 
 ## Related concepts
 
-- [Entry runner](./entry-runner.md) — what `[entries]` calls.
-- [Pipeline behavior](./pipeline-behavior.md) — what `[handlers]` registers.
+- [Entry runner](./entry-runner.md) — what runs the entries `[entries]` registers.
+- [base-plateau-extension-in-dotnet](library/architecture/dotnet/base-plateau-extension-in-dotnet.skill/base-plateau-extension-in-dotnet.skill.md) — how a variation point uses the sections.
+- [Command middleware](./command-middleware.md) — what `[handlers]` registers.
 
 ## Sources
 

@@ -1,26 +1,39 @@
 # Source: skill vp-http-api-in-python
 
-"""The HTTP server: the contract's routes, the docs, every error answered as
-google.rpc.Status, every request logged, served by uvicorn until it is told
-to stop."""
+"""The HTTP server: the contract's routes wrapped by the application's
+middlewares, the docs, every error answered as google.rpc.Status, every
+request logged, served by uvicorn until it is told to stop."""
 
 import asyncio
 import contextlib
 import logging
 import socket
-from collections.abc import Iterator, Sequence
+from collections.abc import Awaitable, Callable, Iterator, Sequence
 
 import uvicorn
-from fastapi import APIRouter, FastAPI
+from fastapi import APIRouter, FastAPI, Request, Response
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.routing import BaseRoute, Match
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 from todo.api.http.pipeline.config import HttpConfig, load_config
 from todo.api.http.pipeline.docs import add_docs
-from todo.api.http.pipeline.errors import AnswerFailures, add_error_answers
-from todo.api.http.pipeline.logging import RequestLog
+from todo.api.http.middleware.answer_failures import AnswerFailuresMiddleware
+from todo.api.http.middleware.request_log import RequestLogMiddleware
+from todo.api.http.pipeline.errors import add_error_answers
 from todo.log import attrs
 
 SHUTDOWN_TIMEOUT_SECONDS = 10
 """How long requests in flight may run on after the server is told to stop."""
+
+type CallNext = Callable[[Request], Awaitable[Response]]
+type Middleware = Callable[[Request, CallNext], Awaitable[Response]]
+# A Middleware is a middleware of the requests of the contract's routes - the
+# HTTP form of an API middleware (skill base-plateau-extension): an async
+# function of the request and call_next, the shape of FastAPI's
+# @app.middleware("http"), that does its step around call_next, e.g. reads
+# the caller's credentials into a ContextVar. It rejects a request by raising
+# a KindError, answered as google.rpc.Status like any error of a route.
 
 
 class Server:
@@ -30,23 +43,36 @@ class Server:
     vp-health-in-python).
     """
 
-    def __init__(self, config: HttpConfig, routers: Sequence[APIRouter], logger: logging.Logger) -> None:
+    def __init__(
+        self,
+        config: HttpConfig,
+        routers: Sequence[APIRouter],
+        logger: logging.Logger,
+        middlewares: Sequence[Middleware] = (),
+    ) -> None:
         self._config = config
         self._routers = routers
         self._logger = logger
+        self._middlewares = middlewares
 
     def app(self) -> FastAPI:
-        """The application: the contract routes, then, when enabled, the docs
-        routes outside the contract; FastAPI's own docs are off - the contract
-        is the committed file, not one generated from the code."""
+        """The application: the contract routes, each wrapped by the
+        middlewares, then, when enabled, the docs routes outside the contract
+        and outside the middlewares; FastAPI's own docs are off - the contract
+        is the committed file, not one generated from the code. The request
+        log and the error answers wrap them all, so a request a middleware
+        rejects is logged and answered like any other."""
         app = FastAPI(openapi_url=None, docs_url=None, redoc_url=None)
         for router in self._routers:
             app.include_router(router)
         if self._config.docs_enabled:
             add_docs(app, self._config.base_path)
         add_error_answers(app)
-        app.add_middleware(AnswerFailures, logger=self._logger)
-        app.add_middleware(RequestLog, logger=self._logger)  # added last: the outermost
+        if self._middlewares:
+            contract = [route for router in self._routers for route in router.routes]
+            app.add_middleware(ContractMiddlewares, routes=contract, middlewares=self._middlewares)
+        app.add_middleware(AnswerFailuresMiddleware, logger=self._logger)
+        app.add_middleware(RequestLogMiddleware, logger=self._logger)  # added last: the outermost
         return app
 
     async def serve(self, stop: asyncio.Event) -> None:
@@ -79,11 +105,38 @@ class Server:
         self._logger.info("http server stopped")
 
 
-async def run(routers: Sequence[APIRouter], logger: logging.Logger, stop: asyncio.Event) -> None:
-    """The HTTP entry point's one call from the composition root: reads the
-    settings, builds the server, and serves until stop is set. routers are
-    the contract's resources - routes() of the application's api/http package."""
-    await Server(load_config(), routers, logger).serve(stop)
+async def run(
+    routers: Sequence[APIRouter], logger: logging.Logger, stop: asyncio.Event, middlewares: Sequence[Middleware] = ()
+) -> None:
+    """The HTTP entry point's run: reads the settings, builds the server, and
+    serves until stop is set. routers are the contract's resources - routes()
+    of the application's api/http package; middlewares wrap each of their
+    routes, the first the outermost."""
+    await Server(load_config(), routers, logger, middlewares).serve(stop)
+
+
+class ContractMiddlewares:
+    """ASGI middleware running a request of a contract route through the
+    application's middlewares, the first the outermost; any other request -
+    the docs, an unknown path - goes past them. It stands inside the request
+    log and AnswerFailuresMiddleware, so a KindError a middleware raises is answered by
+    its kind and logged like any other."""
+
+    def __init__(self, app: ASGIApp, routes: Sequence[BaseRoute], middlewares: Sequence[Middleware]) -> None:
+        self._app = app
+        self._routes = routes
+        # The last middleware wraps the app first, so the first of the list
+        # ends up outermost.
+        chained = app
+        for middleware in reversed(middlewares):
+            chained = BaseHTTPMiddleware(chained, dispatch=middleware)
+        self._chained = chained
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] == "http" and any(route.matches(scope)[0] is not Match.NONE for route in self._routes):
+            await self._chained(scope, receive, send)
+        else:
+            await self._app(scope, receive, send)
 
 
 class _Server(uvicorn.Server):

@@ -60,6 +60,9 @@ Feature: Command endpoint
     When I GET "<path>" from the HTTP API
     Then the HTTP status should be <status>
     And the HTTP error should have code <code> and a message containing "<path>"
+    And one "http response sent" record should be logged with:
+      | method | path   | status   | failed |
+      | GET    | <path> | <status> | True   |
 
     Examples:
       | path     | status | code |

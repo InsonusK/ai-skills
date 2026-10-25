@@ -1,6 +1,6 @@
 # Entry runner
 
-The **entry runner** (`src/App/App.Host/Api/Core/Entry`) starts every entry point of the application together — the startup command, an HTTP server, a gRPC server, the health endpoints — and turns how they ended into the process exit code. It is why each variation point attaches with one `Entry` in `// [entries]`.
+The **entry runner** (`src/App/App.Host/Api/Core/Entry`) starts every entry point of the application together — the startup command, an HTTP server, a gRPC server, the health endpoints — and turns how they ended into the process exit code. It is why each variation point attaches with one registration in `// [entries]`.
 
 ## Why it exists
 
@@ -8,7 +8,7 @@ The **entry runner** (`src/App/App.Host/Api/Core/Entry`) starts every entry poin
 
 ## How it works
 
-1. `[entries]` passes `RunAllAsync` one `Entry(Name, RunAsync, ReportsErrors)` per entry point.
+1. `[entries]` registers one `Entry(Name, RunAsync, ReportsErrors)` per entry point — `AddStartupEntry`, `AddHttpApi`, `AddManagement` — and `RunAsync` passes `RunAllAsync` every registered `Entry`, in the order of registration.
 2. `RunAllAsync` starts every `RunAsync` at once, each with the same token.
 3. When the **first** one ends — a one-shot command done, a server that failed, or every server after SIGTERM — it cancels the token, so the others stop gracefully, and waits for them. An `OperationCanceledException` after that is a stop, not an error.
 4. It returns the first exception any entry ended with, or `null`, and logs each failure with the entry's name (unless the entry `ReportsErrors` itself).
@@ -24,16 +24,19 @@ The **entry runner** (`src/App/App.Host/Api/Core/Entry`) starts every entry poin
 ## Example
 
 ```csharp
-// [entries] - a service with HTTP and health: each variation point brought one Entry.
-var error = await EntryRunner.RunAllAsync(logger, stopping,
-    new Entry("http", stopping => HttpApi.RunAsync(httpEndpoints, loggers, stopping)),
-    new Entry("management", stopping => ManagementServer.RunAsync(loggers, stopping)));
+// [entries] - a service with HTTP and health: each variation point registered one Entry.
+services.AddHttpApi(middlewares: []);
+services.AddManagement();
+
+await using var provider = services.BuildServiceProvider();
+// ...
+var error = await EntryRunner.RunAllAsync(logger, stopping, [.. provider.GetServices<Entry>()]);
 return EntryRunner.ExitCode(error);
 ```
 
 ## Related concepts
 
-- [Composition root](./composition-root.md) — where the list is written.
+- [Composition root](./composition-root.md) — where the entries are registered.
 - [Startup entry](./startup-entry.md) — the base plateau's one entry, replaced by an API variation point.
 
 ## Sources

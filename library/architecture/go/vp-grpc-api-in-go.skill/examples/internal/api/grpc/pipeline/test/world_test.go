@@ -19,6 +19,7 @@ import (
 	"google.golang.org/grpc/test/bufconn"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
+	"github.com/example/todo/internal/api/grpc/middleware/calllog"
 	grpcpipeline "github.com/example/todo/internal/api/grpc/pipeline"
 	"github.com/example/todo/internal/command/pipeline"
 	"github.com/example/todo/internal/logging"
@@ -48,7 +49,8 @@ type World struct {
 
 	logs syncBuffer // what the in-memory server logged, every attribute kept
 
-	cfg grpcpipeline.Config
+	cfg          grpcpipeline.Config
+	interceptors []grpcpipeline.Interceptor
 
 	// the in-memory server, started by the first call of a scenario
 	stopInMemory context.CancelFunc
@@ -201,7 +203,7 @@ func (w *World) client() (*grpc.ClientConn, error) {
 	listener := bufconn.Listen(1 << 20)
 	ctx, cancel := context.WithCancel(context.Background())
 	w.stopInMemory = cancel
-	server := grpcpipeline.NewServer(w.cfg, w.services(), slog.New(slog.NewJSONHandler(&w.logs, nil)))
+	server := grpcpipeline.NewServer(w.cfg, w.services(), slog.New(slog.NewJSONHandler(&w.logs, nil)), w.interceptors)
 	go func() { _ = server.ServeListener(ctx, listener) }()
 	conn, err := grpc.NewClient("passthrough:///in-memory",
 		grpc.WithContextDialer(func(ctx context.Context, _ string) (net.Conn, error) { return listener.DialContext(ctx) }),
@@ -225,13 +227,13 @@ func callEchoWithID(conn *grpc.ClientConn, text, id string) (string, string, err
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if id != "" {
-		ctx = metadata.AppendToOutgoingContext(ctx, grpcpipeline.RequestIDMetadata, id)
+		ctx = metadata.AppendToOutgoingContext(ctx, calllog.RequestIDMetadata, id)
 	}
 	out := new(wrapperspb.StringValue)
 	var header metadata.MD
 	err := conn.Invoke(ctx, echoMethod, wrapperspb.String(text), out, grpc.Header(&header))
 	sent := ""
-	if values := header.Get(grpcpipeline.RequestIDMetadata); len(values) > 0 {
+	if values := header.Get(calllog.RequestIDMetadata); len(values) > 0 {
 		sent = values[0]
 	}
 	return out.GetValue(), sent, err

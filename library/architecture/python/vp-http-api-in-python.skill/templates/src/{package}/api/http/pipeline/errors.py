@@ -7,17 +7,16 @@ command, and the answers the framework gives itself - an unknown path, a
 method a path does not serve - with the code of their status.
 """
 
-import logging
 from typing import Any
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException
-from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 from {package}.api.core import rpcstatus
 from {package}.api.core.rpcstatus import Code
+from {package}.api.http.middleware.answer_failures import status_response
 from {package}.command.pipeline import KindError
 
 # The code of each status the framework answers by itself.
@@ -28,15 +27,9 @@ _CODE_OF_STATUS = {
 }
 
 
-def status_response(code: Code, message: str, http_status: int | None = None) -> JSONResponse:
-    """google.rpc.Status in proto-JSON, the body of every error."""
-    body = {"code": int(code), "message": message, "details": []}
-    return JSONResponse(body, status_code=http_status or rpcstatus.http_status(code))
-
-
 def add_error_answers(app: FastAPI) -> None:
     """Registers the handlers that answer the errors the framework knows of;
-    AnswerFailures answers the rest."""
+    AnswerFailuresMiddleware answers the rest."""
 
     @app.exception_handler(KindError)
     async def answer_kind(request: Request, error: KindError) -> JSONResponse:
@@ -51,37 +44,6 @@ def add_error_answers(app: FastAPI) -> None:
         code = _CODE_OF_STATUS.get(error.status_code, Code.UNKNOWN)
         return status_response(code, f"{error.detail}: {request.method} {request.url.path}", error.status_code)
 
-
-
-class AnswerFailures:
-    """ASGI middleware answering every exception the handlers above did not
-    take - a failure of the service, or a KindError wrapped in another
-    exception - by its kind, so the request log around it sees the answer the
-    client gets. (Starlette answers such an exception outside every
-    middleware, where the request log would see none.)
-    """
-
-    def __init__(self, app: ASGIApp, logger: logging.Logger) -> None:
-        self._app = app
-        self._logger = logger
-
-    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        started = False
-
-        async def tracking_send(message: Message) -> None:
-            nonlocal started
-            started = started or message["type"] == "http.response.start"
-            await send(message)
-
-        try:
-            await self._app(scope, receive, tracking_send)
-        except Exception as error:
-            code, message = rpcstatus.of(error)
-            if code is Code.INTERNAL:
-                self._logger.error("http request failed", exc_info=error)
-            if started:
-                raise  # the answer is already on its way; nothing more can be sent
-            await status_response(code, message)(scope, receive, send)
 
 
 def _invalid_request_message(request: Request, errors: Any) -> str:

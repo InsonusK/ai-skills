@@ -109,7 +109,7 @@ func (w *World) client() (*grpc.ClientConn, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	w.stop = cancel
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
-	server := grpcpipeline.NewServer(grpcpipeline.Config{}, grpcapi.Services(w.handlers()), logger)
+	server := grpcpipeline.NewServer(grpcpipeline.Config{}, grpcapi.Services(w.handlers()), logger, nil)
 	go func() { _ = server.ServeListener(ctx, listener) }()
 	conn, err := grpc.NewClient("passthrough:///in-memory",
 		grpc.WithContextDialer(func(ctx context.Context, _ string) (net.Conn, error) { return listener.DialContext(ctx) }),

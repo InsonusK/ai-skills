@@ -10,6 +10,9 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+
+	"github.com/example/todo/internal/api/grpc/middleware/answerfailures"
+	"github.com/example/todo/internal/api/grpc/middleware/calllog"
 )
 
 // Service is one service of the published contract: its generated descriptor
@@ -21,32 +24,42 @@ type Service struct {
 	Impl any
 }
 
+// Interceptor is a middleware of the calls of the contract's methods - the
+// gRPC form of an API middleware (skill base-plateau-extension), e.g. one
+// that reads the caller's credentials from the metadata into the call's
+// context. It rejects a call by returning an error of a kind
+// (commandpipeline.ErrUnauthenticated), answered by its kind like a handler's.
+// Each lives in a package of its own under internal/api/grpc/middleware/.
+type Interceptor = grpc.UnaryServerInterceptor
+
 // Server serves the contract's services and, when enabled, server reflection.
 // It serves no health service: the probes of every service, whatever its
 // entry points, go to the same HTTP health endpoints.
 type Server struct {
-	cfg      Config
-	services []Service
-	logger   *slog.Logger
+	cfg          Config
+	services     []Service
+	logger       *slog.Logger
+	interceptors []Interceptor
 }
 
 // Run is the gRPC entry point's one call from the composition root: it reads
 // the settings, builds the server, and serves until ctx is cancelled. It
 // returns nil after a graceful stop, or the error that stopped the entry
-// point. services are the contract's services - endpoint.Services in the
-// application's endpoint package.
-func Run(ctx context.Context, services []Service, logger *slog.Logger) error {
+// point. services are the contract's services - Services in the
+// application's api/grpc package; interceptors wrap every call, the first the
+// outermost.
+func Run(ctx context.Context, services []Service, logger *slog.Logger, interceptors []Interceptor) error {
 	cfg, err := LoadConfig()
 	if err != nil {
 		return err
 	}
-	return NewServer(cfg, services, logger).Serve(ctx)
+	return NewServer(cfg, services, logger, interceptors).Serve(ctx)
 }
 
 // NewServer builds the server for the contract's services. Tests build it
 // directly; the composition root calls Run.
-func NewServer(cfg Config, services []Service, logger *slog.Logger) *Server {
-	return &Server{cfg: cfg, services: services, logger: logger}
+func NewServer(cfg Config, services []Service, logger *slog.Logger, interceptors []Interceptor) *Server {
+	return &Server{cfg: cfg, services: services, logger: logger, interceptors: interceptors}
 }
 
 // Serve listens on the configured port until ctx is cancelled (SIGTERM).
@@ -89,9 +102,13 @@ func (s *Server) ServeListener(ctx context.Context, listener net.Listener) error
 }
 
 // build registers the contract's services and, when enabled, reflection on
-// one grpc.Server.
+// one grpc.Server. Every call goes through the fixed middleware - the call
+// log, then answerfailures - and then through the application's, so a call
+// an interceptor rejects, or one that panicked, is logged and answered like
+// any other.
 func (s *Server) build() *grpc.Server {
-	server := grpc.NewServer(grpc.ChainUnaryInterceptor(logCalls(s.logger), recoverPanics(s.logger)))
+	chain := append([]Interceptor{calllog.Middleware(s.logger), answerfailures.Middleware(s.logger)}, s.interceptors...)
+	server := grpc.NewServer(grpc.ChainUnaryInterceptor(chain...))
 	for _, service := range s.services {
 		server.RegisterService(service.Desc, service.Impl)
 	}

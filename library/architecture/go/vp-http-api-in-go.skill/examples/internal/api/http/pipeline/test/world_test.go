@@ -14,6 +14,7 @@ import (
 	"github.com/cucumber/godog"
 
 	httppipeline "github.com/example/todo/internal/api/http/pipeline"
+	commandlogging "github.com/example/todo/internal/command/middleware/logging"
 	"github.com/example/todo/internal/command/pipeline"
 	"github.com/example/todo/internal/logging"
 )
@@ -36,10 +37,12 @@ type World struct {
 	echoCalled bool
 	echoGot    echoCommand
 	echoReqID  string // the request id in the command's context
+	echoPanics bool   // the echo handler panics, as a bug in a handler would
 
-	cfg       httppipeline.Config
-	logs      bytes.Buffer // what the server logged, every attribute kept
-	decorated bool         // the echo handler is wrapped with pipeline.WithLogging
+	cfg         httppipeline.Config
+	logs        bytes.Buffer // what the server logged, every attribute kept
+	decorated   bool         // the echo handler is wrapped with the command logging middleware
+	middlewares []httppipeline.Middleware
 
 	response *httptest.ResponseRecorder
 
@@ -85,7 +88,7 @@ type echoResult struct{ Text string }
 // records land between the server's.
 func (w *World) echoHandler() pipeline.Handler[echoCommand, echoResult] {
 	if w.decorated {
-		return pipeline.WithLogging("Echo", w.logger(), w.fakeEcho())
+		return pipeline.Decorate("Echo", w.fakeEcho(), []pipeline.Middleware{commandlogging.Middleware(w.logger())})
 	}
 	return w.fakeEcho()
 }
@@ -95,6 +98,9 @@ func (w *World) fakeEcho() pipeline.Handler[echoCommand, echoResult] {
 		func(ctx context.Context, cmd echoCommand) (echoResult, error) {
 			w.echoCalled = true
 			w.echoGot = cmd
+			if w.echoPanics {
+				panic("echo handler broke")
+			}
 			w.echoReqID = logging.RequestID(ctx)
 			return echoResult{Text: w.echoAnswer}, w.echoErr
 		})
@@ -125,7 +131,7 @@ var moreRoutes func(w *World) []httppipeline.Route
 // server logs through a plain JSON handler, which keeps the payload, so the
 // scenarios see every attribute the server writes.
 func (w *World) server() *httppipeline.Server {
-	return httppipeline.NewServer(w.cfg, w.routes(), w.logger())
+	return httppipeline.NewServer(w.cfg, w.routes(), w.logger(), w.middlewares)
 }
 
 func (w *World) logger() *slog.Logger {

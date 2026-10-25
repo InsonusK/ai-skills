@@ -263,7 +263,9 @@ func registerSteps(sc *godog.ScenarioContext) {
 		return render(entries)
 	})
 	sc.Step(`^the payload is a map with "([^"]*)" holding the bodies '([^']*)', '([^']*)', and '([^']*)'$`,
-		func(key, b1, b2, b3 string) error { return render(map[string]any{key: [][]byte{[]byte(b1), []byte(b2), []byte(b3)}}) })
+		func(key, b1, b2, b3 string) error {
+			return render(map[string]any{key: [][]byte{[]byte(b1), []byte(b2), []byte(b3)}})
+		})
 	sc.Step(`^the payload is a map with "([^"]*)" = "([^"]*)" and "([^"]*)" = "([^"]*)"$`,
 		func(k1, v1, k2, v2 string) error { return render(map[string]string{k1: v1, k2: v2}) })
 	sc.Step(`^the payload is the body '([^']*)'$`, func(body string) error { return render([]byte(body)) })

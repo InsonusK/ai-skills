@@ -18,7 +18,7 @@ adr:
 - **The data of a call in the log** - A failed request can be read back from the log: the command's parameters, what the entry point received, and later what a client sent.
 - **No secret in the log** - A field marked secret, and a field named like one though nobody marked it, is written masked; a field marked not to log is left out.
 - **One request, one id** - Every record of one request carries its request id, so its records are found among those of the requests served at the same time.
-- **Attached, not edited** - The handler replaces the base handler in one place of the composition root; the command decorator, the entry points, and the clients do not change.
+- **Attached, not edited** - The handler replaces the base handler in one place of the composition root; the command logging middleware, the entry points, and the clients do not change.
 
 # Core Principle
 - **The parts say what, the handler says how** - Every part logs the data of a call as one payload attribute; this handler is the one place that decides how the payload is written, so masking, limits, and correlation change in one place for all of them.

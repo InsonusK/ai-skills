@@ -22,7 +22,7 @@ func TestFeatures(t *testing.T) {
 	suite := godog.TestSuite{
 		ScenarioInitializer: func(sc *godog.ScenarioContext) {
 			registerWorldHooks(sc, w)
-			registerLoggingSteps(sc, w)
+			registerMiddlewareSteps(sc, w)
 		},
 		Options: &godog.Options{
 			Format:   format,

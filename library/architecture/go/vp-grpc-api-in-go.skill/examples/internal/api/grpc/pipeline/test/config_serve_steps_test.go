@@ -76,7 +76,7 @@ func (w *World) startServing(port string) {
 	w.stop = cancel
 	w.served = make(chan error, 1)
 	services := w.services()
-	go func() { w.served <- grpcpipeline.Run(ctx, services, discard()) }()
+	go func() { w.served <- grpcpipeline.Run(ctx, services, discard(), nil) }()
 }
 
 func (w *World) theServerIsServing(ctx context.Context) error {

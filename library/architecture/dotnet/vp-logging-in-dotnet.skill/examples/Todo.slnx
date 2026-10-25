@@ -4,6 +4,8 @@
     <Project Path="src/Shared/Shared.csproj" />
     <Project Path="src/BuildingBlocks/BuildingBlocks.csproj" />
     <Project Path="src/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj" />
+    <Project Path="src/Middleware/Middleware.csproj" />
+    <Project Path="src/Middleware.Tests/Middleware.Tests.csproj" />
     <Project Path="src/MaskedLogging/MaskedLogging.csproj" />
     <Project Path="src/MaskedLogging.Tests/MaskedLogging.Tests.csproj" />
   </Folder>

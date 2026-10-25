@@ -11,10 +11,9 @@ from typing import TextIO
 
 from todo import config
 from todo.api import http as http_api
-from todo.api.core.entry import Entry, exit_code, run_all
-from todo.api.http.endpoint import ItemsHandler
-from todo.command import PlanItemsCommand, PlanItemsHandler, PlanItemsResult
-from todo.command.pipeline import Handler, with_logging
+from todo.api.core.entry import exit_code, run_all
+from todo.command import build_handlers
+from todo.command.middleware.logging import LoggingMiddleware
 from todo.log import attrs, new_logger
 
 
@@ -47,17 +46,24 @@ async def run(stdout: TextIO, stderr: TextIO, stopping: asyncio.Event) -> int:
 
     # [services] - infrastructure and the services over it; none in the base plateau.
 
-    # [handlers] - one per command, wrapped by its decorators.
-    plan_items: Handler[PlanItemsCommand, PlanItemsResult] = PlanItemsHandler()
-    plan_items = with_logging("PlanItems", logger, plan_items)
+    # [handlers] - the handler of every command, built by the command registry
+    # and wrapped by this command middleware, the first the outermost. A
+    # variation point adds its middleware to this list at the place its skill
+    # names.
+    handlers = build_handlers(
+        [
+            LoggingMiddleware(logger),
+        ]
+    )
 
     # [entries] - every entry point, one Entry each, run together by run_all
     # until the first one ends. The HTTP variation point replaced the startup
     # Entry with its own; the health variation point adds one.
-    endpoints = http_api.Endpoints(items=ItemsHandler(plan_items=plan_items))
     ended_by = await run_all(
         logger,
         stopping,
-        Entry("http", lambda stop: http_api.run(endpoints, logger, stop)),
+        # the HTTP API: its contract routes wrapped by these middlewares, the
+        # first the outermost, inside the request log
+        http_api.entry(handlers, logger, []),
     )
     return exit_code(ended_by)

@@ -39,6 +39,15 @@ Feature: Command line
     Then running should fail with no kind
     And stderr should mention "connection refused"
 
+  @category/error
+  Scenario: An action that crashes is answered as a failure with no kind and logged
+    Given the command panics
+    When I run "test echo --text hi"
+    Then running should fail with no kind
+    And stderr should mention "Error: internal error"
+    And the records should be, in order, "cli call received|cli action panicked|cli call answered"
+    And one "cli call answered" record should be logged for the action "todo test echo", failed "true"
+
   @category/negative
   Scenario Outline: An error of the command line is invalid and never reaches the command
     When I run "<args>"

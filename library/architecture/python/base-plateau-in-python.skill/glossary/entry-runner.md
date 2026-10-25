@@ -43,12 +43,13 @@ sequenceDiagram
 ## Example
 
 ```python
-# [entries] - a service with HTTP and health: each variation point brought one Entry.
+# [entries] - a service with HTTP and health: each variation point brought one Entry,
+# built by its entry factory.
 ended_by = await run_all(
     logger,
     stopping,
-    Entry("http", lambda stop: http_api.run(endpoints, logger, stop)),
-    Entry("management", lambda stop: management.run(logger, stop)),
+    http_api.entry(handlers, logger, []),
+    management.entry(logger),
 )
 return exit_code(ended_by)
 ```

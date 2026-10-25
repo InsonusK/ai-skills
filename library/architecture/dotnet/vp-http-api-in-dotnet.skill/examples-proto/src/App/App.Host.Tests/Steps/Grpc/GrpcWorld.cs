@@ -2,6 +2,7 @@ using App.Host.Api.Grpc.Pipeline;
 using App.Host.Tests.Steps.Grpc.Contract;
 using BuildingBlocks.Pipeline;
 using Grpc.Core;
+using Grpc.Core.Interceptors;
 using Grpc.Net.Client;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -65,6 +66,8 @@ public sealed class GrpcWorld : IDisposable
     public FakeGrpcEcho Echo { get; } = new();
     /// <summary>The handlers the services reach, registered before the server is built.</summary>
     public ServiceCollection Handlers { get; } = new();
+    /// <summary>The application's interceptors around every call, the first the outermost.</summary>
+    public List<Interceptor> Interceptors { get; } = [];
     /// <summary>The services under test, given the sender to the fake handlers.</summary>
     public Func<ISender, IReadOnlyList<GrpcService>> Services { get; set; } = sender => [GrpcService.Of(new EchoServiceImpl(sender))];
 
@@ -86,7 +89,7 @@ public sealed class GrpcWorld : IDisposable
     {
         if (_channel is null)
         {
-            _app = GrpcServer.Build(Config, BuildServices(), Logs.Factory, host => host.UseTestServer());
+            _app = GrpcServer.Build(Config, BuildServices(), Logs.Factory, host => host.UseTestServer(), Interceptors);
             await _app.StartAsync();
             _channel = GrpcChannel.ForAddress("http://localhost", new GrpcChannelOptions { HttpHandler = _app.GetTestServer().CreateHandler() });
         }
