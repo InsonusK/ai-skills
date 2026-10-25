@@ -61,7 +61,7 @@ Declare the request and response bodies as types of the HTTP entry point — or,
 ### Answer errors by their kind
 Answer a request that cannot be decoded with 400 `INVALID_ARGUMENT` without calling the command, and every error of a command by [error-kinds](library/develop/core/error-kinds.skill/error-kinds.skill.md)' table — its kind's status and code with the error's message, or 500 `INTERNAL` with no internal message for an error with no kind.
 - Risk: a client cannot tell its own mistake from the service's, the HTTP and gRPC forms of a service answer one outcome differently, and a 500 that carries the internal error leaks connection strings and stack details.
-- Fix: one table shared by every entry point of the application; the failure itself is logged by the handler's logging decorator, not written to the client.
+- Fix: one table shared by every entry point of the application; the failure itself is logged by the command logging middleware, not written to the client.
 
 ### Log every request with what arrived
 Write two records per request through the composition root's logger — one when it arrives, with what arrived as the payload, one when it is answered — the second with the method, the path, the status, and the duration, whether it failed, and as the payload the query, the headers, and the body received and the body sent back as written; put the request id — the client's (`X-Request-Id`), else a new one — into the context and send it back.

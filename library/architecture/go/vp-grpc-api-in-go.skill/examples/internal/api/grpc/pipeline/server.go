@@ -10,6 +10,9 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+
+	"github.com/example/todo/internal/api/grpc/middleware/answerfailures"
+	"github.com/example/todo/internal/api/grpc/middleware/calllog"
 )
 
 // Service is one service of the published contract: its generated descriptor
@@ -21,11 +24,12 @@ type Service struct {
 	Impl any
 }
 
-// Interceptor is a decorator of the calls of the contract's methods - the
-// gRPC form of an entry decorator (skill base-plateau-extension), e.g. one
+// Interceptor is a middleware of the calls of the contract's methods - the
+// gRPC form of an API middleware (skill base-plateau-extension), e.g. one
 // that reads the caller's credentials from the metadata into the call's
 // context. It rejects a call by returning an error of a kind
 // (commandpipeline.ErrUnauthenticated), answered by its kind like a handler's.
+// Each lives in a package of its own under internal/api/grpc/middleware/.
 type Interceptor = grpc.UnaryServerInterceptor
 
 // Server serves the contract's services and, when enabled, server reflection.
@@ -98,12 +102,12 @@ func (s *Server) ServeListener(ctx context.Context, listener net.Listener) error
 }
 
 // build registers the contract's services and, when enabled, reflection on
-// one grpc.Server. Every call goes through the fixed interceptors - the call
-// log, the panic recovery, the answer by kind - and then through the
-// application's, so a call an interceptor rejects is logged and answered like
+// one grpc.Server. Every call goes through the fixed middleware - the call
+// log, then answerfailures - and then through the application's, so a call
+// an interceptor rejects, or one that panicked, is logged and answered like
 // any other.
 func (s *Server) build() *grpc.Server {
-	chain := append([]Interceptor{logCalls(s.logger), recoverPanics(s.logger), answerKinds}, s.interceptors...)
+	chain := append([]Interceptor{calllog.Middleware(s.logger), answerfailures.Middleware(s.logger)}, s.interceptors...)
 	server := grpc.NewServer(grpc.ChainUnaryInterceptor(chain...))
 	for _, service := range s.services {
 		server.RegisterService(service.Desc, service.Impl)

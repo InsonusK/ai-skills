@@ -13,9 +13,11 @@ import (
 
 	"github.com/example/todo/internal/api/core/entry"
 	httpapi "github.com/example/todo/internal/api/http"
-	httpaccess "github.com/example/todo/internal/api/http/access"
+	"github.com/example/todo/internal/api/http/middleware/authentication"
 	"github.com/example/todo/internal/command"
-	"github.com/example/todo/internal/command/access"
+	"github.com/example/todo/internal/command/middleware/access"
+	"github.com/example/todo/internal/command/middleware/batchlimit"
+	commandlogging "github.com/example/todo/internal/command/middleware/logging"
 	"github.com/example/todo/internal/command/pipeline"
 	"github.com/example/todo/internal/config"
 	"github.com/example/todo/internal/logging"
@@ -52,12 +54,13 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 	}
 
 	// [handlers] - the handler of every command, built by the command registry
-	// and wrapped by these decorators, the first the outermost. A variation
-	// point adds its decorator to this list at the place its skill names.
-	handlers := command.NewHandlers([]pipeline.Decorator{
-		pipeline.WithLogging(logger),
-		access.WithAccessCheck(),                  // by the command's mark: access.Restricted
-		access.WithBatchLimit(accessCfg.MaxBatch), // by a value of the command: access.Batch
+	// and wrapped by this command middleware, the first the outermost. A
+	// variation point adds its middleware to this list at the place its skill
+	// names.
+	handlers := command.NewHandlers([]pipeline.Middleware{
+		commandlogging.Middleware(logger),
+		access.Middleware(),                       // by the command's mark: access.Restricted
+		batchlimit.Middleware(accessCfg.MaxBatch), // by a value of the command: batchlimit.Batch
 	})
 
 	// [entries] - every entry point, one Entry each, run together by
@@ -67,7 +70,7 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 		// the HTTP API: its contract routes wrapped by these middlewares, the
 		// first the outermost, inside the request log
 		httpapi.Entry(handlers, logger, []httpapi.Middleware{
-			httpaccess.Authenticate(accessCfg.Tokens),
+			authentication.Middleware(accessCfg.Tokens),
 		}),
 	)
 	return entry.ExitCode(err)

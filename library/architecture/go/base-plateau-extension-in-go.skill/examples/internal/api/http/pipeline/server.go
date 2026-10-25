@@ -9,6 +9,9 @@ import (
 	"net"
 	"net/http"
 	"time"
+
+	"github.com/example/todo/internal/api/http/middleware/answerfailures"
+	"github.com/example/todo/internal/api/http/middleware/requestlog"
 )
 
 // Route is one operation of the published contract: a "METHOD /path" pattern
@@ -22,8 +25,9 @@ type Route struct {
 // HTTP form of an entry decorator (skill base-plateau-extension): it takes the
 // next handler and returns one that does its step around it, e.g. reads the
 // caller's credentials into the request's context. It rejects a request by
-// answering an error of a kind with WriteError, never with an answer of its
-// own, so the client gets google.rpc.Status like from any route.
+// answering an error of a kind with answerfailures.WriteError, never with an
+// answer of its own, so the client gets google.rpc.Status like from any route.
+// Each lives in a package of its own under internal/api/http/middleware/.
 type Middleware func(next http.Handler) http.Handler
 
 // Server serves the contract routes and, when enabled, the OpenAPI spec and
@@ -57,8 +61,10 @@ func NewServer(cfg Config, routes []Route, logger *slog.Logger, middlewares []Mi
 
 // Handler registers every route on one ServeMux: the contract routes, each
 // wrapped by the middlewares, then, when enabled, the docs routes outside the
-// contract and outside the middlewares. The request log wraps them all, so a
-// request a middleware rejects is logged like any other.
+// contract and outside the middlewares. The fixed middleware wrap them all -
+// the request log outermost, then answerfailures - so a request a middleware
+// rejects, or one whose handler panicked, is answered and logged like any
+// other.
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
 	for _, route := range s.routes {
@@ -67,7 +73,7 @@ func (s *Server) Handler() http.Handler {
 	if s.cfg.DocsEnabled {
 		registerDocs(mux, s.cfg.BasePath)
 	}
-	return s.logRequests(mux)
+	return requestlog.Middleware(s.logger)(answerfailures.Middleware(s.logger)(mux))
 }
 
 // decorate wraps one contract route with the middlewares: the last wraps the

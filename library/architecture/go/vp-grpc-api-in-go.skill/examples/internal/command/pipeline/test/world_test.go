@@ -1,7 +1,6 @@
 package test
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 
@@ -18,14 +17,11 @@ func logf(format string, args ...any) {
 
 // World holds per-scenario state, reset before every scenario.
 type World struct {
-	err     error
-	logs    bytes.Buffer
-	wrapped pipeline.Handler[string, string]
-
-	decorators []pipeline.Decorator
-	calls      []string          // "{decorator} in", "handler {command}", "{decorator} out", in order
-	seen       map[string]string // what each decorator was called with
-	result     string
+	err         error
+	middlewares []pipeline.Middleware
+	calls       []string          // "{middleware} in", "handler {command}", "{middleware} out", in order
+	seen        map[string]string // what each middleware was called with
+	result      string
 }
 
 func (w *World) reset() { *w = World{seen: map[string]string{}} }

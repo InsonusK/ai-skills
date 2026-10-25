@@ -49,7 +49,7 @@ Map the generated request message to the command and the command's result to the
 ### Answer errors by their kind
 Answer a request that cannot become the command with `INVALID_ARGUMENT` without calling the command, and every error of a command by [error-kinds](library/develop/core/error-kinds.skill/error-kinds.skill.md)' table — its kind's code with the error's message, or `INTERNAL` with no internal message for an error with no kind.
 - Risk: a client cannot tell its own mistake from the service's, the HTTP and gRPC forms of a service answer one outcome differently, and an `INTERNAL` that carries the internal error leaks connection strings and stack details.
-- Fix: one table shared by every entry point of the application; the failure itself is logged by the handler's logging decorator.
+- Fix: one table shared by every entry point of the application; the failure itself is logged by the command logging middleware.
 
 ### Survive a panicking method
 Answer a method that panics with `INTERNAL`, log the panic, and keep serving.

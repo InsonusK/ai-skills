@@ -14,7 +14,7 @@ type PlanItemsCommand struct {
 // RequiredRole marks PlanItemsCommand access.Restricted: only a planner may plan.
 func (PlanItemsCommand) RequiredRole() string { return "planner" }
 
-// BatchSize marks PlanItemsCommand access.Batch: its size is the number of titles.
+// BatchSize marks PlanItemsCommand batchlimit.Batch: its size is the number of titles.
 func (c PlanItemsCommand) BatchSize() int { return len(c.Titles) }
 
 // PlanItemsResult lists the planned items in the order of the titles.

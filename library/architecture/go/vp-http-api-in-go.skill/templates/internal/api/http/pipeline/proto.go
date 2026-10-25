@@ -11,6 +11,7 @@ import (
 	"google.golang.org/protobuf/proto"
 
 	"{module-path}/internal/api/core/rpcstatus"
+	"{module-path}/internal/api/http/middleware/answerfailures"
 )
 
 // This file is copied only when the contract is a proto file: the routes then
@@ -52,6 +53,6 @@ func ProtoJSON(msg proto.Message) any {
 // message, the way the gRPC form of the method answers.
 func Unimplemented(message string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		writeStatus(w, rpcstatus.Unimplemented, message)
+		answerfailures.WriteStatus(w, rpcstatus.Unimplemented, message)
 	})
 }

@@ -15,6 +15,7 @@ import (
 	grpcapi "github.com/example/todo/internal/api/grpc"
 	httpapi "github.com/example/todo/internal/api/http"
 	"github.com/example/todo/internal/command"
+	commandlogging "github.com/example/todo/internal/command/middleware/logging"
 	"github.com/example/todo/internal/command/pipeline"
 	"github.com/example/todo/internal/config"
 	"github.com/example/todo/internal/infrastructure/memory"
@@ -48,11 +49,11 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 	itemLists := service.NewItemLists(memory.NewLists())
 
 	// [handlers] - the handler of every command, built by the command registry
-	// over the services and wrapped by these decorators, the first the
-	// outermost. A variation point adds its decorator to this list at the
+	// over the services and wrapped by this command middleware, the first the
+	// outermost. A variation point adds its middleware to this list at the
 	// place its skill names.
-	handlers := command.NewHandlers([]pipeline.Decorator{
-		pipeline.WithLogging(logger),
+	handlers := command.NewHandlers([]pipeline.Middleware{
+		commandlogging.Middleware(logger),
 	}, itemLists)
 
 	// [entries] - every entry point, one Entry each, run together by

@@ -11,12 +11,12 @@ import (
 
 	"github.com/cucumber/godog"
 
-	httppipeline "github.com/example/todo/internal/api/http/pipeline"
+	"github.com/example/todo/internal/api/http/middleware/requestlog"
 )
 
 func registerRequestLogSteps(sc *godog.ScenarioContext, w *World) {
 	sc.Step(`^I POST "([^"]*)" with the body '([^']*)' and the request id "([^"]*)"$`, func(path, body, id string) error {
-		w.sendWithHeaders(http.MethodPost, path, body, map[string]string{httppipeline.RequestIDHeader: id})
+		w.sendWithHeaders(http.MethodPost, path, body, map[string]string{requestlog.RequestIDHeader: id})
 		return nil
 	})
 	sc.Step(`^one "([^"]*)" record should be logged with:$`, w.oneRecordShouldBeLoggedWith)
@@ -26,13 +26,13 @@ func registerRequestLogSteps(sc *godog.ScenarioContext, w *World) {
 	sc.Step(`^the "([^"]*)" record should hold the response body '([^']*)'$`, w.theRecordShouldHoldTheResponse)
 	sc.Step(`^the "([^"]*)" record should hold no request$`, w.theRecordShouldHoldNoRequest)
 	sc.Step(`^the response should carry the request id "([^"]*)"$`, func(want string) error {
-		if got := w.response.Header().Get(httppipeline.RequestIDHeader); got != want {
+		if got := w.response.Header().Get(requestlog.RequestIDHeader); got != want {
 			return fmt.Errorf("response request id: got %q, want %q", got, want)
 		}
 		return nil
 	})
 	sc.Step(`^the response should carry a request id of 16 hex characters$`, func() error {
-		if got := w.response.Header().Get(httppipeline.RequestIDHeader); !regexp.MustCompile(`^[0-9a-f]{16}$`).MatchString(got) {
+		if got := w.response.Header().Get(requestlog.RequestIDHeader); !regexp.MustCompile(`^[0-9a-f]{16}$`).MatchString(got) {
 			return fmt.Errorf("response request id: got %q", got)
 		}
 		return nil

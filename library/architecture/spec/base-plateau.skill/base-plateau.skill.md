@@ -37,7 +37,7 @@ Build the base plateau following [app-layers](library/develop/core/app-layers.sk
 | Layer | In the base plateau |
 |---|---|
 | api | the startup entry only; every API variation point adds an entry beside it |
-| command | the commands, their results and handlers, the command registry, the handler contract, handler decorators, the error kinds |
+| command | the commands, their results and handlers, the command registry, the handler contract, the command middleware, the error kinds |
 | domain | the entities and domain services |
 | service, infrastructure | empty — each arrives with a service variation point |
 | composition root | construction of every concrete type, the base settings |
@@ -47,7 +47,7 @@ Build the base plateau following [app-layers](library/develop/core/app-layers.sk
 
 ### One handler per command, one handler contract
 Give every command exactly one handler, and give every handler the same contract: it takes a context and the command and returns the result or an error.
-- Risk: a handler with its own shape cannot be wrapped by a decorator or served by an entry point without code written for it alone.
+- Risk: a handler with its own shape cannot be wrapped by a middleware or served by an entry point without code written for it alone.
 - Fix: define the contract once in the command layer and make every handler satisfy it.
 
 ### Errors carry a kind of error-kinds
@@ -61,10 +61,10 @@ Run the startup command once, write its result to standard output as one machine
 - Fix: the startup entry encodes the result; the exit code comes from the error kind through the runner of the entry points, which stays when the startup entry goes; the composition root names the command and builds its input from a setting the startup entry reads itself, so the setting goes away with the entry.
 
 ### Log through one handler, data only masked
-Write every log record — the command decorator's, each entry point's, later each client's — through the one logger the composition root builds, with the data of the call (a command's parameters, a request's query, headers, and body) as one payload attribute, and let the handler alone decide what reaches the output: the base plateau's writes who, what, how long, and how it ended, and drops the payload; the logging variation point writes the payload masked.
+Write every log record — the command logging middleware's, each entry point's, later each client's — through the one logger the composition root builds, with the data of the call (a command's parameters, a request's query, headers, and body) as one payload attribute, and let the handler alone decide what reaches the output: the base plateau's writes who, what, how long, and how it ended, and drops the payload; the logging variation point writes the payload masked.
 - Violation: an entry point that formats the body into its message; a part that builds its own logger; a base handler that writes the payload as it is.
 - Risk: a secret in a request reaches the log of every service that did not attach the logging variation point; a part with its own format cannot be masked or correlated by any handler.
-- Fix: a pair of records per call at each layer, so the log reads top-down as the call ran — "command called" then "command handled" (with the result) or "command failed" (repeating the command) by the decorator, "received" then "answered" by each entry point with the request id in the context — the data as the payload attribute and the out record marked failed or not.
+- Fix: a pair of records per call at each layer, so the log reads top-down as the call ran — "command called" then "command handled" (with the result) or "command failed" (repeating the command) by the command logging middleware, "received" then "answered" by each entry point with the request id in the context — the data as the payload attribute and the out record marked failed or not.
 
 ### Run every entry point through one runner
 Start the entry points in the composition root's `entries` section as a list run together by one runner of the base plateau: it runs them at once, stops all when the first ends — its work done, its failure, or termination — and turns the outcome into the exit code by the error kind.
@@ -73,13 +73,13 @@ Start the entry points in the composition root's `entries` section as a list run
 - Fix: a variation point adds its entry point to the list, or replaces the startup entry with it; it never starts one itself.
 
 ### Concrete types built only in the composition root
-Construct every concrete type — services, decorators, entry points — in the composition root, in its three marked sections `services`, `handlers`, and `entries`; the handlers are built by the command registry the `handlers` section calls, from the services and decorators the composition root gives it.
+Construct every concrete type — services, middleware, entry points — in the composition root, in its three marked sections `services`, `handlers`, and `entries`; the handlers are built by the command registry the `handlers` section calls, from the services and middleware the composition root gives it.
 - Violation: a handler that constructs its own store, or an entry point that constructs its handler.
 - Risk: a variation point cannot replace or wrap what another package builds for itself, so it has to edit that package.
 - Fix: the composition root builds the object and passes it in; a variation point adds its lines to the matching section.
 
 ### Variation points attach only through the extension points
-Attach a variation point only as [base-plateau-extension](library/architecture/spec/base-plateau-extension.skill/base-plateau-extension.skill.md) describes — its own packages plus lines at the extension points, decorators given as ordered lists — and never by editing another file of the base plateau.
+Attach a variation point only as [base-plateau-extension](library/architecture/spec/base-plateau-extension.skill/base-plateau-extension.skill.md) describes — its own directories plus lines at the extension points, middleware given as ordered lists — and never by editing another file of the base plateau.
 - Risk: two variation points editing the same base file must be described together, and every combination becomes a separate project description.
 - Fix: follow base-plateau-extension's rules and its attach check.
 

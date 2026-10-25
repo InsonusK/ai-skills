@@ -14,6 +14,7 @@ import (
 	cliapi "github.com/example/todo/internal/api/cli"
 	"github.com/example/todo/internal/api/core/entry"
 	"github.com/example/todo/internal/command"
+	commandlogging "github.com/example/todo/internal/command/middleware/logging"
 	"github.com/example/todo/internal/command/pipeline"
 	"github.com/example/todo/internal/config"
 	"github.com/example/todo/internal/logging"
@@ -43,10 +44,11 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 	// [services] - infrastructure and the services over it; none in the base plateau.
 
 	// [handlers] - the handler of every command, built by the command registry
-	// and wrapped by these decorators, the first the outermost. A variation
-	// point adds its decorator to this list at the place its skill names.
-	handlers := command.NewHandlers([]pipeline.Decorator{
-		pipeline.WithLogging(logger),
+	// and wrapped by this command middleware, the first the outermost. A
+	// variation point adds its middleware to this list at the place its skill
+	// names.
+	handlers := command.NewHandlers([]pipeline.Middleware{
+		commandlogging.Middleware(logger),
 	})
 
 	// [entries] - every entry point, one Entry each, run together by

@@ -5,11 +5,10 @@ package pipeline
 import (
 	"context"
 
-	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"{module-path}/internal/api/core/rpcstatus"
+	"{module-path}/internal/api/grpc/middleware/answerfailures"
 	commandpipeline "{module-path}/internal/command/pipeline"
 )
 
@@ -20,7 +19,7 @@ import (
 //     (TRequest, e.g. *todo.PlanItemsRequest); if it cannot, the answer is
 //     INVALID_ARGUMENT and the handler is not called;
 //  2. the handler runs the command;
-//  3. an error is answered by its kind (see statusOf);
+//  3. an error is answered by its kind (see answerfailures.StatusOf);
 //  4. encode turns the result (TResult) into the response message
 //     (TResponse, e.g. *todo.PlanItemsResponse).
 //
@@ -42,29 +41,9 @@ func Call[TRequest, TCommand, TResult, TResponse any](
 	}
 	result, err := handler.Handle(ctx, cmd)
 	if err != nil {
-		return none, statusOf(err)
+		return none, answerfailures.StatusOf(err)
 	}
 	return encode(result), nil
-}
-
-// statusOf answers an error by its kind through the one table of rpcstatus:
-// a kind's code and message, or INTERNAL "internal error" for an error with
-// no kind. The failure itself is logged by the handler's logging decorator.
-func statusOf(err error) error {
-	code, message := rpcstatus.Of(err)
-	return status.Error(codes.Code(code), message)
-}
-
-// answerKinds answers an error an interceptor of the application returned by
-// its kind, the way Call answers a handler's, so an interceptor rejects a call
-// with an error of a kind instead of building a status itself. An error that
-// already is a status passes unchanged.
-func answerKinds(ctx context.Context, req any, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
-	resp, err := handler(ctx, req)
-	if _, isStatus := status.FromError(err); !isStatus {
-		return resp, statusOf(err)
-	}
-	return resp, err
 }
 
 // Unimplemented is the answer of a method the contract keeps but no longer

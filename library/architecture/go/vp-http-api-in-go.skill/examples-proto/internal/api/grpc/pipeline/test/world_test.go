@@ -19,6 +19,7 @@ import (
 	"google.golang.org/grpc/test/bufconn"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
+	"github.com/example/todo/internal/api/grpc/middleware/calllog"
 	grpcpipeline "github.com/example/todo/internal/api/grpc/pipeline"
 	"github.com/example/todo/internal/command/pipeline"
 	"github.com/example/todo/internal/logging"
@@ -226,13 +227,13 @@ func callEchoWithID(conn *grpc.ClientConn, text, id string) (string, string, err
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if id != "" {
-		ctx = metadata.AppendToOutgoingContext(ctx, grpcpipeline.RequestIDMetadata, id)
+		ctx = metadata.AppendToOutgoingContext(ctx, calllog.RequestIDMetadata, id)
 	}
 	out := new(wrapperspb.StringValue)
 	var header metadata.MD
 	err := conn.Invoke(ctx, echoMethod, wrapperspb.String(text), out, grpc.Header(&header))
 	sent := ""
-	if values := header.Get(grpcpipeline.RequestIDMetadata); len(values) > 0 {
+	if values := header.Get(calllog.RequestIDMetadata); len(values) > 0 {
 		sent = values[0]
 	}
 	return out.GetValue(), sent, err
