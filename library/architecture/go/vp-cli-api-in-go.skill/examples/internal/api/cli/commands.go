@@ -41,7 +41,7 @@ func Resources(e Endpoints) []clipipeline.Resource {
 // entry.RunAll: it runs the action args name over the handlers of the
 // registry and ends, and the process ends with it. It shows its error itself
 // (ReportsErrors), so RunAll does not log it again. The command line has no
-// decorators of its own: a step on every action is a command decorator.
+// middleware of its own: a step on every action is a command middleware.
 func Entry(handlers command.Handlers, logger *slog.Logger, name, version string, args []string, stdout, stderr io.Writer) entry.Entry {
 	endpoints := NewEndpoints(handlers)
 	return entry.Entry{Name: "cli", ReportsErrors: true, Run: func(ctx context.Context) error {

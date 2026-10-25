@@ -19,7 +19,7 @@ func logf(format string, args ...any) {
 
 // World holds per-scenario state, reset before every scenario.
 type World struct {
-	logs   bytes.Buffer // what the server and the decorators logged, every attribute kept
+	logs   bytes.Buffer // what the server and the middleware logged, every attribute kept
 	server http.Handler // the application's HTTP API with the access variation point attached
 	status int
 	body   []byte

@@ -23,7 +23,7 @@ func registerLoggingSteps(sc *godog.ScenarioContext, w *World) {
 }
 
 // wrap logs through a plain JSON handler, which keeps the payload, so the
-// scenarios see every attribute the decorator writes - what the base handler
+// scenarios see every attribute the middleware writes - what the base handler
 // then drops is the logging package's scenarios' concern.
 func (w *World) wrap(name string, inner pipeline.HandlerFunc[string, string]) {
 	logger := slog.New(slog.NewJSONHandler(&w.logs, nil))

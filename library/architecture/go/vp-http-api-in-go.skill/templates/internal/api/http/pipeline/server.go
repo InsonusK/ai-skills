@@ -21,8 +21,8 @@ type Route struct {
 	Handler http.Handler
 }
 
-// Middleware is a decorator of the requests of the contract's routes - the
-// HTTP form of an entry decorator (skill base-plateau-extension): it takes the
+// Middleware is a middleware of the requests of the contract's routes - the
+// HTTP form of an API middleware (skill base-plateau-extension): it takes the
 // next handler and returns one that does its step around it, e.g. reads the
 // caller's credentials into the request's context. It rejects a request by
 // answering an error of a kind with answerfailures.WriteError, never with an

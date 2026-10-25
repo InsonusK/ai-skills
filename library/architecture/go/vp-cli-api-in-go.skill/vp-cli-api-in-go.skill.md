@@ -83,7 +83,7 @@ Copy the example's `internal/api/cli/pipeline/features/` and `test/` unchanged b
 ## SHOULD
 
 ### Offer a new command in its resource's file
-Offer a further command of an existing resource by adding its field, its line of `New{Resource}Handler`, its action line, and its `bind`, `encode`, and `text` to the resource's file, and its scenario to the resource's feature; the command itself joins the command registry; `main.go` does not change. A new resource adds its file and feature, one field of `Endpoints`, and one line each of `NewEndpoints` and `Resources`. The command line has no entry decorators: a step on every action is a command decorator ([base-plateau-extension-in-go](library/architecture/go/base-plateau-extension-in-go.skill/base-plateau-extension-in-go.skill.md)).
+Offer a further command of an existing resource by adding its field, its line of `New{Resource}Handler`, its action line, and its `bind`, `encode`, and `text` to the resource's file, and its scenario to the resource's feature; the command itself joins the command registry; `main.go` does not change. A new resource adds its file and feature, one field of `Endpoints`, and one line each of `NewEndpoints` and `Resources`. The command line has no API middleware: a step on every action is a command middleware ([base-plateau-extension-in-go](library/architecture/go/base-plateau-extension-in-go.skill/base-plateau-extension-in-go.skill.md)).
 
 # Check list
 - [ ] `internal/api/cli/pipeline/{cli,command,logging}.go` are filled copies of the templates; no placeholder is left.

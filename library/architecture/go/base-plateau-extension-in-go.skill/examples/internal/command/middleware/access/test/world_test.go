@@ -49,7 +49,7 @@ func registerWorldHooks(sc *godog.ScenarioContext, w *World) {
 }
 
 // The commands of these tests: one with each mark, one with none, so the
-// decorators are tested without any command of the application.
+// middleware are tested without any command of the application.
 type restrictedCommand struct{ role string }
 
 func (c restrictedCommand) RequiredRole() string { return c.role }

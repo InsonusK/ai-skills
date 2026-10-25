@@ -27,7 +27,7 @@ func registerAccessCheckSteps(sc *godog.ScenarioContext, w *World) {
 	sc.Step(`^the call should be rejected as (unauthenticated|permission denied) with "([^"]*)"$`, w.theCallShouldBeRejected)
 }
 
-// theCaller puts the caller into the call's context, as an entry decorator does.
+// theCaller puts the caller into the call's context, as an API middleware does.
 func (w *World) theCaller(user, roles string) error {
 	identity := access.Identity{User: user}
 	if roles != "" {

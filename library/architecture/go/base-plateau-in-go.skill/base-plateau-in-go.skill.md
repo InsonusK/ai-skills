@@ -96,7 +96,7 @@ return entry.ExitCode(err)
 - Fix: a variation point adds its `Entry` to the list (health) or replaces the startup `Entry` with its own (an API), built by its entry factory (`httpapi.Entry(handlers, logger, middlewares)`); `RunAll` and `ExitCode` stay as they are. `RunAll` logs the error of an entry, unless the entry sets `ReportsErrors: true` because it shows the error itself (the CLI).
 
 ### Cover each layer with scenarios
-Cover `internal/domain/entity`, `internal/domain/service`, `internal/command`, `internal/command/pipeline`, `internal/command/middleware/logging`, `internal/api/startup`, `internal/api/core/entry`, `internal/logging`, and `internal/config` with Cucumber scenarios per [cucumber-testing-in-go](library/testing/go/cucumber-testing-in-go.skill.md), tagged `@type/domain`, `@type/service` (commands), `@type/tech-check` (decorators, settings, the runner), and `@type/api/cli` (startup entry), run by `go test ./...`.
+Cover `internal/domain/entity`, `internal/domain/service`, `internal/command`, `internal/command/pipeline`, `internal/command/middleware/logging`, `internal/api/startup`, `internal/api/core/entry`, `internal/logging`, and `internal/config` with Cucumber scenarios per [cucumber-testing-in-go](library/testing/go/cucumber-testing-in-go.skill.md), tagged `@type/domain`, `@type/service` (commands), `@type/tech-check` (middleware, settings, the runner), and `@type/api/cli` (startup entry), run by `go test ./...`.
 - Risk: a layer without scenarios lets a variation point break it unnoticed, since the variation point's example reruns the base scenarios as its regression check.
 - Fix: one `features/` and `test/` pair per package; `make test` passes.
 

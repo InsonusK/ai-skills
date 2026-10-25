@@ -13,7 +13,7 @@ import (
 	"github.com/example/todo/internal/command"
 )
 
-// Interceptor is a decorator of every call of the contract (see
+// Interceptor is an API middleware of every call of the contract (see
 // grpcpipeline.Interceptor); the composition root lists them for Entry.
 type Interceptor = grpcpipeline.Interceptor
 

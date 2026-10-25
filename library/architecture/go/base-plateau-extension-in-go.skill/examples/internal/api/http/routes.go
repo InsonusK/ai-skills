@@ -14,7 +14,7 @@ import (
 	"github.com/example/todo/internal/command"
 )
 
-// Middleware is a decorator of the requests of every contract route (see
+// Middleware is an API middleware of the requests of every contract route (see
 // httppipeline.Middleware); the composition root lists them for Entry.
 type Middleware = httppipeline.Middleware
 
