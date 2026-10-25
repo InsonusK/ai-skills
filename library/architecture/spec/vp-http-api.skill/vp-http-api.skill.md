@@ -2,7 +2,7 @@
 name: vp-http-api
 description: The HTTP API variation point — an entry point attached to the base plateau that serves commands as versioned HTTP routes, answers errors by their kind, publishes its OpenAPI contract and Swagger UI, stops gracefully, and replaces the startup entry without editing any other base file
 whenToUse: when an application built on the base plateau must be reachable over HTTP — adding the HTTP entry point, serving a new command over HTTP, or reviewing the HTTP entry point of such an application
-updated: 20261022
+updated: 20261025
 tags:
   - stack
   - concern/architecture
@@ -67,6 +67,12 @@ Answer a request that cannot be decoded with 400 `INVALID_ARGUMENT` without call
 Write two records per request through the composition root's logger — one when it arrives, with what arrived as the payload, one when it is answered — the second with the method, the path, the status, and the duration, whether it failed, and as the payload the query, the headers, and the body received and the body sent back as written; put the request id — the client's (`X-Request-Id`), else a new one — into the context and send it back.
 - Risk: a request that failed cannot be found or replayed from the log, its records cannot be told from those of the requests served at the same time, and a fault in turning the result into the response is invisible.
 - Fix: an in record and an out record per request, so the log reads top-down with the command's records between them; the out record of a failure repeats the input; the data only as the payload attribute, so the base handler drops it and the logging variation point masks it.
+
+### Keep the request log and answer failures inside the entry
+Build the request log and the answer of every failure inside the HTTP entry point, from the logger the composition root gives it, around every request the server takes — a contract's route, the docs, an unknown path, a method a path does not serve, a route that crashed — the request log outermost; run the composition root's list of middleware inside them, around the contract's routes only. Decision recorded in [fixed-middleware-inside-the-entry](library/architecture/spec/base-plateau-extension.skill/adr/fixed-middleware-inside-the-entry.md).
+- Violation: a request log or an error-answering middleware listed in the composition root; an unknown path answered in the framework's plain text; a crashed route that cuts the connection.
+- Risk: an application whose list leaves them out, or puts a middleware before them, loses the log line or the error format; a request outside the contract's routes is answered unlogged and in a format the contract does not describe.
+- Fix: the fixed middleware of the stack's templates, built by its server; a scenario for each failure the API answers itself — a middleware's rejection, an unknown path and another method, a crashed route.
 
 ### Stop gracefully
 On termination (`SIGTERM`), stop accepting connections, let requests in flight finish within a bounded time, and return without an error.

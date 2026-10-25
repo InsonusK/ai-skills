@@ -71,6 +71,20 @@ services.AddGrpcApi(interceptors: []);
 - Risk: a server started outside the list is not stopped when another entry point fails; services registered in the root container are never seen by the gRPC server, which has a container of its own.
 - Fix: the registered entry reads the settings, builds the server on HTTP/2, and serves until `stopping` is cancelled, the application's interceptors — built from its services — after the call log and the error answers, so an interceptor rejects a call by throwing an `ErrorKindException`; other entries of the list (health, HTTP) stay as they are.
 
+### Keep the fixed middleware inside the server
+Let `GrpcServer.Build` add its fixed interceptors with the logger it creates from the logger factory of `AddGrpcApi`'s entry — `CallLogMiddleware` first, then `AnswerFailuresMiddleware` (every exception as its kind's status) — before the list of `AddGrpcApi`, each of which runs wrapped in `ApplicationInterceptor`, as [fixed-middleware-inside-the-entry](library/architecture/spec/base-plateau-extension.skill/adr/fixed-middleware-inside-the-entry.md) requires.
+
+```csharp
+// Api/Grpc/Pipeline/GrpcServer.cs, Build
+grpc.Interceptors.Add<CallLogMiddleware>(logger);
+grpc.Interceptors.Add<AnswerFailuresMiddleware>(logger);
+// then each interceptor of the list: grpc.Interceptors.Add<ApplicationInterceptor>(interceptor)
+```
+
+- Violation: `typeof(CallLogMiddleware)` given in `AddGrpcApi`'s list; an interceptor that throws an `RpcException` of its own.
+- Risk: a call an interceptor rejects is answered outside the error-kinds table, or unlogged.
+- Fix: the copied `GrpcServer.cs`; the scenarios of `Interceptor.feature` and `Call.feature` hold the order and the failures.
+
 ### Cover the entry point with scenarios
 Copy the example's `src/App/App.Host.Tests/features/Grpc/` scenarios of the fixed code (`Call`, `CallLog`, `Interceptor`, `GrpcConfig`, `Reflection`, `GrpcServe`) with their steps (`Steps/Grpc/GrpcWorld.cs`, `GrpcCallSteps`, `CallLogSteps`, `InterceptorSteps`, `GrpcConfigSteps`, `ReflectionSteps`, `GrpcServeSteps`), the test service `Protos/test.proto`, `Steps/CapturedLogs.cs`, `Steps/FreePort.cs`, and `features/RpcStatus.feature` with its steps, and add `Microsoft.AspNetCore.TestHost`, `Grpc.Net.Client`, and `Grpc.Tools` to the test project; write one feature per service, calling it through the generated client with its handlers faked, and the contract scenario — every service of the proto file served, and every rpc overridden; tag them `@type/api/grpc` and `@type/tech-check`.
 - Violation: a step text without "gRPC" in it; no scenario that every rpc is overridden.

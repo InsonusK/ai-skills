@@ -61,10 +61,12 @@ func NewServer(cfg Config, routes []Route, logger *slog.Logger, middlewares []Mi
 
 // Handler registers every route on one ServeMux: the contract routes, each
 // wrapped by the middlewares, then, when enabled, the docs routes outside the
-// contract and outside the middlewares. The fixed middleware wrap them all -
-// the request log outermost, then answerfailures - so a request a middleware
-// rejects, or one whose handler panicked, is answered and logged like any
-// other.
+// contract and outside the middlewares. The fixed middleware, built here
+// from the server's logger, wrap them all - the request log outermost, then
+// answerfailures, which also answers a request no route serves - so a request
+// a middleware rejects, one whose handler panicked, or one of an unknown path
+// is answered and logged like any other (ADR fixed-middleware-inside-the-entry
+// of skill base-plateau-extension).
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
 	for _, route := range s.routes {
@@ -73,7 +75,7 @@ func (s *Server) Handler() http.Handler {
 	if s.cfg.DocsEnabled {
 		registerDocs(mux, s.cfg.BasePath)
 	}
-	return requestlog.Middleware(s.logger)(answerfailures.Middleware(s.logger)(mux))
+	return requestlog.Middleware(s.logger)(answerfailures.Middleware(s.logger)(answerfailures.Unrouted(mux)))
 }
 
 // decorate wraps one contract route with the middlewares: the last wraps the

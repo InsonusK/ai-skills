@@ -75,6 +75,18 @@ Add `github.com/spf13/cobra` at `v1.10.2` with `go get` and run `go mod tidy`.
 - Risk: another version beside the one `godog` already requires (v1.10.2) downgrades `godog` in `go.mod`.
 - Fix: commit `go.mod` and `go.sum` with this version.
 
+### Keep the run log and the answer of every failure inside Run
+Let `clipipeline.Run` write the run log from the logger `cliapi.Entry` gives it and answer every failure itself — a usage error as invalid, an error of the command with its kind, an action that panics as a failure with no kind (`Error: internal error`, exit code `1`, the panic logged) — as [fixed-middleware-inside-the-entry](library/architecture/spec/base-plateau-extension.skill/adr/fixed-middleware-inside-the-entry.md) requires; the command line takes no list of middleware.
+
+```go
+// internal/api/cli/pipeline/cli.go
+ran, err := execute(ctx, logger, root, args) // recovers a panicking action
+```
+
+- Violation: an action whose panic reaches the runtime; a recover written in a resource's file.
+- Risk: Go ends the process on a panic with exit code `2`, the code of a rejected command, so a script does not retry, and the run leaves no record.
+- Fix: the copied `cli.go`; the scenario "An action that crashes is answered as a failure with no kind and logged".
+
 ### Cover the entry point with scenarios
 Copy the example's `internal/api/cli/pipeline/features/` and `test/` unchanged but for the module path: they cover the fixed code through a test resource of their own. In `internal/api/cli/endpoint/` write one feature per resource, running `cliapi.Run` with `cliapi.Endpoints` over faked handlers (`pipeline.HandlerFunc`), checking the flags the handler received and the JSON and text output; tag them `@type/api/cli`.
 - Risk: a resource feature that repeats the usage errors grows with every resource and tests nothing new.

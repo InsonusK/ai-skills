@@ -74,6 +74,9 @@ Feature: Command endpoint
     When I GET "<path>"
     Then the response status should be <status>
     And the error body should have code <code> and a message containing "<path>"
+    And one "http response sent" record should be logged with:
+      | method | path   | status   | failed |
+      | GET    | <path> | <status> | true   |
 
     Examples:
       | path     | status | code |

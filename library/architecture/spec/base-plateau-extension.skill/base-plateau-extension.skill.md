@@ -10,6 +10,7 @@ tags:
   - app-type/cli
 adr:
   - adr/command-registry-and-middleware-lists.md
+  - adr/fixed-middleware-inside-the-entry.md
 ---
 
 # Goal
@@ -93,7 +94,7 @@ Give the command middleware, and the API middleware of each API, as one list in 
 - Fix: one list per kind; a variation point inserts its middleware at the place its skill names — an access check after the logging, so a rejected call is logged.
 
 ### Keep the fixed middleware outermost
-Let each API's entry factory put its fixed middleware — the request log outermost, then answer failures — around everything the API serves, and the API middleware of the list around the contract's routes only, never around the docs or the management endpoints.
+Let each API's entry factory build its fixed middleware itself from the logger it is given — the request log outermost, then answer failures — and put them around everything the API serves, and the API middleware of the list around the contract's routes only, never around the docs or the management endpoints. Decision recorded in [fixed-middleware-inside-the-entry](./adr/fixed-middleware-inside-the-entry.md), which every API variation point follows.
 - Violation: an authentication middleware placed before the request log; a rate limit around the Swagger UI; the request log given in the composition root's list.
 - Risk: a request rejected by an API middleware leaves no log line and gets an answer in a format the contract does not describe; the docs become unreachable for the people who need them to call the API; a request of no route of the contract (an unknown path) is answered unlogged.
 - Fix: the entry factory owns the fixed middleware and their order; the composition root gives only the list of the contract's middleware.
@@ -139,7 +140,7 @@ Add a cross-cutting step (logging, a unit of work, a metric, an access check) as
 - [ ] Every handler is built and wrapped in the command registry; the composition root gives it the list of command middleware and the services.
 - [ ] Every middleware lives in `middleware/{name}/` of the layer it wraps and is named `{Name}Middleware`.
 - [ ] Each API's entry is built by its entry factory from the registry, the logger, and its list of API middleware.
-- [ ] Every list is ordered first = outermost; the request log and answer failures stay outside the API middleware, and answer every failure as `google.rpc.Status`.
+- [ ] Every list is ordered first = outermost; the request log and answer failures are built by the entry itself from its logger, stay outside the API middleware, and answer every failure in the API's error format ([fixed-middleware-inside-the-entry](./adr/fixed-middleware-inside-the-entry.md)).
 - [ ] A middleware rejects with an error kind, and a filtered middleware selects commands by a mark.
 - [ ] Authentication is an API middleware; the access check is a command middleware.
 - [ ] The variation point reads its own settings in its own directory.

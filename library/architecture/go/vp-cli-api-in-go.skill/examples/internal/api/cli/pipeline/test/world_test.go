@@ -28,6 +28,7 @@ type World struct {
 	// entry point is tested without any command of the application
 	echoAnswer string
 	echoErr    error
+	echoPanics bool // the echo handler panics, as a bug in a handler would
 	echoCalled bool
 	echoGot    echoCommand
 
@@ -51,6 +52,9 @@ func (w *World) echoHandler() pipeline.Handler[echoCommand, echoResult] {
 	return pipeline.HandlerFunc[echoCommand, echoResult](
 		func(_ context.Context, cmd echoCommand) (echoResult, error) {
 			w.echoCalled, w.echoGot = true, cmd
+			if w.echoPanics {
+				panic("echo handler broke")
+			}
 			return echoResult{Text: w.echoAnswer}, w.echoErr
 		})
 }

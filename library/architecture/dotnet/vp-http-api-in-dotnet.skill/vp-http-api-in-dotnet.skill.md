@@ -129,6 +129,21 @@ services.AddHttpApi(middlewares: []);
 - Risk: every line of the entry point's start in `Program.cs` is a line each later variation point's instruction must step around; a server started outside the list is not stopped when another entry point fails.
 - Fix: the registered entry reads the settings, builds the server, and serves until `stopping` is cancelled, each contract route wrapped by the middlewares — built from the application's services — inside the request log and the error answers, the docs outside them; other entries of the list (health, gRPC) stay as they are.
 
+### Keep the fixed middleware inside the server
+Let `HttpServer.Build` use its fixed middleware with the logger it creates from the logger factory of `AddHttpApi`'s entry — `RequestLogMiddleware` first, then `AnswerFailuresMiddleware` (every exception, and ASP.NET's own 404, 405, and 415, as `google.rpc.Status`) — before routing, and the list of `AddHttpApi` after routing, for the contract's routes only, as [fixed-middleware-inside-the-entry](library/architecture/spec/base-plateau-extension.skill/adr/fixed-middleware-inside-the-entry.md) requires.
+
+```csharp
+// Api/Http/Pipeline/HttpServer.cs, Build
+app.UseMiddleware<RequestLogMiddleware>(logger);
+app.UseMiddleware<AnswerFailuresMiddleware>(logger);
+app.UseRouting();
+app.UseWhen(/* a route of the contract */, contract => /* the list of AddHttpApi */);
+```
+
+- Violation: `typeof(RequestLogMiddleware)` or `typeof(AnswerFailuresMiddleware)` given in `AddHttpApi`'s list; a middleware of the list that writes a status code of its own.
+- Risk: a request the list does not reach — the docs, an unknown path — is unlogged or answered without a body.
+- Fix: the copied `HttpServer.cs`; the scenarios of `Middleware.feature` and `Endpoint.feature` hold the order, the failures, and the 404 and 405, each logged.
+
 ### Cover the entry point with scenarios
 Copy the example's `src/App/App.Host.Tests/features/Http/` scenarios of the fixed code (`Endpoint`, `RequestLog`, `Middleware`, `HttpConfig`, `HttpServe`, `Docs`) with their steps (`Steps/Http/HttpWorld.cs`, `HttpRequestSteps`, `RequestLogSteps`, `MiddlewareSteps`, `HttpConfigSteps`, `HttpServeSteps`, `DocsSteps`), `Steps/CapturedLogs.cs`, `Steps/FreePort.cs`, and `features/RpcStatus.feature` with its steps, and add `Microsoft.AspNetCore.TestHost` to the test project; write one feature per resource with its handlers faked (a `IRequestHandler` registered in `HttpWorld.Handlers`) and the contract scenario; tag them `@type/api/http` and `@type/tech-check`.
 - Violation: a step text without "HTTP" in it (`the status should be 200`); a resource feature that repeats the error answers.

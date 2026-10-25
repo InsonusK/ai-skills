@@ -98,6 +98,20 @@ Run the service from its project tree — the image copies the project and insta
 - Risk: a wheel installed without the tree has no contract; with the docs enabled, the server stops at start saying so.
 - Fix: keep the tree in the image; with the docs disabled the contract is never read.
 
+### Keep the fixed middleware inside the server
+Let `Server.app()` add its fixed middleware from the logger `http_api.entry` gives it — `RequestLogMiddleware` outermost, then `AnswerFailuresMiddleware`, with the exception handlers answering `KindError`, binding errors, 404, and 405 — around the whole application, and the list of `entry` inside them, around the contract's routes only (`ContractMiddlewares`), as [fixed-middleware-inside-the-entry](library/architecture/spec/base-plateau-extension.skill/adr/fixed-middleware-inside-the-entry.md) requires.
+
+```python
+# api/http/pipeline/server.py, Server.app
+app.add_middleware(ContractMiddlewares, routes=contract, middlewares=self._middlewares)
+app.add_middleware(AnswerFailuresMiddleware, logger=self._logger)
+app.add_middleware(RequestLogMiddleware, logger=self._logger)  # added last: the outermost
+```
+
+- Violation: `RequestLogMiddleware` or `AnswerFailuresMiddleware` given in `http_api.entry`'s list; a middleware of the list that returns a `JSONResponse` with an error.
+- Risk: a request the list does not reach — the docs, an unknown path — is unlogged; an exception of a middleware reaches Starlette's own plain answer.
+- Fix: the copied `server.py`; the scenarios of `middleware.feature` and `endpoint.feature` hold the order, the failures, and the 404 and 405, each logged.
+
 ### Cover the entry point with scenarios
 Copy the pipeline's and rpcstatus's scenarios — the middlewares in their order, a rejected request, and the docs outside them among them — and add per resource a feature with its fake command handlers and the contract feature.
 - Risk: a resource without its scenario lets a route call the wrong command or map a field wrongly.

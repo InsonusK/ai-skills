@@ -2,7 +2,7 @@
 name: vp-grpc-api
 description: The gRPC API variation point — an entry point attached to the base plateau that serves commands as methods of a versioned proto contract, answers errors by their kind, survives a panicking method, offers server reflection behind a switch, stops gracefully, and replaces the startup entry without editing any other base file
 whenToUse: when an application built on the base plateau must be reachable over gRPC — adding the gRPC entry point, serving a new command over gRPC, or reviewing the gRPC entry point of such an application
-updated: 20261021
+updated: 20261025
 tags:
   - stack
   - concern/architecture
@@ -55,6 +55,12 @@ Answer a request that cannot become the command with `INVALID_ARGUMENT` without 
 Answer a method that panics with `INTERNAL`, log the panic, and keep serving.
 - Risk: in a runtime that does not recover a panic in a call (grpc-go), one bad request stops the process and every call in flight with it.
 - Fix: a server interceptor that recovers, registered once for every method.
+
+### Keep the call log and answer failures inside the entry
+Build the call log and the answer of every failure inside the gRPC entry point, from the logger the composition root gives it, around every call the server takes — a contract's method, reflection, a method that crashed, an error of an interceptor of the application — the call log outermost; run the composition root's list of interceptors inside them. Decision recorded in [fixed-middleware-inside-the-entry](library/architecture/spec/base-plateau-extension.skill/adr/fixed-middleware-inside-the-entry.md).
+- Violation: a call log or an error-answering interceptor listed in the composition root; an interceptor of the application that builds a status of its own.
+- Risk: an application whose list leaves them out, or puts an interceptor before them, loses the log line or answers an error of a kind as `UNKNOWN`.
+- Fix: the fixed interceptors of the stack's templates, built by its server; an interceptor of the application rejects with an error of a kind.
 
 ### Offer server reflection behind a switch
 Serve gRPC server reflection only when `GRPC_REFLECTION_ENABLED` is `true`; it is off by default.

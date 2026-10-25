@@ -77,6 +77,18 @@ Add `google.golang.org/grpc` at `v1.84.0` and `google.golang.org/protobuf` at `v
 - Risk: an unpinned version builds a different server or generates different code on another machine.
 - Fix: commit `go.mod` and `go.sum` with these versions.
 
+### Keep the fixed middleware inside the server
+Let `grpcpipeline.Server` chain its fixed middleware from the logger `grpcapi.Entry` gives it — `calllog.Middleware` first, then `answerfailures.Middleware` (a panic as INTERNAL, an error of a kind as its status) — before the list of `Entry`, as [fixed-middleware-inside-the-entry](library/architecture/spec/base-plateau-extension.skill/adr/fixed-middleware-inside-the-entry.md) requires.
+
+```go
+// internal/api/grpc/pipeline/server.go, build
+chain := append([]Interceptor{calllog.Middleware(s.logger), answerfailures.Middleware(s.logger)}, s.interceptors...)
+```
+
+- Violation: `calllog.Middleware` or `answerfailures.Middleware` given in `grpcapi.Entry`'s list; an interceptor that builds a status of its own.
+- Risk: a call an interceptor rejects is answered `UNKNOWN` or unlogged; a panic stops the process.
+- Fix: the copied `server.go`; the scenarios of `interceptor.feature` and `call.feature` hold the order, the rejection, and the panic.
+
 ### Cover the entry point with scenarios
 Copy the example's `internal/api/grpc/pipeline/features/` and `test/` unchanged but for the module path in their imports: they cover the fixed code through an in-memory server (`bufconn`) and a test service of their own — the error mapping, a panic, the interceptors in their order and a call one rejects, reflection on and off, the settings, and `Run` with a call in flight during the stop. In `internal/api/grpc/endpoint/` write one feature per service, calling it through the generated client with its handlers faked (`pipeline.HandlerFunc`), and the contract scenario comparing `grpcapi.Services` with the services of the generated file descriptor; tag them `@type/api/grpc` and `@type/tech-check`.
 - Risk: a variation point without scenarios lets a change in the error mapping or the shutdown reach production unnoticed; a service feature that repeats the error mapping grows the suite with every service and tests nothing new.
