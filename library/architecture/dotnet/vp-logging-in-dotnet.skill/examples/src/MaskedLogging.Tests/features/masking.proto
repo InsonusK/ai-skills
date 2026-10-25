@@ -1,0 +1,44 @@
+// The proto messages the masking scenarios give as a payload. Shared by every
+// stack's logging variation point like the .feature files beside it: each
+// stack builds these messages from this file (compiled or parsed at test
+// time), never from a hand-written copy.
+syntax = "proto3";
+
+package conformance.masking;
+
+import "google/protobuf/any.proto";
+
+// A field marked debug_redact beside one that is not.
+message Pin {
+  string title = 1;
+  string pin = 2 [debug_redact = true];
+}
+
+// Every place a secret can hide in a message: a nested message, a repeated
+// one, a map key, a field named like a secret, bytes, and an Any.
+message Wallet {
+  string owner = 1;
+  Pin main = 2;
+  repeated Pin spare = 3;
+  map<string, string> labels = 4;
+  string api_key = 5;
+  bytes blob = 6;
+  google.protobuf.Any extra = 7;
+  Kind kind = 8;
+  repeated bytes blobs = 9;
+  map<string, bytes> files = 10;
+  int32 count = 11;
+}
+
+enum Kind {
+  KIND_UNSPECIFIED = 0;
+  KIND_GOLD = 1;
+}
+
+// A message that holds itself, for the depth the mask walks down to.
+message Node {
+  string title = 1;
+  Node next = 2;
+  repeated Node children = 3;
+  map<string, Node> named = 4;
+}

@@ -25,6 +25,9 @@ message Wallet {
   bytes blob = 6;
   google.protobuf.Any extra = 7;
   Kind kind = 8;
+  repeated bytes blobs = 9;
+  map<string, bytes> files = 10;
+  int32 count = 11;
 }
 
 enum Kind {
