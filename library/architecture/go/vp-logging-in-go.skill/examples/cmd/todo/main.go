@@ -47,9 +47,12 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 
 	// [services] - infrastructure and the services over it; none in the base plateau.
 
-	// [handlers] - one per command, wrapped by its decorators.
-	var planItems pipeline.Handler[command.PlanItemsCommand, command.PlanItemsResult] = command.NewPlanItemsHandler()
-	planItems = pipeline.WithLogging("PlanItems", logger, planItems)
+	// [handlers] - the handler of every command, built by the command registry
+	// and wrapped by these decorators, the first the outermost. A variation
+	// point adds its decorator to this list at the place its skill names.
+	handlers := command.NewHandlers([]pipeline.Decorator{
+		pipeline.WithLogging(logger),
+	})
 
 	// [entries] - every entry point, one Entry each, run together by
 	// entry.RunAll until the first one ends. The base plateau has only the
@@ -57,7 +60,7 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 	// variation point adds one.
 	err = entry.RunAll(ctx, logger,
 		entry.Entry{Name: "startup", Run: func(ctx context.Context) error {
-			return startup.Run(ctx, planItems, command.PlanItemsCommand{Titles: startup.EnvList("STARTUP_TITLES")}, stdout)
+			return startup.Run(ctx, handlers.PlanItems, command.PlanItemsCommand{Titles: startup.EnvList("STARTUP_TITLES")}, stdout)
 		}},
 	)
 	return entry.ExitCode(err)

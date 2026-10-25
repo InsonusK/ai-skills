@@ -5,6 +5,7 @@ package pipeline
 import (
 	"context"
 
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -52,6 +53,18 @@ func Call[TRequest, TCommand, TResult, TResponse any](
 func statusOf(err error) error {
 	code, message := rpcstatus.Of(err)
 	return status.Error(codes.Code(code), message)
+}
+
+// answerKinds answers an error an interceptor of the application returned by
+// its kind, the way Call answers a handler's, so an interceptor rejects a call
+// with an error of a kind instead of building a status itself. An error that
+// already is a status passes unchanged.
+func answerKinds(ctx context.Context, req any, _ *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (any, error) {
+	resp, err := handler(ctx, req)
+	if _, isStatus := status.FromError(err); !isStatus {
+		return resp, statusOf(err)
+	}
+	return resp, err
 }
 
 // Unimplemented is the answer of a method the contract keeps but no longer

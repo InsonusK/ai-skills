@@ -37,9 +37,10 @@ type World struct {
 	echoGot    echoCommand
 	echoReqID  string // the request id in the command's context
 
-	cfg       httppipeline.Config
-	logs      bytes.Buffer // what the server logged, every attribute kept
-	decorated bool         // the echo handler is wrapped with pipeline.WithLogging
+	cfg         httppipeline.Config
+	logs        bytes.Buffer // what the server logged, every attribute kept
+	decorated   bool         // the echo handler is wrapped with pipeline.WithLogging
+	middlewares []httppipeline.Middleware
 
 	response *httptest.ResponseRecorder
 
@@ -85,7 +86,7 @@ type echoResult struct{ Text string }
 // records land between the server's.
 func (w *World) echoHandler() pipeline.Handler[echoCommand, echoResult] {
 	if w.decorated {
-		return pipeline.WithLogging("Echo", w.logger(), w.fakeEcho())
+		return pipeline.Decorate("Echo", w.fakeEcho(), []pipeline.Decorator{pipeline.WithLogging(w.logger())})
 	}
 	return w.fakeEcho()
 }
@@ -125,7 +126,7 @@ var moreRoutes func(w *World) []httppipeline.Route
 // server logs through a plain JSON handler, which keeps the payload, so the
 // scenarios see every attribute the server writes.
 func (w *World) server() *httppipeline.Server {
-	return httppipeline.NewServer(w.cfg, w.routes(), w.logger())
+	return httppipeline.NewServer(w.cfg, w.routes(), w.logger(), w.middlewares)
 }
 
 func (w *World) logger() *slog.Logger {

@@ -26,7 +26,7 @@ func registerLoggingSteps(sc *godog.ScenarioContext, w *World) {
 // then drops is the logging package's scenarios' concern.
 func (w *World) wrap(name string, inner pipeline.HandlerFunc[string, string]) {
 	logger := slog.New(slog.NewJSONHandler(&w.logs, nil))
-	w.wrapped = pipeline.WithLogging[string, string](name, logger, inner)
+	w.wrapped = pipeline.Decorate[string, string](name, inner, []pipeline.Decorator{pipeline.WithLogging(logger)})
 }
 
 func (w *World) aSucceedingHandler(ctx context.Context, name string) error {

@@ -48,7 +48,8 @@ type World struct {
 
 	logs syncBuffer // what the in-memory server logged, every attribute kept
 
-	cfg grpcpipeline.Config
+	cfg          grpcpipeline.Config
+	interceptors []grpcpipeline.Interceptor
 
 	// the in-memory server, started by the first call of a scenario
 	stopInMemory context.CancelFunc
@@ -201,7 +202,7 @@ func (w *World) client() (*grpc.ClientConn, error) {
 	listener := bufconn.Listen(1 << 20)
 	ctx, cancel := context.WithCancel(context.Background())
 	w.stopInMemory = cancel
-	server := grpcpipeline.NewServer(w.cfg, w.services(), slog.New(slog.NewJSONHandler(&w.logs, nil)))
+	server := grpcpipeline.NewServer(w.cfg, w.services(), slog.New(slog.NewJSONHandler(&w.logs, nil)), w.interceptors)
 	go func() { _ = server.ServeListener(ctx, listener) }()
 	conn, err := grpc.NewClient("passthrough:///in-memory",
 		grpc.WithContextDialer(func(ctx context.Context, _ string) (net.Conn, error) { return listener.DialContext(ctx) }),

@@ -82,7 +82,7 @@ func (w *World) startServing(port string) {
 	w.served = make(chan error, 1)
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
 	routes := w.routes()
-	go func() { w.served <- httppipeline.Run(ctx, routes, logger) }()
+	go func() { w.served <- httppipeline.Run(ctx, routes, logger, nil) }()
 }
 
 func (w *World) theServerIsServing(ctx context.Context) error {

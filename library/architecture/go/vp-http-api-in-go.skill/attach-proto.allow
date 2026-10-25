@@ -2,7 +2,8 @@
 # service that already has the gRPC one, serving the same contract over HTTP.
 # Besides the HTTP form, the example adds AddItem and ListItems with an
 # in-memory store so it shows a path parameter, 201, 404, 409, and a deprecated
-# method; those commands are why the gRPC endpoint and the command tests change.
+# method; those commands are why the gRPC endpoint, the command registry, and
+# the command tests change.
 base library/architecture/go/vp-grpc-api-in-go.skill/examples
 examples examples-proto
 change cmd/todo/main.go
@@ -17,4 +18,5 @@ change gen/api/todo/*
 change internal/api/grpc/endpoint/items.go
 change internal/api/grpc/endpoint/features/items.feature
 change internal/api/grpc/endpoint/test/*
+change internal/command/handlers.go
 change internal/command/test/runner_test.go

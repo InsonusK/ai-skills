@@ -12,12 +12,21 @@ import (
 // This file is the ItemsService of the contract: its command handlers, the
 // implementation of its generated server interface, and per method the
 // mapping of its messages to and from the command. A new method adds a field,
-// a method, and its two mappings here.
+// a line of NewItemsHandler, a method, and its two mappings here.
 
 // ItemsHandler is the ItemsService of the contract: the command handlers its
-// methods call. The composition root fills it; Service registers it.
+// methods call. NewItemsHandler takes them from the command registry; Service
+// registers it.
 type ItemsHandler struct {
 	PlanItems pipeline.Handler[command.PlanItemsCommand, command.PlanItemsResult]
+}
+
+// NewItemsHandler takes the handlers of the ItemsService's commands from the
+// command registry.
+func NewItemsHandler(handlers command.Handlers) ItemsHandler {
+	return ItemsHandler{
+		PlanItems: handlers.PlanItems,
+	}
 }
 
 // Service is ItemsService as the server registers it.

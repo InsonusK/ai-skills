@@ -17,7 +17,7 @@ import (
 //  1. decode builds the command (TCommand) from the request; if it cannot,
 //     the answer is 400 INVALID_ARGUMENT and the handler is not called;
 //  2. the handler runs the command;
-//  3. an error is answered by its kind (see writeError);
+//  3. an error is answered by its kind (see WriteError);
 //  4. encode turns the result (TResult) into the response body, written as
 //     JSON with successStatus (201 created, 202 accepted, 200 otherwise).
 //
@@ -38,7 +38,7 @@ func Endpoint[TCommand, TResult any](
 		}
 		result, err := handler.Handle(r.Context(), cmd)
 		if err != nil {
-			writeError(w, err)
+			WriteError(w, err)
 			return
 		}
 		writeJSON(w, successStatus, encode(result))
@@ -63,10 +63,11 @@ type statusBody struct {
 	Details []any  `json:"details"`
 }
 
-// writeError answers an error by its kind through the one table of
+// WriteError answers an error by its kind through the one table of
 // rpcstatus: a kind's code and message, or INTERNAL "internal error" for an
-// error with no kind.
-func writeError(w http.ResponseWriter, err error) {
+// error with no kind. Every route answers its errors through it, and so does
+// a Middleware that rejects a request.
+func WriteError(w http.ResponseWriter, err error) {
 	code, message := rpcstatus.Of(err)
 	writeStatus(w, code, message)
 }

@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"time"
 
+	"{module-path}/internal/api/core/entry"
 	"{module-path}/internal/version"
 )
 
@@ -44,8 +45,17 @@ func Run(ctx context.Context, logger *slog.Logger, checks ...Check) error {
 	return NewServer(cfg, version.Version, logger, checks...).Serve(ctx)
 }
 
+// Entry is the management entry point as the composition root lists it for
+// entry.RunAll: Run under the name "management". checks are the readiness
+// checks the service variation points add.
+func Entry(logger *slog.Logger, checks ...Check) entry.Entry {
+	return entry.Entry{Name: "management", Run: func(ctx context.Context) error {
+		return Run(ctx, logger, checks...)
+	}}
+}
+
 // NewServer builds the server. Tests build it directly; the composition root
-// calls Run.
+// lists Entry.
 func NewServer(cfg Config, version string, logger *slog.Logger, checks ...Check) *Server {
 	return &Server{cfg: cfg, version: version, checks: checks, logger: logger}
 }

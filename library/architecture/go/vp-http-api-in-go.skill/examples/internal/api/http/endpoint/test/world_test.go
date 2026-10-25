@@ -58,7 +58,7 @@ func (w *World) handlers() httpapi.Endpoints {
 
 func (w *World) send(method, path, body string) {
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
-	server := httppipeline.NewServer(httppipeline.Config{}, httpapi.Routes(w.handlers()), logger)
+	server := httppipeline.NewServer(httppipeline.Config{}, httpapi.Routes(w.handlers()), logger, nil)
 	req := httptest.NewRequest(method, path, strings.NewReader(body))
 	w.response = httptest.NewRecorder()
 	server.Handler().ServeHTTP(w.response, req)

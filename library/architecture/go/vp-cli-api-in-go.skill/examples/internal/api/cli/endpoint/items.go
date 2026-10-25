@@ -13,13 +13,22 @@ import (
 
 // This file is the items resource (`todo items ...`): its command handlers,
 // its actions, and per action its flags, its output type, and its text form.
-// A new command on items adds a field, an action line, and its bind, encode,
-// and text functions here.
+// A new command on items adds a field, a line of NewItemsHandler, an action
+// line, and its bind, encode, and text functions here.
 
 // ItemsHandler is the items resource: the command handlers its actions call.
-// The composition root fills it; Resource lists its actions.
+// NewItemsHandler takes them from the command registry; Resource lists its
+// actions.
 type ItemsHandler struct {
 	PlanItems pipeline.Handler[command.PlanItemsCommand, command.PlanItemsResult]
+}
+
+// NewItemsHandler takes the handlers of the items commands from the command
+// registry.
+func NewItemsHandler(handlers command.Handlers) ItemsHandler {
+	return ItemsHandler{
+		PlanItems: handlers.PlanItems,
+	}
 }
 
 // Resource is `todo items` with its actions.

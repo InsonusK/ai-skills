@@ -10,13 +10,20 @@ import (
 
 // This file is the items resource (/v1/items/...): its command handlers, its
 // routes, and the request and response types of each route with their
-// mappings. A new command on items adds a field, a route line, and its types
-// here, and its path in openapi.json.
+// mappings. A new command on items adds a field, a line of NewItemsHandler, a
+// route line, and its types here, and its path in openapi.json.
 
-// ItemsHandler is the items resource: the command handlers its routes call. The
-// composition root fills it; Routes lists its operations.
+// ItemsHandler is the items resource: the command handlers its routes call.
+// NewItemsHandler takes them from the command registry; Routes lists its operations.
 type ItemsHandler struct {
 	PlanItems pipeline.Handler[command.PlanItemsCommand, command.PlanItemsResult]
+}
+
+// NewItemsHandler takes the handlers of the items commands from the command registry.
+func NewItemsHandler(handlers command.Handlers) ItemsHandler {
+	return ItemsHandler{
+		PlanItems: handlers.PlanItems,
+	}
 }
 
 // Routes are the items operations of the published contract.

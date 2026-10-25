@@ -25,6 +25,7 @@ func TestFeatures(t *testing.T) {
 			registerAPISteps(sc, w)
 			registerDocsSteps(sc, w)
 			registerRequestLogSteps(sc, w)
+			registerMiddlewareSteps(sc, w)
 			registerConfigServeSteps(sc, w)
 		},
 		Options: &godog.Options{

@@ -11,14 +11,22 @@ import (
 
 // This file is the lists resource (/v1/lists/{listId}/...). The path
 // parameter is named as the generated spec names it - listId, the
-//owerCamelCase form of the proto field list_id - and the route's decode
+// lowerCamelCase form of the proto field list_id - and the route's decode
 // reads it with r.PathValue, since it is not in the body.
 
-// ListsHandler is the lists resource: the command handlers its routes call. The
-// composition root fills it; Routes lists its operations.
+// ListsHandler is the lists resource: the command handlers its routes call.
+// NewListsHandler takes them from the command registry; Routes lists its operations.
 type ListsHandler struct {
 	AddItem   pipeline.Handler[command.AddItemCommand, command.AddItemResult]
 	ListItems pipeline.Handler[command.ListItemsCommand, command.ListItemsResult]
+}
+
+// NewListsHandler takes the handlers of the lists commands from the command registry.
+func NewListsHandler(handlers command.Handlers) ListsHandler {
+	return ListsHandler{
+		AddItem:   handlers.AddItem,
+		ListItems: handlers.ListItems,
+	}
 }
 
 // Routes are the lists operations of the HTTP form.
