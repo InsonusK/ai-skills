@@ -23,7 +23,7 @@ tags:
 - Covers a gRPC API with unary methods. Streaming methods are not covered yet.
 - The HTTP form of the gRPC contract — the same operations over HTTP with proto-JSON, as [api-develop](library/common-workflow/develop/api-develop.skill/api-develop.skill.md) recommends — comes from attaching [vp-http-api](library/architecture/spec/vp-http-api.skill/vp-http-api.skill.md) as well, in its mode for a proto contract; both entries run side by side with the same handlers.
 - Serves no health check: the probes of every service, whatever its entry points, go to the same HTTP health endpoints of [vp-health](library/architecture/spec/vp-health.skill/vp-health.skill.md). The standard gRPC health service (`grpc.health.v1`) is left out on purpose — a Docker `healthcheck` cannot call it, and two kinds of health check across the services of one system is one kind too many.
-- The implementation for each stack is described in its stack-specialized extension: `vp-grpc-api-in-go`, `vp-grpc-api-in-dotnet`; `vp-grpc-api-in-python` is planned.
+- The implementation for each stack is described in its stack-specialized extension: `vp-grpc-api-in-go`, `vp-grpc-api-in-dotnet`, `vp-grpc-api-in-python`.
 
 # Rule
 
