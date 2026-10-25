@@ -2,7 +2,7 @@
 name: skill-code-delivery
 description: How code reaches the agent from a skill — a script it runs, a library the project installs, a file it copies verbatim, a template with identifier-only placeholders, or an inline instruction — chosen by what differs between the projects the skill is applied to
 whenToUse: when a skill you create or revise contains a code block, a script, or a config file — inline or as a supporting file
-updated: 20261004
+updated: 20261025
 tags:
   - skill/core
   - stack
@@ -18,6 +18,7 @@ adr:
 - **Templates with declared placeholders** - Code differing only in identifiers and literals stored under `templates/`, every placeholder listed in the skill with what to substitute.
 - **One reference line** - Each moved file referenced from the skill by one line naming the action — run, install, copy verbatim, or fill and copy — with no inline copy left.
 - **Inline only what varies** - Inline code remaining only where structure or logic differs between projects, or where the block is a fragment merged into a file the project already owns.
+- **Shown, not only described** - Every rule that has the agent write code shows the expected code, and every delivered file shows the line that uses it and what it produces.
 
 # Core Principle
 - **Fixed code is delivered, not described** - Code an agent retypes from an example is re-derived on every run and comes out different each time; code it runs or copies is identical every time.
@@ -91,6 +92,12 @@ Replace the moved code in the skill with one line: the form's verb, a link to th
 - Risk: "see … for an example" invites adaptation, and an inline copy drifts from the file.
 - Fix: "Copy `[retry.ts](./assets/retry.ts)` verbatim to `src/shared/retry.ts`; do not modify it." — for a library, the install command with a pinned version.
 
+### Show the code, never only describe it
+Give every rule that has the agent write or change code an illustration of the result, and follow every reference line of a script, asset, or template with how the project uses it — the call, include, or import line — and what that prints or produces.
+- Violation: "Record the version in `Directory.Build.props`" with no `<Version>` element shown; "Copy `version.sh` verbatim" with no `make version` and its output.
+- Risk: an agent rebuilds the code from prose and gets a detail wrong (a `const` for a `var`, the number in a `.csproj`); a file copied without its use is never wired in.
+- Fix: a snippet of the expected code or fragment, inline per [skill-content](library/design/skill-content.skill/skill-content.skill.md) (longer ones in `examples/`), taken from a run, not typed from memory; for a delivered file, the one line that uses it and its real output.
+
 ### Ask before creating a library
 Ask the user before choosing the Library form, and apply every other form without asking.
 - Risk: a library is a new artifact with its own repository, release cycle, and owner; asking about each script, asset, and template stalls the authoring task on decisions that have one answer.
@@ -119,5 +126,6 @@ A category-specific skill (e.g. solution-create) may name its own folders for th
 - [ ] Every script, asset, and template is a file with its native extension — none wrapped in markdown.
 - [ ] Each script was executed, each asset built or linted, each template filled with sample values and built — or the user was told it is unverified.
 - [ ] Each moved unit is referenced by one line with the form's verb, a link, and the target path; no inline copy remains.
+- [ ] Every rule that has the agent write code shows the expected code; every delivered file is followed by the line that uses it and its real output.
 - [ ] A Library form was approved by the user; no other form was put to the user as a question.
 - [ ] `examples/` holds only illustrations — nothing the skill tells the agent to copy.

@@ -17,7 +17,8 @@ fill() {
     sed -e 's#{module-path}#github.com/example/todo#g' \
         -e 's#{contract-name}#todo#g' \
         -e 's#{contract-package}#todo#g' \
-        -e 's#{api-title}#Todo#g' "$1"
+        -e 's#{api-title}#Todo#g' \
+        -e 's#{version}#0.1.0#g' "$1"
 }
 
 status=0 checked=0

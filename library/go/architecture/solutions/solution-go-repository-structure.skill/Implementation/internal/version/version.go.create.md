@@ -14,7 +14,7 @@ tags:
 - Make the running binary's version observable to its consumer — a service in its health response, a CLI/desktop app via `--version`.
 
 # Core Principles
-- `var Version` in this file is the only source of the version value: `make version` reads it and a plain `go build` carries it (see the ADR `version-source-file` of `devops-project-version-in-go`). There is no `VERSION` file.
+- `var Version` in this file is the only source of the version value: `make version` reads it and a plain `go build` carries it (see the ADR `version-source-file` of `project-version-in-go`). There is no `VERSION` file.
 - `-ldflags -X` only overrides: a snapshot build replaces the recorded version, a release build passes no flag.
 
 # Implementation changes
