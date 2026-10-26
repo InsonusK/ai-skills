@@ -76,7 +76,7 @@ the `spec/` skills come along because every stack skill links its spec.
 | 1b | API: HTTP (`vp-http-api`) | ✅ | ✅ | ✅ (FastAPI) |
 | 1c-1 | API: gRPC (`vp-grpc-api`) | ✅ | ✅ | ✅ (grpc.aio) |
 | — | error kinds (`library/develop/core/error-kinds`) | ✅ | ✅ (exceptions) | ✅ (exceptions) |
-| — | health (`vp-health`, `:8081`) + one runner for every entry point (`entry.RunAll`) | ✅ | ✅ | |
+| — | health (`vp-health`, `:8081`) + one runner for every entry point (`entry.RunAll`) | ✅ | ✅ | ✅ (asyncio, no dependency) |
 | 1c-2 | HTTP form of a gRPC contract (`vp-http-api`, proto mode) | ✅ | ✅ | ✅ |
 | 1d | API: CLI (`vp-cli-api`; Go cobra, Python click) | ✅ | | ✅ |
 | — | logging: one logger, payload attribute, base handler drops it; every entry point logs its calls; `vp-logging` masks and writes the payload | ✅ | base ✅ | base ✅ |
