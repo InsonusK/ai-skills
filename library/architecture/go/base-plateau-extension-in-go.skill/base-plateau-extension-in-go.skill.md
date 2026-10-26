@@ -2,7 +2,7 @@
 name: base-plateau-extension-in-go
 description: How a variation point extends the base plateau in Go — every middleware a package of its own under internal/command/middleware/ or internal/api/{kind}/middleware/ with a function Middleware, the command middleware as pipeline.Middleware in the list main.go gives command.NewHandlers, wrapped around every typed handler by pipeline.Decorate, marks as methods a command has, each API's Entry factory with its list of API middleware (httpapi.Middleware, grpcapi.Interceptor) inside the fixed requestlog and answerfailures, rejections as errors of a kind, the variation point's own settings, and attach.allow — with a sample access variation point attached to the HTTP example
 whenToUse: when you write, attach, or review a variation point of a Go application built on the base plateau, when you add a middleware around Go commands or around HTTP or gRPC requests, or when you add a command to such an application
-updated: 20261025
+updated: 20261026
 tags:
   - stack/go
   - concern/architecture
@@ -68,6 +68,23 @@ func NewHandlers(middlewares []pipeline.Middleware, lists itemLists) Handlers {
 - Violation: a middleware applied to one handler in `main.go`; an entry point that calls `command.NewPlanItemsHandler()`.
 - Risk: a command built outside the registry misses the middleware the others have.
 - Fix: the services a handler uses are parameters of `NewHandlers` after the middleware, passed by `main.go` from `// [services]`; an API's resource takes its handlers from the registry in its `New{Resource}Handler(handlers command.Handlers)`.
+
+### Pass a nested command's decorated handler
+Give a handler that runs another command a constructor parameter `pipeline.Handler[{Nested}Command, {Nested}Result]`, and in `command.NewHandlers` decorate the nested handler first and pass that value, never `New{Nested}Handler(...)`.
+
+```go
+func NewHandlers(middlewares []pipeline.Middleware, lists itemLists) Handlers {
+	addItem := pipeline.Decorate("AddItem", NewAddItemHandler(lists), middlewares)
+	return Handlers{
+		AddItem:     addItem,
+		ImportItems: pipeline.Decorate("ImportItems", NewImportItemsHandler(addItem), middlewares),
+	}
+}
+```
+
+- Violation: `NewImportItemsHandler(NewAddItemHandler(lists))`; a handler that takes `command.Handlers` and picks its nested handler itself.
+- Risk: an undecorated nested call skips every command middleware; a handler holding the whole registry hides which commands it runs.
+- Fix: one parameter per nested command, the same decorated value the field of `Handlers` holds.
 
 ### One package per middleware
 Put each command middleware in `internal/command/middleware/{name}/` and each API middleware in `internal/api/{kind}/middleware/{name}/`, a package named after its step with a function `Middleware` that takes what the step needs, its marks and errors beside it, and its `features/` and `test/`.
@@ -216,6 +233,7 @@ change README.md
 
 # Check list
 - [ ] Every command is a field and a line of `internal/command/handlers.go`; `main.go` calls `command.NewHandlers` once.
+- [ ] A handler that runs another command takes that command's decorated handler, built first in `command.NewHandlers`.
 - [ ] Every middleware is a package of its own under `internal/command/middleware/` or `internal/api/{kind}/middleware/` with a function `Middleware`.
 - [ ] Every command middleware returns a `pipeline.Middleware`, passes the command on unchanged, and rejects with an error of a kind.
 - [ ] A filtered middleware selects by a mark interface; the marked command has the method on a value receiver in its own file.

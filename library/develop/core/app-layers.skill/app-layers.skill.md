@@ -2,7 +2,7 @@
 name: app-layers
 description: How an application's code is split into layers — api, command (with an optional command factory), domain (entities and domain services), service, and infrastructure — what each layer owns, what it may call, where an interface stands between them, how each is tested
 whenToUse: when you design an application or a feature, when you add or change an entry point, a command or command factory, an entity or domain service, a service, or an infrastructure adapter, or when you review such a change — in any stack
-updated: 20261022
+updated: 20261026
 tags:
   - stack
   - concern/architecture
@@ -12,6 +12,7 @@ tags:
 adr:
   - adr/service-wraps-one-infrastructure.md
   - adr/commands-named-command.md
+  - adr/nested-command-through-pipeline.md
 ---
 
 # Goal
@@ -41,7 +42,7 @@ Place every part of the application in one of these layers and let it call only 
 |---|---|---|---|
 | api | parsing an input into plain parameters; turning a result or an error into the response | command factories, commands | domain, services, infrastructure |
 | command factory (optional) | choosing the command from plain parameters and the application's state | domain services, services | infrastructure; never parses an input format |
-| command | the main logic of one operation | domain services, entities, services, other commands (nested, through their handlers) | infrastructure, api types |
+| command | the main logic of one operation | domain services, entities, services, other commands (nested, through the command pipeline) | infrastructure, api types |
 | domain service | business logic reused by several commands | entities, services | infrastructure, commands |
 | entity | the rules of one object of the domain | other entities | anything with I/O |
 | service | methods in the application's language over one infrastructure, hiding its technique | its own infrastructure | other services, domain services, commands |
@@ -50,6 +51,12 @@ Place every part of the application in one of these layers and let it call only 
 - Violation: a command that runs an SQL query, or a service that calls another service to finish its method.
 - Risk: a call skipping a layer spreads the knowledge of that layer's technique upward, so replacing it means editing every caller.
 - Fix: route the call through the layer in between; when two services must cooperate, a domain service or the command calls both. Decision recorded in [service-wraps-one-infrastructure](./adr/service-wraps-one-infrastructure.md).
+
+### Run a nested command through the command pipeline
+Let a command run another command only through that command's handler as the command pipeline built it — wrapped by every command middleware — never by building its handler, calling its logic, or sharing a function with it.
+- Violation: a handler that constructs `AddItemHandler` itself, or calls a private function both commands use, to add the items it imports.
+- Risk: the nested operation runs without its log line, its access check, and its place in the unit of work, so the same operation behaves differently depending on whether an entry point or a command started it.
+- Fix: the handler takes the nested command's handler from the command registry (dotnet: sends the command through `ISender`); logic both commands need moves into a domain service. Decision recorded in [nested-command-through-pipeline](./adr/nested-command-through-pipeline.md).
 
 ### API parses, never decides
 Make api turn its input into plain parameters and pass them to a command, or to a command factory when the input alone cannot pick the command.
@@ -138,6 +145,7 @@ Use a package with no I/O and no business rule — formatting, layout, conversio
 
 # Check list
 - [ ] Every part sits in one layer of [Keep each part in its layer and its calls downward](#keep-each-part-in-its-layer-and-its-calls-downward), and every call goes down the table.
+- [ ] A command runs another command only through its handler from the command pipeline, never by building it or sharing its logic.
 - [ ] api only parses, calls a command or a command factory, and maps the result or error.
 - [ ] Every command holds plain values, no transport object, and is named `{Operation}Command`; its result `{Operation}Result`, a part of a result `{Thing}View`.
 - [ ] Every command factory chooses by application state; no factory maps a fixed input to one command.

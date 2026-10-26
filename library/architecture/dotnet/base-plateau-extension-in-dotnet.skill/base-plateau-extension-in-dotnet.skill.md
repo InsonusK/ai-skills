@@ -2,7 +2,7 @@
 name: base-plateau-extension-in-dotnet
 description: How a variation point extends the base plateau in dotnet — one registration method per module, API, and variation point called in order in the three sections of Program.cs (AddTodoModule, AddCommandMiddleware with the list of command middleware, AddHttpApi and AddGrpcApi with their lists of API middleware, every entry point registered as an Entry), every middleware in a folder of its own named {Name}Middleware — the command middleware as MediatR pipeline behaviors in the Middleware project, an API's in App.Host/Api/{Api}/Middleware inside its fixed RequestLogMiddleware and AnswerFailuresMiddleware — marks as interfaces of Shared a command implements, rejections as ErrorKindException, the variation point's own settings, and attach.allow, with a sample access variation point attached to the HTTP example
 whenToUse: when you write, attach, or review a variation point of a dotnet application built on the base plateau, when you add a middleware around commands or around the requests or calls of an API, or when you add a command or a module to such an application
-updated: 20261025
+updated: 20261026
 tags:
   - stack/dotnet
   - concern/architecture
@@ -66,6 +66,12 @@ public static IServiceCollection AddTodoModule(this IServiceCollection services)
 - Violation: `services.AddMediatR(...)` in `Program.cs`; a handler registered by hand; a behavior given to `AddMediatR`'s configuration.
 - Risk: a middleware registered with the module wraps only some commands, or is registered twice once a second module arrives.
 - Fix: the module registers handlers and services only; its infrastructure (`IListStore`) is registered in `// [services]`; the middleware are listed once in `AddCommandMiddleware`.
+
+### Send a nested command through ISender
+Let a handler that runs another command — of its own module or of another — take `ISender` in its constructor and send the command, never take or build the nested command's handler.
+- Violation: `ImportItemsHandler(AddItemHandler addItem)`; `new AddItemHandler(lists).Handle(...)` inside a handler.
+- Risk: a handler called directly skips every pipeline behavior, so the nested command runs without its log line, its access check, and its unit of work.
+- Fix: `await sender.Send(new AddItemCommand(listId, title), ct)`; MediatR wraps each `Send` with the behaviors of `AddCommandMiddleware`.
 
 ### One folder per middleware
 Put each command middleware in `src/Middleware/{Name}/` with the settings, identity, and errors it uses, its scenarios in `src/Middleware.Tests/`, and each API middleware in `src/App/App.Host/Api/{Api}/Middleware/{Name}/`, the class named `{Name}Middleware` and the namespace `Middleware.{Name}` or `App.Host.Api.{Api}.Middleware.{Name}`; put the marks in `src/Shared/{VariationPoint}/`.
@@ -248,6 +254,7 @@ change README.md
 
 # Check list
 - [ ] Every module has its `Add{Module}Module()`; `Program.cs` has no `AddMediatR`.
+- [ ] A handler that runs another command sends it through `ISender`; no handler takes or builds another handler.
 - [ ] Every middleware is in a folder of its own, named `{Name}Middleware`: a command middleware in `src/Middleware/{Name}/`, an API's in `Api/{Api}/Middleware/{Name}/`.
 - [ ] Every command middleware is an open generic pipeline behavior that passes every unmarked command on and rejects with an `ErrorKindException`.
 - [ ] A filtered middleware selects by an interface of `Shared`; the marked command implements it with `[JsonIgnore]` properties.
