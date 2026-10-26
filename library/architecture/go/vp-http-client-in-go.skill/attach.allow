@@ -1,0 +1,11 @@
+# The HTTP client variation point attaches to the base plateau: it adds the
+# fixed client code, the todo API's adapter and emulator, the service over it,
+# and the command that uses it, and changes only these base files: the
+# composition root, the command registry and the runner of its scenarios, and
+# the build and readme files.
+base library/architecture/go/base-plateau-in-go.skill/examples
+change cmd/todo/main.go
+change internal/command/handlers.go
+change internal/command/test/runner_test.go
+change Makefile
+change README.md

@@ -2,7 +2,7 @@
 name: app-layers-in-python
 description: The application layers in Python — one package per layer under src/{package}/, protocols declared by their consumer so that only main.py imports both sides, entities guarding their state behind properties and methods, and hand-written fakes for the layer below
 whenToUse: when you design a Python application or feature, when you add or change a Python entry point, command, entity, domain service, service, or infrastructure adapter, or when you review such a change
-updated: 20261022
+updated: 20261026
 tags:
   - stack/python
   - concern/architecture
@@ -36,7 +36,7 @@ Place each layer of [app-layers](library/develop/core/app-layers.skill/app-layer
 | entity | `domain/entity` |
 | domain service | `domain/service` |
 | service | `service` |
-| infrastructure | `infrastructure/{kind}` (`postgres`, `user_api`, ...) |
+| infrastructure | `infrastructure/{kind}` (`postgres`, `memory`, ...); a client of another service's API in `infrastructure/client/{api}` (`user_api`) |
 | composition root | `main.py`, run by `__main__.py` and the `[project.scripts]` entry |
 
 - Violation: entities and domain services in one `domain` module; a `utils` package holding a service.
@@ -77,7 +77,7 @@ class Users(Protocol):
 
 # service/user_service.py - a class; no protocol declared for itself
 class UserService:
-    def __init__(self, api: UserApi) -> None:  # UserApi: declared here, implemented in infrastructure/user_api
+    def __init__(self, api: UserApi) -> None:  # UserApi: declared here, implemented in infrastructure/client/user_api
         self._api = api
 ```
 
