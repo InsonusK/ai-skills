@@ -22,7 +22,7 @@ tags:
 
 # Scope
 - Covers a command-line application whose every call runs one command and ends. An interactive shell, a long-running daemon started from the command line, and reading a command's input from standard input are not covered.
-- The implementation for each stack is described in its stack-specialized extension: `vp-cli-api-in-go`; `vp-cli-api-in-python` is planned.
+- The implementation for each stack is described in its stack-specialized extension: `vp-cli-api-in-go`, `vp-cli-api-in-python`.
 
 # Rule
 
