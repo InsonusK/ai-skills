@@ -7,7 +7,10 @@
 # second allow file for its second example (attach-proto.allow).
 # Prints what each variation point adds, changes, and deletes. A file two
 # variation points of one base both add (internal/api/health/health.go) must be
-# the same in both, or attaching both to one application conflicts.
+# the same in both, or attaching both to one application conflicts - unless
+# either allow file names it a sample (`sample <glob>`): code the application
+# writes per API or per use, which the example only shows (the adapter of the
+# todo API over HTTP in one example, over gRPC in another).
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -38,7 +41,7 @@ allowed() {
 }
 
 status=0
-declare -A first_adder=()
+declare -A first_adder=() first_allow=()
 for allow in library/architecture/*/*.skill/*.allow; do
     [ -e "$allow" ] || continue
     skill=$(dirname "$allow")
@@ -52,10 +55,11 @@ for allow in library/architecture/*/*.skill/*.allow; do
             added+=("$f")
             key="$base|$f"
             if [ -n "${first_adder[$key]:-}" ]; then
-                cmp -s "${first_adder[$key]}/$f" "$examples/$f" \
+                allowed sample "$f" "$allow" || allowed sample "$f" "${first_allow[$key]}" \
+                    || cmp -s "${first_adder[$key]}/$f" "$examples/$f" \
                     || bad+=("added differently by ${first_adder[$key]}: $f")
             else
-                first_adder[$key]=$examples
+                first_adder[$key]=$examples first_allow[$key]=$allow
             fi
         elif ! cmp -s "$base/$f" "$examples/$f"; then
             changed+=("$f")
@@ -75,5 +79,5 @@ for allow in library/architecture/*/*.skill/*.allow; do
         [ -n "$b" ] && { echo "   ERROR $b" >&2; status=1; }
     done
 done
-[ "$status" = 0 ] && echo "vp attach ok: no variation point edits its base beyond attach.allow; shared files are identical"
+[ "$status" = 0 ] && echo "vp attach ok: no variation point edits its base beyond attach.allow; shared files but samples are identical"
 exit "$status"

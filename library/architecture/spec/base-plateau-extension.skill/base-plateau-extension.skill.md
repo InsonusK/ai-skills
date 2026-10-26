@@ -2,7 +2,7 @@
 name: base-plateau-extension
 description: How a variation point extends the base plateau without editing it — the extension points of the composition root (the services, the command registry with its ordered list of command middleware, the entries with each API's ordered list of API middleware), every middleware in a directory of its own named {Name}Middleware, the fixed request log and answer-failures middleware outermost, the three kinds of command middleware (every command, by a command's mark, by a value of the command), authentication at the transport and the access check in the command layer, the variation point's own settings, and the attach list that proves no other base file changed
 whenToUse: when you write, attach, or review a variation point of the architecture catalog, when you add a middleware around commands or around the requests of an API, when you add a command to an application built on the base plateau, or when you decide where a cross-cutting step (authentication, access, a limit, a transaction, a metric, logging) goes
-updated: 20261025
+updated: 20261026
 tags:
   - stack
   - concern/architecture
@@ -133,6 +133,12 @@ Let a middleware that applies to some commands select them by a mark the command
 Give every variation point's example an `attach.allow` file naming its base example (`base {path}`) and every base file it changes (`change {glob}`) or deletes (`delete {glob}`), and keep that list to the composition root, the build files, the readme, and the files of the commands it marks.
 - Risk: an edit of a base file that no list names makes the variation point depend on that edit, and the next variation point that attaches finds a base it does not know.
 - Fix: run the attach check of this repository (`bash test/check-vp-attach.sh`); every file it reports changed and not allowed is either moved to the variation point's directory or turned into an extension point here.
+
+### Name the per-API code a sample
+Add a file two variation points of one base both add identically, except the code an application writes per API or per use that the example only shows (an adapter of an API and the service over it), which the `attach.allow` names a sample (`sample {glob}`).
+- Violation: fixed code copied from templates, or a shared build file, named a sample.
+- Risk: two variation points that add one path differently conflict when both are attached; a sample glob that covers fixed code hides that conflict.
+- Fix: the attach check compares every file two examples add unless either names it a sample; fixed code lives under a path of its own (`client/core/httpclient`, `client/core/grpcclient`).
 
 ## SHOULD
 
