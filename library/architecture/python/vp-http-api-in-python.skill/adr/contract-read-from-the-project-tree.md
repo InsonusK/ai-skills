@@ -2,7 +2,7 @@
 name: contract read from the project tree
 description: How the Python HTTP entry point reaches the committed OpenAPI contract and Swagger UI - read from the project tree, copied into the package, or generated from the code; Swagger UI from the package or a CDN
 problem: The contract must stay at docs/integration/api/{contract-name}/ (skill api-develop) and be served as written; Go embeds it with a go:embed file in that folder, dotnet as a resource of the assembly; setuptools cannot put a file outside src/ into the package without listing every package by hand. How does the Python service read it, and where does Swagger UI come from?
-decision: docs.py finds docs/integration/api/{contract-name}/openapi.json in the first folder above its module that holds it, so the service runs from its project tree; Swagger UI's files come from the swagger-ui-bundle package, not a CDN.
+decision: docs.py finds the one spec of docs/integration/api/{contract-name}/ - openapi.json, or a {file}.swagger.json generated from a proto file - in the first folder above its module that holds it, so the service runs from its project tree; Swagger UI's files come from the swagger-ui-bundle package, not a CDN.
 tags:
   - stack/python
   - concern/architecture

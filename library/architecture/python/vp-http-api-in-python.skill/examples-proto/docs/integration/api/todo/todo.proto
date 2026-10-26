@@ -1,0 +1,180 @@
+// version: 1.1.0
+syntax = "proto3";
+
+package todo.v1;
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "Todo"
+    version: "1.1.0"
+  }
+};
+
+// ItemsService plans and keeps to-do items in lists.
+service ItemsService {
+  // PlanItems turns a list of titles into to-do items, none done yet; nothing is kept.
+  rpc PlanItems(PlanItemsRequest) returns (PlanItemsResponse) {
+    option (google.api.http) = {
+      post: "/v1/items/plan"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      responses: {
+        key: "200"
+        value: {
+          description: "The planned items."
+          schema: {json_schema: {ref: ".todo.v1.PlanItemsResponse"}}
+        }
+      }
+      responses: {
+        key: "400"
+        value: {
+          description: "INVALID_ARGUMENT: a title is empty, too long, or repeated."
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+      responses: {
+        key: "default"
+        value: {
+          description: "An unexpected error response."
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+    };
+  }
+
+  // AddItem adds an item to a list, creating the list with its first item.
+  rpc AddItem(AddItemRequest) returns (AddItemResponse) {
+    option (google.api.http) = {
+      post: "/v1/lists/{list_id}/items"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      responses: {
+        key: "201"
+        value: {
+          description: "The item was added."
+          schema: {json_schema: {ref: ".todo.v1.AddItemResponse"}}
+        }
+      }
+      responses: {
+        key: "400"
+        value: {
+          description: "INVALID_ARGUMENT: the title is empty or too long."
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+      responses: {
+        key: "409"
+        value: {
+          description: "ALREADY_EXISTS: the list already has an item with this title."
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+      responses: {
+        key: "default"
+        value: {
+          description: "An unexpected error response."
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+    };
+  }
+
+  // ListItems returns the items of a list, in the order they were added.
+  rpc ListItems(ListItemsRequest) returns (ListItemsResponse) {
+    option (google.api.http) = {
+      get: "/v1/lists/{list_id}/items"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      responses: {
+        key: "200"
+        value: {
+          description: "The items of the list."
+          schema: {json_schema: {ref: ".todo.v1.ListItemsResponse"}}
+        }
+      }
+      responses: {
+        key: "404"
+        value: {
+          description: "NOT_FOUND: no list with this id."
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+      responses: {
+        key: "default"
+        value: {
+          description: "An unexpected error response."
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+    };
+  }
+
+  // ClearList removed every item of a list. Deprecated since 1.1.0: it always
+  // answers UNIMPLEMENTED; it stays in the contract so that clients get a clear
+  // answer instead of a 404 until the next major version removes it.
+  rpc ClearList(ClearListRequest) returns (ClearListResponse) {
+    option deprecated = true;
+    option (google.api.http) = {
+      post: "/v1/lists/{list_id}/clear"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      responses: {
+        key: "501"
+        value: {
+          description: "UNIMPLEMENTED: the method is deprecated since 1.1.0."
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+      responses: {
+        key: "default"
+        value: {
+          description: "An unexpected error response."
+          schema: {json_schema: {ref: ".google.rpc.Status"}}
+        }
+      }
+    };
+  }
+}
+
+message PlanItemsRequest {
+  repeated string titles = 1;
+}
+
+message PlanItemsResponse {
+  repeated Item items = 1;
+}
+
+message AddItemRequest {
+  // list_id names the list; it is taken from the path.
+  string list_id = 1;
+  string title = 2;
+}
+
+message AddItemResponse {
+  Item item = 1;
+}
+
+message ListItemsRequest {
+  string list_id = 1;
+}
+
+message ListItemsResponse {
+  repeated Item items = 1;
+}
+
+message ClearListRequest {
+  string list_id = 1;
+}
+
+message ClearListResponse {}
+
+message Item {
+  string title = 1;
+  bool done = 2;
+}

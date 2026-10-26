@@ -13,20 +13,25 @@ from swagger_ui_bundle import swagger_ui_path as _swagger_ui_path
 SWAGGER_UI = Path(str(_swagger_ui_path))
 """The files of Swagger UI, served from the package: no CDN, so the docs work offline."""
 
-CONTRACT = Path("docs/integration/api/{contract-name}/openapi.json")
-"""The published contract, relative to the project's root (skill api-develop)."""
+CONTRACT_FOLDER = Path("docs/integration/api/{contract-name}")
+"""The folder of the published contract, relative to the project's root
+(skill api-develop). It holds one spec: openapi.json, written by hand, or,
+for a proto contract, {file}.swagger.json, generated from the proto file
+beside it."""
 
 
 def find_contract() -> Path:
-    """The contract file of this project: the first folder above this module
-    that holds CONTRACT. The service runs from its project tree, so the one
-    committed contract is the one served; a package installed without that
-    tree serves no docs and says so at start.
+    """The contract file of this project: the spec in CONTRACT_FOLDER of the
+    first folder above this module that has one. The service runs from its
+    project tree, so the one committed contract is the one served; a package
+    installed without that tree serves no docs and says so at start.
     """
     for folder in Path(__file__).resolve().parents:
-        if (folder / CONTRACT).is_file():
-            return folder / CONTRACT
-    raise FileNotFoundError(f"http docs: {CONTRACT} is not found above {Path(__file__).parent}")
+        contract = folder / CONTRACT_FOLDER
+        specs = [contract / "openapi.json"] if (contract / "openapi.json").is_file() else sorted(contract.glob("*.swagger.json"))
+        if len(specs) == 1:
+            return specs[0]
+    raise FileNotFoundError(f"http docs: no spec in {CONTRACT_FOLDER} above {Path(__file__).parent}")
 
 
 def published_spec(spec: bytes, base_path: str) -> bytes:
