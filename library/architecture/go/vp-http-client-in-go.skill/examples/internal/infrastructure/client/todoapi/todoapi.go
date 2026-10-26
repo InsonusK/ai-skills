@@ -11,7 +11,7 @@ import (
 	"log/slog"
 	"net/http"
 
-	"github.com/example/todo/internal/infrastructure/httpclient"
+	"github.com/example/todo/internal/infrastructure/client/core/httpclient"
 )
 
 // Prefix names the settings of this API: TODO_API_HOST, TODO_API_HTTP_PORT,

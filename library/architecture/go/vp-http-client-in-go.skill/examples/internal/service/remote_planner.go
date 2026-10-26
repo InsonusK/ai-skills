@@ -8,8 +8,8 @@ import (
 	"fmt"
 
 	"github.com/example/todo/internal/domain/entity"
-	"github.com/example/todo/internal/infrastructure/httpclient"
-	"github.com/example/todo/internal/infrastructure/todoapi"
+	"github.com/example/todo/internal/infrastructure/client/core/httpclient"
+	"github.com/example/todo/internal/infrastructure/client/todoapi"
 )
 
 // codeInvalidArgument is google.rpc.Code INVALID_ARGUMENT.

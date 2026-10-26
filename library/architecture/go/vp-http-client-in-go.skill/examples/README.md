@@ -3,7 +3,7 @@
 The base plateau in Go with the HTTP client variation point attached: the startup command
 `PlanRemoteItems` plans its titles with another service's todo API (`POST /v1/items/plan` of
 `docs/integration/client/todo/openapi.json`) through the service `RemotePlanner` and the adapter
-`internal/infrastructure/todoapi`, built on the fixed client code `internal/infrastructure/httpclient`.
+`internal/infrastructure/client/todoapi`, built on the fixed client code `internal/infrastructure/client/core/httpclient`.
 
 ```bash
 make run                                              # against the todo API's emulator (TODO_API_HOST=mock)

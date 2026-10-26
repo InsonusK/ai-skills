@@ -7,7 +7,7 @@ import (
 
 	"github.com/cucumber/godog"
 
-	"github.com/example/todo/internal/infrastructure/httpclient"
+	"github.com/example/todo/internal/infrastructure/client/core/httpclient"
 )
 
 func registerConfigSteps(sc *godog.ScenarioContext, w *World) {

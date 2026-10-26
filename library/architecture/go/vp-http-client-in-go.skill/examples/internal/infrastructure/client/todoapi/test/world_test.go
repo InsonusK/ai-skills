@@ -16,8 +16,8 @@ import (
 
 	"github.com/cucumber/godog"
 
-	"github.com/example/todo/internal/infrastructure/httpclient"
-	"github.com/example/todo/internal/infrastructure/todoapi"
+	"github.com/example/todo/internal/infrastructure/client/core/httpclient"
+	"github.com/example/todo/internal/infrastructure/client/todoapi"
 )
 
 func logf(format string, args ...any) {
@@ -96,7 +96,7 @@ func registerSteps(sc *godog.ScenarioContext, w *World) {
 		return nil
 	})
 	sc.Step(`^the adapter should call exactly these operations, each in the contract:$`, func(table *godog.Table) error {
-		raw, err := os.ReadFile("../../../../docs/integration/client/todo/openapi.json")
+		raw, err := os.ReadFile("../../../../../docs/integration/client/todo/openapi.json")
 		if err != nil {
 			return err
 		}

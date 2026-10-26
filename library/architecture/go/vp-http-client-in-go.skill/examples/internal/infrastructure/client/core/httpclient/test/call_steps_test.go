@@ -13,7 +13,7 @@ import (
 
 	"github.com/cucumber/godog"
 
-	"github.com/example/todo/internal/infrastructure/httpclient"
+	"github.com/example/todo/internal/infrastructure/client/core/httpclient"
 	"github.com/example/todo/internal/logging"
 )
 

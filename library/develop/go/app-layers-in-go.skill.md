@@ -2,7 +2,7 @@
 name: app-layers-in-go
 description: The application layers in Go — one package per layer under internal/, interfaces declared by their consumer so that only cmd/{app}/main.go imports both sides, entities with unexported fields, and hand-written fakes for the layer below
 whenToUse: when you design a Go application or feature, when you add or change a Go entry point, command, entity, domain service, service, or infrastructure adapter, or when you review such a change
-updated: 20261022
+updated: 20261026
 tags:
   - stack/go
   - concern/architecture
@@ -35,7 +35,7 @@ Place each layer of [app-layers](library/develop/core/app-layers.skill/app-layer
 | entity | `internal/domain/entity` |
 | domain service | `internal/domain/service`, imported as `domainservice` |
 | service | `internal/service` |
-| infrastructure | `internal/infrastructure/{kind}` (`postgres`, `userapi`, ...) |
+| infrastructure | `internal/infrastructure/{kind}` (`postgres`, `memory`, ...); a client of another service's API in `internal/infrastructure/client/{api}` (`userapi`) |
 | composition root | `cmd/{app}/main.go` |
 
 - Violation: entities and domain services in one `internal/domain` package, or `internal/domain/service` imported without the `domainservice` name.

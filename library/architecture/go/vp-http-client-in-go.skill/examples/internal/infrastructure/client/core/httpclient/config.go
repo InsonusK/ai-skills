@@ -4,7 +4,7 @@
 // HTTP API, copied from templates and never edited: the {API} settings
 // (config.go), and Client.Call, which sends one request and reads its answer
 // with the timeout, the call log, the request id, the error report, and the
-// mock (client.go). An adapter of one API (internal/infrastructure/{api})
+// mock (client.go). An adapter of one API (internal/infrastructure/client/{api})
 // writes its operations as calls of it.
 package httpclient
 

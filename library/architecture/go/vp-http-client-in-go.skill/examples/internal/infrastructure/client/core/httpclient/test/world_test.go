@@ -15,7 +15,7 @@ import (
 
 	"github.com/cucumber/godog"
 
-	"github.com/example/todo/internal/infrastructure/httpclient"
+	"github.com/example/todo/internal/infrastructure/client/core/httpclient"
 )
 
 // logf logs a step's action or observation through stdout, so the line stays

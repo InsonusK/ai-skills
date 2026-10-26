@@ -52,7 +52,7 @@ the `spec/` skills come along because every stack skill links its spec.
 | API (entries) | `internal/api/{transport}`: `pipeline/` (fixed), `middleware/{name}/` (fixed request log and answer failures, an application's), `endpoint/` (`{Resource}Handler` per file), `routes.go` / `services.go` / `commands.go` (registration) | `src/{package}/api/{transport}`: `pipeline/`, `middleware/{name}/`, `endpoint/`, `routes.py` / `services.py` / `commands.py`; generated gRPC code in `src/{package}/gen/api/{contract}` | `src/App/App.Host/Api/{Transport}`: `Pipeline/` (fixed), `Middleware/{Name}/`, `Endpoint/` (`{Resource}Handler` per file), `Routes.cs` / `Services.cs` (registration) |
 | API — shared by the entries | `internal/api/core/{entry,rpcstatus}` | `src/{package}/api/core/{entry,rpcstatus}` | `src/App/App.Host/Api/Core/{Entry,Errors,Hosting}` |
 | Service | `internal/service` | `src/{package}/service` | `src/Modules/{Module}/{Module}.Application/Services` (interface beside its consumer) |
-| Infrastructure | `internal/infrastructure/{kind}` | `src/{package}/infrastructure/{kind}` | `src/Infrastructure/{Infra}/{Infra}.Abstractions` + `{Infra}` |
+| Infrastructure | `internal/infrastructure/{kind}`; clients of other services' APIs in `internal/infrastructure/client/{api}`, their fixed code in `client/core/` | `src/{package}/infrastructure/{kind}`; clients in `infrastructure/client/{api}` | `src/Infrastructure/{Infra}/{Infra}.Abstractions` + `{Infra}` |
 | Composition root | `cmd/{app}/main.go` | `src/{package}/main.py` | `src/App/App.Host/Program.cs` (`RunAsync`) |
 | Error kinds | `internal/domain/entity/kinds.go` | `src/{package}/domain/entity/kinds.py` (exceptions) | `src/Shared/Errors` |
 

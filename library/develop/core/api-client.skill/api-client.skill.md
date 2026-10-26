@@ -31,10 +31,10 @@ tags:
 ## MUST
 
 ### One adapter per API, one service over it
-Write each API the application calls as one infrastructure adapter in a package of its own (`infrastructure/{api}`) with one method per operation it calls, and one service over it whose methods say what the application wants.
-- Violation: a command or a domain service calling the adapter; a service named after the API's operations (`PostItemsPlan`); two APIs behind one adapter.
+Write each API the application calls as one infrastructure adapter in a package of its own under `infrastructure/client/` (`infrastructure/client/{api}`), with the fixed client code of every API beside them in `infrastructure/client/core/`, with one method per operation it calls, and one service over it whose methods say what the application wants.
+- Violation: a command or a domain service calling the adapter; a service named after the API's operations (`PostItemsPlan`); two APIs behind one adapter; a client beside the stores in `infrastructure/`.
 - Risk: the contract's shapes and errors spread into the application, and a change of the provider's API edits commands.
-- Fix: the service method (`RemotePlanner.Plan`) hides the call; the command calls the service through an interface, per app-layers.
+- Fix: the service method (`RemotePlanner.Plan`) hides the call; the command calls the service through an interface, per app-layers; `infrastructure/client/` shows at a glance every other service the application calls.
 
 ### Configure every client by its {API} group
 Read every client's connection from the environment variables of its own `{API}` prefix, in the adapter's package:
@@ -94,7 +94,7 @@ Test the fixed client code once through an emulator of a test API of its own, ea
 - Fix: an in-process HTTP server or gRPC server per adapter feature; a fake class per adapter in the service's tests.
 
 # Check list
-- [ ] Each API has its adapter in `infrastructure/{api}` and one service over it; no command or domain service calls the adapter.
+- [ ] Each API has its adapter in `infrastructure/client/{api}` and one service over it; no command or domain service calls the adapter.
 - [ ] Every connection setting is a variable of the API's `{API}` group; `{API}_TIMEOUT` bounds every call.
 - [ ] The consumed contract is the provider's file under `docs/integration/client/{api-name}/`; a scenario holds the adapter's operations against it.
 - [ ] Unavailable is reported apart from the API's other statuses; the service maps them to its own errors.

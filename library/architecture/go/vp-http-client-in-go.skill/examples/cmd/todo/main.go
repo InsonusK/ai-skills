@@ -17,7 +17,7 @@ import (
 	commandlogging "github.com/example/todo/internal/command/middleware/logging"
 	"github.com/example/todo/internal/command/pipeline"
 	"github.com/example/todo/internal/config"
-	"github.com/example/todo/internal/infrastructure/todoapi"
+	"github.com/example/todo/internal/infrastructure/client/todoapi"
 	"github.com/example/todo/internal/logging"
 	"github.com/example/todo/internal/service"
 	"github.com/example/todo/internal/version"

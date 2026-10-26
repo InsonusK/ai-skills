@@ -1,6 +1,6 @@
 ---
 name: vp-http-client-in-go
-description: The HTTP client variation point in Go — internal/infrastructure/httpclient copied from templates (the {API} settings, Client.Call with the timeout, JSON in and out, ErrUnavailable and StatusError, the call log, the request id, the mock against an emulator), one adapter per API in internal/infrastructure/{api} with its operations, its emulator, and its contract scenario, the service over it in internal/service, and the lines of main.go that build them
+description: The HTTP client variation point in Go — internal/infrastructure/client/core/httpclient copied from templates (the {API} settings, Client.Call with the timeout, JSON in and out, ErrUnavailable and StatusError, the call log, the request id, the mock against an emulator), one adapter per API in internal/infrastructure/client/{api} with its operations, its emulator, and its contract scenario, the service over it in internal/service, and the lines of main.go that build them
 whenToUse: when a Go application built on the base plateau must call another service's HTTP API, when you call a further operation of such an API, or when you review a Go HTTP client
 updated: 20261026
 tags:
@@ -15,19 +15,21 @@ tags:
 - **Attached by the listed changes only** - Attaching it adds files and changes only the base files [attach.allow](./attach.allow) names, which the repository's attach check verifies against [base-plateau-in-go](library/architecture/go/base-plateau-in-go.skill/base-plateau-in-go.skill.md)'s example.
 
 # Core Principle
-- **Copied once, written per operation** - `internal/infrastructure/httpclient` is copied from templates and never edited; per API the application writes an adapter package whose operations are calls of `httpclient.Client.Call`, the adapter's emulator, and the service over it.
+- **Copied once, written per operation** - `internal/infrastructure/client/core/httpclient` is copied from templates and never edited; per API the application writes an adapter package whose operations are calls of `httpclient.Client.Call`, the adapter's emulator, and the service over it.
 
 ```
 docs/integration/client/{api-name}/openapi.json   the provider's contract, copied unchanged
 internal/infrastructure/
-├── httpclient/              copied from templates, never edited
-│   ├── config.go            LoadConfig(prefix): {API}_HOST, _HTTP_PORT, _TLS, _TIMEOUT; Mock
-│   ├── client.go            Client.Call: timeout, JSON, X-Request-Id, call log; ErrUnavailable, StatusError
-│   └── features/  test/     the fixed code's scenarios, with a test API of their own
-└── {api}/                   written per API (todoapi)
-    ├── {api}.go             Prefix, Operations, Client with one method per operation and its own types
-    ├── emulator.go          Emulator(): every operation answered with stable data (TODO_API_HOST=mock)
-    └── features/  test/     each operation against an emulator of the scenario + the contract scenario
+├── client/                  every client of another service's API, and nothing else
+│   ├── core/httpclient/     copied from templates, never edited
+│   │   ├── config.go        LoadConfig(prefix): {API}_HOST, _HTTP_PORT, _TLS, _TIMEOUT; Mock
+│   │   ├── client.go        Client.Call: timeout, JSON, X-Request-Id, call log; ErrUnavailable, StatusError
+│   │   └── features/ test/  the fixed code's scenarios, with a test API of their own
+│   └── {api}/               written per API (todoapi)
+│       ├── {api}.go         Prefix, Operations, Client with one method per operation and its own types
+│       ├── emulator.go      Emulator(): every operation answered with stable data (TODO_API_HOST=mock)
+│       └── features/ test/  each operation against an emulator of the scenario + the contract scenario
+└── {store}/                 a store (memory, postgres): beside client/, never in it
 internal/service/{name}.go   the service over the adapter: technical outcomes → the application's kinds
 ```
 
@@ -36,12 +38,12 @@ internal/service/{name}.go   the service over the adapter: technical outcomes �
 ## MUST
 
 ### Copy the client code from templates
-Fill and copy [config.go](./templates/internal/infrastructure/httpclient/config.go) and [client.go](./templates/internal/infrastructure/httpclient/client.go) to `internal/infrastructure/httpclient/`, with the example's `features/` and `test/`, replacing `{module-path}` with the module path from `go.mod`.
+Fill and copy [config.go](./templates/internal/infrastructure/client/core/httpclient/config.go) and [client.go](./templates/internal/infrastructure/client/core/httpclient/client.go) to `internal/infrastructure/client/core/httpclient/`, with the example's `features/` and `test/`, replacing `{module-path}` with the module path from `go.mod`.
 - Risk: a retyped client drifts in its timeout, its error report, or its log from every other Go client of the catalog.
 - Fix: copy the files; after filling, searching them for `{module-path}` returns nothing; `make test` passes.
 
 ### One adapter package per API
-Write each API as `internal/infrastructure/{api}/` holding `Prefix` (`"TODO_API"`), `Operations` (the method and path of every operation it calls), `New(logger)` reading the settings and `NewClient(cfg, logger)` taking them, and per operation one method of `Client` with an unexported request and response type and the mapping to the values the service uses.
+Write each API as `internal/infrastructure/client/{api}/` holding `Prefix` (`"TODO_API"`), `Operations` (the method and path of every operation it calls), `New(logger)` reading the settings and `NewClient(cfg, logger)` taking them, and per operation one method of `Client` with an unexported request and response type and the mapping to the values the service uses.
 
 ```go
 // PlanItems is POST /v1/items/plan: one open item per title, planned by the API.
@@ -60,7 +62,7 @@ func (c *Client) PlanItems(ctx context.Context, titles []string) ([]Item, error)
 
 - Violation: `http.Client` used in the adapter beside `Call`; the adapter returning `entity` types or the application's kinds; an operation missing from `Operations`.
 - Risk: a call that bypasses `Call` has no timeout, no log, and no request id; the contract scenario misses the operation.
-- Fix: follow the example's [todoapi.go](./examples/internal/infrastructure/todoapi/todoapi.go); a new operation adds its method, its two types, its line of `Operations`, and its route in `emulator.go`.
+- Fix: follow the example's [todoapi.go](./examples/internal/infrastructure/client/todoapi/todoapi.go); a new operation adds its method, its two types, its line of `Operations`, and its route in `emulator.go`.
 
 ### Answer every operation in the emulator
 Write `Emulator()` in the adapter's package as an `http.Handler` answering every operation of `Operations` as the API does, with stable data and no state, and pass it to `httpclient.New`; `{API}_HOST=mock` runs the client against it.
@@ -103,12 +105,12 @@ remotePlanner := service.NewRemotePlanner(todoAPI)
 - Fix: the command takes the service through an interface; the composition root builds both.
 
 ### Cover the client with scenarios
-Copy the example's `internal/infrastructure/httpclient/features/` and `test/` unchanged but for the module path: they cover the settings, the call, the outcomes, the log, and the mock through a test API of their own. Write per adapter a feature calling each operation against an `httptest` emulator of the scenario and its emulator mocked, and its contract scenario reading `docs/integration/client/{api-name}/openapi.json`; per service a feature with the adapter faked; tag them `@type/tech-check` and `@type/service`.
+Copy the example's `internal/infrastructure/client/core/httpclient/features/` and `test/` unchanged but for the module path: they cover the settings, the call, the outcomes, the log, and the mock through a test API of their own. Write per adapter a feature calling each operation against an `httptest` emulator of the scenario and its emulator mocked, and its contract scenario reading `docs/integration/client/{api-name}/openapi.json`; per service a feature with the adapter faked; tag them `@type/tech-check` and `@type/service`.
 - Risk: an adapter feature that repeats the outcomes of `Call` grows with every operation and tests nothing new.
 - Fix: an adapter feature checks only its own request and mapping.
 
 # Check list
-- [ ] `internal/infrastructure/httpclient/{config,client}.go` are filled copies of the templates; no placeholder is left.
+- [ ] `internal/infrastructure/client/core/httpclient/{config,client}.go` are filled copies of the templates; no placeholder is left.
 - [ ] Each API has its package with `Prefix`, `Operations`, `New`, `NewClient`, one method per operation, and `Emulator`; the contract scenario passes.
 - [ ] The service maps `ErrUnavailable`, the expected `StatusError` codes, and nothing else to kinds.
 - [ ] `main.go` builds the adapter and the service in `// [services]`.
