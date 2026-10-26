@@ -74,6 +74,12 @@ Build every handler in one function of the command layer, which takes the list o
 - Risk: every new command edits the composition root, and a command added in a hurry misses a middleware — it is served without its log line or without its access check.
 - Fix: a new command adds its field and its line to the registry; a middleware that must skip some commands filters them itself (see [Filter commands by their mark](#filter-commands-by-their-mark)).
 
+### Give a nested command's wrapped handler to the handler that runs it
+Build the handler of a command that another command runs before that other handler, in the command registry, and pass it the wrapped one as a constructor parameter typed by the handler contract, as [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md#run-a-nested-command-through-the-command-pipeline) requires.
+- Violation: a handler that builds the nested command's handler itself; the registry passing the handler before wrapping it.
+- Risk: the nested command runs without the middleware, so its log line, its access check, and its unit of work depend on who started it.
+- Fix: the registry wraps the nested handler once, stores it in its field, and passes the same value to the outer handler; every middleware is written to run again inside an outer command — a unit of work joins the open one.
+
 ### Put every middleware in a directory of its own
 Put each middleware in `middleware/{name}/` of the layer it wraps — `command/middleware/{name}/` for a command middleware, `api/{kind}/middleware/{name}/` for an API's — and name it `{Name}Middleware`; keep the layer's `pipeline/` for the contract and the server only.
 - Violation: the logging of commands in the command contract's file; an authentication middleware in the API's fixed server code; two middleware in one directory.
@@ -150,6 +156,7 @@ Add a cross-cutting step (logging, a unit of work, a metric, an access check) as
 # Check list
 - [ ] The variation point's example changes only the base files its `attach.allow` names, and `bash test/check-vp-attach.sh` passes.
 - [ ] Every handler is built and wrapped in the command registry; the composition root gives it the list of command middleware and the services.
+- [ ] A handler that runs another command gets that command's wrapped handler from the registry.
 - [ ] Every middleware lives in `middleware/{name}/` of the layer it wraps and is named `{Name}Middleware`.
 - [ ] Each API's entry is built by its entry factory from the registry, the logger, and its list of API middleware.
 - [ ] Every list is ordered first = outermost; the request log and answer failures are built by the entry itself from its logger, stay outside the API middleware, and answer every failure in the API's error format ([fixed-middleware-inside-the-entry](./adr/fixed-middleware-inside-the-entry.md)).

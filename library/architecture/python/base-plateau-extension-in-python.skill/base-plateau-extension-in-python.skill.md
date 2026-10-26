@@ -2,7 +2,7 @@
 name: base-plateau-extension-in-python
 description: How a variation point extends the base plateau in Python — every middleware a package of its own under command/middleware/ or api/{kind}/middleware/ with a {Name}Middleware class, the command middleware of the Middleware protocol in the list main.py gives build_handlers, wrapped around every typed handler by decorate, marks as runtime-checkable protocols a command satisfies, the HTTP entry factory http_api.entry with its list of API middleware inside the fixed RequestLogMiddleware and AnswerFailuresMiddleware, rejections as KindError, the variation point's own settings, and attach.allow — with a sample access variation point attached to the HTTP example
 whenToUse: when you write, attach, or review a variation point of a Python application built on the base plateau, when you add a middleware around Python commands or around HTTP requests, or when you add a command to such an application
-updated: 20261025
+updated: 20261026
 tags:
   - stack/python
   - concern/architecture
@@ -64,6 +64,22 @@ def build_handlers(middlewares: Sequence[Middleware]) -> Handlers:
 - Violation: a handler wrapped in `main.py`; an entry point that constructs `PlanItemsHandler()`.
 - Risk: a command built outside the registry misses the middleware the others have.
 - Fix: the services a handler uses are keyword parameters of `build_handlers` after the middleware, passed by `main.py` from `# [services]`; an API's resource takes its handlers in `{Resource}Handler.from_handlers(handlers)`.
+
+### Pass a nested command's decorated handler
+Give a handler that runs another command a constructor parameter `Handler[{Nested}Command, {Nested}Result]`, and in `build_handlers` decorate the nested handler first and pass that value, never `{Nested}Handler(...)`.
+
+```python
+def build_handlers(middlewares: Sequence[Middleware], *, lists: ItemLists) -> Handlers:
+    add_item = decorate("AddItem", AddItemHandler(lists), middlewares)
+    return Handlers(
+        add_item=add_item,
+        import_items=decorate("ImportItems", ImportItemsHandler(add_item), middlewares),
+    )
+```
+
+- Violation: `ImportItemsHandler(AddItemHandler(lists))`; a handler that takes `Handlers` and picks its nested handler itself.
+- Risk: an undecorated nested call skips every command middleware; a handler holding the whole registry hides which commands it runs.
+- Fix: one parameter per nested command, the same decorated value the field of `Handlers` holds.
 
 ### One package per middleware
 Put each command middleware in `command/middleware/{name}/` and each API middleware in `api/{kind}/middleware/{name}/`: `middleware.py` with its `{Name}Middleware` class, the marks and errors it uses beside it, an `__init__.py` re-exporting them, and its `features/` and `test/`.
@@ -220,6 +236,7 @@ change README.md
 
 # Check list
 - [ ] Every command is a field and a line of `command/handlers.py`; `main.py` calls `build_handlers` once.
+- [ ] A handler that runs another command takes that command's decorated handler, built first in `build_handlers`.
 - [ ] Every middleware is a package of its own under `command/middleware/` or `api/{kind}/middleware/` with its `{Name}Middleware`.
 - [ ] Every command middleware awaits `call_next` with the command unchanged and rejects with a `KindError` subclass.
 - [ ] A filtered middleware selects by a `@runtime_checkable` protocol; the marked command has the method in its own module.
