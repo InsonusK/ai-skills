@@ -12,6 +12,7 @@ import (
 	"net/http"
 
 	"github.com/example/todo/internal/infrastructure/client/core/httpclient"
+	"github.com/example/todo/internal/infrastructure/client/todoapi/mock"
 )
 
 // Prefix names the settings of this API: TODO_API_HOST, TODO_API_HTTP_PORT,
@@ -39,7 +40,7 @@ type Client struct {
 }
 
 // New reads the settings of the API and builds its client; with
-// TODO_API_HOST=mock it answers from Emulator.
+// TODO_API_HOST=mock it answers from mock.Emulator.
 func New(logger *slog.Logger) (*Client, error) {
 	cfg, err := httpclient.LoadConfig(Prefix)
 	if err != nil {
@@ -51,7 +52,7 @@ func New(logger *slog.Logger) (*Client, error) {
 // NewClient builds the client from settings given - the scenarios point it at
 // an emulator of their own.
 func NewClient(cfg httpclient.Config, logger *slog.Logger) *Client {
-	return &Client{http: httpclient.New(cfg, logger, Emulator())}
+	return &Client{http: httpclient.New(cfg, logger, mock.Emulator())}
 }
 
 type planItemsRequest struct {

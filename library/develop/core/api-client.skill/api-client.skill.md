@@ -81,7 +81,7 @@ Send the request id of the call being served with every call it causes — `X-Re
 Run the client, when `{API}_HOST=mock`, against an emulator of the API inside the process — the same adapter code, the transport answering from the emulator — that answers every operation the adapter calls with stable sample data, and write one WARN record `api client mocked` with the API's name when the client is built.
 - Violation: a `USE_MOCK_X` flag; a mock class beside the adapter that skips its mapping and its log; a mock that answers empty or random data.
 - Risk: two switches disagree; a mocked integration answers unnoticed in an environment where a real one was expected; the service cannot start where the other service is not running.
-- Fix: one emulator per API beside its adapter, chosen by the fixed client code from the host.
+- Fix: one emulator per API in its adapter's `mock/` folder, in a file named after the client (`infrastructure/client/todo_api/mock/todo_api_mock.go` beside `todo_api.go`), so the file says it is a mock and of which client; the fixed client code chooses it from the host.
 
 ### Keep the API out of readiness
 Add no readiness check for an API the application calls; let the calls that need it answer unavailable while it is down.
@@ -99,5 +99,5 @@ Test the fixed client code once through an emulator of a test API of its own, ea
 - [ ] The consumed contract is the provider's file under `docs/integration/client/{api-name}/`; a scenario holds the adapter's operations against it.
 - [ ] Unavailable is reported apart from the API's other statuses; the service maps them to its own errors.
 - [ ] Every call is logged in two records and carries the request id.
-- [ ] `{API}_HOST=mock` runs the client against its emulator, warned once.
+- [ ] `{API}_HOST=mock` runs the client against its emulator in `infrastructure/client/{api}/mock/{api}_mock`, warned once.
 - [ ] No readiness check names another service's API.

@@ -1,6 +1,6 @@
 ---
 name: vp-http-client-in-go
-description: The HTTP client variation point in Go — internal/infrastructure/client/core/httpclient copied from templates (the {API} settings, Client.Call with the timeout, JSON in and out, ErrUnavailable and StatusError, the call log, the request id, the mock against an emulator), one adapter per API in internal/infrastructure/client/{api} with its operations, its emulator, and its contract scenario, the service over it in internal/service, and the lines of main.go that build them
+description: The HTTP client variation point in Go — internal/infrastructure/client/core/httpclient copied from templates (the {API} settings, Client.Call with the timeout, JSON in and out, ErrUnavailable and StatusError, the call log, the request id, the mock against an emulator), one adapter per API in internal/infrastructure/client/{api} with its operations, its mock, and its contract scenario, the service over it in internal/service, and the lines of main.go that build them
 whenToUse: when a Go application built on the base plateau must call another service's HTTP API, when you call a further operation of such an API, or when you review a Go HTTP client
 updated: 20261026
 tags:
@@ -27,7 +27,7 @@ internal/infrastructure/
 │   │   └── features/ test/  the fixed code's scenarios, with a test API of their own
 │   └── {api}/               written per API (todoapi)
 │       ├── {api}.go         Prefix, Operations, Client with one method per operation and its own types
-│       ├── emulator.go      Emulator(): every operation answered with stable data (TODO_API_HOST=mock)
+│       ├── mock/{api}_mock.go   mock.Emulator(): every operation answered with stable data ({API}_HOST=mock)
 │       └── features/ test/  each operation against an emulator of the scenario + the contract scenario
 └── {store}/                 a store (memory, postgres): beside client/, never in it
 internal/service/{name}.go   the service over the adapter: technical outcomes → the application's kinds
@@ -62,10 +62,10 @@ func (c *Client) PlanItems(ctx context.Context, titles []string) ([]Item, error)
 
 - Violation: `http.Client` used in the adapter beside `Call`; the adapter returning `entity` types or the application's kinds; an operation missing from `Operations`.
 - Risk: a call that bypasses `Call` has no timeout, no log, and no request id; the contract scenario misses the operation.
-- Fix: follow the example's [todoapi.go](./examples/internal/infrastructure/client/todoapi/todoapi.go); a new operation adds its method, its two types, its line of `Operations`, and its route in `emulator.go`.
+- Fix: follow the example's [todoapi.go](./examples/internal/infrastructure/client/todoapi/todoapi.go); a new operation adds its method, its two types, its line of `Operations`, and its route in [todoapi_mock.go](./examples/internal/infrastructure/client/todoapi/mock/todoapi_mock.go).
 
-### Answer every operation in the emulator
-Write `Emulator()` in the adapter's package as an `http.Handler` answering every operation of `Operations` as the API does, with stable data and no state, and pass it to `httpclient.New`; `{API}_HOST=mock` runs the client against it.
+### Answer every operation in the mock
+Write the mock of each adapter as `internal/infrastructure/client/{api}/mock/{api}_mock.go`, package `mock`, with `Emulator()` returning an `http.Handler` that answers every operation of `Operations` as the API does, with stable data and no state, and pass it to `httpclient.New`; `{API}_HOST=mock` runs the client against it. The file's name says it is a mock and of which client.
 - Risk: an operation the emulator does not answer fails with 404 under `mock`, and the service cannot run without the other service.
 - Fix: the emulator's scenario runs the adapter mocked and checks its answer.
 
@@ -111,7 +111,7 @@ Copy the example's `internal/infrastructure/client/core/httpclient/features/` an
 
 # Check list
 - [ ] `internal/infrastructure/client/core/httpclient/{config,client}.go` are filled copies of the templates; no placeholder is left.
-- [ ] Each API has its package with `Prefix`, `Operations`, `New`, `NewClient`, one method per operation, and `Emulator`; the contract scenario passes.
+- [ ] Each API has its package with `Prefix`, `Operations`, `New`, `NewClient`, and one method per operation, and its mock in `mock/{api}_mock.go`; the contract scenario passes.
 - [ ] The service maps `ErrUnavailable`, the expected `StatusError` codes, and nothing else to kinds.
 - [ ] `main.go` builds the adapter and the service in `// [services]`.
 - [ ] `make test` passes; `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).

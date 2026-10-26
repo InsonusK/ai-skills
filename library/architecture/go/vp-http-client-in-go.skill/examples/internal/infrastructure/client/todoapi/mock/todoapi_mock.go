@@ -1,18 +1,22 @@
-package todoapi
+// Package mock is the mock of the todo API's client (todoapi): an emulator
+// of the API inside the process, which TODO_API_HOST=mock runs the client
+// against, so the application runs with no todo service reachable.
+package mock
 
 import (
 	"encoding/json"
 	"net/http"
 )
 
-// Emulator answers every operation of Operations as the todo API does, with
-// stable data and no state: TODO_API_HOST=mock runs the client against it, so
-// the application runs with no todo service reachable. A new operation of
-// the adapter adds its route here.
+// Emulator answers every operation of todoapi.Operations as the todo API
+// does, with stable data and no state. A new operation of the adapter adds
+// its route here.
 func Emulator() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("POST /v1/items/plan", func(w http.ResponseWriter, r *http.Request) {
-		var request planItemsRequest
+		var request struct {
+			Titles []string `json:"titles"`
+		}
 		if err := json.NewDecoder(r.Body).Decode(&request); err != nil || len(request.Titles) == 0 {
 			answer(w, http.StatusBadRequest, map[string]any{"code": 3, "message": "no items to plan", "details": []any{}})
 			return
