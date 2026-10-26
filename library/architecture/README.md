@@ -77,7 +77,7 @@ the `spec/` skills come along because every stack skill links its spec.
 | 1c-1 | API: gRPC (`vp-grpc-api`) | ✅ | ✅ | ✅ (grpc.aio) |
 | — | error kinds (`library/develop/core/error-kinds`) | ✅ | ✅ (exceptions) | ✅ (exceptions) |
 | — | health (`vp-health`, `:8081`) + one runner for every entry point (`entry.RunAll`) | ✅ | ✅ | |
-| 1c-2 | HTTP form of a gRPC contract (`vp-http-api`, proto mode) | ✅ | ✅ | |
+| 1c-2 | HTTP form of a gRPC contract (`vp-http-api`, proto mode) | ✅ | ✅ | ✅ |
 | 1d | API: CLI (`vp-cli-api`, cobra) | ✅ | | |
 | — | logging: one logger, payload attribute, base handler drops it; every entry point logs its calls; `vp-logging` masks and writes the payload | ✅ | base ✅ | base ✅ |
 | — | extension of the base (`base-plateau-extension`): command registry, middleware lists for commands and entries, one directory per middleware, sample access VP | ✅ | ✅ | ✅ |

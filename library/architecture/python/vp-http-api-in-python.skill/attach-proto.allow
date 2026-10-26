@@ -1,0 +1,20 @@
+# The HTTP form of a proto contract: the HTTP variation point attached to a
+# service that already has the gRPC one, serving the same contract over HTTP.
+# Besides the HTTP form, the example adds AddItem and ListItems with an
+# in-memory store so it shows a path parameter, 201, 404, 409, and a deprecated
+# method; those commands are why the gRPC endpoint, the command registry, and
+# the commands' package change.
+base library/architecture/python/vp-grpc-api-in-python.skill/examples
+examples examples-proto
+change src/todo/main.py
+change pyproject.toml
+change Makefile
+change README.md
+change .gitignore
+change docs/integration/api/todo/todo.proto
+change src/todo/gen/api/todo/*
+change src/todo/api/grpc/endpoint/items.py
+change src/todo/api/grpc/endpoint/features/items.feature
+change src/todo/api/grpc/endpoint/test/*
+change src/todo/command/__init__.py
+change src/todo/command/handlers.py

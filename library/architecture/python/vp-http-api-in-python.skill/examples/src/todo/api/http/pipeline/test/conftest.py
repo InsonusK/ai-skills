@@ -65,6 +65,8 @@ class World:
     recorder: Recorder = field(default_factory=Recorder)
     config: HttpConfig = field(default_factory=HttpConfig)
     middlewares: list[Middleware] = field(default_factory=list)
+    routers: list[APIRouter] = field(default_factory=list)
+    """Resources a feature serves beside echo (proto.feature)."""
     response: Response | None = None
 
     def logger(self) -> logging.Logger:
@@ -84,7 +86,7 @@ class World:
         return router
 
     def request(self, method: str, path: str, **kwargs: Any) -> None:
-        app = Server(self.config, [self.router()], self.logger(), self.middlewares).app()
+        app = Server(self.config, [self.router(), *self.routers], self.logger(), self.middlewares).app()
         with TestClient(app, raise_server_exceptions=False, follow_redirects=False) as client:
             self.response = client.request(method, path, **kwargs)
         print(f"when: {method} {path} -> {self.response.status_code} {self.response.text[:200]!r}")
@@ -275,7 +277,9 @@ def the_response_should_carry_a_new_request_id(world: World) -> None:
 
 @then(parsers.parse('the spec\'s server URL should be "{url}"'))
 def the_specs_server_url_should_be(world: World, url: str) -> None:
-    assert world.answered().json()["servers"] == [{"url": url}]
+    # basePath in an OpenAPI 2 spec generated from a proto file, servers in an OpenAPI 3 one
+    spec = world.answered().json()
+    assert (spec["basePath"] if "swagger" in spec else spec["servers"]) == (url if "swagger" in spec else [{"url": url}])
 
 
 @then(parsers.parse('the response should redirect to "{location}"'))
