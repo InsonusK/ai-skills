@@ -35,7 +35,7 @@ How the catalog is proven:
 | H03 | `LOG_PAYLOAD` keeps a payload it should drop | `always`, `errors`, `off` per record outcome |
 | H04 | The payload is cut before it is masked, so a secret near its start is written, or a body cut in the middle is no longer JSON and is written as text | Masked first, then cut, as JSON, at `LOG_PAYLOAD_MAX_BYTES`, saying how long the whole was |
 | H05 | An unparsed body goes unnoticed, or floods the log, or raises its record's level | The record keeps its level; one WARN record `log payload not parsed` (record, field, bytes, request id — never the body) the first time a record of one message has one at one path, and none when the log is written from a level above WARN |
-| H06 | A stack has another way to hand the handler a payload that skips the mask | Each stack lists its own ways and proves each in a scenario of its own: Go `logger.With` (`go-payload.feature`); dotnet a message template, whose text is written as the template, and a scope, which is never written (`Payload.feature`) |
+| H06 | A stack has another way to hand the handler a payload that skips the mask | Each stack lists its own ways and proves each in a scenario of its own: Go `logger.With` (`go-payload.feature`); dotnet a message template, whose text is written as the template, and a scope, which is never written (`Payload.feature`); Python a message given arguments, written as written without them, and a `LoggerAdapter`'s payload (`python-payload.feature`) |
 
 ## Failing safely
 
@@ -81,6 +81,10 @@ How the catalog is proven:
 | dotnet | `PayloadMask.cs`: the path `$` given to the walk of `Unmask` | Unmasked, nothing is reported by its path |
 | dotnet | `MaskedLogProvider.cs`: the text of "payload not written" | The mask catches what can fail inside it; the branch is a last guard so a fault never loses the record |
 | dotnet | `ProtoTypes.cs`: the scan of the loaded assemblies and its shortcuts | The registry is static: Stryker runs every mutant in one process, after the first test filled it. Removing the scan was run by hand in a fresh process and fails L14 |
+| Python | `mask.py`: the path given to the walk of `unmask`, and to a text, an enum's value, a parsed JSON body or text, and a proto string | The path only names an unparsed body: unmasked nothing is reported, and parsed JSON, a text, and an enum's value hold no bytes |
+| Python | `config.py`: the text of the LOG_PAYLOAD_UNMASKED error | Its text, not whether the start is refused; the scenarios check it names both variables |
+| Python | `formatter.py`: `ensure_ascii=None` | `None` is false like `False`: the same output |
+| Python | `formatter.py`: the bound of the request ids remembered for U01 (4096): its comparison, the removal of the oldest | Only how many requests are remembered: an older request is warned about again, never less |
 | dotnet | 54 mutants Stryker cannot compile (pattern variables, `is { } x`) | Not measured by Stryker; the ones that change what is written were run by hand and are killed: request id, unparsed reporting, warning level, `LOG_PAYLOAD`, template text, non-generic dictionary, `Any` known and unknown, `debug_redact`, code name, `[JsonIgnore]`, unparsed body, settings validation |
 
 Run in Go from the example (2026-10-24: 59 killed, 1 timed out, 2 lived, 2 not covered, as listed):
@@ -96,4 +100,12 @@ Run in dotnet from `src/MaskedLogging.Tests` of the example (2026-10-24: 227 kil
 ```bash
 dotnet tool install -g dotnet-stryker --version 4.16.0
 dotnet stryker --output /tmp/stryker
+```
+
+Run in Python from the example (2026-10-26: 529 killed, 12 survived, as listed); `[tool.mutmut]` of its `pyproject.toml` mutates only `src/todo/log/masked`, and the run leaves `mutants/` behind:
+
+```bash
+.venv/bin/pip install mutmut==3.8.0
+.venv/bin/mutmut run --max-children 4 && .venv/bin/mutmut results
+rm -rf mutants
 ```

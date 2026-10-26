@@ -10,7 +10,6 @@ from datetime import timedelta
 from typing import Any
 
 import grpc
-from google.protobuf.json_format import MessageToDict
 from google.protobuf.message import Message
 
 from todo.api.grpc.middleware.interceptor import CallNext, IncomingCall
@@ -44,7 +43,10 @@ class CallLogMiddleware:
         given = dict(call.context.invocation_metadata() or ()).get(REQUEST_ID_METADATA)
         with request_id_scope(given if isinstance(given, str) else None) as request_id:
             await call.context.send_initial_metadata(((REQUEST_ID_METADATA, request_id),))
-            received = {"request": _json(call.request)}
+            # The messages themselves: the handler decides how they are
+            # written, the logging variation point by their descriptors
+            # ([debug_redact = true] masked).
+            received = {"request": call.request}
             self._logger.info("grpc call received", extra=attrs(method=call.method, payload=received))
             response: Message | None = None
             code = grpc.StatusCode.UNKNOWN
@@ -60,7 +62,7 @@ class CallLogMiddleware:
                 raise
             finally:
                 failed = code is not grpc.StatusCode.OK
-                sent: dict[str, Any] = {"response": None if response is None else _json(response)}
+                sent: dict[str, Any] = {"response": response}
                 if failed:
                     sent.update(received)
                 duration = timedelta(microseconds=(time.perf_counter_ns() - started) / 1_000)
@@ -68,9 +70,3 @@ class CallLogMiddleware:
                     "grpc call answered",
                     extra=attrs(method=call.method, code=code.name, duration=duration, failed=failed, payload=sent),
                 )
-
-
-def _json(message: Message) -> Any:
-    # A message in its proto-JSON form - the form of its HTTP mapping - so the
-    # log, and the masking of the logging variation point, see plain values.
-    return MessageToDict(message)
