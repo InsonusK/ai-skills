@@ -13,6 +13,7 @@ adr:
   - adr/service-wraps-one-infrastructure.md
   - adr/commands-named-command.md
   - adr/nested-command-through-pipeline.md
+  - adr/api-runs-independent-commands.md
 ---
 
 # Goal
@@ -40,7 +41,7 @@ Place every part of the application in one of these layers and let it call only 
 
 | Layer | Owns | May call | Never calls |
 |---|---|---|---|
-| api | parsing an input into plain parameters; turning a result or an error into the response | command factories, commands | domain, services, infrastructure |
+| api | parsing an input into plain parameters; turning a result or an error into the response | command factories, commands (several only when independent) | domain, services, infrastructure |
 | command factory (optional) | choosing the command from plain parameters and the application's state | domain services, services | infrastructure; never parses an input format |
 | command | the main logic of one operation | domain services, entities, services, other commands (nested, through the command pipeline) | infrastructure, api types |
 | domain service | business logic reused by several commands | entities, services | infrastructure, commands |
@@ -63,6 +64,12 @@ Make api turn its input into plain parameters and pass them to a command, or to 
 - Violation: an HTTP handler that checks a business rule, reads the application's state, or calls a service.
 - Risk: the rule and the choice of command spread over every entry point, and the next entry point repeats them.
 - Fix: api only parses, calls, and maps the result or error to its own response.
+
+### API runs several commands only when they are independent
+Let api call several commands for one input only when none of them uses another's result or waits for another's success; when the commands must run in an order, let api call one orchestrating command that runs them as nested commands.
+- Violation: an HTTP handler that creates an order and then reserves stock with the new order's id; a job that skips sending reminders when archiving failed.
+- Risk: an order of commands is a business process — written in api, it is repeated by every entry point that needs it and runs outside one unit of work, so a failure halfway leaves the first steps done.
+- Fix: independent commands — one command per message of a batch, each answered by its own result or error; an order — `PlaceOrderCommand` runs `CreateOrder` and `ReserveStock` per [Run a nested command through the command pipeline](#run-a-nested-command-through-the-command-pipeline). Decision recorded in [api-runs-independent-commands](./adr/api-runs-independent-commands.md).
 
 ### A command takes plain parameters
 Give a command only the plain values its operation needs — ids, names, texts, amounts — never an object of the input's transport.
@@ -147,6 +154,7 @@ Use a package with no I/O and no business rule — formatting, layout, conversio
 - [ ] Every part sits in one layer of [Keep each part in its layer and its calls downward](#keep-each-part-in-its-layer-and-its-calls-downward), and every call goes down the table.
 - [ ] A command runs another command only through its handler from the command pipeline, never by building it or sharing its logic.
 - [ ] api only parses, calls a command or a command factory, and maps the result or error.
+- [ ] api calls several commands only when none uses another's result or success; an order of commands is one orchestrating command.
 - [ ] Every command holds plain values, no transport object, and is named `{Operation}Command`; its result `{Operation}Result`, a part of a result `{Thing}View`.
 - [ ] Every command factory chooses by application state; no factory maps a fixed input to one command.
 - [ ] No command returns an entity; no command, domain service, or entity calls infrastructure.
