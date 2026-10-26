@@ -25,7 +25,7 @@ adr:
 # Scope
 - Covers the health endpoints of a long-running service. A one-shot application (the startup command alone, a CLI) has no probes; attached to one, the entry point stops when the command is done.
 - `/metrics` is planned on the same port with the metrics variation point.
-- The implementation for each stack is described in its stack-specialized extension: `vp-health-in-go`, `vp-health-in-dotnet`; `vp-health-in-python` is planned.
+- The implementation for each stack is described in its stack-specialized extension: `vp-health-in-go`, `vp-health-in-dotnet`, `vp-health-in-python`.
 
 # Rule
 
