@@ -2,7 +2,7 @@
 name: vp-logging
 description: The logging variation point — a log handler attached to the base plateau in place of the base one, which writes the payload every part already logs (a command's parameters, a request's query, headers, and body, a call's message) masked by marks and by names, cut to a size, kept on every record or on failed ones only, and with the request id of the call, while no part that logs changes
 whenToUse: when the operators of an application built on the base plateau must see the data of calls in the log — attaching the logging variation point, marking a field as secret or not to log, choosing which records keep their payload, or reviewing what the log of such an application may contain
-updated: 20261022
+updated: 20261026
 tags:
   - stack
   - concern/architecture
@@ -28,7 +28,7 @@ adr:
 
 # Scope
 - Covers the payload, the request id, and the size of the log records. Shipping logs, sampling, and tracing spans are not covered.
-- The implementation for each stack is described in its stack-specialized extension: `vp-logging-in-go`, `vp-logging-in-dotnet`; `vp-logging-in-python` is planned.
+- The implementation for each stack is described in its stack-specialized extension: `vp-logging-in-go`, `vp-logging-in-dotnet`, `vp-logging-in-python`.
 
 # Rule
 

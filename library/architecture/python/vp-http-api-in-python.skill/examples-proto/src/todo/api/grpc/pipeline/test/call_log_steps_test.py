@@ -19,10 +19,11 @@ class World(Protocol):
 
 
 def _payload(world: World, message: str) -> dict[str, Any]:
+    # The payload holds the messages themselves; read here as their text.
     (record,) = world.records(message)
     payload = attributes_of(record).get("payload")
     assert isinstance(payload, dict), payload
-    return payload
+    return {key: None if value is None else value.value for key, value in payload.items()}
 
 
 @then(parsers.parse('the "grpc call received" record should hold the request "{text}"'))

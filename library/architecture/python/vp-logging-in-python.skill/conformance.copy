@@ -1,0 +1,3 @@
+# The shared scenarios of the logging variation point this example runs:
+# written by `make conformance-sync`, checked by test/check-conformance.sh.
+vp-logging.skill/conformance examples/src/todo/log/masked/features
