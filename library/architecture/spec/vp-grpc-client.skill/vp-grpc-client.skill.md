@@ -34,7 +34,7 @@ infrastructure/client/core/{grpc client}   connection: target or in-memory emula
 # Scope
 - Covers unary calls to a gRPC API whose contract is a `.proto` file (skill api-develop), and the HTTP form of a proto contract, which is called over gRPC instead.
 - A streaming call is not covered: the fixed interceptor bounds, logs, and reports unary calls only.
-- The implementation for each stack is described in its stack-specialized extension: `vp-grpc-client-in-go`, `vp-grpc-client-in-dotnet`; the Python extension is planned.
+- The implementation for each stack is described in its stack-specialized extension: `vp-grpc-client-in-go`, `vp-grpc-client-in-dotnet`, `vp-grpc-client-in-python`.
 
 # Rule
 
@@ -46,7 +46,7 @@ Connect to `{API}_HOST:{API}_GRPC_PORT`, over TLS when `{API}_TLS=true` and in p
 - Fix: the fixed client code builds the connection lazily; a call to an API that is down reports unavailable.
 
 ### Generate the stub from the copied contract
-Generate the messages and the client stub of every consumed `.proto` from its copy under `docs/integration/client/{api-name}/` — into `gen/client/{api-name}/`, committed, where the stack generates with a tool (Go), or at every build where the build compiles it (dotnet) — and keep the generated types the adapter's: the package option the provider set for its own code replaced at generation, or the types internal to the adapter.
+Generate the messages and the client stub of every consumed `.proto` from its copy under `docs/integration/client/{api-name}/` — into `gen/client/{api-name}/`, committed, where the stack generates with a tool (Go, Python), or at every build where the build compiles it (dotnet) — and keep the generated types the adapter's: the package option the provider set for its own code replaced at generation, or the types internal to the adapter.
 - Violation: the provider's generated package imported; messages written by hand; the copied `.proto` edited to change its package option.
 - Risk: the application builds against another module's release cycle, or against messages that drift from the contract.
 - Fix: the generator's configuration overrides the option or the access per consumed contract; the copy stays the provider's file.
@@ -63,7 +63,7 @@ Report a call answered with `UNAVAILABLE` or `DEADLINE_EXCEEDED` as unavailable 
 - Fix: the fixed client code converts the status once; the service maps the codes it expects.
 
 ### Mock with the generated server inside the process
-Write the emulator of an API as an implementation of its generated service server, and serve it, when `{API}_HOST=mock`, inside the process behind the same interceptor, each message through its wire form: a gRPC server over an in-memory transport where the stack has one (Go `bufconn`), a call invoker of the fixed code where it has none (dotnet).
+Write the emulator of an API as an implementation of its generated service server, and serve it, when `{API}_HOST=mock`, inside the process behind the same interceptor, each message through its wire form: a gRPC server inside the process that the same channel reaches - over an in-memory transport where the stack has one (Go `bufconn`), on the loopback where it has none (Python) - or a call invoker of the fixed code (dotnet).
 - Risk: a mock that replaces the stub skips the interceptor, so a mocked run neither logs its calls nor reports their outcomes as a real one does.
 - Fix: the fixed client code serves the emulator and keeps the interceptor; the emulator answers every listed method.
 
