@@ -1,0 +1,16 @@
+# The HTTP client variation point attaches to the base plateau: it adds the
+# fixed client code (infrastructure/client/core), the todo API's adapter and
+# its mock, the service over it, and the command that uses it, and changes
+# only these base files: the composition root, the command registry and its
+# package, and the dependency, build, and readme files.
+base library/architecture/python/base-plateau-in-python.skill/examples
+change src/todo/main.py
+change src/todo/command/handlers.py
+change src/todo/command/__init__.py
+change pyproject.toml
+change Makefile
+change README.md
+# The todo API's adapter is written per API: the HTTP and the gRPC client
+# examples each show their own. The service over it catches only the outcomes
+# of infrastructure/client/core/outcomes.py, the same for both.
+sample src/todo/infrastructure/client/todo_api/*
