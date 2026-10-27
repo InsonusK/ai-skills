@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The technical outcomes every client of another service's API reports,
+       over HTTP or gRPC alike. Copied from the templates of the client
+       variation points, never edited. No package, so the service over an
+       adapter catches them without referencing any transport. -->
+</Project>

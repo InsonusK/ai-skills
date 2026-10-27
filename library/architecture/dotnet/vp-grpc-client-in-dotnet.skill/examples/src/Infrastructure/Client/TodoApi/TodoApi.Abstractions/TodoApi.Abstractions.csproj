@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- What a service sees of the todo API's client: its interface in the API's
+       own terms, and the outcomes every client reports. No package of the
+       transport, so a module referencing it gets none. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Client.Abstractions\Client.Abstractions.csproj" />
+  </ItemGroup>
+</Project>
