@@ -44,7 +44,7 @@ Place each layer of [app-layers](library/develop/core/app-layers.skill/app-layer
 | service — its implementation | `src/Modules/{Module}/{Module}.Application/Services/{Service}Service.cs` |
 | infrastructure — its interface | `src/Infrastructure/{Infra}/{Infra}.Abstractions` (`Memory.Abstractions`, `Postgres.Abstractions`) |
 | infrastructure — its implementation | `src/Infrastructure/{Infra}/{Infra}` |
-| infrastructure — a client of another service's API | `src/Infrastructure/Client/{Api}/{Api}.Abstractions` and `{Api}`, per [api-client](library/develop/core/api-client.skill/api-client.skill.md); the fixed code of every client in `src/Infrastructure/Client/Core/` (`Client.Abstractions`, `Client.Http`) |
+| infrastructure — a client of another service's API | `src/Infrastructure/Client/{Api}/{Api}.Abstractions` and `{Api}`, per [api-client](library/develop/core/api-client.skill/api-client.skill.md); the fixed code of every client in `src/Infrastructure/Client/Core/` (`Client.Abstractions`, `Client.Http`, `Client.Grpc`) |
 | entity | `src/Modules/{Module}/{Module}.Domain/Entities` |
 | domain service | `src/Modules/{Module}/{Module}.Domain/Services` |
 | the module's rule errors | `src/Modules/{Module}/{Module}.Domain/Errors/{Module}Errors.cs` |
