@@ -20,7 +20,7 @@ tags:
 
 # Scope
 - Covers calls to an HTTP API whose contract is `openapi.json` with JSON bodies and `google.rpc.Status` errors (skill api-develop). The HTTP form of a proto contract is called through `vp-grpc-client` instead, over gRPC.
-- The implementation for each stack is described in its stack-specialized extension: `vp-http-client-in-go`; the dotnet and Python extensions are planned.
+- The implementation for each stack is described in its stack-specialized extension: `vp-http-client-in-go`, `vp-http-client-in-dotnet`; the Python extension is planned.
 
 # Rule
 
