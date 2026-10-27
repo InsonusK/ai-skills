@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The fixed part of every client of another service's gRPC API: the {API}
+       settings, the channel with one interceptor for the timeout, the request
+       id, the call log, and the outcomes, and the mock inside the process.
+       Copied from the templates of vp-grpc-client-in-dotnet, never edited.
+       Only the adapters reference it. -->
+  <ItemGroup>
+    <ProjectReference Include="..\Client.Abstractions\Client.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\..\BuildingBlocks\BuildingBlocks.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Grpc.Net.Client" />
+    <PackageReference Include="Google.Protobuf" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
+</Project>

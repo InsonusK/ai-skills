@@ -1,0 +1,31 @@
+<Solution>
+  <!-- Every test project sits beside the project it tests (skill cucumber-testing-in-dotnet). -->
+  <Folder Name="/src/">
+    <Project Path="src/Shared/Shared.csproj" />
+    <Project Path="src/BuildingBlocks/BuildingBlocks.csproj" />
+    <Project Path="src/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj" />
+    <Project Path="src/Middleware/Middleware.csproj" />
+    <Project Path="src/Middleware.Tests/Middleware.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/App/">
+    <Project Path="src/App/App.Host/App.Host.csproj" />
+    <Project Path="src/App/App.Host.Tests/App.Host.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/Infrastructure/Client/Core/">
+    <Project Path="src/Infrastructure/Client/Core/Client.Abstractions/Client.Abstractions.csproj" />
+    <Project Path="src/Infrastructure/Client/Core/Client.Grpc/Client.Grpc.csproj" />
+    <Project Path="src/Infrastructure/Client/Core/Client.Grpc.Tests/Client.Grpc.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/Infrastructure/Client/TodoApi/">
+    <Project Path="src/Infrastructure/Client/TodoApi/TodoApi.Abstractions/TodoApi.Abstractions.csproj" />
+    <Project Path="src/Infrastructure/Client/TodoApi/TodoApi/TodoApi.csproj" />
+    <Project Path="src/Infrastructure/Client/TodoApi/TodoApi.Tests/TodoApi.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Todo/">
+    <Project Path="src/Modules/Todo/Todo.Domain/Todo.Domain.csproj" />
+    <Project Path="src/Modules/Todo/Todo.Domain.Tests/Todo.Domain.Tests.csproj" />
+    <Project Path="src/Modules/Todo/Todo.Commands/Todo.Commands.csproj" />
+    <Project Path="src/Modules/Todo/Todo.Application/Todo.Application.csproj" />
+    <Project Path="src/Modules/Todo/Todo.Application.Tests/Todo.Application.Tests.csproj" />
+  </Folder>
+</Solution>
