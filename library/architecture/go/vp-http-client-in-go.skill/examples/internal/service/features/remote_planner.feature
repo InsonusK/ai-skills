@@ -18,7 +18,7 @@ Feature: RemotePlanner service
 
   @category/negative
   Scenario: Titles the API rejects are invalid, with its message
-    Given the todo API answers 400 with the code 3 and the message "item titles repeat"
+    Given the todo API answers INVALID_ARGUMENT with the message "item titles repeat"
     When I plan "a|a" remotely
     Then planning should fail with the kind "invalid" mentioning "item titles repeat"
 
@@ -29,7 +29,7 @@ Feature: RemotePlanner service
     Then planning should fail with no kind
 
     Examples:
-      | fails                                                        |
-      | answers 409 with the code 6 and the message "taken"          |
-      | answers 500 with the code 13 and the message "internal error" |
-      | plans ""                                                     |
+      | fails                                                  |
+      | answers ALREADY_EXISTS with the message "taken"        |
+      | answers INTERNAL with the message "internal error"     |
+      | plans ""                                               |

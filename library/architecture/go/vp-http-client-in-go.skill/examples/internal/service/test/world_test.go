@@ -10,7 +10,7 @@ import (
 	"github.com/cucumber/godog"
 
 	"github.com/example/todo/internal/domain/entity"
-	"github.com/example/todo/internal/infrastructure/client/core/httpclient"
+	"github.com/example/todo/internal/infrastructure/client/core/outcome"
 	"github.com/example/todo/internal/infrastructure/client/todoapi"
 	"github.com/example/todo/internal/service"
 )
@@ -54,12 +54,17 @@ func registerSteps(sc *godog.ScenarioContext, w *World) {
 		return nil
 	})
 	sc.Step(`^the todo API is unavailable$`, func() error {
-		w.api.err = fmt.Errorf("%w: connection refused", httpclient.ErrUnavailable)
+		w.api.err = fmt.Errorf("%w: connection refused", outcome.ErrUnavailable)
 		return nil
 	})
-	sc.Step(`^the todo API answers (\d+) with the code (\d+) and the message "([^"]*)"$`, func(status, code int, message string) error {
-		w.api.err = &httpclient.StatusError{HTTPStatus: status, Code: code, Message: message}
-		return nil
+	sc.Step(`^the todo API answers (\w+) with the message "([^"]*)"$`, func(name, message string) error {
+		for code := outcome.CodeOK; code <= outcome.CodeUnauthenticated; code++ {
+			if code.String() == name {
+				w.api.err = &outcome.StatusError{Code: code, Message: message}
+				return nil
+			}
+		}
+		return fmt.Errorf("no code %s", name)
 	})
 	sc.Step(`^I plan "([^"]*)" remotely$`, func(titles string) error {
 		w.items, w.err = service.NewRemotePlanner(&w.api).Plan(context.Background(), strings.Split(titles, "|"))

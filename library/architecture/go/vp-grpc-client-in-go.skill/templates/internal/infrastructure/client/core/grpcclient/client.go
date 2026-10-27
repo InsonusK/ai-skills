@@ -5,7 +5,6 @@ package grpcclient
 import (
 	"context"
 	"crypto/tls"
-	"errors"
 	"fmt"
 	"log/slog"
 	"net"
@@ -19,6 +18,7 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/grpc/test/bufconn"
 
+	"{module-path}/internal/infrastructure/client/core/outcome"
 	"{module-path}/internal/logging"
 )
 
@@ -27,24 +27,6 @@ const RequestIDMetadata = "x-request-id"
 
 // emulatorBuffer is the size of the in-memory connection to the emulator.
 const emulatorBuffer = 1 << 20
-
-// ErrUnavailable is the technical outcome of a call the API did not answer:
-// UNAVAILABLE (no connection) or DEADLINE_EXCEEDED (no answer within the
-// timeout). The service over the adapter turns it into the kind unavailable
-// (skill api-client); a retry may help.
-var ErrUnavailable = errors.New("api unavailable")
-
-// StatusError is the technical outcome of any other failed call: the gRPC
-// status the API answered. The service over the adapter turns the codes it
-// expects into errors of its own; any other is a failure of the service.
-type StatusError struct {
-	Code    codes.Code
-	Message string
-}
-
-func (e *StatusError) Error() string {
-	return fmt.Sprintf("api answered %s: %s", e.Code, e.Message)
-}
 
 // Emulator registers the services of an API, answered inside the process, on
 // a gRPC server: the mock of one adapter (internal/infrastructure/client/{api}/mock).
@@ -141,9 +123,9 @@ func interceptor(cfg Config, logger *slog.Logger) grpc.UnaryClientInterceptor {
 		case codes.OK:
 			return nil
 		case codes.Unavailable, codes.DeadlineExceeded:
-			return fmt.Errorf("%w: %s: %s", ErrUnavailable, method, answer.Message())
+			return fmt.Errorf("%w: %s: %s", outcome.ErrUnavailable, method, answer.Message())
 		default:
-			return &StatusError{Code: answer.Code(), Message: answer.Message()}
+			return &outcome.StatusError{Code: outcome.Code(answer.Code()), Message: answer.Message()}
 		}
 	}
 }

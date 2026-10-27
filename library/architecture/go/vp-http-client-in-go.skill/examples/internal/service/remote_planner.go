@@ -8,12 +8,9 @@ import (
 	"fmt"
 
 	"github.com/example/todo/internal/domain/entity"
-	"github.com/example/todo/internal/infrastructure/client/core/httpclient"
+	"github.com/example/todo/internal/infrastructure/client/core/outcome"
 	"github.com/example/todo/internal/infrastructure/client/todoapi"
 )
-
-// codeInvalidArgument is google.rpc.Code INVALID_ARGUMENT.
-const codeInvalidArgument = 3
 
 // todoAPI is what RemotePlanner needs of its infrastructure; todoapi.Client has it.
 type todoAPI interface {
@@ -35,11 +32,11 @@ func NewRemotePlanner(api todoAPI) *RemotePlanner {
 // Plan returns one open item per title, planned by the todo service.
 func (s *RemotePlanner) Plan(ctx context.Context, titles []string) ([]entity.Item, error) {
 	answered, err := s.api.PlanItems(ctx, titles)
-	var status *httpclient.StatusError
+	var status *outcome.StatusError
 	switch {
-	case errors.Is(err, httpclient.ErrUnavailable):
+	case errors.Is(err, outcome.ErrUnavailable):
 		return nil, fmt.Errorf("%w: the todo service: %v", entity.ErrUnavailable, err)
-	case errors.As(err, &status) && status.Code == codeInvalidArgument:
+	case errors.As(err, &status) && status.Code == outcome.CodeInvalidArgument:
 		return nil, fmt.Errorf("%w: the todo service rejected the titles: %s", entity.ErrInvalid, status.Message)
 	case err != nil:
 		return nil, fmt.Errorf("the todo service: %w", err)

@@ -14,7 +14,7 @@ import (
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
-	"github.com/example/todo/internal/infrastructure/client/core/grpcclient"
+	"github.com/example/todo/internal/infrastructure/client/core/outcome"
 	"github.com/example/todo/internal/logging"
 )
 
@@ -84,14 +84,14 @@ func registerCallSteps(sc *godog.ScenarioContext, w *World) {
 		if err != nil {
 			return err
 		}
-		var got *grpcclient.StatusError
-		if !errors.As(w.callErr, &got) || got.Code != code || got.Message != message {
+		var got *outcome.StatusError
+		if !errors.As(w.callErr, &got) || got.Code != outcome.Code(code) || got.Message != message {
 			return fmt.Errorf("error %v, want a status error %s %q", w.callErr, code, message)
 		}
 		return nil
 	})
 	sc.Step(`^the call should fail as unavailable$`, func() error {
-		if !errors.Is(w.callErr, grpcclient.ErrUnavailable) {
+		if !errors.Is(w.callErr, outcome.ErrUnavailable) {
 			return fmt.Errorf("error %v, want unavailable", w.callErr)
 		}
 		return nil

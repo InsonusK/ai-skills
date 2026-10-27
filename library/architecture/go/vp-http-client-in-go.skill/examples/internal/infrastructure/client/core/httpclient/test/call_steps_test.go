@@ -13,7 +13,7 @@ import (
 
 	"github.com/cucumber/godog"
 
-	"github.com/example/todo/internal/infrastructure/client/core/httpclient"
+	"github.com/example/todo/internal/infrastructure/client/core/outcome"
 	"github.com/example/todo/internal/logging"
 )
 
@@ -78,24 +78,29 @@ func registerCallSteps(sc *godog.ScenarioContext, w *World) {
 		return nil
 	})
 	sc.Step(`^the call should fail with the status (\d+), the code (\d+), and the message "([^"]*)"$`, func(status, code int, message string) error {
-		var got *httpclient.StatusError
+		var got *outcome.StatusError
 		if !errors.As(w.callErr, &got) {
 			return fmt.Errorf("error %v, want a status error", w.callErr)
 		}
-		if got.HTTPStatus != status || got.Code != code || got.Message != message {
+		// A body that is no google.rpc.Status (code 0 in the scenario) is the code UNKNOWN.
+		want := outcome.Code(code)
+		if code == 0 {
+			want = outcome.CodeUnknown
+		}
+		if got.HTTPStatus != status || got.Code != want || got.Message != message {
 			return fmt.Errorf("got %+v, want %d, %d, %q", got, status, code, message)
 		}
 		return nil
 	})
 	sc.Step(`^the call should fail as unavailable$`, func() error {
-		if !errors.Is(w.callErr, httpclient.ErrUnavailable) {
+		if !errors.Is(w.callErr, outcome.ErrUnavailable) {
 			return fmt.Errorf("error %v, want unavailable", w.callErr)
 		}
 		return nil
 	})
 	sc.Step(`^the call should fail mentioning "([^"]*)"$`, func(text string) error {
-		var status *httpclient.StatusError
-		if w.callErr == nil || errors.Is(w.callErr, httpclient.ErrUnavailable) || errors.As(w.callErr, &status) || !strings.Contains(w.callErr.Error(), text) {
+		var status *outcome.StatusError
+		if w.callErr == nil || errors.Is(w.callErr, outcome.ErrUnavailable) || errors.As(w.callErr, &status) || !strings.Contains(w.callErr.Error(), text) {
 			return fmt.Errorf("error %v, want neither unavailable nor a status, mentioning %q", w.callErr, text)
 		}
 		return nil

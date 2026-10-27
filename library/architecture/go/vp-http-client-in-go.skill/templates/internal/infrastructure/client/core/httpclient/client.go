@@ -6,7 +6,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -14,6 +13,7 @@ import (
 	"net/http/httptest"
 	"time"
 
+	"{module-path}/internal/infrastructure/client/core/outcome"
 	"{module-path}/internal/logging"
 )
 
@@ -22,31 +22,6 @@ const RequestIDHeader = "X-Request-Id"
 
 // maxBody is the most of an answer read; a longer one is an error.
 const maxBody = 10 << 20
-
-// ErrUnavailable is the technical outcome of a call the API did not answer:
-// no connection, no answer within the timeout, or 502, 503, or 504. The
-// service over the adapter turns it into the kind unavailable (skill
-// api-client); a retry may help.
-var ErrUnavailable = errors.New("api unavailable")
-
-// StatusError is the technical outcome of any other answer of 400 or above:
-// its HTTP status and, when its body is a google.rpc.Status, its code and
-// message. The service over the adapter turns the codes it expects into
-// errors of its own; any other is a failure of the service.
-type StatusError struct {
-	HTTPStatus int
-	// Code is the google.rpc.Code of the body (3 is INVALID_ARGUMENT), or 0
-	// when the body is not a google.rpc.Status.
-	Code    int
-	Message string
-}
-
-func (e *StatusError) Error() string {
-	if e.Code == 0 {
-		return fmt.Sprintf("api answered %d", e.HTTPStatus)
-	}
-	return fmt.Sprintf("api answered %d, code %d: %s", e.HTTPStatus, e.Code, e.Message)
-}
 
 // Client calls one HTTP API.
 type Client struct {
@@ -72,7 +47,7 @@ func New(cfg Config, logger *slog.Logger, emulator http.Handler) *Client {
 // decodes a 2xx answer into response, unless nil. It ends after cfg.Timeout
 // at the latest, sends the request id of ctx, and writes two records: "http
 // client request sent" and "http client response received". It returns
-// ErrUnavailable, a *StatusError, or an error with neither when the answer
+// outcome.ErrUnavailable, an *outcome.StatusError, or an error with neither when the answer
 // does not fit response.
 func (c *Client) Call(ctx context.Context, method, path string, request, response any) (err error) {
 	ctx, cancel := context.WithTimeout(ctx, c.cfg.Timeout)
@@ -113,20 +88,20 @@ func (c *Client) Call(ctx context.Context, method, path string, request, respons
 	}
 	resp, err := c.http.Do(req)
 	if err != nil {
-		return fmt.Errorf("%w: %s %s: %v", ErrUnavailable, method, path, err)
+		return fmt.Errorf("%w: %s %s: %v", outcome.ErrUnavailable, method, path, err)
 	}
 	defer resp.Body.Close()
 	status = resp.StatusCode
 	received, err = io.ReadAll(io.LimitReader(resp.Body, maxBody+1))
 	if err != nil {
-		return fmt.Errorf("%w: %s %s: reading the answer: %v", ErrUnavailable, method, path, err)
+		return fmt.Errorf("%w: %s %s: reading the answer: %v", outcome.ErrUnavailable, method, path, err)
 	}
 	if len(received) > maxBody {
 		return fmt.Errorf("%s %s: the answer is longer than %d bytes", method, path, maxBody)
 	}
 	switch {
 	case status == http.StatusBadGateway, status == http.StatusServiceUnavailable, status == http.StatusGatewayTimeout:
-		return fmt.Errorf("%w: %s %s: answered %d", ErrUnavailable, method, path, status)
+		return fmt.Errorf("%w: %s %s: answered %d", outcome.ErrUnavailable, method, path, status)
 	case status >= 400:
 		return statusError(status, received)
 	}
@@ -138,16 +113,17 @@ func (c *Client) Call(ctx context.Context, method, path string, request, respons
 	return nil
 }
 
-// statusError reads a google.rpc.Status body, or keeps the status alone.
-func statusError(status int, body []byte) *StatusError {
+// statusError reads a google.rpc.Status body, or keeps the status alone with
+// the code UNKNOWN.
+func statusError(status int, body []byte) *outcome.StatusError {
 	var rpc struct {
 		Code    int    `json:"code"`
 		Message string `json:"message"`
 	}
 	if json.Unmarshal(body, &rpc) != nil || rpc.Code == 0 {
-		return &StatusError{HTTPStatus: status}
+		return &outcome.StatusError{Code: outcome.CodeUnknown, HTTPStatus: status}
 	}
-	return &StatusError{HTTPStatus: status, Code: rpc.Code, Message: rpc.Message}
+	return &outcome.StatusError{Code: outcome.Code(rpc.Code), Message: rpc.Message, HTTPStatus: status}
 }
 
 // emulated answers every request with an http.Handler inside the process:
