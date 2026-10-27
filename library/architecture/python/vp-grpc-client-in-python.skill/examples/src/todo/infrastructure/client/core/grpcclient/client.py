@@ -57,7 +57,7 @@ class GrpcClient:
             await self._emulator.stop(None)
 
 
-class _CallInterceptor(grpc.aio.UnaryUnaryClientInterceptor):  # type: ignore[misc]
+class _CallInterceptor(grpc.aio.UnaryUnaryClientInterceptor):
     """Runs around every unary call of the channel. It ends the call after
     the timeout at the latest, sends the request id of the call being served,
     and writes two records: "grpc client call sent" with the request message
@@ -80,7 +80,13 @@ class _CallInterceptor(grpc.aio.UnaryUnaryClientInterceptor):  # type: ignore[mi
         metadata = grpc.aio.Metadata(*(details.metadata or ()))
         if id := request_id():
             metadata.add(REQUEST_ID_METADATA, id)
-        details = details._replace(timeout=timeout, metadata=metadata)
+        details = grpc.aio.ClientCallDetails(
+            method=details.method,
+            timeout=timeout,
+            metadata=metadata,
+            credentials=details.credentials,
+            wait_for_ready=details.wait_for_ready,
+        )
 
         self._logger.info("grpc client call sent", extra=attrs(api=self._config.name, method=method, payload={"request": request}))
         started = time.monotonic()

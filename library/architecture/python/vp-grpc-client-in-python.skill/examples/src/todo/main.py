@@ -50,7 +50,7 @@ async def run(stdout: TextIO, stderr: TextIO, stopping: asyncio.Event) -> int:
     # another service (TODO_API_HOST=mock answers from its emulator) and the
     # service that plans items with it; settings it cannot use stop the start.
     try:
-        todo_api_client = todo_api.new(logger)
+        todo_api_client = await todo_api.new(logger)
     except ValueError as error:
         logger.error("startup failed", exc_info=error)
         return 1

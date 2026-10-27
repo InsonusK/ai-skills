@@ -1,25 +1,26 @@
 """The adapter of the todo API of another service
-(docs/integration/client/todo/openapi.json): one method per operation this
-application calls, each a call of HttpClient with a request and a reading of
-the answer of its own. It reports technical outcomes - ApiUnavailableError,
-ApiStatusError - and leaves their meaning to the service over it
-(todo.service)."""
+(docs/integration/client/todo/todo.proto): one method per method of the
+contract this application calls, each a call of the generated stub over
+GrpcClient's channel, its response mapped to types of its own. It reports
+technical outcomes - ApiUnavailableError, ApiStatusError - and leaves their
+meaning to the service over it (todo.service)."""
 
 import logging
 from dataclasses import dataclass
-from typing import Any
 
-from todo.infrastructure.client.core.httpclient import HttpClient, HttpConfig, load_config
+from todo.gen.client.todo import todo_pb2, todo_pb2_grpc
+from todo.infrastructure.client.core.grpcclient import GrpcClient, GrpcConfig, load_config
 from todo.infrastructure.client.todo_api.mock import emulator
 
 PREFIX = "TODO_API"
-"""Names the settings of this API: TODO_API_HOST, TODO_API_HTTP_PORT, TODO_API_TLS, TODO_API_TIMEOUT."""
+"""Names the settings of this API: TODO_API_HOST, TODO_API_GRPC_PORT, TODO_API_TLS, TODO_API_TIMEOUT."""
 
-OPERATIONS = [
-    ("POST", "/v1/items/plan"),
+METHODS = [
+    "/todo.v1.ItemsService/PlanItems",
 ]
-"""Every operation this adapter calls; one scenario holds them against the
-copied contract. A new method of the adapter adds its line."""
+"""Every method of the contract this adapter calls, by full name; one scenario
+holds them against the copied contract. A new method of the adapter adds its
+line."""
 
 
 @dataclass(frozen=True)
@@ -30,33 +31,30 @@ class Item:
     done: bool
 
 
-@dataclass(frozen=True)
-class _PlanItemsRequest:
-    titles: list[str]
-
-
-def _plan_items_response(answer: Any) -> list[Item]:
-    return [Item(title=str(item["title"]), done=bool(item["done"])) for item in answer["items"]]
-
-
 class TodoApi:
     """The todo API."""
 
-    def __init__(self, config: HttpConfig, logger: logging.Logger) -> None:
-        """Builds the client from settings given - the scenarios point it at an
-        API of their own. With the host mock it answers from the emulator."""
-        self._http = HttpClient(config, logger, emulator)
+    def __init__(self, client: GrpcClient) -> None:
+        self._grpc = client
+        self._items = todo_pb2_grpc.ItemsServiceStub(client.channel)
 
     async def aclose(self) -> None:
-        """Closes the connections to the API."""
-        await self._http.aclose()
+        """Closes the channel to the API."""
+        await self._grpc.aclose()
 
     async def plan_items(self, titles: list[str]) -> list[Item]:
-        """POST /v1/items/plan: one open item per title, planned by the API."""
-        return await self._http.call("POST", "/v1/items/plan", _PlanItemsRequest(titles=titles), _plan_items_response)
+        """ItemsService.PlanItems: one open item per title, planned by the API."""
+        answer = await self._items.PlanItems(todo_pb2.PlanItemsRequest(titles=titles))
+        return [Item(title=item.title, done=item.done) for item in answer.items]
 
 
-def new(logger: logging.Logger) -> TodoApi:
+async def open_api(config: GrpcConfig, logger: logging.Logger) -> TodoApi:
+    """Builds the client from settings given - the scenarios point it at an
+    API of their own. With the host mock it answers from the emulator."""
+    return TodoApi(await GrpcClient.open(config, logger, emulator))
+
+
+async def new(logger: logging.Logger) -> TodoApi:
     """Reads the settings of the API and builds its client; a missing or
     unusable setting raises ValueError naming its variable."""
-    return TodoApi(load_config(PREFIX), logger)
+    return await open_api(load_config(PREFIX), logger)

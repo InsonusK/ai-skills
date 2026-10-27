@@ -1,4 +1,4 @@
-# Source: skill vp-grpc-client-in-python
+# Source: skill vp-http-client-in-python
 
 """The technical outcomes every client of another service's API reports, over
 HTTP or gRPC alike, so the service over an adapter catches the same errors

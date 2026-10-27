@@ -2,29 +2,24 @@
 the process, which TODO_API_HOST=mock runs the client against, so the
 application runs with no todo service reachable."""
 
-import json
 from typing import Any
 
-import httpx2
+import grpc
+
+from todo.gen.client.todo import todo_pb2, todo_pb2_grpc
 
 
-def emulator(request: httpx2.Request) -> httpx2.Response:
-    """Answers every operation of todo_api.OPERATIONS as the todo API does,
-    with stable data and no state. A new operation adds its route here."""
-    if (request.method, request.url.path) == ("POST", "/v1/items/plan"):
-        return _plan_items(request)
-    return _answer(404, {"code": 5, "message": "no such operation", "details": []})
+class _ItemsService(todo_pb2_grpc.ItemsServiceServicer):
+    """ItemsService inside the process; a method it does not write answers UNIMPLEMENTED."""
+
+    async def PlanItems(self, request: todo_pb2.PlanItemsRequest, context: grpc.aio.ServicerContext[Any, Any]) -> todo_pb2.PlanItemsResponse:
+        if not request.titles:
+            await context.abort(grpc.StatusCode.INVALID_ARGUMENT, "no items to plan")
+        return todo_pb2.PlanItemsResponse(items=[todo_pb2.Item(title=title, done=False) for title in request.titles])
 
 
-def _plan_items(request: httpx2.Request) -> httpx2.Response:
-    try:
-        titles = json.loads(request.content).get("titles") or []
-    except (ValueError, AttributeError):
-        titles = []
-    if not titles:
-        return _answer(400, {"code": 3, "message": "no items to plan", "details": []})
-    return _answer(200, {"items": [{"title": title, "done": False} for title in titles]})
-
-
-def _answer(status: int, body: Any) -> httpx2.Response:
-    return httpx2.Response(status, json=body)
+def emulator(server: grpc.aio.Server) -> None:
+    """Adds the todo API's services to server, answering every method of
+    todo_api.METHODS as the todo API does, with stable data and no state. A
+    new method of the adapter adds its method to _ItemsService."""
+    todo_pb2_grpc.add_ItemsServiceServicer_to_server(_ItemsService(), server)
