@@ -9,7 +9,7 @@ change internal/command/handlers.go
 change internal/command/test/runner_test.go
 change Makefile
 change README.md
-# The todo API's adapter and the service over it are written per API: the
-# HTTP and the gRPC client examples each show their own.
+# The todo API's adapter is written per API: the HTTP and the gRPC client
+# examples each show their own. The service over it checks only the outcomes
+# of client/core/outcome, the same for both.
 sample internal/infrastructure/client/todoapi/*
-sample internal/service/*

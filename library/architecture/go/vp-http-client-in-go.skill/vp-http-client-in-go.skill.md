@@ -1,8 +1,8 @@
 ---
 name: vp-http-client-in-go
-description: The HTTP client variation point in Go — internal/infrastructure/client/core/httpclient copied from templates (the {API} settings, Client.Call with the timeout, JSON in and out, ErrUnavailable and StatusError, the call log, the request id, the mock against an emulator), one adapter per API in internal/infrastructure/client/{api} with its operations, its mock, and its contract scenario, the service over it in internal/service, and the lines of main.go that build them
+description: The HTTP client variation point in Go — internal/infrastructure/client/core/httpclient and core/outcome copied from templates (the {API} settings, Client.Call with the timeout, JSON in and out, outcome.ErrUnavailable and outcome.StatusError, the call log, the request id, the mock against an emulator), one adapter per API in internal/infrastructure/client/{api} with its operations, its mock, and its contract scenario, the service over it in internal/service, and the lines of main.go that build them
 whenToUse: when a Go application built on the base plateau must call another service's HTTP API, when you call a further operation of such an API, or when you review a Go HTTP client
-updated: 20261026
+updated: 20261028
 tags:
   - stack/go
   - concern/architecture
@@ -16,14 +16,16 @@ tags:
 
 # Core Principle
 - **Copied once, written per operation** - `internal/infrastructure/client/core/httpclient` is copied from templates and never edited; per API the application writes an adapter package whose operations are calls of `httpclient.Client.Call`, the adapter's emulator, and the service over it.
+- **The service sees outcomes, never a transport** - The service catches `outcome.ErrUnavailable` and `*outcome.StatusError`, the same for an HTTP and a gRPC adapter, as dotnet's `Client.Abstractions` and Python's `outcomes.py`: the service, its interface, and its scenarios are the same over both transports.
 
 ```
 docs/integration/client/{api-name}/openapi.json   the provider's contract, copied unchanged
 internal/infrastructure/
 ├── client/                  every client of another service's API, and nothing else
+│   ├── core/outcome/     copied from templates, never edited: ErrUnavailable, StatusError, Code - every transport
 │   ├── core/httpclient/     copied from templates, never edited
 │   │   ├── config.go        LoadConfig(prefix): {API}_HOST, _HTTP_PORT, _TLS, _TIMEOUT; Mock
-│   │   ├── client.go        Client.Call: timeout, JSON, X-Request-Id, call log; ErrUnavailable, StatusError
+│   │   ├── client.go        Client.Call: timeout, JSON, X-Request-Id, call log; returns the outcomes
 │   │   └── features/ test/  the fixed code's scenarios, with a test API of their own
 │   └── {api}/               written per API (todoapi)
 │       ├── {api}.go         Prefix, Operations, Client with one method per operation and its own types
@@ -38,7 +40,7 @@ internal/service/{name}.go   the service over the adapter: technical outcomes �
 ## MUST
 
 ### Copy the client code from templates
-Fill and copy [config.go](./templates/internal/infrastructure/client/core/httpclient/config.go) and [client.go](./templates/internal/infrastructure/client/core/httpclient/client.go) to `internal/infrastructure/client/core/httpclient/`, with the example's `features/` and `test/`, replacing `{module-path}` with the module path from `go.mod`.
+Fill and copy [config.go](./templates/internal/infrastructure/client/core/httpclient/config.go) and [client.go](./templates/internal/infrastructure/client/core/httpclient/client.go) to `internal/infrastructure/client/core/httpclient/`, with the example's `features/` and `test/`, and [outcome.go](./templates/internal/infrastructure/client/core/outcome/outcome.go) to `internal/infrastructure/client/core/outcome/` — already there, unchanged, when the gRPC client is attached — replacing `{module-path}` with the module path from `go.mod`.
 - Risk: a retyped client drifts in its timeout, its error report, or its log from every other Go client of the catalog.
 - Fix: copy the files; after filling, searching them for `{module-path}` returns nothing; `make test` passes.
 
@@ -70,14 +72,14 @@ Write the mock of each adapter as `internal/infrastructure/client/{api}/mock/{ap
 - Fix: the emulator's scenario runs the adapter mocked and checks its answer.
 
 ### Map the outcomes in the service
-Write the service over the adapter in `internal/service/` with an unexported interface of the adapter's methods it uses, turning `httpclient.ErrUnavailable` into `entity.ErrUnavailable`, each `*httpclient.StatusError` code it expects into an error of the kind that fits, and anything else — another status, an answer it cannot use — into an error with no kind, wrapping the adapter's error with `%v`, never `%w`, where it carries a kind of its own.
+Write the service over the adapter in `internal/service/` with an unexported interface of the adapter's methods it uses, turning `outcome.ErrUnavailable` into `entity.ErrUnavailable`, each `*outcome.StatusError` code it expects into an error of the kind that fits, and anything else — another status, an answer it cannot use — into an error with no kind, wrapping the adapter's error with `%v`, never `%w`, where it carries a kind of its own.
 
 ```go
-var status *httpclient.StatusError
+var status *outcome.StatusError
 switch {
-case errors.Is(err, httpclient.ErrUnavailable):
+case errors.Is(err, outcome.ErrUnavailable):
 	return nil, fmt.Errorf("%w: the todo service: %v", entity.ErrUnavailable, err)
-case errors.As(err, &status) && status.Code == codeInvalidArgument:
+case errors.As(err, &status) && status.Code == outcome.CodeInvalidArgument:
 	return nil, fmt.Errorf("%w: the todo service rejected the titles: %s", entity.ErrInvalid, status.Message)
 case err != nil:
 	return nil, fmt.Errorf("the todo service: %w", err)
@@ -112,7 +114,7 @@ Copy the example's `internal/infrastructure/client/core/httpclient/features/` an
 # Check list
 - [ ] `internal/infrastructure/client/core/httpclient/{config,client}.go` are filled copies of the templates; no placeholder is left.
 - [ ] Each API has its package with `Prefix`, `Operations`, `New`, `NewClient`, and one method per operation, and its mock in `mock/{api}_mock.go`; the contract scenario passes.
-- [ ] The service maps `ErrUnavailable`, the expected `StatusError` codes, and nothing else to kinds.
+- [ ] The service maps `outcome.ErrUnavailable`, the expected `outcome.StatusError` codes, and nothing else to kinds; it is the same over HTTP and gRPC.
 - [ ] `main.go` builds the adapter and the service in `// [services]`.
 - [ ] `make test` passes; `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).
 

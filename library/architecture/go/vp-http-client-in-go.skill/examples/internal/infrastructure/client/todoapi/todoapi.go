@@ -1,8 +1,8 @@
 // Package todoapi is the adapter of the todo API of another service
 // (docs/integration/client/todo/openapi.json): one method per operation this
 // application calls, each a call of httpclient with request and response
-// types of its own. It reports technical outcomes - httpclient.ErrUnavailable,
-// *httpclient.StatusError - and leaves their meaning to the service over it
+// types of its own. It reports technical outcomes - outcome.ErrUnavailable,
+// *outcome.StatusError - and leaves their meaning to the service over it
 // (internal/service).
 package todoapi
 

@@ -8,10 +8,9 @@ import (
 	"strings"
 
 	"github.com/cucumber/godog"
-	"google.golang.org/grpc/codes"
 
 	"github.com/example/todo/internal/domain/entity"
-	"github.com/example/todo/internal/infrastructure/client/core/grpcclient"
+	"github.com/example/todo/internal/infrastructure/client/core/outcome"
 	"github.com/example/todo/internal/infrastructure/client/todoapi"
 	"github.com/example/todo/internal/service"
 )
@@ -55,16 +54,17 @@ func registerSteps(sc *godog.ScenarioContext, w *World) {
 		return nil
 	})
 	sc.Step(`^the todo API is unavailable$`, func() error {
-		w.api.err = fmt.Errorf("%w: connection refused", grpcclient.ErrUnavailable)
+		w.api.err = fmt.Errorf("%w: connection refused", outcome.ErrUnavailable)
 		return nil
 	})
-	sc.Step(`^the todo API answers (\w+) with the message "([^"]*)"$`, func(code, message string) error {
-		var answered codes.Code
-		if err := answered.UnmarshalJSON([]byte(`"` + code + `"`)); err != nil {
-			return err
+	sc.Step(`^the todo API answers (\w+) with the message "([^"]*)"$`, func(name, message string) error {
+		for code := outcome.CodeOK; code <= outcome.CodeUnauthenticated; code++ {
+			if code.String() == name {
+				w.api.err = &outcome.StatusError{Code: code, Message: message}
+				return nil
+			}
 		}
-		w.api.err = &grpcclient.StatusError{Code: answered, Message: message}
-		return nil
+		return fmt.Errorf("no code %s", name)
 	})
 	sc.Step(`^I plan "([^"]*)" remotely$`, func(titles string) error {
 		w.items, w.err = service.NewRemotePlanner(&w.api).Plan(context.Background(), strings.Split(titles, "|"))

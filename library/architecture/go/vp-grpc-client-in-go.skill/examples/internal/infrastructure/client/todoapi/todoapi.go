@@ -2,7 +2,7 @@
 // (docs/integration/client/todo/todo.proto): one method per method of the
 // contract this application calls, each a call of the generated client over
 // grpcclient's connection, mapped to types of its own. It reports technical
-// outcomes - grpcclient.ErrUnavailable, *grpcclient.StatusError - and leaves
+// outcomes - outcome.ErrUnavailable, *outcome.StatusError - and leaves
 // their meaning to the service over it (internal/service).
 package todoapi
 
