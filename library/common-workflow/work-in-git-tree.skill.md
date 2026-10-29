@@ -2,6 +2,7 @@
 name: work-in-git-tree
 description: Define rules how AI agent must work in a separate git worktree to avoid conflicts with user's parallel work
 whenToUse: work on any tasks in a git repository
+updated: 20261029
 tags:
   - workflow
   - git
@@ -27,13 +28,15 @@ tags:
    - Branch from `develop` unless the user specifies a different base branch
    - The worktree and branch name should reflect the task
    
+   - Create the branch with `--no-track`: started from a remote branch (`origin/develop`), git otherwise makes the base branch its upstream
+   
    ```bash
-   git worktree add ./.ai-worktree/{task-name} -b {task-name} {base-branch}
+   git worktree add --no-track ./.ai-worktree/{task-name} -b {task-name} {base-branch}
    ```
    
    Example:
    ```bash
-   git worktree add ./.ai-worktree/add-auth-service -b add-auth-service develop
+   git worktree add --no-track ./.ai-worktree/add-auth-service -b add-auth-service origin/develop
    ```
 
 3. Switch to the worktree and work only inside it
@@ -47,13 +50,19 @@ tags:
    git commit -m "feat: ..."
    ```
 
-5. When the work is done, create a pull request from the worktree branch into the base branch (the one the task branch was created from)
+5. Push the task branch to a remote branch of its own name, setting it as the upstream on the first push
+   ```bash
+   git push -u origin {task-name}
+   git config branch.{task-name}.merge   # refs/heads/{task-name}, never the base branch
+   ```
+
+6. When the work is done, create a pull request from the worktree branch into the base branch (the one the task branch was created from)
    ```bash
    # Example using GitHub CLI
    gh pr create --base develop --head {task-name} --title "..." --body "..."
    ```
 
-6. After the PR is merged, the worktree can be removed
+7. After the PR is merged, the worktree can be removed
    ```bash
    cd /path/to/main/repo
    git worktree remove ./.ai-worktree/{task-name}
@@ -68,6 +77,8 @@ tags:
   - Risk: committing directly to the base branch bypasses code review and may break the shared branch if the changes have not been validated.
 - Base decisions only on the state of the agent's own worktree, never on the main repository or another user's worktree.
   - Risk: the user can change the state of the main repository at any time; deciding based on it risks acting on stale data and causing implementation errors.
+- Never let the task branch track the base branch: create it with `--no-track` and push it with `git push -u origin {task-name}`, so its upstream is the remote branch of its own name.
+  - Risk: a task branch whose upstream is the base branch is pushed into the base branch by a plain `git push` or by the IDE's Sync; the hosting service then sees the pull request's commits in its base and closes it as merged, unreviewed.
 - Always create a dedicated task branch when creating a worktree.
   - Risk: without a separate branch, all changes end up on the base branch, defeating the purpose of isolation and increasing the risk of conflicts.
 - At the end of the work, a pull request must be created into the base branch the task branch was created from.
@@ -82,7 +93,8 @@ tags:
 # Check list
 - [ ] `./.ai-worktree` is added to the main repository's `.gitignore`
 - [ ] A worktree is created at `./.ai-worktree/{task-name}`
-- [ ] A dedicated `{task-name}` branch is created from the base branch (default is `develop`)
+- [ ] A dedicated `{task-name}` branch is created from the base branch (default is `develop`) with `--no-track`
+- [ ] Its upstream is `origin/{task-name}` (`git config branch.{task-name}.merge` prints `refs/heads/{task-name}`), never the base branch
 - [ ] All file changes are made only inside the worktree
 - [ ] All commits are made only on the worktree branch
 - [ ] A pull request is created into the base branch at the end
