@@ -12,6 +12,7 @@ import (
 
 	"github.com/example/todo/gen/client/todo"
 	"github.com/example/todo/internal/infrastructure/client/core/grpcclient"
+	"github.com/example/todo/internal/infrastructure/client/core/pipeline"
 	"github.com/example/todo/internal/infrastructure/client/todoapi/mock"
 )
 
@@ -21,9 +22,11 @@ const Prefix = "TODO_API"
 
 // Methods are every method of the contract this adapter calls, by full name;
 // one scenario holds them against the copied contract. A new method of the
-// adapter adds its line.
-var Methods = []string{
-	todo.ItemsService_PlanItems_FullMethodName,
+// adapter adds its line, Retryable when calling it again does what one call
+// does.
+var Methods = []grpcclient.Method{
+	// Planning stores nothing: a repeat plans the same items.
+	{Name: todo.ItemsService_PlanItems_FullMethodName, Retryable: true},
 }
 
 // Item is an item as the API answers it, the adapter's own type.
@@ -38,20 +41,21 @@ type Client struct {
 	items todo.ItemsServiceClient
 }
 
-// New reads the settings of the API and builds its client; with
+// New reads the settings of the API and builds its client, every call through
+// middlewares; with
 // TODO_API_HOST=mock it answers from mock.Emulator.
-func New(logger *slog.Logger) (*Client, error) {
+func New(logger *slog.Logger, middlewares []pipeline.Middleware) (*Client, error) {
 	cfg, err := grpcclient.LoadConfig(Prefix)
 	if err != nil {
 		return nil, err
 	}
-	return NewClient(cfg, logger)
+	return NewClient(cfg, logger, middlewares)
 }
 
 // NewClient builds the client from settings given - the scenarios point it at
 // an emulator of their own.
-func NewClient(cfg grpcclient.Config, logger *slog.Logger) (*Client, error) {
-	conn, err := grpcclient.New(cfg, logger, mock.Emulator)
+func NewClient(cfg grpcclient.Config, logger *slog.Logger, middlewares []pipeline.Middleware) (*Client, error) {
+	conn, err := grpcclient.New(cfg, logger, mock.Emulator, Methods, middlewares)
 	if err != nil {
 		return nil, err
 	}

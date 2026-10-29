@@ -42,12 +42,21 @@ func compileContract() (protoreflect.FileDescriptor, error) {
 // adapterCallsOnly compares todoapi.Methods with the table, and finds each of
 // them as a method of the copied contract.
 func adapterCallsOnly(table *godog.Table) error {
-	var want []string
+	var want, names []string
 	for _, row := range table.Rows[1:] {
-		want = append(want, row.Cells[0].Value)
+		want = append(want, row.Cells[0].Value+" retryable="+row.Cells[1].Value)
 	}
-	if !slices.Equal(todoapi.Methods, want) {
-		return fmt.Errorf("the adapter calls %v, want %v", todoapi.Methods, want)
+	var got []string
+	for _, m := range todoapi.Methods {
+		retryable := "no"
+		if m.Retryable {
+			retryable = "yes"
+		}
+		got = append(got, m.Name+" retryable="+retryable)
+		names = append(names, m.Name)
+	}
+	if !slices.Equal(got, want) {
+		return fmt.Errorf("the adapter calls %v, want %v", got, want)
 	}
 	contract, err := compileContract()
 	if err != nil {
@@ -61,8 +70,8 @@ func adapterCallsOnly(table *godog.Table) error {
 			methods = append(methods, fmt.Sprintf("/%s/%s", service.FullName(), service.Methods().Get(j).Name()))
 		}
 	}
-	logf("then: adapter=%v contract=%v", todoapi.Methods, methods)
-	for _, method := range todoapi.Methods {
+	logf("then: adapter=%v contract=%v", names, methods)
+	for _, method := range names {
 		if !slices.Contains(methods, method) {
 			return fmt.Errorf("%s is no method of the contract %v", method, methods)
 		}
