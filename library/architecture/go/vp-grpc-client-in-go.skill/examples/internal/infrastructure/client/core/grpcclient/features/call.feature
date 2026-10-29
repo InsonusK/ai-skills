@@ -41,3 +41,19 @@ Feature: Calling a gRPC API
       | fails with DEADLINE_EXCEEDED and the message "too slow" |
       | takes longer than the timeout                           |
       | is not listening                                        |
+
+  @category/negative
+  Scenario: A method the adapter does not list is refused before it is sent
+    Given the test API answers "hello"
+    When I call the unlisted method "/test.v1.EchoService/Other"
+    Then the call should fail mentioning "no method of the adapter's list"
+    And the test API should have received 0 calls
+
+  @category/happy
+  Scenario: The client middleware sees the call and may send it again, each attempt sent and logged
+    Given the test API answers "hello"
+    And a client middleware that sends every call twice
+    When I call Echo with the text "hi"
+    Then the middleware should have seen the call "/test.v1.EchoService/Echo" of "test-api", retryable "true"
+    And the test API should have received 2 calls
+    And the records should be, in order, "grpc client call sent|grpc client call answered|grpc client call sent|grpc client call answered"

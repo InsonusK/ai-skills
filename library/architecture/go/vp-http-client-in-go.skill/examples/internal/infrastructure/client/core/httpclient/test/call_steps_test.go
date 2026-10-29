@@ -14,6 +14,7 @@ import (
 	"github.com/cucumber/godog"
 
 	"github.com/example/todo/internal/infrastructure/client/core/outcome"
+	"github.com/example/todo/internal/infrastructure/client/core/pipeline"
 	"github.com/example/todo/internal/logging"
 )
 
@@ -33,6 +34,30 @@ func registerCallSteps(sc *godog.ScenarioContext, w *World) {
 			rw.WriteHeader(http.StatusOK)
 			_, _ = rw.Write([]byte(body))
 		})
+		return nil
+	})
+
+	sc.Step(`^a client middleware that sends every call twice$`, func() error {
+		w.middlewares = append(w.middlewares, func(ctx context.Context, call pipeline.Call, next pipeline.Attempt) error {
+			w.seen = append(w.seen, call)
+			if err := next(ctx); err != nil {
+				return err
+			}
+			return next(ctx)
+		})
+		return nil
+	})
+	sc.Step(`^the middleware should have seen the call "([^"]*)" of "([^"]*)", retryable "([^"]*)"$`, func(operation, api, retryable string) error {
+		want := fmt.Sprint([]pipeline.Call{{API: api, Operation: operation, Retryable: retryable == "true"}})
+		if got := fmt.Sprint(w.seen); got != want {
+			return fmt.Errorf("seen %s, want %s", got, want)
+		}
+		return nil
+	})
+	sc.Step(`^the test API should have received (\d+) requests$`, func(n int) error {
+		if len(w.received) != n {
+			return fmt.Errorf("received %d requests, want %d", len(w.received), n)
+		}
 		return nil
 	})
 

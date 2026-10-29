@@ -17,6 +17,7 @@ import (
 	commandlogging "github.com/example/todo/internal/command/middleware/logging"
 	"github.com/example/todo/internal/command/pipeline"
 	"github.com/example/todo/internal/config"
+	clientpipeline "github.com/example/todo/internal/infrastructure/client/core/pipeline"
 	"github.com/example/todo/internal/infrastructure/client/todoapi"
 	"github.com/example/todo/internal/logging"
 	"github.com/example/todo/internal/service"
@@ -43,10 +44,15 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 	logger := slog.New(logging.NewHandler(stderr, cfg.LogLevel))
 	logger.Info("starting", "version", version.Version)
 
+	// [client middleware] - run around the attempts of every call of every
+	// API, the first the outermost. A variation point (the retry) adds its
+	// middleware to this list.
+	clientMiddlewares := []clientpipeline.Middleware{}
+
 	// [services] - infrastructure and the services over it. The todo API of
 	// another service (TODO_API_HOST=mock answers from its emulator) and the
 	// service that plans items with it.
-	todoAPI, err := todoapi.New(logger)
+	todoAPI, err := todoapi.New(logger, clientMiddlewares)
 	if err != nil {
 		logger.Error("startup failed", "error", err)
 		return 1

@@ -16,6 +16,7 @@ import (
 	"github.com/cucumber/godog"
 
 	"github.com/example/todo/internal/infrastructure/client/core/httpclient"
+	"github.com/example/todo/internal/infrastructure/client/core/pipeline"
 )
 
 // logf logs a step's action or observation through stdout, so the line stays
@@ -33,6 +34,9 @@ var variables = []string{"TEST_API_HOST", "TEST_API_HTTP_PORT", "TEST_API_TLS", 
 type echo struct {
 	Text string `json:"text"`
 }
+
+// operations are the test API's operations the client may call.
+var operations = []httpclient.Operation{{Method: http.MethodPost, Path: "/v1/echo", Retryable: true}}
 
 // received is what the test API was sent.
 type received struct {
@@ -52,11 +56,13 @@ type World struct {
 	received []received
 
 	// the client under test
-	emulator http.Handler
-	mocked   bool
-	records  *recorder
-	answer   echo
-	callErr  error
+	emulator    http.Handler
+	middlewares []pipeline.Middleware
+	seen        []pipeline.Call
+	mocked      bool
+	records     *recorder
+	answer      echo
+	callErr     error
 
 	// settings.feature
 	loaded  httpclient.Config
@@ -108,7 +114,7 @@ func (w *World) testAPI() http.Handler {
 func (w *World) client() *httpclient.Client {
 	logger := slog.New(w.records)
 	if w.mocked {
-		return httpclient.New(httpclient.Config{Name: "test-api", Host: httpclient.Mock, Timeout: time.Second}, logger, w.emulator)
+		return httpclient.New(httpclient.Config{Name: "test-api", Host: httpclient.Mock, Timeout: time.Second}, logger, w.emulator, operations, w.middlewares)
 	}
 	w.server = httptest.NewServer(w.testAPI())
 	address, _ := url.Parse(w.server.URL)
@@ -120,7 +126,7 @@ func (w *World) client() *httpclient.Client {
 	if w.delay > 0 {
 		timeout = 50 * time.Millisecond
 	}
-	return httpclient.New(httpclient.Config{Name: "test-api", Host: address.Hostname(), Port: port, Timeout: timeout}, logger, nil)
+	return httpclient.New(httpclient.Config{Name: "test-api", Host: address.Hostname(), Port: port, Timeout: timeout}, logger, nil, operations, w.middlewares)
 }
 
 // recorder is a slog.Handler keeping every record with all its attributes,

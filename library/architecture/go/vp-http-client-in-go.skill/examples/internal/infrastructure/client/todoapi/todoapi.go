@@ -12,6 +12,7 @@ import (
 	"net/http"
 
 	"github.com/example/todo/internal/infrastructure/client/core/httpclient"
+	"github.com/example/todo/internal/infrastructure/client/core/pipeline"
 	"github.com/example/todo/internal/infrastructure/client/todoapi/mock"
 )
 
@@ -19,13 +20,12 @@ import (
 // TODO_API_TLS, TODO_API_TIMEOUT.
 const Prefix = "TODO_API"
 
-// Operation is one operation of the contract this adapter calls.
-type Operation struct{ Method, Path string }
-
 // Operations are every operation this adapter calls; one scenario holds them
-// against the copied contract. A new method of the adapter adds its line.
-var Operations = []Operation{
-	{http.MethodPost, "/v1/items/plan"},
+// against the copied contract. A new method of the adapter adds its line,
+// Retryable when sending it again does what one call does.
+var Operations = []httpclient.Operation{
+	// Planning stores nothing: a repeat plans the same items.
+	{Method: http.MethodPost, Path: "/v1/items/plan", Retryable: true},
 }
 
 // Item is an item as the API answers it, the adapter's own type.
@@ -39,20 +39,20 @@ type Client struct {
 	http *httpclient.Client
 }
 
-// New reads the settings of the API and builds its client; with
-// TODO_API_HOST=mock it answers from mock.Emulator.
-func New(logger *slog.Logger) (*Client, error) {
+// New reads the settings of the API and builds its client, every call through
+// middlewares; with TODO_API_HOST=mock it answers from mock.Emulator.
+func New(logger *slog.Logger, middlewares []pipeline.Middleware) (*Client, error) {
 	cfg, err := httpclient.LoadConfig(Prefix)
 	if err != nil {
 		return nil, err
 	}
-	return NewClient(cfg, logger), nil
+	return NewClient(cfg, logger, middlewares), nil
 }
 
 // NewClient builds the client from settings given - the scenarios point it at
 // an emulator of their own.
-func NewClient(cfg httpclient.Config, logger *slog.Logger) *Client {
-	return &Client{http: httpclient.New(cfg, logger, mock.Emulator())}
+func NewClient(cfg httpclient.Config, logger *slog.Logger, middlewares []pipeline.Middleware) *Client {
+	return &Client{http: httpclient.New(cfg, logger, mock.Emulator(), Operations, middlewares)}
 }
 
 type planItemsRequest struct {
