@@ -84,8 +84,8 @@ the `spec/` skills come along because every stack skill links its spec.
 | 2 | clients (`develop/core/api-client`): HTTP (`vp-http-client`), gRPC (`vp-grpc-client`) | HTTP ✅, gRPC ✅ (buf managed mode, bufconn mock; one `client/core/outcome` for every transport) | HTTP ✅, gRPC ✅ (one `Client.Abstractions` for every transport; mock through a call invoker) | HTTP ✅ (httpx2, `MockTransport`; one `outcomes.py` for every transport), gRPC ✅ (`grpc.aio`, the mock on a loopback server) |
 | 3 | DB | | | |
 | 4 | TaskBox, Inbox, Outbox | | | |
-| 5 | SQLite for CLI applications (`vp-sqlite`): the DB of step 3 on an SQLite file - the driver per stack, the file's path setting, the same migrations and stores; for a CLI that keeps its data between runs | | | |
-| 6 | data cache (`vp-cache-data`): with a DB VP and a client VP attached, a service that answers the cacheable operations of another service's API from a store first and calls the client only on a miss; open questions below | | | |
+| 5 | SQLite (`vp-sqlite`): one more persistent DB of step 3, an SQLite file - the driver per stack, the file's path setting, the same migrations and stores; fits a CLI that keeps its data between runs, and an application with an API within its limits (below) | | | |
+| 6 | data cache (`vp-cache-data`): with a DB VP and a client VP attached, a service of its own that wraps the client's service behind the same interface, answering its cacheable methods from a store first and calling the client's service only on a miss, passing every other method on unchanged | | | |
 
 ## Library candidates
 
@@ -117,14 +117,13 @@ Agreed with the owner; written into the variation point's skill and ADR when it 
 | **Unit of work at the command.** Optional, available once the DB variation point is attached; the outermost command opens it, nested commands and notification handlers join, services never commit. A simple service may skip it; once any command changes data in several places at once (nested commands, notification handlers, outbox task), every command is wrapped. Rejected: each service method owning its transaction (breaks atomicity across handlers); mandatory for every application. dotnet: pipeline behavior + EF change tracking (one short transaction at the end). Go: command middleware, unit of work in `context.Context`, transaction opened on the first write, every storage method takes its executor from the context. | DB (step 3) | 2026-10-17 |
 | **In-process notifications in Go** (the counterpart of MediatR notifications), joining the command's unit of work. | DB (step 3) | 2026-10-17 |
 
-## Open questions of the queued VPs
+## Decisions and open questions of the queued VPs
 
-| VP | Question | To decide when |
+| VP | Decided (2026-10-29) | Left to the VP |
 |---|---|---|
-| `vp-cache-data` | The cache as a service of its own with its own methods (the owner's first idea) or as the same interface as the client's service, wrapping it: commands then call it unchanged and attaching is a change of the composition root only. app-layers lets a service wrap one infrastructure, so a cache over another service needs either that rule widened or the cache to wrap the client adapter and the store itself | the VP starts |
-| `vp-cache-data` | What is cacheable and for how long: a mark per operation beside `Retryable` (`Cacheable`), a TTL per API (`{API}_CACHE_TTL`) or per operation, the key from the operation and its request | the VP starts |
-| `vp-cache-data` | Whether an expired entry answers while the API is unavailable (stale on error), and how the cache is cleared | the VP starts |
-| `vp-sqlite` | A variant of the DB VP (one `{DB}` setting picks PostgreSQL or SQLite, the stores shared) or a VP of its own for CLI applications only; the driver per stack (Go `modernc.org/sqlite` without cgo, dotnet `Microsoft.Data.Sqlite`, Python `sqlite3`) | step 3 is designed |
+| `vp-cache-data` | A separate wrapper service, not a rewrite of the client's service (a VP that rewrites it is harder to attach and to remove): it implements the client service's interface, caches some of its methods, and passes the others on | how the wrapper fits app-layers (a service over a service and a store); the mark of a cacheable method and the shape of the key |
+| `vp-cache-data` | What is cached and for how long, and whether expired data answers while the API is unavailable, depend on the business case of each method: the VP gives the mechanism, the application decides per method | the default settings, if any |
+| `vp-sqlite` | One more kind of persistent DB, not limited to CLI applications; its skill states the limits for an application that serves an API: the DB is not shared between pods and is lost when the container restarts without a volume | variant of the DB VP chosen by a setting, or a VP of its own; the driver per stack (Go `modernc.org/sqlite` without cgo, dotnet `Microsoft.Data.Sqlite`, Python `sqlite3`) |
 
 ## Backlog
 
