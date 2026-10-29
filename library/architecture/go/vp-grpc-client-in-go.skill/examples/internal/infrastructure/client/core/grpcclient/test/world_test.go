@@ -17,6 +17,7 @@ import (
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
 	"github.com/example/todo/internal/infrastructure/client/core/grpcclient"
+	"github.com/example/todo/internal/infrastructure/client/core/pipeline"
 )
 
 // logf logs a step's action or observation through stdout, so the line stays
@@ -71,12 +72,14 @@ type World struct {
 	received []received
 
 	// the client under test
-	emulator grpcclient.Emulator
-	mocked   bool
-	client   *grpcclient.Client
-	records  *recorder
-	answer   *wrapperspb.StringValue
-	callErr  error
+	emulator    grpcclient.Emulator
+	middlewares []pipeline.Middleware
+	seen        []pipeline.Call
+	mocked      bool
+	client      *grpcclient.Client
+	records     *recorder
+	answer      *wrapperspb.StringValue
+	callErr     error
 
 	// config.feature
 	loaded  grpcclient.Config
@@ -147,7 +150,7 @@ func (w *World) connect() (err error) {
 			cfg.Timeout = 50 * time.Millisecond
 		}
 	}
-	w.client, err = grpcclient.New(cfg, logger, w.emulator)
+	w.client, err = grpcclient.New(cfg, logger, w.emulator, []grpcclient.Method{{Name: echoMethod, Retryable: true}}, w.middlewares)
 	return err
 }
 

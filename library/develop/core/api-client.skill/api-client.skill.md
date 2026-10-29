@@ -1,8 +1,8 @@
 ---
 name: api-client
-description: How an application calls another service's API — one infrastructure adapter per API under one service, the {API} environment group (host, a port per protocol, TLS, timeout), the consumed contract copied unchanged, every call bounded by a timeout, logged in two records, and carrying the request id, an unavailable API told from a rejected call, a mock that runs the client against an emulator inside the process, and the tests at the adapter's boundary
+description: How an application calls another service's API — one infrastructure adapter per API under one service, every call through the client middleware of the composition root with the operations safe to repeat marked, the {API} environment group (host, a port per protocol, TLS, timeout), the consumed contract copied unchanged, every call bounded by a timeout, logged in two records, and carrying the request id, an unavailable API told from a rejected call, a mock that runs the client against an emulator inside the process, and the tests at the adapter's boundary
 whenToUse: when an application calls an HTTP or gRPC API of another service — adding a client, changing what it sends or how it is configured, mocking it to run without the other service, or reviewing a client of any stack
-updated: 20261026
+updated: 20261029
 tags:
   - stack
   - concern/architecture
@@ -24,7 +24,7 @@ tags:
 
 # Scope
 - Covers the calls an application makes to HTTP and gRPC APIs of other services. The transport-specific parts are the variation points `vp-http-client` and `vp-grpc-client` and their stack extensions.
-- A retry of a failed call is not here: it comes from its own variation point, a middleware around the client, so no call is repeated unless the application chose it for that operation.
+- A retry of a failed call is not here: it comes from its own variation point, `vp-client-retry`, a client middleware, so no call is repeated unless the application attached it and the adapter marked the operation safe to repeat.
 
 # Rule
 
@@ -83,6 +83,18 @@ Run the client, when `{API}_HOST=mock`, against an emulator of the API inside th
 - Risk: two switches disagree; a mocked integration answers unnoticed in an environment where a real one was expected; the service cannot start where the other service is not running.
 - Fix: one emulator per API in its adapter's `mock/` folder, in a file named after the client (`infrastructure/client/todo_api/mock/todo_api_mock.go` beside `todo_api.go`), so the file says it is a mock and of which client; the fixed client code chooses it from the host.
 
+### Run every call through the client middleware
+Send every call of every adapter through the client middleware the composition root lists for its API, the first the outermost, around the attempts of the call - each attempt with its own timeout and its two log records - and refuse a call of an operation the adapter does not list.
+- Violation: a step added to every call (a retry, a circuit breaker, a metric) written into the fixed client code or into each adapter method.
+- Risk: the step is repeated per client and per stack, and adding it edits code every application copies unchanged.
+- Fix: the fixed client code runs the list, empty in an application that attaches no client middleware; a variation point adds its middleware to the list in the composition root.
+
+### Mark the operations safe to repeat
+Mark, in the adapter's list of its operations, each operation that does what one call does when it is sent again (it reads, or it sets what it sets regardless of how often), and leave every other unmarked.
+- Violation: every operation marked; an operation that creates a record or moves money marked.
+- Risk: a repeat of a call the API received but did not answer in time does its work twice.
+- Fix: the mark is beside the operation's method and path, with the reason it is safe in a comment; the client middleware reads it from the call.
+
 ### Keep the API out of readiness
 Add no readiness check for an API the application calls; let the calls that need it answer unavailable while it is down.
 - Risk: a readiness check on another service takes every replica of this one out of the load balancer during that service's outage, also for the requests that never call it, and an outage cascades through the system.
@@ -100,4 +112,5 @@ Test the fixed client code once through an emulator of a test API of its own, ea
 - [ ] Unavailable is reported apart from the API's other statuses; the service maps them to its own errors.
 - [ ] Every call is logged in two records and carries the request id.
 - [ ] `{API}_HOST=mock` runs the client against its emulator in `infrastructure/client/{api}/mock/{api}_mock`, warned once.
+- [ ] Every call runs through the client middleware of its API; only operations safe to repeat are marked so.
 - [ ] No readiness check names another service's API.

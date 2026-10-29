@@ -77,7 +77,7 @@ func (w *World) connect() error {
 		go func() { _ = w.server.Serve(listener) }()
 		cfg.Host, cfg.Port = "127.0.0.1", listener.Addr().(*net.TCPAddr).Port
 	}
-	client, err := todoapi.NewClient(cfg, logger)
+	client, err := todoapi.NewClient(cfg, logger, nil)
 	w.client = client
 	return err
 }

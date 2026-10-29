@@ -15,6 +15,7 @@ import (
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
 	"github.com/example/todo/internal/infrastructure/client/core/outcome"
+	"github.com/example/todo/internal/infrastructure/client/core/pipeline"
 	"github.com/example/todo/internal/logging"
 )
 
@@ -35,6 +36,43 @@ func registerCallSteps(sc *godog.ScenarioContext, w *World) {
 			server.RegisterService(echoService(func(context.Context, *wrapperspb.StringValue) (*wrapperspb.StringValue, error) {
 				return wrapperspb.String(text), nil
 			}))
+		}
+		return nil
+	})
+
+	sc.Step(`^a client middleware that sends every call twice$`, func() error {
+		w.middlewares = append(w.middlewares, func(ctx context.Context, call pipeline.Call, next pipeline.Attempt) error {
+			w.seen = append(w.seen, call)
+			if err := next(ctx); err != nil {
+				return err
+			}
+			return next(ctx)
+		})
+		return nil
+	})
+	sc.Step(`^the middleware should have seen the call "([^"]*)" of "([^"]*)", retryable "([^"]*)"$`, func(operation, api, retryable string) error {
+		want := fmt.Sprint([]pipeline.Call{{API: api, Operation: operation, Retryable: retryable == "true"}})
+		if got := fmt.Sprint(w.seen); got != want {
+			return fmt.Errorf("seen %s, want %s", got, want)
+		}
+		return nil
+	})
+	sc.Step(`^the test API should have received (\d+) calls$`, func(n int) error {
+		if len(w.received) != n {
+			return fmt.Errorf("received %d calls, want %d", len(w.received), n)
+		}
+		return nil
+	})
+	sc.Step(`^I call the unlisted method "([^"]*)"$`, func(method string) error {
+		if err := w.connect(); err != nil {
+			return err
+		}
+		w.callErr = w.client.Invoke(context.Background(), method, wrapperspb.String("hi"), &wrapperspb.StringValue{})
+		return nil
+	})
+	sc.Step(`^the call should fail mentioning "([^"]*)"$`, func(text string) error {
+		if w.callErr == nil || !strings.Contains(w.callErr.Error(), text) {
+			return fmt.Errorf("error %v, want one mentioning %q", w.callErr, text)
 		}
 		return nil
 	})

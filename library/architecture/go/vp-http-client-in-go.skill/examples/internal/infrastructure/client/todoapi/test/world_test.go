@@ -54,7 +54,7 @@ func registerWorldHooks(sc *godog.ScenarioContext, w *World) {
 func (w *World) client() *todoapi.Client {
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
 	if w.mocked {
-		return todoapi.NewClient(httpclient.Config{Name: "todo-api", Host: httpclient.Mock, Timeout: time.Second}, logger)
+		return todoapi.NewClient(httpclient.Config{Name: "todo-api", Host: httpclient.Mock, Timeout: time.Second}, logger, nil)
 	}
 	w.server = httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
 		body, _ := io.ReadAll(r.Body)
@@ -64,7 +64,7 @@ func (w *World) client() *todoapi.Client {
 	}))
 	address, _ := url.Parse(w.server.URL)
 	port, _ := strconv.Atoi(address.Port())
-	return todoapi.NewClient(httpclient.Config{Name: "todo-api", Host: address.Hostname(), Port: port, Timeout: time.Second}, logger)
+	return todoapi.NewClient(httpclient.Config{Name: "todo-api", Host: address.Hostname(), Port: port, Timeout: time.Second}, logger, nil)
 }
 
 func registerSteps(sc *godog.ScenarioContext, w *World) {
@@ -106,9 +106,9 @@ func registerSteps(sc *godog.ScenarioContext, w *World) {
 		if err := json.Unmarshal(raw, &contract); err != nil {
 			return err
 		}
-		var want []todoapi.Operation
+		var want []httpclient.Operation
 		for _, row := range table.Rows[1:] {
-			want = append(want, todoapi.Operation{Method: row.Cells[0].Value, Path: row.Cells[1].Value})
+			want = append(want, httpclient.Operation{Method: row.Cells[0].Value, Path: row.Cells[1].Value, Retryable: row.Cells[2].Value == "yes"})
 		}
 		if fmt.Sprint(todoapi.Operations) != fmt.Sprint(want) {
 			return fmt.Errorf("the adapter calls %v, want %v", todoapi.Operations, want)

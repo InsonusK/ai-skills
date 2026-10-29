@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/example/todo/internal/infrastructure/client/core/outcome"
+	"github.com/example/todo/internal/infrastructure/client/core/pipeline"
 	"github.com/example/todo/internal/logging"
 )
 
@@ -23,19 +24,34 @@ const RequestIDHeader = "X-Request-Id"
 // maxBody is the most of an answer read; a longer one is an error.
 const maxBody = 10 << 20
 
-// Client calls one HTTP API.
-type Client struct {
-	cfg    Config
-	base   string
-	http   *http.Client
-	logger *slog.Logger
+// Operation is one operation of the contract an adapter calls.
+type Operation struct {
+	Method, Path string
+	// Retryable marks an operation safe to send again: a repeat does what one
+	// call does. Only such an operation is repeated by the retry middleware.
+	Retryable bool
 }
 
-// New builds the client of the API cfg names. With cfg.Mocked() every call is
-// answered by emulator inside the process - the same request, log, and
-// reading of the answer, only no network - and a WARN record says so.
-func New(cfg Config, logger *slog.Logger, emulator http.Handler) *Client {
-	c := &Client{cfg: cfg, base: cfg.BaseURL(), http: &http.Client{}, logger: logger}
+// Client calls one HTTP API.
+type Client struct {
+	cfg         Config
+	base        string
+	http        *http.Client
+	logger      *slog.Logger
+	operations  map[string]Operation
+	middlewares []pipeline.Middleware
+}
+
+// New builds the client of the API cfg names, which calls only operations,
+// each through middlewares, the first the outermost. With cfg.Mocked() every
+// call is answered by emulator inside the process - the same request, log,
+// and reading of the answer, only no network - and a WARN record says so.
+func New(cfg Config, logger *slog.Logger, emulator http.Handler, operations []Operation, middlewares []pipeline.Middleware) *Client {
+	c := &Client{cfg: cfg, base: cfg.BaseURL(), http: &http.Client{}, logger: logger,
+		operations: map[string]Operation{}, middlewares: middlewares}
+	for _, op := range operations {
+		c.operations[op.Method+" "+op.Path] = op
+	}
 	if cfg.Mocked() {
 		c.base, c.http.Transport = "http://"+Mock, emulated{emulator}
 		logger.Warn("api client mocked", "api", cfg.Name)
@@ -43,13 +59,27 @@ func New(cfg Config, logger *slog.Logger, emulator http.Handler) *Client {
 	return c
 }
 
-// Call sends one request - request as its JSON body, none when nil - and
-// decodes a 2xx answer into response, unless nil. It ends after cfg.Timeout
-// at the latest, sends the request id of ctx, and writes two records: "http
-// client request sent" and "http client response received". It returns
-// outcome.ErrUnavailable, an *outcome.StatusError, or an error with neither when the answer
-// does not fit response.
-func (c *Client) Call(ctx context.Context, method, path string, request, response any) (err error) {
+// Call sends one request of an operation of the adapter's list - request as
+// its JSON body, none when nil - and decodes a 2xx answer into response,
+// unless nil, through the client middleware, each attempt as attempt does. It
+// returns outcome.ErrUnavailable, an *outcome.StatusError, or an error with
+// neither when the operation is not listed or the answer does not fit
+// response.
+func (c *Client) Call(ctx context.Context, method, path string, request, response any) error {
+	op, listed := c.operations[method+" "+path]
+	if !listed {
+		return fmt.Errorf("%s %s is no operation of the adapter's list", method, path)
+	}
+	call := pipeline.Call{API: c.cfg.Name, Operation: method + " " + path, Retryable: op.Retryable}
+	return pipeline.Run(ctx, call, c.middlewares, func(ctx context.Context) error {
+		return c.attempt(ctx, method, path, request, response)
+	})
+}
+
+// attempt sends the request once. It ends after cfg.Timeout at the latest,
+// sends the request id of ctx, and writes two records: "http client request
+// sent" and "http client response received".
+func (c *Client) attempt(ctx context.Context, method, path string, request, response any) (err error) {
 	ctx, cancel := context.WithTimeout(ctx, c.cfg.Timeout)
 	defer cancel()
 	start, status, received := time.Now(), 0, []byte(nil)

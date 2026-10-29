@@ -2,7 +2,7 @@
 name: vp-http-client-in-go
 description: The HTTP client variation point in Go — internal/infrastructure/client/core/httpclient and core/outcome copied from templates (the {API} settings, Client.Call with the timeout, JSON in and out, outcome.ErrUnavailable and outcome.StatusError, the call log, the request id, the mock against an emulator), one adapter per API in internal/infrastructure/client/{api} with its operations, its mock, and its contract scenario, the service over it in internal/service, and the lines of main.go that build them
 whenToUse: when a Go application built on the base plateau must call another service's HTTP API, when you call a further operation of such an API, or when you review a Go HTTP client
-updated: 20261028
+updated: 20261029
 tags:
   - stack/go
   - concern/architecture
@@ -23,6 +23,7 @@ docs/integration/client/{api-name}/openapi.json   the provider's contract, copie
 internal/infrastructure/
 ├── client/                  every client of another service's API, and nothing else
 │   ├── core/outcome/     copied from templates, never edited: ErrUnavailable, StatusError, Code - every transport
+│   ├── core/pipeline/    copied from templates, never edited: the client middleware around the attempts of a call
 │   ├── core/httpclient/     copied from templates, never edited
 │   │   ├── config.go        LoadConfig(prefix): {API}_HOST, _HTTP_PORT, _TLS, _TIMEOUT; Mock
 │   │   ├── client.go        Client.Call: timeout, JSON, X-Request-Id, call log; returns the outcomes
@@ -40,12 +41,12 @@ internal/service/{name}.go   the service over the adapter: technical outcomes �
 ## MUST
 
 ### Copy the client code from templates
-Fill and copy [config.go](./templates/internal/infrastructure/client/core/httpclient/config.go) and [client.go](./templates/internal/infrastructure/client/core/httpclient/client.go) to `internal/infrastructure/client/core/httpclient/`, with the example's `features/` and `test/`, and [outcome.go](./templates/internal/infrastructure/client/core/outcome/outcome.go) to `internal/infrastructure/client/core/outcome/` — already there, unchanged, when the gRPC client is attached — replacing `{module-path}` with the module path from `go.mod`.
+Fill and copy [config.go](./templates/internal/infrastructure/client/core/httpclient/config.go) and [client.go](./templates/internal/infrastructure/client/core/httpclient/client.go) to `internal/infrastructure/client/core/httpclient/`, with the example's `features/` and `test/`, [outcome.go](./templates/internal/infrastructure/client/core/outcome/outcome.go) to `internal/infrastructure/client/core/outcome/`, and [pipeline.go](./templates/internal/infrastructure/client/core/pipeline/pipeline.go) with the example's `features/` and `test/` to `internal/infrastructure/client/core/pipeline/` — already there, unchanged, when the gRPC client is attached — replacing `{module-path}` with the module path from `go.mod`.
 - Risk: a retyped client drifts in its timeout, its error report, or its log from every other Go client of the catalog.
 - Fix: copy the files; after filling, searching them for `{module-path}` returns nothing; `make test` passes.
 
 ### One adapter package per API
-Write each API as `internal/infrastructure/client/{api}/` holding `Prefix` (`"TODO_API"`), `Operations` (the method and path of every operation it calls), `New(logger)` reading the settings and `NewClient(cfg, logger)` taking them, and per operation one method of `Client` with an unexported request and response type and the mapping to the values the service uses.
+Write each API as `internal/infrastructure/client/{api}/` holding `Prefix` (`"TODO_API"`), `Operations` (an `httpclient.Operation` - method, path, and `Retryable` - for every operation it calls), `New(logger, middlewares)` reading the settings and `NewClient(cfg, logger, middlewares)` taking them, and per operation one method of `Client` with an unexported request and response type and the mapping to the values the service uses.
 
 ```go
 // PlanItems is POST /v1/items/plan: one open item per title, planned by the API.
@@ -91,11 +92,11 @@ case err != nil:
 - Fix: the scenario "Any other answer is a failure with no kind" of the example's `remote_planner.feature`.
 
 ### Build the adapter and the service in main.go
-Build the adapter with `{api}.New(logger)` and the service over it in `// [services]` of `cmd/{app}/main.go`, stopping the start with its error, and pass the service to `command.NewHandlers`.
+Build the adapter with `{api}.New(logger, middlewares)` and the service over it in `// [services]` of `cmd/{app}/main.go`, stopping the start with its error, and pass the service to `command.NewHandlers`. Build the client middleware of the API in `// [client middleware]` before it - empty until a variation point (`vp-client-retry`) adds one - and pass it to `{api}.New(logger, middlewares)`, which hands the adapter's `Operations` and the list to `httpclient.New`; the client refuses a call of an operation not in `Operations`, and `Retryable` on a `httpclient.Operation` marks one safe to repeat, as [api-client](library/develop/core/api-client.skill/api-client.skill.md) requires.
 
 ```go
 // [services]
-todoAPI, err := todoapi.New(logger)
+todoAPI, err := todoapi.New(logger, clientMiddlewares)
 if err != nil {
 	logger.Error("startup failed", "error", err)
 	return 1
@@ -115,6 +116,7 @@ Copy the example's `internal/infrastructure/client/core/httpclient/features/` an
 - [ ] `internal/infrastructure/client/core/httpclient/{config,client}.go` are filled copies of the templates; no placeholder is left.
 - [ ] Each API has its package with `Prefix`, `Operations`, `New`, `NewClient`, and one method per operation, and its mock in `mock/{api}_mock.go`; the contract scenario passes.
 - [ ] The service maps `outcome.ErrUnavailable`, the expected `outcome.StatusError` codes, and nothing else to kinds; it is the same over HTTP and gRPC.
+- [ ] `main.go` builds the client middleware of each API in `// [client middleware]`; every operation of the adapter is in its list, `Retryable` where a repeat does what one call does.
 - [ ] `main.go` builds the adapter and the service in `// [services]`.
 - [ ] `make test` passes; `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).
 
