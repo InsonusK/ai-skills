@@ -2,7 +2,7 @@
 
 The base plateau in Python with the HTTP client variation point attached: the startup command
 `PlanRemoteItems` plans its titles with another service's todo API (`POST /v1/items/plan` of
-`docs/integration/client/todo/openapi.json`) through the service `RemotePlanner` and the adapter
+`docs/integration/client/todo/openapi.json`) through the service `RemotePlanner` and the client
 `todo.infrastructure.client.todo_api`, built on the fixed client code `todo.infrastructure.client.core`
 (`httpclient` on httpx2).
 

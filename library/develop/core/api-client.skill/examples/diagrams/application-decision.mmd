@@ -1,0 +1,13 @@
+sequenceDiagram
+  autonumber
+  participant Command as command
+  participant Service as UserService
+  participant Client as UserApiClient
+  participant Api as User API
+  Command->>+Service: CanPlan()
+  Service->>+Client: User()
+  Client->>+Api: GET /getUser
+  Api-->>-Client: state: suspended
+  Client-->>-Service: UserRecord: suspended
+  Note over Service: decides: a suspended user may not plan
+  Service-->>-Command: false

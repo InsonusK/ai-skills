@@ -2,7 +2,7 @@
 name: vp-client-retry-in-go
 description: The client retry variation point in Go — internal/infrastructure/client/middleware/retry copied from templates (LoadConfig reading {API}_RETRY_ATTEMPTS and {API}_RETRY_BACKOFF, Middleware repeating a Retryable call on outcome.ErrUnavailable with doubled, jittered waits within the caller's deadline and a WARN record per repeat), added to the client middleware of an API in main.go
 whenToUse: when a Go application with a client of another service's API (vp-http-client-in-go, vp-grpc-client-in-go) must repeat calls the API did not answer, when you mark an operation retryable, or when you review a Go client retry
-updated: 20261029
+updated: 20261030
 tags:
   - stack/go
   - concern/architecture
@@ -51,12 +51,12 @@ clientMiddlewares := []clientpipeline.Middleware{
 }
 ```
 
-- Violation: the retry wrapped around an adapter method or a service; one retry config shared by two APIs.
+- Violation: the retry wrapped around a client method or a service; one retry config shared by two APIs.
 - Risk: a repeat outside the client repeats the mapping and misses the mark; two APIs cannot be tuned apart.
-- Fix: one list per API, built before its adapter; a middleware added after the retry runs once per attempt.
+- Fix: one list per API, built before its client; a middleware added after the retry runs once per attempt.
 
-### Mark the retryable operations in the adapter
-Set `Retryable: true` on each `httpclient.Operation` or `grpcclient.Method` of the adapter's list whose repeat does what one call does, with a comment saying why, and hold the mark in the contract scenario's table.
+### Mark the retryable operations in the client
+Set `Retryable: true` on each `httpclient.Operation` or `grpcclient.Method` of the client's list whose repeat does what one call does, with a comment saying why, and hold the mark in the contract scenario's table.
 - Risk: an unmarked operation is never repeated, a wrongly marked one is done twice.
 - Fix: the example's `todoapi.Operations` marks `POST /v1/items/plan`, which stores nothing.
 

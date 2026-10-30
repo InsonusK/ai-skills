@@ -2,7 +2,7 @@
 
 The base plateau in Go with the gRPC client variation point attached: the startup command
 `PlanRemoteItems` plans its titles with another service's todo API (`todo.v1.ItemsService/PlanItems` of
-`docs/integration/client/todo/todo.proto`) through the service `RemotePlanner` and the adapter
+`docs/integration/client/todo/todo.proto`) through the service `RemotePlanner` and the client
 `internal/infrastructure/client/todoapi`, which calls the code generated into `gen/client/todo` over the
 fixed client code `internal/infrastructure/client/core/grpcclient`.
 

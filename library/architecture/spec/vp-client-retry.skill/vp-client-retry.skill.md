@@ -1,8 +1,8 @@
 ---
 name: vp-client-retry
-description: The client retry variation point — a client middleware that sends a call of an operation its adapter marked safe to repeat again while the other service's API does not answer, at most {API}_RETRY_ATTEMPTS attempts, waiting {API}_RETRY_BACKOFF doubled with jitter, each attempt bounded by {API}_TIMEOUT and all of them by the caller's deadline, every repeat logged
+description: The client retry variation point — a client middleware that sends a call of an operation its client marked safe to repeat again while the other service's API does not answer, at most {API}_RETRY_ATTEMPTS attempts, waiting {API}_RETRY_BACKOFF doubled with jitter, each attempt bounded by {API}_TIMEOUT and all of them by the caller's deadline, every repeat logged
 whenToUse: when an application that calls another service's API over HTTP or gRPC must ride out a short outage of it — attaching the retry, marking an operation retryable, tuning how often and how long a client repeats, or reviewing such a retry
-updated: 20261029
+updated: 20261030
 tags:
   - stack
   - concern/architecture
@@ -12,7 +12,7 @@ tags:
 
 # Goal
 - **A short outage rides out** - A call of an operation safe to repeat that the other service did not answer is sent again, so a restart or a moment of overload of that service does not fail this one's caller.
-- **Nothing done twice** - Only an operation the adapter marked safe to repeat is sent again, and only when the API did not answer, so no record is created twice and no rejected call is repeated.
+- **Nothing done twice** - Only an operation the client marked safe to repeat is sent again, and only when the API did not answer, so no record is created twice and no rejected call is repeated.
 - **Attached, not edited** - The retry joins a client of [vp-http-client](library/architecture/spec/vp-http-client.skill/vp-http-client.skill.md) or [vp-grpc-client](library/architecture/spec/vp-grpc-client.skill/vp-grpc-client.skill.md) as one middleware in the client middleware list of [api-client](library/develop/core/api-client.skill/api-client.skill.md), in the composition root.
 
 # Core Principle
@@ -20,7 +20,7 @@ tags:
 
 ```
 caller ── ctx (deadline) ─────────────────────────────────────────────────────────┐
-service ─► adapter.Method ─► client: listed? ─► [client middleware] ─► attempt ─► API
+service ─► client.Method ─► fixed client code: listed? ─► [client middleware] ─► attempt ─► API
                                                   │ retry
                                                   ├─ not Retryable, or not unavailable ─► return as is
                                                   └─ unavailable: WARN "api client call retried"
@@ -37,7 +37,7 @@ service ─► adapter.Method ─► client: listed? ─► [client middleware] 
 ## MUST
 
 ### Repeat only a marked operation the API did not answer
-Send a call again only when its operation is marked safe to repeat in the adapter's list and its attempt ended unavailable; pass every other call and every other outcome on unchanged.
+Send a call again only when its operation is marked safe to repeat in the client's list and its attempt ended unavailable; pass every other call and every other outcome on unchanged.
 - Violation: a call repeated on a status the API answered (`INVALID_ARGUMENT`, 500); a call of an unmarked operation repeated.
 - Risk: a rejected call is sent until the attempts run out; a call the API received but did not answer in time does its work twice.
 - Fix: the middleware reads the mark from the call and the outcome from the attempt.

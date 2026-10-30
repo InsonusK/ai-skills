@@ -2,7 +2,7 @@
 
 The base plateau in dotnet with the gRPC client variation point attached: the startup command
 `PlanRemoteItems` plans its titles with another service's todo API (`todo.v1.ItemsService/PlanItems` of
-`docs/integration/client/todo/todo.proto`, compiled at build time by Grpc.Tools) through the service `RemotePlannerService` and the adapter
+`docs/integration/client/todo/todo.proto`, compiled at build time by Grpc.Tools) through the service `RemotePlannerService` and the client
 `TodoApiClient`, built on the fixed client code `src/Infrastructure/Client/Core`.
 
 ```bash
