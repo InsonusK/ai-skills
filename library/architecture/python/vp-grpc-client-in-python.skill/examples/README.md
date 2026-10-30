@@ -2,7 +2,7 @@
 
 The base plateau in Python with the gRPC client variation point attached: the startup command
 `PlanRemoteItems` plans its titles with another service's todo API (`todo.v1.ItemsService/PlanItems` of
-`docs/integration/client/todo/todo.proto`, generated into `src/todo/gen/client/todo`) through the service `RemotePlanner` and the adapter
+`docs/integration/client/todo/todo.proto`, generated into `src/todo/gen/client/todo`) through the service `RemotePlanner` and the client
 `todo.infrastructure.client.todo_api`, built on the fixed client code `todo.infrastructure.client.core`
 (`grpcclient` on grpcio's `grpc.aio`).
 
