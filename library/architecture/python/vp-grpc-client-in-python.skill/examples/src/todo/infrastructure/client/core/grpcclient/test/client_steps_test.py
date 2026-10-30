@@ -11,13 +11,18 @@ import pytest
 from google.protobuf.wrappers_pb2 import StringValue
 from pytest_bdd import given, parsers, scenarios, then, when
 
-from todo.infrastructure.client.core.grpcclient import MOCK, Emulator, GrpcClient, GrpcConfig
+from todo.infrastructure.client.core.grpcclient import MOCK, Emulator, GrpcClient, GrpcConfig, Method
 from todo.infrastructure.client.core.outcomes import ApiStatusError, ApiUnavailableError, StatusCode
+from todo.infrastructure.client.core.pipeline import Attempt, Call, Middleware
 from todo.log import FAILED_KEY, PAYLOAD_KEY, attributes_of, request_id_scope
 
 from .echo_api import ECHO_METHOD, EchoBehavior, serve
 
 scenarios("../features/call.feature", "../features/call_log.feature", "../features/mock.feature")
+
+
+# The test API's methods the client may call.
+METHODS = [Method(ECHO_METHOD, retryable=True)]
 
 
 class Recorder(logging.Handler):
@@ -42,6 +47,8 @@ class World:
     api: EchoBehavior = field(default_factory=EchoBehavior)
     down: bool = False
     emulator: Emulator | None = None
+    middlewares: list[Middleware] = field(default_factory=list)
+    seen: list[Call] = field(default_factory=list)
     recorder: Recorder = field(default_factory=Recorder)
     answer: str | None = None
     error: Exception | None = None
@@ -88,21 +95,21 @@ def the_client_is_mocked(world: World, prefix: str, text: str) -> None:
 # the call
 
 
-def _call(world: World, text: str, id: str | None = None) -> None:
+def _call(world: World, text: str, id: str | None = None, method: str = ECHO_METHOD) -> None:
     async def call() -> str:
         logger = logging.Logger("test", logging.DEBUG)
         logger.addHandler(world.recorder)
         server = None
         if world.emulator is not None:
             config = GrpcConfig(name="test-api", host=MOCK, port=80, timeout=timedelta(seconds=1))
-            client = await GrpcClient.open(config, logger, world.emulator)
+            client = await GrpcClient.open(config, logger, world.emulator, METHODS, world.middlewares)
         else:
             port = _free_port()
             if not world.down:
                 server, port = await serve(world.api)
             timeout = timedelta(milliseconds=50) if world.api.delay else timedelta(seconds=5)
-            client = await GrpcClient.open(GrpcConfig(name="test-api", host="127.0.0.1", port=port, timeout=timeout), logger, lambda _: None)
-        echo = client.channel.unary_unary(ECHO_METHOD, request_serializer=StringValue.SerializeToString, response_deserializer=StringValue.FromString)
+            client = await GrpcClient.open(GrpcConfig(name="test-api", host="127.0.0.1", port=port, timeout=timeout), logger, lambda _: None, METHODS, world.middlewares)
+        echo = client.channel.unary_unary(method, request_serializer=StringValue.SerializeToString, response_deserializer=StringValue.FromString)
         try:
             if id is None:
                 answer = await echo(StringValue(value=text))
@@ -130,6 +137,36 @@ def i_call_echo(world: World, text: str) -> None:
 @when(parsers.parse('I call Echo with the text "{text}" in the request "{id}"'))
 def i_call_echo_in_the_request(world: World, text: str, id: str) -> None:
     _call(world, text, id)
+
+
+@given("a client middleware that sends every call twice")
+def a_middleware_sends_twice(world: World) -> None:
+    async def twice(call: Call, call_next: Attempt) -> None:
+        world.seen.append(call)
+        await call_next()
+        await call_next()
+
+    world.middlewares.append(twice)
+
+
+@then(parsers.parse('the middleware should have seen the call "{operation}" of "{api}", retryable "{retryable}"'))
+def the_middleware_saw(world: World, operation: str, api: str, retryable: str) -> None:
+    assert world.seen == [Call(api, operation, retryable == "true")], world.seen
+
+
+@then(parsers.parse("the test API should have received {count:d} calls"))
+def the_test_api_received_calls(world: World, count: int) -> None:
+    assert len(world.api.received) == count, world.api.received
+
+
+@when(parsers.parse('I call the unlisted method "{method}"'))
+def i_call_the_unlisted_method(world: World, method: str) -> None:
+    _call(world, "hi", method=method)
+
+
+@then(parsers.parse('the call should fail mentioning "{text}"'))
+def the_call_should_fail_mentioning(world: World, text: str) -> None:
+    assert world.error is not None and text in str(world.error), world.error
 
 
 @then(parsers.parse('the call should succeed with the text "{text}"'))

@@ -1,0 +1,7 @@
+# The client retry variation point attaches to the HTTP client example: it
+# adds the retry middleware (infrastructure/client/middleware) and changes
+# only these files: the composition root, which lists it in the client
+# middleware of the API, and the readme.
+base library/architecture/python/vp-http-client-in-python.skill/examples
+change src/todo/main.py
+change README.md

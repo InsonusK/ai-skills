@@ -14,7 +14,7 @@ from google.protobuf import descriptor_pb2, json_format
 from pytest_bdd import given, parsers, scenarios, then, when
 
 from todo.gen.client.todo import todo_pb2, todo_pb2_grpc
-from todo.infrastructure.client.core.grpcclient import MOCK, GrpcConfig
+from todo.infrastructure.client.core.grpcclient import MOCK, GrpcConfig, Method
 from todo.infrastructure.client.todo_api import METHODS, Item, open_api
 
 scenarios("../features/plan_items.feature", "../features/contract.feature")
@@ -65,13 +65,13 @@ def i_call_plan_items(world: World, titles: str) -> None:
         logger = logging.Logger("test", logging.CRITICAL)
         server = None
         if world.mocked:
-            api = await open_api(GrpcConfig(name="todo-api", host=MOCK, port=80, timeout=timedelta(seconds=1)), logger)
+            api = await open_api(GrpcConfig(name="todo-api", host=MOCK, port=80, timeout=timedelta(seconds=1)), logger, [])
         else:
             server = grpc.aio.server()
             todo_pb2_grpc.add_ItemsServiceServicer_to_server(world.api, server)
             port = server.add_insecure_port("127.0.0.1:0")
             await server.start()
-            api = await open_api(GrpcConfig(name="todo-api", host="127.0.0.1", port=port, timeout=timedelta(seconds=5)), logger)
+            api = await open_api(GrpcConfig(name="todo-api", host="127.0.0.1", port=port, timeout=timedelta(seconds=5)), logger, [])
         try:
             return await api.plan_items(titles.split("|"))
         finally:
@@ -114,11 +114,11 @@ def _compiled_contract() -> descriptor_pb2.FileDescriptorProto:
 
 @then("the adapter should call exactly these methods, each in the contract:")
 def the_adapter_calls_exactly(datatable: list[list[str]]) -> None:
-    assert [row[0] for row in datatable[1:]] == METHODS
+    assert [Method(row[0], row[1] == "yes") for row in datatable[1:]] == METHODS
     contract = _compiled_contract()
     methods = [f"/{contract.package}.{service.name}/{method.name}" for service in contract.service for method in service.method]
     print(f"then: adapter {METHODS}, contract {methods}")
-    assert all(method in methods for method in METHODS), (METHODS, methods)
+    assert all(method.name in methods for method in METHODS), (METHODS, methods)
 
 
 @then("the code in src/todo/gen/client/todo should be generated from docs/integration/client/todo/todo.proto")

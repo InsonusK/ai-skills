@@ -7,7 +7,8 @@ import dataclasses
 import json
 import logging
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
+from dataclasses import dataclass
 from datetime import timedelta
 from typing import Any
 
@@ -15,6 +16,7 @@ import httpx2
 
 from {package}.infrastructure.client.core.httpclient.config import MOCK, HttpConfig
 from {package}.infrastructure.client.core.outcomes import ApiStatusError, ApiUnavailableError, StatusCode
+from {package}.infrastructure.client.core.pipeline import Call, Middleware, run
 from {package}.log import attrs, request_id
 
 REQUEST_ID_HEADER = "X-Request-Id"
@@ -30,17 +32,39 @@ Emulator = Callable[[httpx2.Request], httpx2.Response]
 API would - the mock of one adapter (infrastructure/client/{api}/mock)."""
 
 
+@dataclass(frozen=True)
+class Operation:
+    """One operation of the contract an adapter calls."""
+
+    method: str
+    path: str
+    retryable: bool = False
+    """Marks an operation safe to send again: a repeat does what one call
+    does. Only such an operation is repeated by the retry middleware."""
+
+
 class HttpClient:
     """Calls one HTTP API: the fixed part of every adapter of such an API,
     which writes each of its operations as one call() with its path, its
     request, and the function that reads its answer."""
 
-    def __init__(self, config: HttpConfig, logger: logging.Logger, emulator: Emulator) -> None:
-        """Builds the client of the API config names. Mocked, every call is
-        answered by emulator inside the process - the same request, log, and
-        reading of the answer, only no network - and a WARN record says so."""
+    def __init__(
+        self,
+        config: HttpConfig,
+        logger: logging.Logger,
+        emulator: Emulator,
+        operations: Sequence[Operation],
+        middlewares: Sequence[Middleware],
+    ) -> None:
+        """Builds the client of the API config names, which calls only
+        operations, each through middlewares, the first the outermost. Mocked,
+        every call is answered by emulator inside the process - the same
+        request, log, and reading of the answer, only no network - and a WARN
+        record says so."""
         self._config = config
         self._logger = logger
+        self._operations = {(operation.method, operation.path): operation for operation in operations}
+        self._middlewares = middlewares
         if config.mocked:
             # The timeout of a call is the client's own, per call, in call().
             self._http = httpx2.AsyncClient(base_url=f"http://{MOCK}", transport=httpx2.MockTransport(emulator), timeout=None)
@@ -53,9 +77,24 @@ class HttpClient:
         await self._http.aclose()
 
     async def call[T](self, method: str, path: str, request: Any, decode: Callable[[Any], T]) -> T:
-        """Sends one request - request (a dataclass, or anything JSON has a
-        form for) as its JSON body, none when None - and returns decode of
-        the JSON of a 2xx answer. It ends after the timeout at the latest,
+        """Sends one request of an operation of the adapter's list - request
+        (a dataclass, or anything JSON has a form for) as its JSON body, none
+        when None - and returns decode of the JSON of a 2xx answer, through
+        the client middleware, each attempt as _attempt does. An operation not
+        in the list raises RuntimeError before it is sent."""
+        operation = self._operations.get((method, path))
+        if operation is None:
+            raise RuntimeError(f"{method} {path} is no operation of the adapter's list")
+        answers: list[T] = []
+
+        async def attempt() -> None:
+            answers[:] = [await self._attempt(method, path, request, decode)]
+
+        await run(Call(self._config.name, f"{method} {path}", operation.retryable), self._middlewares, attempt)
+        return answers[0]
+
+    async def _attempt[T](self, method: str, path: str, request: Any, decode: Callable[[Any], T]) -> T:
+        """Sends the request once. It ends after the timeout at the latest,
         sends the request id of the call being served, and writes two
         records: "http client request sent" and "http client response
         received". It raises ApiUnavailableError, ApiStatusError, or

@@ -30,7 +30,7 @@ service ─► client.Method ─► fixed client code: listed? ─► [client mi
 
 # Scope
 - Covers the repeat of a call the API did not answer. A circuit breaker, a hedged call, or a retry of a whole command are not here.
-- The implementation for each stack is described in its stack-specialized extension: `vp-client-retry-in-go`, `vp-client-retry-in-dotnet`; the Python extension is planned.
+- The implementation for each stack is described in its stack-specialized extension: `vp-client-retry-in-go`, `vp-client-retry-in-dotnet`, `vp-client-retry-in-python`.
 
 # Rule
 
@@ -48,7 +48,7 @@ Read the retry of each API from `{API}_RETRY_ATTEMPTS` (default `3`: the attempt
 - Fix: the jitter spreads the repeats; the operator sets fewer attempts where the caller's deadline is short.
 
 ### Bound each attempt by the timeout, all by the caller
-Give each attempt the whole `{API}_TIMEOUT`, and end the repeats with the deadline of the call being served: where the stack carries the deadline as a value (Go `context.Context`), start no wait that would end past it; where it carries only a cancellation (dotnet `CancellationToken`, Python), end the wait when the caller cancels and answer the outcome of the last attempt.
+Give each attempt the whole `{API}_TIMEOUT`, and end the repeats with the deadline of the call being served: where the stack carries the deadline as a value (Go `context.Context`), start no wait that would end past it; where it carries only a cancellation, end the wait when the caller cancels: dotnet (`CancellationToken`) answers the outcome of the last attempt, Python passes `asyncio.CancelledError` on as it is, because a task or an `asyncio.timeout` that cancels must see it.
 - Risk: a timeout shared by all attempts leaves the repeats no time after a slow first attempt; repeats past the caller's deadline answer nobody and load the API that is recovering.
 - Fix: the attempt sets its own timeout inside the client; the middleware checks the caller's deadline before each wait.
 

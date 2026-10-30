@@ -6,21 +6,24 @@ technical outcomes - ApiUnavailableError, ApiStatusError - and leaves their
 meaning to the service over it (todo.service)."""
 
 import logging
+from collections.abc import Sequence
 from dataclasses import dataclass
 
 from todo.gen.client.todo import todo_pb2, todo_pb2_grpc
-from todo.infrastructure.client.core.grpcclient import GrpcClient, GrpcConfig, load_config
+from todo.infrastructure.client.core.grpcclient import GrpcClient, GrpcConfig, Method, load_config
+from todo.infrastructure.client.core.pipeline import Middleware
 from todo.infrastructure.client.todo_api.mock import emulator
 
 PREFIX = "TODO_API"
 """Names the settings of this API: TODO_API_HOST, TODO_API_GRPC_PORT, TODO_API_TLS, TODO_API_TIMEOUT."""
 
 METHODS = [
-    "/todo.v1.ItemsService/PlanItems",
+    # Planning stores nothing: a repeat plans the same items.
+    Method("/todo.v1.ItemsService/PlanItems", retryable=True),
 ]
 """Every method of the contract this adapter calls, by full name; one scenario
 holds them against the copied contract. A new method of the adapter adds its
-line."""
+line, retryable when calling it again does what one call does."""
 
 
 @dataclass(frozen=True)
@@ -48,13 +51,13 @@ class TodoApi:
         return [Item(title=item.title, done=item.done) for item in answer.items]
 
 
-async def open_api(config: GrpcConfig, logger: logging.Logger) -> TodoApi:
+async def open_api(config: GrpcConfig, logger: logging.Logger, middlewares: Sequence[Middleware]) -> TodoApi:
     """Builds the client from settings given - the scenarios point it at an
     API of their own. With the host mock it answers from the emulator."""
-    return TodoApi(await GrpcClient.open(config, logger, emulator))
+    return TodoApi(await GrpcClient.open(config, logger, emulator, METHODS, middlewares))
 
 
-async def new(logger: logging.Logger) -> TodoApi:
+async def new(logger: logging.Logger, middlewares: Sequence[Middleware]) -> TodoApi:
     """Reads the settings of the API and builds its client; a missing or
     unusable setting raises ValueError naming its variable."""
-    return await open_api(load_config(PREFIX), logger)
+    return await open_api(load_config(PREFIX), logger, middlewares)
