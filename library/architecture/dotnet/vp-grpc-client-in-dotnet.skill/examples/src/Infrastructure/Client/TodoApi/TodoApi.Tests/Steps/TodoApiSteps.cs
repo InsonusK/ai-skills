@@ -51,7 +51,7 @@ public sealed class TodoApiSteps(ITestOutputHelper output) : IAsyncDisposable
     {
         if (_mocked)
         {
-            return new TodoApiClient(new GrpcApiConfig("todo-api", GrpcApiConfig.Mock, 80, false, TimeSpan.FromSeconds(1)), NullLogger.Instance);
+            return new TodoApiClient(new GrpcApiConfig("todo-api", GrpcApiConfig.Mock, 80, false, TimeSpan.FromSeconds(1)), NullLogger.Instance, []);
         }
         var probe = new TcpListener(IPAddress.Loopback, 0);
         probe.Start();
@@ -65,7 +65,7 @@ public sealed class TodoApiSteps(ITestOutputHelper output) : IAsyncDisposable
         _server = builder.Build();
         _server.MapGrpcService<ScenarioTodoApi>();
         await _server.StartAsync();
-        return new TodoApiClient(new GrpcApiConfig("todo-api", "127.0.0.1", port, false, TimeSpan.FromSeconds(5)), NullLogger.Instance);
+        return new TodoApiClient(new GrpcApiConfig("todo-api", "127.0.0.1", port, false, TimeSpan.FromSeconds(5)), NullLogger.Instance, []);
     }
 
     [When("I call PlanItems with the titles {string}")]
@@ -97,13 +97,13 @@ public sealed class TodoApiSteps(ITestOutputHelper output) : IAsyncDisposable
     [Then("the adapter should call exactly these methods, each in the contract:")]
     public void ThenTheAdapterShouldCallExactly(Table table)
     {
-        Assert.Equal(table.Rows.Select(row => row["method"]), TodoApiClient.Methods);
+        Assert.Equal(table.Rows.Select(row => new GrpcMethod(row["method"], row["retryable"] == "yes")), TodoApiClient.Methods);
         // The descriptor Grpc.Tools compiled from the copied file at this build.
         var contract = TodoReflection.Descriptor.Services
             .SelectMany(service => service.Methods.Select(method => $"/{service.FullName}/{method.Name}"))
             .ToList();
-        output.WriteLine($"then: adapter [{string.Join(", ", TodoApiClient.Methods)}], contract [{string.Join(", ", contract)}]");
-        Assert.All(TodoApiClient.Methods, method => Assert.Contains(method, contract));
+        output.WriteLine($"then: adapter [{string.Join(", ", TodoApiClient.Methods.Select(method => method.Name))}], contract [{string.Join(", ", contract)}]");
+        Assert.All(TodoApiClient.Methods, method => Assert.Contains(method.Name, contract));
     }
 
     public async ValueTask DisposeAsync()

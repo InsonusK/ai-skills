@@ -10,5 +10,5 @@ Feature: The todo API's contract
   @category/happy
   Scenario: The adapter calls only methods of docs/integration/client/todo/todo.proto
     Then the adapter should call exactly these methods, each in the contract:
-      | method                          |
-      | /todo.v1.ItemsService/PlanItems |
+      | method                          | retryable |
+      | /todo.v1.ItemsService/PlanItems | yes       |

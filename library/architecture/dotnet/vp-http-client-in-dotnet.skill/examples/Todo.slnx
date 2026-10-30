@@ -13,6 +13,8 @@
   </Folder>
   <Folder Name="/src/Infrastructure/Client/Core/">
     <Project Path="src/Infrastructure/Client/Core/Client.Abstractions/Client.Abstractions.csproj" />
+    <Project Path="src/Infrastructure/Client/Core/Client.Pipeline/Client.Pipeline.csproj" />
+    <Project Path="src/Infrastructure/Client/Core/Client.Pipeline.Tests/Client.Pipeline.Tests.csproj" />
     <Project Path="src/Infrastructure/Client/Core/Client.Http/Client.Http.csproj" />
     <Project Path="src/Infrastructure/Client/Core/Client.Http.Tests/Client.Http.Tests.csproj" />
   </Folder>

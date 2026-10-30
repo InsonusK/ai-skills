@@ -1,5 +1,7 @@
 using BuildingBlocks.Logging;
 using Client.Abstractions;
+using Client.Pipeline;
+using Google.Protobuf;
 using Client.Grpc.Tests.Echo;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
@@ -16,6 +18,22 @@ public sealed class ClientSteps(ITestOutputHelper output) : IAsyncDisposable
 
     private readonly TestApi _api = new();
     private readonly RecordingLogger _logger = new();
+    private readonly List<IClientMiddleware> _middlewares = [];
+    private readonly List<ClientCall> _seen = [];
+
+    /// <summary>The test API's methods the client may call.</summary>
+    private static readonly IReadOnlyList<GrpcMethod> Methods = [new(EchoMethod, Retryable: true)];
+
+    /// <summary>A client middleware that records the call and sends it twice.</summary>
+    private sealed class Twice(List<ClientCall> seen) : IClientMiddleware
+    {
+        public async Task RunAsync(ClientCall call, ClientAttempt next, CancellationToken cancellationToken)
+        {
+            seen.Add(call);
+            await next(cancellationToken);
+            await next(cancellationToken);
+        }
+    }
     private bool _down;
     private bool _slow;
     private Action<ServiceBinderBase>? _emulator;
@@ -52,14 +70,14 @@ public sealed class ClientSteps(ITestOutputHelper output) : IAsyncDisposable
     {
         if (_emulator is not null)
         {
-            return new GrpcApiClient(new GrpcApiConfig("test-api", GrpcApiConfig.Mock, 80, false, TimeSpan.FromSeconds(1)), _logger, _emulator);
+            return new GrpcApiClient(new GrpcApiConfig("test-api", GrpcApiConfig.Mock, 80, false, TimeSpan.FromSeconds(1)), _logger, _emulator, Methods, _middlewares);
         }
         if (!_down)
         {
             await _api.StartAsync();
         }
         var timeout = _slow ? TimeSpan.FromMilliseconds(50) : TimeSpan.FromSeconds(5);
-        return new GrpcApiClient(new GrpcApiConfig("test-api", "127.0.0.1", _api.Port, false, timeout), _logger, _ => { });
+        return new GrpcApiClient(new GrpcApiConfig("test-api", "127.0.0.1", _api.Port, false, timeout), _logger, _ => { }, Methods, _middlewares);
     }
 
     private async Task Call(string text)
@@ -87,6 +105,36 @@ public sealed class ClientSteps(ITestOutputHelper output) : IAsyncDisposable
             await Call(text);
         }
     }
+
+    [Given("a client middleware that sends every call twice")]
+    public void GivenAClientMiddlewareThatSendsTwice() => _middlewares.Add(new Twice(_seen));
+
+    [Then("the middleware should have seen the call {string} of {string}, retryable {string}")]
+    public void ThenTheMiddlewareShouldHaveSeen(string operation, string api, string retryable) =>
+        Assert.Equal(new ClientCall(api, operation, bool.Parse(retryable)), Assert.Single(_seen));
+
+    [Then("the test API should have received {int} calls")]
+    public void ThenTheTestApiShouldHaveReceivedCalls(int count) => Assert.Equal(count, _api.Echo.Received.Count);
+
+    [When("I call the unlisted method {string}")]
+    public async Task WhenICallTheUnlistedMethod(string method)
+    {
+        _client = await Client();
+        var unlisted = new Method<EchoMessage, EchoMessage>(MethodType.Unary, "test.v1.EchoService", method.Split('/')[^1],
+            Marshallers.Create(message => message.ToByteArray(), EchoMessage.Parser.ParseFrom),
+            Marshallers.Create(message => message.ToByteArray(), EchoMessage.Parser.ParseFrom));
+        try
+        {
+            await _client.CallInvoker.AsyncUnaryCall(unlisted, null, new CallOptions(), new EchoMessage { Text = "hi" });
+        }
+        catch (Exception error)
+        {
+            _error = error;
+        }
+    }
+
+    [Then("the call should fail mentioning {string}")]
+    public void ThenTheCallShouldFailMentioning(string text) => Assert.Contains(text, Assert.IsAssignableFrom<Exception>(_error).Message);
 
     [Then("the call should succeed with the text {string}")]
     public void ThenTheCallShouldSucceed(string text)

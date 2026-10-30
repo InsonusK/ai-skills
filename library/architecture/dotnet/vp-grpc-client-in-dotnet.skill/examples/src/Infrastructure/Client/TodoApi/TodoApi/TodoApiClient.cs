@@ -1,4 +1,5 @@
 using Client.Grpc;
+using Client.Pipeline;
 using Contracts.Todo.V1;
 using Microsoft.Extensions.Logging;
 using TodoApi.Abstractions;
@@ -20,20 +21,21 @@ public sealed class TodoApiClient : ITodoApi, IDisposable
     /// <summary>
     /// Every method of the contract this adapter calls, by full name; one
     /// scenario holds them against the contract. A new method of the adapter
-    /// adds its line.
+    /// adds its line, retryable when calling it again does what one call does.
     /// </summary>
-    public static readonly IReadOnlyList<string> Methods =
+    public static readonly IReadOnlyList<GrpcMethod> Methods =
     [
-        "/todo.v1.ItemsService/PlanItems",
+        // Planning stores nothing: a repeat plans the same items.
+        new("/todo.v1.ItemsService/PlanItems", Retryable: true),
     ];
 
     private readonly GrpcApiClient _grpc;
     private readonly ItemsService.ItemsServiceClient _items;
 
-    public TodoApiClient(GrpcApiConfig config, ILogger logger)
+    public TodoApiClient(GrpcApiConfig config, ILogger logger, IReadOnlyList<IClientMiddleware> middlewares)
     {
         // With TODO_API_HOST=mock every call is answered by TodoApiMock.
-        _grpc = new GrpcApiClient(config, logger, TodoApiMock.Bind);
+        _grpc = new GrpcApiClient(config, logger, TodoApiMock.Bind, Methods, middlewares);
         _items = new ItemsService.ItemsServiceClient(_grpc.CallInvoker);
     }
 

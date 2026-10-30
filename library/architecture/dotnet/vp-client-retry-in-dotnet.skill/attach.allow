@@ -1,0 +1,10 @@
+# The client retry variation point attaches to the HTTP client example: it
+# adds the retry middleware (src/Infrastructure/Client/Middleware/Retry, with
+# its scenarios) and changes only these files: the composition root, which
+# lists it in the client middleware of the API, its project, the solution, and
+# the readme.
+base library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples
+change src/App/App.Host/Program.cs
+change src/App/App.Host/App.Host.csproj
+change Todo.slnx
+change README.md

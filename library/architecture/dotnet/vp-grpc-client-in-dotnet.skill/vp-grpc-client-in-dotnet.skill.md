@@ -2,7 +2,7 @@
 name: vp-grpc-client-in-dotnet
 description: The gRPC client variation point in dotnet — Client.Abstractions (the outcomes every client reports) and Client.Grpc (GrpcApiConfig, GrpcApiClient with a lazy GrpcChannel, CallInterceptor for the timeout, the x-request-id metadata, the call log, and the outcomes, EmulatorCallInvoker for the mock) copied from templates, the consumed proto compiled by Grpc.Tools into the adapter as internal types, one adapter per API in Infrastructure/Client/{Api} with its {Api}.Abstractions, its mock, and its contract scenario, the service over it in {Module}.Application/Services, and the lines of Program.cs that build them
 whenToUse: when a dotnet application built on the base plateau must call another service's gRPC API, when you call a further method of such an API or replace its proto, or when you review a dotnet gRPC client
-updated: 20261027
+updated: 20261030
 tags:
   - stack/dotnet
   - concern/architecture
@@ -41,7 +41,7 @@ src/Infrastructure/Client/                             every client of another s
 ## MUST
 
 ### Copy the client code from templates
-Copy [Client.Abstractions](./templates/src/Infrastructure/Client/Core/Client.Abstractions/) and [Client.Grpc](./templates/src/Infrastructure/Client/Core/Client.Grpc/) to `src/Infrastructure/Client/Core/`, with the example's `Client.Grpc.Tests`, add the three projects to the solution, and `Grpc.Net.Client`, `Google.Protobuf`, `Grpc.Tools`, and, for the scenarios, `Grpc.AspNetCore` to `Directory.Packages.props`. With the HTTP client attached too, `Client.Abstractions` is already there, unchanged.
+Copy [Client.Abstractions](./templates/src/Infrastructure/Client/Core/Client.Abstractions/), [Client.Pipeline](./templates/src/Infrastructure/Client/Core/Client.Pipeline/), and [Client.Grpc](./templates/src/Infrastructure/Client/Core/Client.Grpc/) to `src/Infrastructure/Client/Core/`, with the example's `Client.Pipeline.Tests` and `Client.Grpc.Tests`, add the five projects to the solution, and `Grpc.Net.Client`, `Google.Protobuf`, `Grpc.Tools`, and, for the scenarios, `Grpc.AspNetCore` to `Directory.Packages.props`. With the HTTP client attached too, `Client.Abstractions` and `Client.Pipeline` are already there, unchanged.
 - Risk: a retyped client drifts in its deadline, its outcomes, or its log from every other dotnet client of the catalog.
 - Fix: copy the files unchanged; `make test` passes.
 
@@ -52,7 +52,7 @@ Compile the copied `.proto` in `{Api}.csproj` with `<Protobuf Include="..\..\..\
 - Fix: the generated types live in the provider's namespace (`Contracts.Todo.V1`) inside the adapter's assembly only; nothing generated is committed, as [grpc-tools-at-build-time](library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/adr/grpc-tools-at-build-time.md) decided for the API.
 
 ### One adapter per API, behind its abstractions
-Write each API as `{Api}.Abstractions` with `I{Api}`, referencing only `Client.Abstractions`, and `{Api}` with `{Api}Client : I{Api}, IDisposable` holding `Prefix` (`"TODO_API"`), `Methods` (the full name of every method it calls), a `GrpcApiClient` built with its mock's `Bind`, the generated client over its `CallInvoker`, and per method one method that calls it and maps the response.
+Write each API as `{Api}.Abstractions` with `I{Api}`, referencing only `Client.Abstractions`, and `{Api}` with `{Api}Client : I{Api}, IDisposable` holding `Prefix` (`"TODO_API"`), `Methods` (a `GrpcMethod` - the full name and `Retryable` where a repeat does what one call does - for every method it calls), a `GrpcApiClient` built with its mock's `Bind`, `Methods`, and the client middleware of its constructor, the generated client over its `CallInvoker`, and per method one method that calls it and maps the response.
 
 ```csharp
 public async Task<IReadOnlyList<TodoApiItem>> PlanItemsAsync(IReadOnlyList<string> titles, CancellationToken cancellationToken)
@@ -72,7 +72,7 @@ Write the mock of each adapter as `src/Infrastructure/Client/{Api}/{Api}/Mock/{A
 - Fix: the mocked scenario of the adapter's feature runs it and checks its answer.
 
 ### Build the adapter and the service in Program.cs
-Load the settings with `GrpcApiConfig.Load({Api}Client.Prefix)` in `// [services]` of `Program.cs`, stopping the start with "startup failed" on a `FormatException`, and register the adapter as a singleton of `I{Api}` built with a logger of the logger factory, and the service as a singleton of its interface, as [vp-http-client-in-dotnet](library/architecture/dotnet/vp-http-client-in-dotnet.skill/vp-http-client-in-dotnet.skill.md) does; the provider disposes the adapter, and with it the channel.
+Load the settings with `GrpcApiConfig.Load({Api}Client.Prefix)` in `// [services]` of `Program.cs`, stopping the start with "startup failed" on a `FormatException`, and register the adapter as a singleton of `I{Api}` built with a logger of the logger factory, and the service as a singleton of its interface, as [vp-http-client-in-dotnet](library/architecture/dotnet/vp-http-client-in-dotnet.skill/vp-http-client-in-dotnet.skill.md) does; the provider disposes the adapter, and with it the channel. Build the client middleware of the API in `// [client middleware]` inside the adapter's registration - empty until a variation point (`vp-client-retry`) adds one - and pass it to the adapter's constructor.
 - Risk: a channel built per call opens a connection per call; one never disposed holds its connection until the process ends.
 - Fix: one singleton per API.
 
