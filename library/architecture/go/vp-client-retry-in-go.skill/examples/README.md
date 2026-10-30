@@ -2,7 +2,7 @@
 
 The base plateau in Go with the HTTP client and the client retry variation points attached: the startup command
 `PlanRemoteItems` plans its titles with another service's todo API (`POST /v1/items/plan` of
-`docs/integration/client/todo/openapi.json`) through the service `RemotePlanner` and the adapter
+`docs/integration/client/todo/openapi.json`) through the service `RemotePlanner` and the client
 `internal/infrastructure/client/todoapi`, built on the fixed client code `internal/infrastructure/client/core/httpclient`; the client middleware
 `internal/infrastructure/client/middleware/retry` sends a call of a retryable operation again while the API does
 not answer.

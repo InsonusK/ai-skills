@@ -1,8 +1,8 @@
 ---
 name: httpx2 and one outcome module
 description: Which library a Python client of an HTTP API is built on - httpx2, aiohttp, or the standard library - and where the outcomes every client reports live
-problem: A Python service needs an async HTTP client with a timeout, a way to answer every request inside the process for the mock, and outcomes the service over the adapter catches; which library, and one outcome module for HTTP and gRPC or one per transport?
-decision: The fixed code is built on httpx2 (2.16.0), the library the catalog's HTTP API scenarios already use through FastAPI's test client; the mock is httpx2.MockTransport over the adapter's emulator function; asyncio.timeout bounds the whole call. The outcomes (ApiUnavailableError, ApiStatusError, StatusCode) live in infrastructure/client/core/outcomes.py for every transport, as dotnet's Client.Abstractions does.
+problem: A Python service needs an async HTTP client with a timeout, a way to answer every request inside the process for the mock, and outcomes the service over the client catches; which library, and one outcome module for HTTP and gRPC or one per transport?
+decision: The fixed code is built on httpx2 (2.16.0), the library the catalog's HTTP API scenarios already use through FastAPI's test client; the mock is httpx2.MockTransport over the client's emulator function; asyncio.timeout bounds the whole call. The outcomes (ApiUnavailableError, ApiStatusError, StatusCode) live in infrastructure/client/core/outcomes.py for every transport, as dotnet's Client.Abstractions does.
 tags:
   - stack/python
   - concern/architecture
@@ -28,7 +28,7 @@ The Go client is built on `net/http` and an `http.Handler` emulator; the dotnet 
 
 ### Benefits
 - One HTTP library in the catalog; `MockTransport` runs the same client code against the emulator with no server.
-- The service over an adapter is the same for HTTP and gRPC.
+- The service over a client is the same for HTTP and gRPC.
 
 ### Costs
 - A dependency of the application, where Go and dotnet need none beyond the runtime.

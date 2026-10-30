@@ -2,7 +2,7 @@
 
 The base plateau in dotnet with the HTTP client variation point attached: the startup command
 `PlanRemoteItems` plans its titles with another service's todo API (`POST /v1/items/plan` of
-`docs/integration/client/todo/openapi.json`) through the service `RemotePlannerService` and the adapter
+`docs/integration/client/todo/openapi.json`) through the service `RemotePlannerService` and the client
 `TodoApiClient`, built on the fixed client code `src/Infrastructure/Client/Core`.
 
 ```bash
