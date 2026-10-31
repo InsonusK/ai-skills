@@ -1,0 +1,10 @@
+# The unit of work variation point attaches to the PostgreSQL example: it adds
+# the command middleware, the unit of work over the context, and the sample
+# command ImportItems with its scenarios, and changes only these files: the
+# composition root, which registers it and lists the middleware, the abstractions
+# project, which gains the reference that brings Shared to the Postgres project,
+# and the readme.
+base library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples
+change src/App/App.Host/Program.cs
+change src/Infrastructure/Postgres/Postgres.Abstractions/Postgres.Abstractions.csproj
+change README.md
