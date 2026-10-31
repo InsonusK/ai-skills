@@ -1,0 +1,20 @@
+sequenceDiagram
+    autonumber
+    participant Caller as API caller
+    participant CallLog as calllog.Middleware<br/>internal/api/grpc/middleware/calllog/calllog.go
+    participant AnswerFailures as answerfailures.Middleware<br/>internal/api/grpc/middleware/answerfailures/answerfailures.go
+    participant Endpoint as endpoint.ItemsHandler<br/>internal/api/grpc/endpoint/items.go
+    participant Handler as PlanItemsHandler<br/>internal/command/plan_items.go
+
+    Caller->>+CallLog: /todo.v1.ItemsService/PlanItems
+    Note over CallLog: takes or makes the request id, record "grpc call received"
+    CallLog->>+AnswerFailures: the call
+    AnswerFailures->>+Endpoint: the method of the contract
+    Note over Endpoint: decodes the message into PlanItems
+    Endpoint->>+Handler: PlanItems, through the command middleware
+    Handler-->>-Endpoint: the result, or an error with its kind
+    Endpoint-->>-AnswerFailures: the response message, or the error
+    Note over AnswerFailures: the kind to its gRPC status, a panic to INTERNAL
+    AnswerFailures-->>-CallLog: the answer
+    Note over CallLog: record "grpc call answered"
+    CallLog-->>-Caller: the response, or the status

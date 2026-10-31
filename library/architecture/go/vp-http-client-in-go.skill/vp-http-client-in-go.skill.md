@@ -2,7 +2,7 @@
 name: vp-http-client-in-go
 description: The HTTP client variation point in Go — internal/infrastructure/client/core/httpclient and core/outcome copied from templates (the {API} settings, Client.Call with the timeout, JSON in and out, outcome.ErrUnavailable and outcome.StatusError, the call log, the request id, the mock against an emulator), one client per API in internal/infrastructure/client/{api} with its operations, its mock, and its contract scenario, the service over it in internal/service, and the lines of main.go that build them
 whenToUse: when a Go application built on the base plateau must call another service's HTTP API, when you call a further operation of such an API, or when you review a Go HTTP client
-updated: 20261031
+updated: 20261102
 tags:
   - stack/go
   - concern/architecture
@@ -124,9 +124,5 @@ Copy the example's `internal/infrastructure/client/core/httpclient/features/` an
 One call of the example, with its real classes:
 
 @import "./diagrams/example-flow.mmd" {as="mermaid"}
-
-The classes that do it, by package, and how they relate:
-
-@import "./diagrams/example-classes.mmd" {as="mermaid"}
 
 - [examples/](./examples/README.md) — the base plateau's startup command planning with another service's todo API: `make run` against its emulator, or against the running HTTP example of [vp-http-api-in-go](library/architecture/go/vp-http-api-in-go.skill/vp-http-api-in-go.skill.md).

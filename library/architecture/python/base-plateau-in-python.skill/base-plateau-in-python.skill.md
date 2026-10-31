@@ -2,7 +2,7 @@
 name: base-plateau-in-python
 description: The base plateau in Python — the package layout of its four layers under src/{package}/, the async Handler protocol, the Middleware list with decorate, the command registry build_handlers, the error kinds, the startup entry, the runner of the entry points with the exit codes, the stdlib logger writing one JSON line per record, the composition root with its three marked sections, and the pytest-bdd scenarios that cover each layer
 whenToUse: when you create a new Python service or Python CLI application from the architecture catalog, or when you attach a variation point to, or review, a Python application built on the base plateau
-updated: 20261025
+updated: 20261102
 tags:
   - stack/python
   - concern/architecture
@@ -137,5 +137,9 @@ Name a type parameter after what it stands for (`TCommand`, `TResult`), never by
 - [ ] The example holds no testing tooling; `make test` and `make lint` pass.
 
 # Example
+One call of the example, each part with its class and file:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the base plateau as a runnable to-do planner: `make init`, `make run`, `make test`, `make lint`.
 - [glossary/](./glossary/README.md) — how the handler contract, the middleware with the command registry, the runner of the entry points, and the logging work.

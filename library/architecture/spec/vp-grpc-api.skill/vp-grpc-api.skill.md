@@ -2,7 +2,7 @@
 name: vp-grpc-api
 description: The gRPC API variation point — an entry point attached to the base plateau that serves commands as methods of a versioned proto contract, answers errors by their kind, survives a panicking method, offers server reflection behind a switch, stops gracefully, and replaces the startup entry without editing any other base file
 whenToUse: when an application built on the base plateau must be reachable over gRPC — adding the gRPC entry point, serving a new command over gRPC, or reviewing the gRPC entry point of such an application
-updated: 20261025
+updated: 20261102
 tags:
   - stack
   - concern/architecture
@@ -18,6 +18,8 @@ tags:
 - **A thin translation** - The gRPC entry point decodes, calls, and encodes; it makes no business decision, as [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md) requires of every api layer.
 - **The messages are the contract's own** - Request and response messages are generated from the proto file and mapped to and from the command's types, so a change of a command's result does not change the published contract unnoticed.
 - **Written once for every method** - Mapping errors to status codes, recovering panics, reflection, and shutdown are one piece of code the same in every application; serving a command adds a method, its two mappings, and its lines in the proto file.
+
+@import "./diagrams/concept.mmd" {as="mermaid"}
 
 # Scope
 - Covers a gRPC API with unary methods. Streaming methods are not covered yet.

@@ -2,7 +2,7 @@
 name: base-plateau-extension-in-dotnet
 description: How a variation point extends the base plateau in dotnet — one registration method per module, API, and variation point called in order in the three sections of Program.cs (AddTodoModule, AddCommandMiddleware with the list of command middleware, AddHttpApi and AddGrpcApi with their lists of API middleware, every entry point registered as an Entry), every middleware in a folder of its own named {Name}Middleware — the command middleware as MediatR pipeline behaviors in the Middleware project, an API's in App.Host/Api/{Api}/Middleware inside its fixed RequestLogMiddleware and AnswerFailuresMiddleware — marks as interfaces of Shared a command implements, rejections as ErrorKindException, the variation point's own settings, and attach.allow, with a sample access variation point attached to the HTTP example
 whenToUse: when you write, attach, or review a variation point of a dotnet application built on the base plateau, when you add a middleware around commands or around the requests or calls of an API, or when you add a command or a module to such an application
-updated: 20261026
+updated: 20261102
 tags:
   - stack/dotnet
   - concern/architecture
@@ -265,4 +265,8 @@ change README.md
 - [ ] `attach.allow` names every changed base file; `bash test/check-vp-attach.sh` and `make test` pass.
 
 # Example
+One call of the example, each part with its class and file:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the HTTP example with the sample access variation point attached: `make run`, then the `curl` calls of its readme; `make test`.

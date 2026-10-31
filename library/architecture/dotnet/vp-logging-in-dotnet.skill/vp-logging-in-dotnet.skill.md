@@ -2,7 +2,7 @@
 name: vp-logging-in-dotnet
 description: The logging variation point in dotnet — the MaskedLogging project copied from templates (MaskedLogProvider writing the payload masked by [LogMask] / [LogOmit] marks from Shared, [JsonIgnore], proto debug_redact, and secret names, cut to LOG_PAYLOAD_MAX_BYTES, kept by LOG_PAYLOAD, with the request_id of the call, unreadable bodies written unparsed and warned once) and the provider line of Program.cs replaced
 whenToUse: when a dotnet application built on the base plateau must log the data of its calls, when you mark a property of a dotnet command, request type, or proto message as secret or not to log, or when you review such an application's log
-updated: 20261022
+updated: 20261102
 tags:
   - stack/dotnet
   - concern/architecture
@@ -103,4 +103,8 @@ Set `LOG_PAYLOAD=errors` in the deployment of a service whose request volume mak
 - [ ] After a change to `MaskedLogging/`, the Stryker run of the [leak catalog](library/architecture/spec/vp-logging.skill/leak-catalog.md) leaves only the survivors it lists for dotnet.
 
 # Example
+One call of the example, each part with its class and file:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the base plateau's to-do planner with the logging variation point attached: `make run`, `make test`.

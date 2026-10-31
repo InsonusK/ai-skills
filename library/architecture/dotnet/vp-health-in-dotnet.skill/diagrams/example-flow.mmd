@@ -1,0 +1,17 @@
+sequenceDiagram
+    autonumber
+    participant Probe as Orchestrator probe
+    participant Server as ManagementServer<br/>src/App/App.Host/Api/Management/ManagementServer.cs
+    participant Check as Readiness check of a dependency
+
+    Probe->>+Server: GET /health/live
+    Server-->>-Probe: 200: the process runs
+    Probe->>+Server: GET /health/ready
+    loop every readiness check given, none in the base plateau
+        Server->>+Check: check the dependency
+        Check-->>-Server: ok, or an error
+    end
+    Note over Server: a failed check: WARN, and it is named in the answer
+    Server-->>-Probe: 200, or 503 with the failed checks
+    Probe->>+Server: GET /health
+    Server-->>-Probe: the version and the state

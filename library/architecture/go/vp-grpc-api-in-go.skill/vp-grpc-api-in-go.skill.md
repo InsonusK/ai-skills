@@ -2,7 +2,7 @@
 name: vp-grpc-api-in-go
 description: The gRPC API variation point in Go — internal/api/grpc/pipeline copied from templates (settings, the generic Call, the server with reflection and graceful stop, the call log, panic recovery), one {Service}Handler per proto service in internal/api/grpc/endpoint, the registration in internal/api/grpc/services.go, the proto contract with buf generation, and the startup entry replaced by grpcapi.Entry in main.go with its list of interceptors
 whenToUse: when a Go application built on the base plateau must be served over gRPC, when you serve a new command over gRPC in such an application, or when you review its internal/api/grpc package
-updated: 20261025
+updated: 20261102
 tags:
   - stack/go
   - concern/architecture
@@ -111,4 +111,8 @@ Return `grpcpipeline.Unimplemented("{Rpc} is deprecated since {version}")` from 
 - [ ] `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).
 
 # Example
+One call of the example, each part with its class and file:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the base plateau's to-do planner with the gRPC API attached: `make run`, `make test`.

@@ -2,7 +2,7 @@
 name: vp-grpc-api-in-dotnet
 description: The gRPC API variation point in dotnet — Api/Grpc/Pipeline copied from templates (settings, the server on its own HTTP/2 WebApplication, reflection behind a switch, the call log and the error answers as interceptors), one class per proto service in Api/Grpc/Endpoint overriding its generated base, the registration in Api/Grpc/Services.cs with AddGrpcApi and its list of interceptors, the contract compiled by Grpc.Tools at build time, and one grpc Entry in Program.cs
 whenToUse: when a dotnet application built on the base plateau must be served over gRPC, when you serve a new command over gRPC in such an application, or when you review its Api/Grpc folders
-updated: 20261025
+updated: 20261102
 tags:
   - stack/dotnet
   - concern/architecture
@@ -105,4 +105,8 @@ Serve a further command of an existing service by adding its rpc and messages to
 - [ ] `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).
 
 # Example
+One call of the example, each part with its class and file:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the base plateau's to-do planner with the gRPC API attached: `make run`, `make test`.

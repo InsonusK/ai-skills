@@ -2,7 +2,7 @@
 name: base-plateau-extension
 description: How a variation point extends the base plateau without editing it — the extension points of the composition root (the services, the command registry with its ordered list of command middleware, the entries with each API's ordered list of API middleware), every middleware in a directory of its own named {Name}Middleware, the fixed request log and answer-failures middleware outermost, the three kinds of command middleware (every command, by a command's mark, by a value of the command), authentication at the transport and the access check in the command layer, the variation point's own settings, and the attach list that proves no other base file changed
 whenToUse: when you write, attach, or review a variation point of the architecture catalog, when you add a middleware around commands or around the requests of an API, when you add a command to an application built on the base plateau, or when you decide where a cross-cutting step (authentication, access, a limit, a transaction, a metric, logging) goes
-updated: 20261026
+updated: 20261102
 tags:
   - stack
   - concern/architecture
@@ -22,13 +22,7 @@ adr:
 # Core Principle
 - **Two lists of middleware** - An API middleware sees a request of one API (its headers, its peer); a command middleware sees a command whatever API sent it. A step that needs the transport is an API middleware; every other step is a command middleware, so a second API gets it for free.
 
-```
-request ──▶ request log ──▶ answer failures ──▶ API middleware ──▶ route of the contract
-            (fixed, outermost: every request      (the API's list,           │ the command
-             is logged and answered as             first = outermost)         ▼
-             google.rpc.Status)                   command middleware ──▶ handler
-                                                  (the registry's list, first = outermost)
-```
+@import "./diagrams/concept.mmd" {as="mermaid"}
 
 ```
 command/                          api/{kind}/

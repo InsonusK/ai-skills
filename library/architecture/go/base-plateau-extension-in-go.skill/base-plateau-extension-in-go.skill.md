@@ -2,7 +2,7 @@
 name: base-plateau-extension-in-go
 description: How a variation point extends the base plateau in Go — every middleware a package of its own under internal/command/middleware/ or internal/api/{kind}/middleware/ with a function Middleware, the command middleware as pipeline.Middleware in the list main.go gives command.NewHandlers, wrapped around every typed handler by pipeline.Decorate, marks as methods a command has, each API's Entry factory with its list of API middleware (httpapi.Middleware, grpcapi.Interceptor) inside the fixed requestlog and answerfailures, rejections as errors of a kind, the variation point's own settings, and attach.allow — with a sample access variation point attached to the HTTP example
 whenToUse: when you write, attach, or review a variation point of a Go application built on the base plateau, when you add a middleware around Go commands or around HTTP or gRPC requests, or when you add a command to such an application
-updated: 20261026
+updated: 20261102
 tags:
   - stack/go
   - concern/architecture
@@ -242,4 +242,8 @@ change README.md
 - [ ] `attach.allow` names every changed base file; `bash test/check-vp-attach.sh` and `make test` pass.
 
 # Example
+One call of the example, each part with its class and file:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the HTTP example with the sample access variation point attached: `make run`, then the `curl` calls of its readme; `make test`.

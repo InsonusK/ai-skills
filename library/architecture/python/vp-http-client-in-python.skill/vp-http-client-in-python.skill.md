@@ -2,7 +2,7 @@
 name: vp-http-client-in-python
 description: The HTTP client variation point in Python — infrastructure/client/core copied from templates (outcomes.py with ApiUnavailableError, ApiStatusError, and StatusCode for every transport; httpclient with HttpConfig, load_config, and HttpClient.call on httpx2 with the timeout, JSON in and out, the call log, the request id, and the mock through MockTransport), one client per API in infrastructure/client/{api} with its operations, its mock, and its contract scenario, the service over it in service/, and the lines of main.py that build them
 whenToUse: when a Python application built on the base plateau must call another service's HTTP API, when you call a further operation of such an API, or when you review a Python HTTP client
-updated: 20261031
+updated: 20261102
 adr:
   - adr/httpx2-and-one-outcome-module.md
 tags:
@@ -102,9 +102,5 @@ Copy the example's `httpclient/features/` and `httpclient/test/` unchanged but f
 One call of the example, with its real classes:
 
 @import "./diagrams/example-flow.mmd" {as="mermaid"}
-
-The classes that do it, by package, and how they relate:
-
-@import "./diagrams/example-classes.mmd" {as="mermaid"}
 
 - [examples/](./examples/README.md) — the base plateau's startup command planning with another service's todo API: `make run` against its emulator, or against a running HTTP example of [vp-http-api-in-python](library/architecture/python/vp-http-api-in-python.skill/vp-http-api-in-python.skill.md).

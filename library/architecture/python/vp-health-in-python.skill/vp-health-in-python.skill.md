@@ -2,7 +2,7 @@
 name: vp-health-in-python
 description: The health variation point in Python — the api/management package copied from templates (MANAGEMENT_LISTEN_PORT, /health/live, /health/ready, /health on an asyncio server with no dependency, readiness checks, graceful stop) and one management entry added to the run_all list in main.py
 whenToUse: when a Python application built on the base plateau runs as a long-running service, when a Python service variation point adds a readiness check, or when you review a Python service's health endpoints
-updated: 20261026
+updated: 20261102
 tags:
   - stack/python
   - concern/architecture
@@ -81,5 +81,9 @@ Fill the deployment templates of [devops-service-deploy](library/devops/core/dev
 - [ ] `make test` passes; `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).
 
 # Example
+One call of the example, each part with its class and file:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the base plateau's to-do planner with the health endpoints attached: `make run`, `make test`; `main.py` shows where readiness checks go.
 - [glossary/](./glossary/README.md) — how the three [health endpoints](./glossary/health-endpoints.md) differ, and how a [readiness check](./glossary/readiness-check.md) works.

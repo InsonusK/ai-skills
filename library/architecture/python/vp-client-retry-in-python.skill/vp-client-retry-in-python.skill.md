@@ -2,7 +2,7 @@
 name: vp-client-retry-in-python
 description: The client retry variation point in Python — infrastructure/client/middleware/retry copied from templates (load_config reading {API}_RETRY_ATTEMPTS and {API}_RETRY_BACKOFF, RetryMiddleware repeating a retryable call on ApiUnavailableError with doubled, jittered waits and a WARN record per repeat, the caller's cancellation passing through), listed in the client middleware of an API in main.py
 whenToUse: when a Python application with a client of another service's API (vp-http-client-in-python, vp-grpc-client-in-python) must repeat calls the API did not answer, when you mark an operation retryable, or when you review a Python client retry
-updated: 20261031
+updated: 20261102
 tags:
   - stack/python
   - concern/architecture
@@ -65,9 +65,5 @@ Set `retryable=True` on each `Operation` or `Method` of the client's list whose 
 One call of the example, with its real classes:
 
 @import "./diagrams/example-flow.mmd" {as="mermaid"}
-
-The classes that do it, by package, and how they relate:
-
-@import "./diagrams/example-classes.mmd" {as="mermaid"}
 
 - [examples/](./examples/README.md) — the HTTP client example with the retry attached: `TODO_API_HOST=localhost TODO_API_HTTP_PORT=1 make run` shows three attempts and two "api client call retried" warnings before the startup command fails unavailable.

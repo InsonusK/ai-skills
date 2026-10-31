@@ -2,7 +2,7 @@
 name: vp-logging-in-python
 description: The logging variation point in Python — the log/masked package copied from templates (a JsonFormatter writing the payload masked by "log:mask" / "log:omit" Annotated marks of dataclasses and pydantic models, the JSON form of a pydantic model, proto debug_redact, and secret names, cut to LOG_PAYLOAD_MAX_BYTES, kept by LOG_PAYLOAD, with the request_id of the call, a message written without its arguments) and the logger line of main.py replaced
 whenToUse: when a Python application built on the base plateau must log the data of its calls, when you mark a field of a Python command, request model, or proto message as secret or not to log, or when you review such an application's log
-updated: 20261026
+updated: 20261102
 tags:
   - stack/python
   - concern/architecture
@@ -92,4 +92,8 @@ Set `LOG_PAYLOAD=errors` in the deployment of a service whose request volume mak
 - [ ] After a change to `log/masked/`, the mutation run of the [leak catalog](library/architecture/spec/vp-logging.skill/leak-catalog.md) leaves only the survivors it lists for Python.
 
 # Example
+One call of the example, each part with its class and file:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the base plateau's to-do planner with the logging variation point attached: `make run`, `make test`.

@@ -2,7 +2,7 @@
 name: vp-logging
 description: The logging variation point — a log handler attached to the base plateau in place of the base one, which writes the payload every part already logs (a command's parameters, a request's query, headers, and body, a call's message) masked by marks and by names, cut to a size, kept on every record or on failed ones only, and with the request id of the call, while no part that logs changes
 whenToUse: when the operators of an application built on the base plateau must see the data of calls in the log — attaching the logging variation point, marking a field as secret or not to log, choosing which records keep their payload, or reviewing what the log of such an application may contain
-updated: 20261026
+updated: 20261102
 tags:
   - stack
   - concern/architecture
@@ -25,6 +25,8 @@ adr:
 - **Masked by default for names, by marks for the rest** - The code marks what it knows is secret; names that always are (password, passwd, pwd, passphrase, secret, token, authorization, cookie, API key, private key, credential, session, cvv) are masked whether marked or not.
 - **Fail-closed** - What the mask cannot read is never written as it is: a body that is not JSON, an `Any` of an unknown type, a value nested too deep is written as a placeholder, and the log says so once.
 - **One set of scenarios for every stack** - The [leak catalog](./leak-catalog.md) lists every way a secret can reach the log; the scenarios in [conformance/](./conformance/) prove each, and every stack runs them unchanged ([ADR](./adr/conformance-scenarios-copied-into-each-stack.md)).
+
+@import "./diagrams/concept.mmd" {as="mermaid"}
 
 # Scope
 - Covers the payload, the request id, and the size of the log records. Shipping logs, sampling, and tracing spans are not covered.
