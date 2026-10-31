@@ -14,12 +14,30 @@ public sealed class PerCommand(List<string> trace) : IDisposable
 }
 
 /// <summary>Reports the <see cref="PerCommand"/> it ran with, and, when told to, sends a nested command first.</summary>
-public sealed record ScopeCommand(bool Nested = false, bool Fails = false) : IRequest<IReadOnlyList<Guid>>;
+public sealed record ScopeCommand(bool Nested = false, bool Fails = false, bool Publishes = false) : IRequest<IReadOnlyList<Guid>>;
 
-public sealed class ScopeHandler(PerCommand perCommand, ISender sender) : IRequestHandler<ScopeCommand, IReadOnlyList<Guid>>
+/// <summary>Told by a command; its handler adds the <see cref="PerCommand"/> it ran with to <see cref="Seen"/>.</summary>
+public sealed record ScopeNotification(List<Guid> Seen) : INotification;
+
+public sealed class ScopeNotificationHandler(PerCommand perCommand) : INotificationHandler<ScopeNotification>
+{
+    public Task Handle(ScopeNotification notification, CancellationToken cancellationToken)
+    {
+        notification.Seen.Add(perCommand.Id);
+        return Task.CompletedTask;
+    }
+}
+
+public sealed class ScopeHandler(PerCommand perCommand, ISender sender, IPublisher publisher) : IRequestHandler<ScopeCommand, IReadOnlyList<Guid>>
 {
     public async Task<IReadOnlyList<Guid>> Handle(ScopeCommand command, CancellationToken cancellationToken)
     {
+        if (command.Publishes)
+        {
+            List<Guid> seen = [perCommand.Id];
+            await publisher.Publish(new ScopeNotification(seen), cancellationToken);
+            return seen;
+        }
         if (command.Fails)
         {
             throw new InvalidOperationException("the command failed");
@@ -55,6 +73,9 @@ public sealed class CommandScopeSteps
     [When("a command that sends a nested command is sent")]
     public async Task WhenANestedCommandIsSent() => _answers.Add(await _sender!.Send(new ScopeCommand(Nested: true)));
 
+    [When("a command that tells a notification is sent")]
+    public async Task WhenACommandThatPublishesIsSent() => _answers.Add(await _sender!.Send(new ScopeCommand(Publishes: true)));
+
     [When("a command that fails is sent")]
     public async Task WhenACommandThatFailsIsSent() =>
         _error = await Record.ExceptionAsync(() => _sender!.Send(new ScopeCommand(Fails: true)));
@@ -74,6 +95,13 @@ public sealed class CommandScopeSteps
     [Then("the nested command should have run in its parent's scope")]
     public void ThenTheNestedCommandShouldHaveRunInItsParentsScope() =>
         Assert.Single(_answers.Single().Distinct());
+
+    [Then("the notification's handler should have run in the command's scope")]
+    public void ThenTheNotificationsHandlerShouldHaveRunInTheCommandsScope()
+    {
+        Assert.Equal(2, _answers.Single().Count);
+        Assert.Single(_answers.Single().Distinct());
+    }
 
     [Then("{int} scope(s) should have been disposed")]
     public void ThenScopesShouldHaveBeenDisposed(int count) => Assert.Equal(count, _trace.Count);

@@ -20,6 +20,11 @@ Feature: One scope per command
     Then the nested command should have run in its parent's scope
     And 1 scope should have been disposed
 
+  @category/happy
+  Scenario: A notification's handler runs in the scope of the command that told it
+    When a command that tells a notification is sent
+    Then the notification's handler should have run in the command's scope
+
   @category/edge
   Scenario: Commands sent at once do not share a scope
     When two commands are sent at once
