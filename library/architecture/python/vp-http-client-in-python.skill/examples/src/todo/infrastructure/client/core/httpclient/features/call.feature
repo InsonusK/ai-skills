@@ -54,3 +54,19 @@ Feature: Calling an HTTP API
     Given the test API answers 200 with '{"text":7}'
     When I call POST "/v1/echo" with the text "hi"
     Then the call should fail mentioning "does not match the contract"
+
+  @category/negative
+  Scenario: An operation the adapter does not list is refused before it is sent
+    Given the test API answers 200 with '{"text":"hello"}'
+    When I call GET "/v1/unlisted" with the text "hi"
+    Then the call should fail mentioning "no operation of the adapter's list"
+    And the test API should have received 0 requests
+
+  @category/happy
+  Scenario: The client middleware sees the call and may send it again, each attempt sent and logged
+    Given the test API answers 200 with '{"text":"hello"}'
+    And a client middleware that sends every call twice
+    When I call POST "/v1/echo" with the text "hi"
+    Then the middleware should have seen the call "POST /v1/echo" of "test-api", retryable "true"
+    And the test API should have received 2 requests
+    And the records should be, in order, "http client request sent|http client response received|http client request sent|http client response received"

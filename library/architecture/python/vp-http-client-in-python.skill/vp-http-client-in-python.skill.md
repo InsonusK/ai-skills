@@ -25,12 +25,13 @@ docs/integration/client/{api-name}/openapi.json   the provider's contract, copie
 src/{package}/infrastructure/
 ├── client/                  every client of another service's API, and nothing else
 │   ├── core/                copied from templates, never edited
-│   │   ├── outcomes.py      ApiUnavailableError, ApiStatusError, StatusCode (google.rpc.Code) - every transport
+│   │   ├── pipeline/        the client middleware around the attempts of a call - every transport
+│   ├── outcomes.py      ApiUnavailableError, ApiStatusError, StatusCode (google.rpc.Code) - every transport
 │   │   └── httpclient/      config.py: load_config(prefix): {API}_HOST, _HTTP_PORT, _TLS, _TIMEOUT; MOCK
 │   │                        client.py: HttpClient.call - timeout, JSON, X-Request-Id, call log, outcomes
 │   │                        features/ test/ - the fixed code's scenarios, with a test API of their own
 │   └── {api}/               written per API (todo_api)
-│       ├── {api}.py         PREFIX, OPERATIONS, the client with one method per operation, new(logger)
+│       ├── {api}.py         PREFIX, OPERATIONS, the client with one method per operation, new(logger, middlewares)
 │       ├── mock/{api}_mock.py   emulator(request) -> response: every operation with stable data ({API}_HOST=mock)
 │       └── features/ test/  each operation against a server of the scenario + the contract scenario
 └── {store}/                 a store (memory, postgres): beside client/, never in it
@@ -42,12 +43,12 @@ src/{package}/service/       the service over the client, its protocol, and its 
 ## MUST
 
 ### Copy the client code from templates
-Copy [infrastructure/client/core/](./templates/src/{package}/infrastructure/client/core/) to `src/{package}/infrastructure/client/core/`, with the example's `httpclient/features/` and `httpclient/test/`, replacing `{package}` with the import name of the package, and add `httpx2==2.16.0` to the dependencies of `pyproject.toml`.
+Copy [infrastructure/client/core/](./templates/src/{package}/infrastructure/client/core/) to `src/{package}/infrastructure/client/core/`, with the example's `features/` and `test/` of `httpclient/` and `pipeline/`, replacing `{package}` with the import name of the package, and add `httpx2==2.16.0` to the dependencies of `pyproject.toml`.
 - Risk: a retyped client drifts in its timeout, its outcomes, or its log from every other Python client of the catalog.
 - Fix: copy the files; after filling, searching them for `{package}` returns nothing; `make test` and `make lint` pass.
 
 ### One client package per API
-Write each API as `src/{package}/infrastructure/client/{api}/` holding `PREFIX` (`"TODO_API"`), `OPERATIONS` (the method and path of every operation it calls), `new(logger)` reading the settings, a client class taking `HttpConfig` with `aclose()`, and per operation one method that calls `HttpClient.call` with a private request dataclass and a private function reading the answer into the client's own dataclasses.
+Write each API as `src/{package}/infrastructure/client/{api}/` holding `PREFIX` (`"TODO_API"`), `OPERATIONS` (an `Operation` - method, path, and `retryable` - for every operation it calls), `new(logger, middlewares)` reading the settings, a client class taking `HttpConfig` with `aclose()`, and per operation one method that calls `HttpClient.call` with a private request dataclass and a private function reading the answer into the client's own dataclasses.
 
 ```python
 async def plan_items(self, titles: list[str]) -> list[Item]:
@@ -81,7 +82,7 @@ except ApiStatusError as error:
 - Fix: the scenario "Any other answer is a failure with no kind" of the example's `remote_planner.feature`.
 
 ### Build the client and the service in main.py
-Build the client with `{api}.new(logger)` in `# [services]` of `main.py`, stopping the start with "startup failed" on its `ValueError`, build the service over it, pass the service to `build_handlers` as the keyword parameter of the command that uses it, and close the client when `run_all` returns.
+Build the client middleware of the API in `# [client middleware]` before it - empty until a variation point (`vp-client-retry`) adds one - and pass it to `{api}.new(logger, middlewares)`; the client refuses a call of an operation not in its list, and `retryable` marks one safe to repeat, as [api-client](library/develop/core/api-client.skill/api-client.skill.md) requires. Build the client with `{api}.new(logger, middlewares)` in `# [services]` of `main.py`, stopping the start with "startup failed" on its `ValueError`, build the service over it, pass the service to `build_handlers` as the keyword parameter of the command that uses it, and close the client when `run_all` returns.
 - Risk: a client built inside a command or a service cannot be mocked or configured from one place; one never closed leaves its connections open when the loop ends.
 - Fix: the command's handler takes the service through its protocol; the composition root builds and closes the client.
 

@@ -8,7 +8,7 @@ server inside the process (client.py). An adapter of one API
 (infrastructure/client/{api}) calls its methods through the generated stub
 over GrpcClient.channel."""
 
-from {package}.infrastructure.client.core.grpcclient.client import REQUEST_ID_METADATA, Emulator, GrpcClient
+from {package}.infrastructure.client.core.grpcclient.client import REQUEST_ID_METADATA, Emulator, GrpcClient, Method
 from {package}.infrastructure.client.core.grpcclient.config import DEFAULT_TIMEOUT, MOCK, GrpcConfig, load_config
 
-__all__ = ["DEFAULT_TIMEOUT", "MOCK", "REQUEST_ID_METADATA", "Emulator", "GrpcClient", "GrpcConfig", "load_config"]
+__all__ = ["DEFAULT_TIMEOUT", "MOCK", "REQUEST_ID_METADATA", "Emulator", "GrpcClient", "GrpcConfig", "Method", "load_config"]

@@ -4,7 +4,8 @@
 
 import logging
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Sequence
+from dataclasses import dataclass
 from datetime import timedelta
 from typing import Any
 
@@ -12,6 +13,7 @@ import grpc
 
 from {package}.infrastructure.client.core.grpcclient.config import GrpcConfig
 from {package}.infrastructure.client.core.outcomes import ApiStatusError, ApiUnavailableError, StatusCode
+from {package}.infrastructure.client.core.pipeline import Call, Middleware, run
 from {package}.log import attrs, request_id
 
 REQUEST_ID_METADATA = "x-request-id"
@@ -20,6 +22,17 @@ REQUEST_ID_METADATA = "x-request-id"
 Emulator = Callable[[grpc.aio.Server], None]
 """The emulator of an API: adds its services, answered inside the process, to
 a gRPC server - the mock of one adapter (infrastructure/client/{api}/mock)."""
+
+
+@dataclass(frozen=True)
+class Method:
+    """One method of the contract an adapter calls."""
+
+    name: str
+    """The full method name: /todo.v1.ItemsService/PlanItems."""
+    retryable: bool = False
+    """Marks a method safe to call again: a repeat does what one call does.
+    Only such a method is repeated by the retry middleware."""
 
 
 class GrpcClient:
@@ -32,13 +45,22 @@ class GrpcClient:
         self._emulator = emulator
 
     @classmethod
-    async def open(cls, config: GrpcConfig, logger: logging.Logger, emulator: Emulator) -> "GrpcClient":
-        """Builds the channel to the API config names. It does not connect:
-        the first call does, so a start does not fail while the API is down.
+    async def open(
+        cls,
+        config: GrpcConfig,
+        logger: logging.Logger,
+        emulator: Emulator,
+        methods: Sequence[Method],
+        middlewares: Sequence[Middleware],
+    ) -> "GrpcClient":
+        """Builds the channel to the API config names, which calls only
+        methods, each through middlewares, the first the outermost. It does
+        not connect: the first call does, so a start does not fail while the
+        API is down.
         Mocked, every call is answered by the services emulator adds to a gRPC
         server inside the process, on a port of the loopback only - the same
         channel, interceptor, log, and outcomes - and a WARN record says so."""
-        interceptors = [_CallInterceptor(config, logger)]
+        interceptors = [_CallInterceptor(config, logger, methods, middlewares)]
         if config.mocked:
             server = grpc.aio.server()
             emulator(server)
@@ -58,8 +80,9 @@ class GrpcClient:
 
 
 class _CallInterceptor(grpc.aio.UnaryUnaryClientInterceptor):
-    """Runs around every unary call of the channel. It ends the call after
-    the timeout at the latest, sends the request id of the call being served,
+    """Runs around every unary call of the channel: it refuses a method not
+    in methods and sends every other through the client middleware. An attempt
+    ends after the timeout at the latest, sends the request id of the call being served,
     and writes two records: "grpc client call sent" with the request message
     as the payload, and "grpc client call answered" with the status code, the
     duration, failed, and as the payload the response message or, for a failed
@@ -68,12 +91,27 @@ class _CallInterceptor(grpc.aio.UnaryUnaryClientInterceptor):
     for any other status. Streaming calls are not intercepted: the client
     variation point covers unary calls only."""
 
-    def __init__(self, config: GrpcConfig, logger: logging.Logger) -> None:
+    def __init__(self, config: GrpcConfig, logger: logging.Logger, methods: Sequence[Method], middlewares: Sequence[Middleware]) -> None:
         self._config = config
         self._logger = logger
+        self._methods = {method.name: method for method in methods}
+        self._middlewares = middlewares
 
     async def intercept_unary_unary(self, continuation: Callable[..., Any], details: grpc.aio.ClientCallDetails, request: Any) -> Any:
         method = details.method.decode() if isinstance(details.method, bytes) else str(details.method)
+        listed = self._methods.get(method)
+        if listed is None:
+            raise RuntimeError(f"{method} is no method of the adapter's list")
+        answers: list[Any] = []
+
+        async def attempt() -> None:
+            answers[:] = [await self._attempt(continuation, details, request, method)]
+
+        await run(Call(self._config.name, method, listed.retryable), self._middlewares, attempt)
+        return answers[0]
+
+    async def _attempt(self, continuation: Callable[..., Any], details: grpc.aio.ClientCallDetails, request: Any, method: str) -> Any:
+        """Sends the call once, with its timeout, its request id, and its two records."""
         timeout = self._config.timeout.total_seconds()
         if details.timeout is not None:
             timeout = min(timeout, details.timeout)  # the earlier of the caller's deadline and the timeout
