@@ -23,12 +23,13 @@ docs/integration/client/{api-name}/{name}.proto   the provider's contract, copie
 src/{package}/gen/client/{api-name}/              make proto-gen: _pb2, _pb2_grpc, and their .pyi; never edited
 src/{package}/infrastructure/client/
 ├── core/                    copied from templates, never edited
+│   ├── pipeline/        the client middleware around the attempts of a call - every transport
 │   ├── outcomes.py          ApiUnavailableError, ApiStatusError, StatusCode - the HTTP client's file
 │   └── grpcclient/          config.py: load_config(prefix): {API}_HOST, _GRPC_PORT, _TLS, _TIMEOUT; MOCK
 │                            client.py: GrpcClient.open - a lazy channel, or the emulator's server; _CallInterceptor
 │                            features/ test/ - the fixed code's scenarios, with an echo API of their own
 └── {api}/                   written per API (todo_api)
-    ├── {api}.py             PREFIX, METHODS, the client with one method per method, open_api(config, logger), new(logger)
+    ├── {api}.py             PREFIX, METHODS, the client with one method per method, open_api(config, logger, middlewares), new(logger, middlewares)
     ├── mock/{api}_mock.py   emulator(server): the generated servicer implemented with stable data ({API}_HOST=mock)
     └── features/ test/      each method against a server of the scenario + the two contract scenarios
 ```
@@ -38,7 +39,7 @@ src/{package}/infrastructure/client/
 ## MUST
 
 ### Copy the client code from templates
-Copy [infrastructure/client/core/](./templates/src/{package}/infrastructure/client/core/) to `src/{package}/infrastructure/client/core/`, with the example's `grpcclient/features/` and `grpcclient/test/`, replacing `{package}` with the import name of the package, and add `grpcio==1.84.0` and `protobuf==7.36.2` to the dependencies and `grpcio-tools==1.84.0`, `mypy-protobuf==5.1.0`, and `types-grpcio==1.84.0.20260928` to the dev dependencies of `pyproject.toml`. With the HTTP client attached too, `outcomes.py` and `core/__init__.py` are already there, unchanged.
+Copy [infrastructure/client/core/](./templates/src/{package}/infrastructure/client/core/) to `src/{package}/infrastructure/client/core/`, with the example's `features/` and `test/` of `grpcclient/` and `pipeline/`, replacing `{package}` with the import name of the package, and add `grpcio==1.84.0` and `protobuf==7.36.2` to the dependencies and `grpcio-tools==1.84.0`, `mypy-protobuf==5.1.0`, and `types-grpcio==1.84.0.20260928` to the dev dependencies of `pyproject.toml`. With the HTTP client attached too, `outcomes.py` and `core/__init__.py` and `core/pipeline/` are already there, unchanged.
 - Risk: a retyped client drifts in its deadline, its outcomes, or its log from every other Python client of the catalog.
 - Fix: copy the files; after filling, searching them for `{package}` returns nothing; `make test` and `make lint` pass.
 
@@ -49,7 +50,7 @@ Add the example's `proto-gen` target to the `Makefile`: it maps each folder of `
 - Fix: with the gRPC API attached too, `proto-gen` runs both loops, `gen/api/` and `gen/client/`.
 
 ### One client package per API
-Write each API as `src/{package}/infrastructure/client/{api}/` holding `PREFIX` (`"TODO_API"`), `METHODS` (the full name of every method it calls), `open_api(config, logger)` and `new(logger)`, both async, a client class with `aclose()` over the generated stub, and per method one method that calls the stub and maps the response to the client's own dataclasses.
+Write each API as `src/{package}/infrastructure/client/{api}/` holding `PREFIX` (`"TODO_API"`), `METHODS` (a `Method` - the full name and `retryable` - for every method it calls), `open_api(config, logger, middlewares)` and `new(logger, middlewares)`, both async, a client class with `aclose()` over the generated stub, and per method one method that calls the stub and maps the response to the client's own dataclasses.
 
 ```python
 async def plan_items(self, titles: list[str]) -> list[Item]:
@@ -68,7 +69,7 @@ Write the mock of each client as `src/{package}/infrastructure/client/{api}/mock
 - Fix: the mocked scenario of the client's feature runs it and checks its answer.
 
 ### Build the client and the service in main.py
-Build the client with `await {api}.new(logger)` in `# [services]` of `main.py`, stopping the start with "startup failed" on its `ValueError`, build the service over it, pass the service to `build_handlers`, and close the client when `run_all` returns, as [vp-http-client-in-python](library/architecture/python/vp-http-client-in-python.skill/vp-http-client-in-python.skill.md) does.
+Build the client middleware of the API in `# [client middleware]` before it - empty until a variation point (`vp-client-retry`) adds one - and pass it to `{api}.new(logger, middlewares)`; the client refuses a call of an operation not in its list, and `retryable` marks one safe to repeat, as [api-client](library/develop/core/api-client.skill/api-client.skill.md) requires. Build the client with `await {api}.new(logger, middlewares)` in `# [services]` of `main.py`, stopping the start with "startup failed" on its `ValueError`, build the service over it, pass the service to `build_handlers`, and close the client when `run_all` returns, as [vp-http-client-in-python](library/architecture/python/vp-http-client-in-python.skill/vp-http-client-in-python.skill.md) does.
 - Risk: a mocked client never closed leaves its emulator's server running when the loop ends.
 - Fix: one client per API, built and closed by the composition root.
 

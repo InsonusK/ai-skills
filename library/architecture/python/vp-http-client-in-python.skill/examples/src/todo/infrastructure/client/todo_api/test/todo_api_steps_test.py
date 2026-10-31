@@ -11,7 +11,7 @@ from pathlib import Path
 import pytest
 from pytest_bdd import given, parsers, scenarios, then, when
 
-from todo.infrastructure.client.core.httpclient import MOCK, HttpConfig
+from todo.infrastructure.client.core.httpclient import MOCK, HttpConfig, Operation
 from todo.infrastructure.client.todo_api import OPERATIONS, Item, TodoApi
 
 scenarios("../features/plan_items.feature", "../features/contract.feature")
@@ -34,7 +34,7 @@ class World:
         scenario's answer, or, mocked, against its own emulator."""
         logger = logging.Logger("test", logging.CRITICAL)
         if self.mocked:
-            return TodoApi(HttpConfig(name="todo-api", host=MOCK, port=80, timeout=timedelta(seconds=1)), logger)
+            return TodoApi(HttpConfig(name="todo-api", host=MOCK, port=80, timeout=timedelta(seconds=1)), logger, [])
         world = self
 
         class Handler(BaseHTTPRequestHandler):
@@ -54,7 +54,7 @@ class World:
         self.server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
         threading.Thread(target=self.server.serve_forever, daemon=True).start()
         port = int(self.server.server_address[1])
-        return TodoApi(HttpConfig(name="todo-api", host="127.0.0.1", port=port, timeout=timedelta(seconds=1)), logger)
+        return TodoApi(HttpConfig(name="todo-api", host="127.0.0.1", port=port, timeout=timedelta(seconds=1)), logger, [])
 
 
 @pytest.fixture
@@ -106,7 +106,7 @@ def the_items_should_be(world: World, items: str) -> None:
 
 @then("the adapter should call exactly these operations, each in the contract:")
 def the_adapter_calls_exactly(datatable: list[list[str]]) -> None:
-    assert [tuple(row) for row in datatable[1:]] == OPERATIONS
+    assert [Operation(row[0], row[1], row[2] == "yes") for row in datatable[1:]] == OPERATIONS
     paths = json.loads(CONTRACT.read_text())["paths"]
-    for method, path in OPERATIONS:
-        assert method.lower() in paths.get(path, {}), f"{method} {path} is no operation of the contract"
+    for operation in OPERATIONS:
+        assert operation.method.lower() in paths.get(operation.path, {}), f"{operation} is no operation of the contract"

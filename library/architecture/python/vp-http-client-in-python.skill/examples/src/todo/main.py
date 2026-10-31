@@ -15,6 +15,7 @@ from todo.api.core.entry import Entry, exit_code, run_all
 from todo.command import PlanRemoteItemsCommand, build_handlers
 from todo.command.middleware.logging import LoggingMiddleware
 from todo.infrastructure.client import todo_api
+from todo.infrastructure.client.core.pipeline import Middleware as ClientMiddleware
 from todo.log import attrs, new_logger
 from todo.service import RemotePlanner
 
@@ -46,11 +47,16 @@ async def run(stdout: TextIO, stderr: TextIO, stopping: asyncio.Event) -> int:
     # (skill project-version-in-python).
     logger.info("starting", extra=attrs(version=version("todo")))
 
+    # [client middleware] - run around the attempts of every call of every
+    # API, the first the outermost. A variation point (the retry) adds its
+    # middleware to this list.
+    client_middlewares: list[ClientMiddleware] = []
+
     # [services] - infrastructure and the services over it. The todo API of
     # another service (TODO_API_HOST=mock answers from its emulator) and the
     # service that plans items with it; settings it cannot use stop the start.
     try:
-        todo_api_client = todo_api.new(logger)
+        todo_api_client = todo_api.new(logger, client_middlewares)
     except ValueError as error:
         logger.error("startup failed", exc_info=error)
         return 1

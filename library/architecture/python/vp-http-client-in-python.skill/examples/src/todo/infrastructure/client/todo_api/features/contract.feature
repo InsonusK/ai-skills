@@ -7,5 +7,5 @@ Feature: The todo API's contract
   @category/happy
   Scenario: The adapter calls only operations of docs/integration/client/todo/openapi.json
     Then the adapter should call exactly these operations, each in the contract:
-      | method | path           |
-      | POST   | /v1/items/plan |
+      | method | path           | retryable |
+      | POST   | /v1/items/plan | yes       |

@@ -82,7 +82,7 @@ the `spec/` skills come along because every stack skill links its spec.
 | — | logging: one logger, payload attribute, base handler drops it; every entry point logs its calls; `vp-logging` masks and writes the payload | ✅ | base ✅ | ✅ |
 | — | extension of the base (`base-plateau-extension`): command registry, middleware lists for commands and entries, one directory per middleware, sample access VP | ✅ | ✅ | ✅ |
 | 2 | clients (`develop/core/api-client`): HTTP (`vp-http-client`), gRPC (`vp-grpc-client`) | HTTP ✅, gRPC ✅ (buf managed mode, bufconn mock; one `client/core/outcome` for every transport) | HTTP ✅, gRPC ✅ (one `Client.Abstractions` for every transport; mock through a call invoker) | HTTP ✅ (httpx2, `MockTransport`; one `outcomes.py` for every transport), gRPC ✅ (`grpc.aio`, the mock on a loopback server) |
-| 2b | client retry (`vp-client-retry`): client middleware list in every client, operations marked retryable, `{API}_RETRY_ATTEMPTS`/`_BACKOFF` | ✅ | ✅ (`Client.Pipeline`; the wait ends with the caller's cancellation) | |
+| 2b | client retry (`vp-client-retry`): client middleware list in every client, operations marked retryable, `{API}_RETRY_ATTEMPTS`/`_BACKOFF` | ✅ | ✅ (`Client.Pipeline`; the wait ends with the caller's cancellation) | ✅ (`core/pipeline`; the cancellation passes through) |
 | 3 | DB | | | |
 | 4 | TaskBox, Inbox, Outbox | | | |
 | 5 | SQLite (`vp-sqlite`): one more persistent DB of step 3, an SQLite file - the driver per stack, the file's path setting, the same migrations and stores; fits a CLI that keeps its data between runs, and an application with an API within its limits (below) | | | |
