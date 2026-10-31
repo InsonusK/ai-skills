@@ -2,7 +2,7 @@
 name: vp-http-client-in-dotnet
 description: The HTTP client variation point in dotnet — Client.Abstractions (ApiUnavailableException, ApiStatusException, ApiStatusCode) and Client.Http (HttpApiConfig, HttpApiClient.CallAsync with the timeout, JSON in and out, the call log, the request id, the mock as an HttpMessageHandler) copied from templates, one client per API in Infrastructure/Client/{Api} with its {Api}.Abstractions, its mock, and its contract scenario, the service over it in {Module}.Application/Services, and the lines of Program.cs that build them
 whenToUse: when a dotnet application built on the base plateau must call another service's HTTP API, when you call a further operation of such an API, or when you review a dotnet HTTP client
-updated: 20261030
+updated: 20261031
 adr:
   - adr/one-outcome-project-for-every-client.md
 tags:
@@ -113,4 +113,8 @@ Copy the example's `Client.Http.Tests` unchanged: it covers the settings, the ca
 - [ ] `make test` passes; `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).
 
 # Example
+One call of the example, with its real classes:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the base plateau's startup command planning with another service's todo API: `make run` against its emulator, or against the running HTTP example of [vp-http-api-in-dotnet](library/architecture/dotnet/vp-http-api-in-dotnet.skill/vp-http-api-in-dotnet.skill.md).

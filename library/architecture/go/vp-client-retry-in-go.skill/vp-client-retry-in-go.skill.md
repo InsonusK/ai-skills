@@ -2,7 +2,7 @@
 name: vp-client-retry-in-go
 description: The client retry variation point in Go — internal/infrastructure/client/middleware/retry copied from templates (LoadConfig reading {API}_RETRY_ATTEMPTS and {API}_RETRY_BACKOFF, Middleware repeating a Retryable call on outcome.ErrUnavailable with doubled, jittered waits within the caller's deadline and a WARN record per repeat), added to the client middleware of an API in main.go
 whenToUse: when a Go application with a client of another service's API (vp-http-client-in-go, vp-grpc-client-in-go) must repeat calls the API did not answer, when you mark an operation retryable, or when you review a Go client retry
-updated: 20261030
+updated: 20261031
 tags:
   - stack/go
   - concern/architecture
@@ -67,4 +67,8 @@ Set `Retryable: true` on each `httpclient.Operation` or `grpcclient.Method` of t
 - [ ] `make test` passes; `bash test/check-vp-attach.sh` in this repository reports no file changed beyond [attach.allow](./attach.allow).
 
 # Example
+One call of the example, with its real classes:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the HTTP client example with the retry attached: `TODO_API_HOST=localhost TODO_API_HTTP_PORT=1 make run` shows three attempts and two "api client call retried" warnings before the startup command fails unavailable.

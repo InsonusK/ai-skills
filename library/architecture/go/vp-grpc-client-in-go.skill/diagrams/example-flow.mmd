@@ -1,0 +1,20 @@
+sequenceDiagram
+    autonumber
+    participant Service as service.RemotePlanner
+    participant Adapter as todoapi.Client
+    participant Stub as todo.ItemsServiceClient
+    participant Interceptor as grpcclient interceptor
+    participant API as Todo API, or its emulator with TODO_API_HOST=mock
+
+    Service->>+Adapter: PlanItems(ctx, titles)
+    Adapter->>+Stub: PlanItems(ctx, request)
+    Stub->>+Interceptor: the call of /todo.v1.ItemsService/PlanItems
+    Note over Interceptor: the method is in the adapter's list, the client middleware run around each attempt
+    Note over Interceptor: record "grpc client call sent"
+    Interceptor->>+API: PlanItems, x-request-id, within TODO_API_TIMEOUT
+    API-->>-Interceptor: response, or a status
+    Note over Interceptor: record "grpc client call answered"
+    Interceptor-->>-Stub: response, or outcome.ErrUnavailable, or outcome.StatusError
+    Stub-->>-Adapter: the generated response, or the outcome
+    Adapter-->>-Service: []todoapi.Item, or the outcome
+    Note over Service: ErrUnavailable: entity.ErrUnavailable. Code INVALID_ARGUMENT: entity.ErrInvalid. Anything else: no kind
