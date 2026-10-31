@@ -55,12 +55,22 @@ Attach a variation point through its own directories plus lines at these extensi
 | API middleware | the list the composition root gives one API's entry factory | its middleware of that API's requests (authentication, a rate limit) |
 | handler constructor | the command registry | a parameter typed by an interface, through which the handler uses the variation point's service |
 | command mark | the command's own file | a mark that a filtered middleware selects the command by |
+| readiness check | the contract [vp-health](library/architecture/spec/vp-health.skill/vp-health.skill.md) reads | a named check of the dependency it brings |
 | error kinds | the command layer | nothing: an entry point answers each kind of [error-kinds](library/develop/core/error-kinds.skill/error-kinds.skill.md) by its own table |
 | its own settings | its own directory | reads its environment variables itself; the base settings never grow a field for it |
 
 - Violation: an HTTP variation point that adds its port to the base settings; a store variation point that edits the startup entry; a middleware variation point that edits another variation point's directory or the command registry.
 - Risk: two variation points editing the same base file must be described together, and every combination becomes a separate project description.
 - Fix: the variation point reads its settings in its own directory and joins at the extension points above; a handler gaining a service parameter and a command gaining a mark are the application using the variation point, not attaching it.
+
+### Meet another optional variation point through a contract neither owns
+When two variation points that are each optional work together, let the one that brings the dependency serve a contract that belongs to neither of them: a type of the framework or a plain function shape.
+
+@import "./diagrams/two-optional-variation-points.mmd" {as="mermaid"}
+
+- Violation: an interface declared in the health variation point and implemented in the database one; an example written for a pair of variation points; a shared directory of the code of such meetings.
+- Risk: the first variation point stops building without the second, and every pair needs an example of its own, which is the multiplication this catalog exists to avoid.
+- Fix: the code stays in the directories of the variation point that brings the dependency, and its skill describes it; each variation point proves its half against the contract, the taking one with a fake. A variation point that cannot work without another is not this case: it attaches to that one's example.
 
 ### Build every handler in the command registry
 Build every handler in one function of the command layer, which takes the list of command middleware and the services, wraps every handler with the whole list, and returns the registry — one typed field per command; give an entry point the registry, and let it take the handlers it serves.

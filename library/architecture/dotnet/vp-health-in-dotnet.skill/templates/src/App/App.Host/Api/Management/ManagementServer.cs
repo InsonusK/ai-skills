@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace App.Host.Api.Management;
 
@@ -18,7 +19,7 @@ namespace App.Host.Api.Management;
 /// <see cref="IHealthCheck"/> - written for it, or one of the ready-made
 /// checks (AspNetCore.HealthChecks.NpgSql, ...Redis, ...) - under the name a
 /// failure is reported by. The management entry point has none of its own: a
-/// service variation point adds its check in the composition root.
+/// service variation point registers its check with <c>AddHealthChecks()</c>.
 /// </summary>
 public sealed record ReadinessCheck(string Name, IHealthCheck Check);
 
@@ -37,12 +38,25 @@ public static class ManagementServer
     /// <summary>
     /// Registers the management entry point: an <see cref="Entry"/> named
     /// "management" that serves the health endpoints until the process stops
-    /// (see <see cref="RunAsync"/>). <paramref name="checks"/> are the
-    /// readiness checks the service variation points add.
+    /// (see <see cref="RunAsync"/>). Its readiness checks are the ones the
+    /// service variation points registered with <c>AddHealthChecks()</c> in this
+    /// container, in any order: neither side knows the other.
     /// </summary>
-    public static IServiceCollection AddManagement(this IServiceCollection services, params ReadinessCheck[] checks) =>
-        services.AddSingleton(provider => new Entry("management", stopping =>
-            RunAsync(provider.GetRequiredService<ILoggerFactory>(), stopping, checks)));
+    public static IServiceCollection AddManagement(this IServiceCollection services)
+    {
+        services.AddOptions();
+        return services.AddSingleton(provider => new Entry("management", stopping =>
+            RunAsync(provider.GetRequiredService<ILoggerFactory>(), stopping, RegisteredChecks(provider))));
+    }
+
+    /// <summary>
+    /// Every check registered with <c>AddHealthChecks()</c>. Each is built once,
+    /// from the root of the container, so a check that needs a scoped service
+    /// stops the start: it opens its own connection instead.
+    /// </summary>
+    private static ReadinessCheck[] RegisteredChecks(IServiceProvider provider) =>
+        [.. provider.GetRequiredService<IOptions<HealthCheckServiceOptions>>().Value.Registrations
+            .Select(registration => new ReadinessCheck(registration.Name, registration.Factory(provider)))];
 
     /// <summary>
     /// The management entry point's run: reads

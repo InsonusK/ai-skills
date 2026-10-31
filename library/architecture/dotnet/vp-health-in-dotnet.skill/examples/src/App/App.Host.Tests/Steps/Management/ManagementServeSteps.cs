@@ -1,5 +1,9 @@
 using System.Net.Sockets;
+using App.Host.Api.Core.Entry;
 using App.Host.Api.Management;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Logging;
 using Reqnroll;
 using Xunit;
 using Xunit.Abstractions;
@@ -15,6 +19,7 @@ public sealed class ManagementServeSteps(ITestOutputHelper output) : IDisposable
     private readonly int _port = FreePort.Next();
     private Task? _serving;
     private TcpListener? _taken;
+    private readonly ServiceCollection _services = new();
 
     private void StartWithPort() =>
         _serving = Task.Run(() => ManagementServer.ServeAsync(new ManagementConfig(_port), _logs.Factory, _stop.Token));
@@ -52,6 +57,40 @@ public sealed class ManagementServeSteps(ITestOutputHelper output) : IDisposable
         {
             Environment.SetEnvironmentVariable("MANAGEMENT_LISTEN_PORT", null);
         }
+    }
+
+    // What a service variation point's own registration does; the management
+    // entry point never hears of the variation point.
+    [Given("a variation point registered a readiness check {string} that fails")]
+    public void GivenAVariationPointRegisteredACheckThatFails(string name) =>
+        _services.AddHealthChecks().AddCheck(name, new FakeHealthCheck(HealthStatus.Unhealthy));
+
+    [When("the management entry point of the composition root serves")]
+    public async Task WhenTheEntryPointOfTheCompositionRootServes()
+    {
+        _services.AddSingleton<ILoggerFactory>(_logs.Factory);
+        _services.AddManagement();
+        var entry = _services.BuildServiceProvider().GetRequiredService<Entry>();
+        Environment.SetEnvironmentVariable("MANAGEMENT_LISTEN_PORT", _port.ToString());
+        try
+        {
+            // RunAsync reads the settings before anything listens.
+            _serving = entry.RunAsync(_stop.Token);
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("MANAGEMENT_LISTEN_PORT", null);
+        }
+        await FreePort.WaitServingAsync(_port);
+    }
+
+    [Then("readiness on its port should answer {int} with {string}")]
+    public async Task ThenReadinessOnItsPortShouldAnswer(int status, string body)
+    {
+        using var client = new HttpClient();
+        var response = await client.GetAsync($"http://localhost:{_port}/health/ready");
+        Assert.Equal(status, (int)response.StatusCode);
+        Assert.Equal(body, await response.Content.ReadAsStringAsync());
     }
 
     private async Task<Exception?> EndedWith()

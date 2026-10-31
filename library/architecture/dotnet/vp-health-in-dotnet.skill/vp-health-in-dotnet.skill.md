@@ -1,6 +1,6 @@
 ---
 name: vp-health-in-dotnet
-description: The health variation point in dotnet — Api/Management copied from templates (MANAGEMENT_LISTEN_PORT, /health/live, /health/ready, /health, readiness checks as ASP.NET IHealthCheck, graceful stop) on the shared web host, and one management entry added to the EntryRunner list in Program.cs
+description: The health variation point in dotnet — Api/Management copied from templates (MANAGEMENT_LISTEN_PORT, /health/live, /health/ready, /health, readiness checks read from the framework's health check registry, graceful stop) on the shared web host, and one management entry added to the EntryRunner list in Program.cs
 whenToUse: when a dotnet application built on the base plateau runs as a long-running service, when a dotnet service variation point adds a readiness check, or when you review a dotnet service's health endpoints
 updated: 20261102
 tags:
@@ -17,7 +17,7 @@ adr:
 - **Attached by the listed changes only** - Attaching it adds files and changes only the base files [attach.allow](./attach.allow) names, which the repository's attach check verifies against [base-plateau-in-dotnet](library/architecture/dotnet/base-plateau-in-dotnet.skill/base-plateau-in-dotnet.skill.md)'s example.
 
 # Core Principle
-- **Copied whole, one entry in Program.cs** - `Api/Management/` is copied from templates and never edited; the application adds one `Entry` and, per dependency, one `ReadinessCheck`.
+- **Copied whole, one entry in Program.cs** - `Api/Management/` is copied from templates and never edited; the application adds one `Entry`, and every dependency registers its own check.
 
 ```
 src/App/App.Host/Api/
@@ -49,17 +49,19 @@ services.AddManagement();
 - Risk: health served on the API port is published through the ingress; a server started outside the list keeps the process half-alive when another entry point fails.
 - Fix: one registration, nothing else in `Program.cs` but `using App.Host.Api.Management;`.
 
-### Add a readiness check as one argument
-Pass a dependency's [readiness check](./glossary/readiness-check.md) as a `new ReadinessCheck(name, healthCheck)` argument of `AddManagement`, its `IHealthCheck` built in `// [services]` by the service variation point that brings the dependency.
+### Read the readiness checks from the registry
+Register a dependency's [readiness check](./glossary/readiness-check.md) with `AddHealthChecks()` in the registration of the variation point that brings the dependency, in the application's container; `AddManagement()` takes no argument and reads every registration when the entry starts.
+
+@import "./diagrams/readiness-registry.mmd" {as="mermaid"}
 
 ```csharp
-services.AddManagement(
-    new ReadinessCheck("database", new NpgSqlHealthCheck(new NpgSqlHealthCheckOptions(connectionString))));
+// in the service variation point's own registration, e.g. AddPostgres
+services.AddHealthChecks().AddNpgSql(config.Dsn, name: "database");
 ```
 
-- Violation: a check written inside `Api/Management`; a check that sends a command; `services.AddHealthChecks()` in the root container.
-- Risk: the copied folder must be edited for every dependency, and the next copy of the templates loses the check; a check registered in the root container is never seen by the management server, which has a container of its own.
-- Fix: a ready-made check (`AspNetCore.HealthChecks.*`) or a small class of the dependency's infrastructure, passed in by the composition root.
+- Violation: a check written inside `Api/Management`; a check that sends a command; a check that needs a scoped service; a line for a check in `Program.cs`.
+- Risk: the copied folder must be edited for every dependency, and the next copy of the templates loses the check; a scoped service has no scope at the root of the container and stops the start.
+- Fix: a ready-made check (`AspNetCore.HealthChecks.*`) or a small class of the dependency's infrastructure with a connection of its own, registered beside that infrastructure. Decision recorded in [ihealthcheck-as-the-readiness-check](./adr/ihealthcheck-as-the-readiness-check.md).
 
 ### Probe the management port
 Fill the deployment templates of [devops-service-deploy](library/devops/core/devops-service-deploy.skill/devops-service-deploy.skill.md) with `{health-port}` = `8081`, and expose `8081` from the container without routing it through the ingress.
@@ -73,8 +75,8 @@ Copy the example's `src/App/App.Host.Tests/features/Management/` and `Steps/Mana
 
 # Check list
 - [ ] `Api/Management/{ManagementConfig,ManagementServer}.cs` and `Api/Core/Hosting/WebHost.cs` are copies of the templates; `App.Host.csproj` references `Microsoft.AspNetCore.App`.
-- [ ] `// [entries]` has `services.AddManagement(...)`; every other registration is unchanged.
-- [ ] Every readiness check is a `ReadinessCheck` argument of `AddManagement`.
+- [ ] `// [entries]` has `services.AddManagement()`; every other registration is unchanged.
+- [ ] Every readiness check is registered with `AddHealthChecks()` by the variation point that brings the dependency.
 - [ ] The deployment's probes name port 8081.
 - [ ] `make test` passes; `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).
 
@@ -83,5 +85,5 @@ One call of the example, each part with its class and file:
 
 @import "./diagrams/example-flow.mmd" {as="mermaid"}
 
-- [examples/](./examples/README.md) — the base plateau's to-do planner with the health endpoints attached: `make test`; `Program.cs` shows where readiness checks go.
+- [examples/](./examples/README.md) — the base plateau's to-do planner with the health endpoints attached: `make test`; a scenario of `ManagementServe.feature` registers a check as a variation point does.
 - [glossary/](./glossary/README.md) — how the three [health endpoints](./glossary/health-endpoints.md) differ, and how a [readiness check](./glossary/readiness-check.md) works.

@@ -44,10 +44,10 @@ Serve the endpoints on a port of their own, `MANAGEMENT_LISTEN_PORT` (default `8
 - Risk: health on the API port is published through the ingress to every client, and a service without an HTTP API has no health check that a Docker `healthcheck` can call.
 - Fix: the management entry point listens on 8081 in every service; the ingress routes only the API port; the probes name `{health-port}` = 8081 in the deployment templates. Decision recorded in [health-on-the-management-port](./adr/health-on-the-management-port.md).
 
-### Take the readiness checks from the composition root
-Accept readiness checks — a name and a check function — from the composition root, so that a service variation point adds its dependency's check without editing the health entry point.
-- Risk: a readiness endpoint that knows its dependencies must be edited by every service variation point.
-- Fix: the entry point takes a list of checks; the composition root passes one per dependency.
+### Take the readiness checks through a contract no variation point owns
+Accept readiness checks — a name and a check — through the framework's own registry where the stack has one, otherwise as a plain function shape in the composition root's list, so that a service variation point brings its check without a type of the health entry point.
+- Risk: a readiness endpoint that knows its dependencies must be edited by every service variation point; a contract declared here makes every such variation point require this one.
+- Fix: per [Meet another optional variation point through a contract neither owns](library/architecture/spec/base-plateau-extension.skill/base-plateau-extension.skill.md#meet-another-optional-variation-point-through-a-contract-neither-owns); the stack extension names the contract.
 
 ### Stop gracefully
 On termination (`SIGTERM`), stop accepting requests, let requests in flight finish within a bounded time, and return without an error.
@@ -71,7 +71,7 @@ Test liveness with a failing check, readiness with passing and failing checks, `
 
 # Check list
 - [ ] `/health/live`, `/health/ready`, and `/health` answer on `MANAGEMENT_LISTEN_PORT` (8081), not on the API port.
-- [ ] Liveness checks nothing; readiness runs every check the composition root passed and names the failed ones with 503.
+- [ ] Liveness checks nothing; readiness runs every check it receives and names the failed ones with 503.
 - [ ] Every probe and `healthcheck` of the deployment names the management port; the ingress does not route it.
 - [ ] The server stops gracefully on termination.
 - [ ] The entry point is one more entry of the `entries` list; no other entry and no other base file but the composition root and the readme changed.
