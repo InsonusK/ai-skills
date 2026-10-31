@@ -2,7 +2,7 @@
 name: base-plateau-in-dotnet
 description: The base plateau in dotnet — the projects of its layers, MediatR 12 handlers registered per module (AddTodoModule) with pipeline behaviors as the middleware listed once (AddCommandMiddleware), the error kinds as exceptions, the startup entry, the runner of the entry points with the exit codes, the JSON log provider that drops the payload, the composition root on a plain ServiceCollection with its three marked sections and the entry points registered as Entry, and the Reqnroll scenarios that cover each project
 whenToUse: when you create a new dotnet service from the architecture catalog, or when you attach a variation point to, or review, a dotnet application built on the base plateau
-updated: 20261025
+updated: 20261102
 tags:
   - stack/dotnet
   - concern/architecture
@@ -141,5 +141,9 @@ Read the base settings from environment variables in `AppConfig.Load()`, throwin
 - [ ] `make test` passes, with scenarios in every test project listed in [Cover each project with scenarios](#cover-each-project-with-scenarios).
 
 # Example
+One call of the example, each part with its class and file:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the base plateau as a runnable to-do planner: `make run`, `make test`.
 - [glossary/](./glossary/README.md) — how the pipeline behavior, the error kind, the composition root, the entry runner, the logging, and the startup entry work.

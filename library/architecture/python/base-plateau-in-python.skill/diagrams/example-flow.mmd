@@ -1,0 +1,23 @@
+sequenceDiagram
+    autonumber
+    participant Main as run<br/>src/todo/main.py
+    participant Runner as run_all<br/>src/todo/api/core/entry/entry.py
+    participant Startup as startup.run<br/>src/todo/api/startup/startup.py
+    participant Log as LoggingMiddleware<br/>src/todo/command/middleware/logging/middleware.py
+    participant Handler as PlanItemsHandler<br/>src/todo/command/plan_items.py
+    participant Planner as Planner<br/>src/todo/domain/service/planner.py
+
+    Main->>+Runner: every Entry, until the first ends
+    Runner->>+Startup: the startup entry
+    Note over Startup: reads STARTUP_TITLES into PlanItems
+    Startup->>+Log: PlanItems, through the command middleware
+    Note over Log: record "command called"
+    Log->>+Handler: PlanItems
+    Handler->>+Planner: the titles
+    Planner-->>-Handler: open items, or an error with its kind
+    Handler-->>-Log: the result, or the error
+    Note over Log: record "command handled" or "command failed"
+    Log-->>-Startup: the result, or the error
+    Note over Startup: writes the result as one JSON line
+    Startup-->>-Runner: nil, or the error
+    Runner-->>-Main: the exit code: 0, 2 for invalid, 1 for a failure

@@ -2,7 +2,7 @@
 name: base-plateau-in-go
 description: The base plateau in Go — the package layout of its four layers, the generic Handler contract, the command middleware list with the typed adapter Decorate and the logging middleware in internal/command/middleware/logging, the command registry command.Handlers, the error kinds, the startup entry, the runner of the entry points with the exit codes, the composition root with its three marked sections, and the scenarios that cover each layer
 whenToUse: when you create a new Go service or Go CLI application from the architecture catalog, or when you attach a variation point to, or review, a Go application built on the base plateau
-updated: 20261025
+updated: 20261102
 tags:
   - stack/go
   - concern/architecture
@@ -126,5 +126,9 @@ Read the base settings from environment variables in `config.Load() (Config, err
 - [ ] `make test` passes, with scenarios in every package listed in [Cover each layer with scenarios](#cover-each-layer-with-scenarios).
 
 # Example
+One call of the example, each part with its class and file:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the base plateau as a runnable to-do planner: `make run`, `make test`.
 - [glossary/](./glossary/README.md) — how the handler contract, `HandlerFunc`, the command middleware, the command registry, the error kind, the composition root, and the startup entry work.

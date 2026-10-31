@@ -2,7 +2,7 @@
 name: vp-grpc-client-in-dotnet
 description: The gRPC client variation point in dotnet — Client.Abstractions (the outcomes every client reports) and Client.Grpc (GrpcApiConfig, GrpcApiClient with a lazy GrpcChannel, CallInterceptor for the timeout, the x-request-id metadata, the call log, and the outcomes, EmulatorCallInvoker for the mock) copied from templates, the consumed proto compiled by Grpc.Tools into the client as internal types, one client per API in Infrastructure/Client/{Api} with its {Api}.Abstractions, its mock, and its contract scenario, the service over it in {Module}.Application/Services, and the lines of Program.cs that build them
 whenToUse: when a dotnet application built on the base plateau must call another service's gRPC API, when you call a further method of such an API or replace its proto, or when you review a dotnet gRPC client
-updated: 20261031
+updated: 20261102
 tags:
   - stack/dotnet
   - concern/architecture
@@ -93,9 +93,5 @@ Copy the example's `Client.Grpc.Tests` unchanged: it covers the settings, the ca
 One call of the example, with its real classes:
 
 @import "./diagrams/example-flow.mmd" {as="mermaid"}
-
-The classes that do it, by package, and how they relate:
-
-@import "./diagrams/example-classes.mmd" {as="mermaid"}
 
 - [examples/](./examples/README.md) — the base plateau's startup command planning with another service's todo API: `make run` against its emulator, or against the running gRPC example of [vp-grpc-api-in-dotnet](library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/vp-grpc-api-in-dotnet.skill.md).

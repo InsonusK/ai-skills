@@ -2,7 +2,7 @@
 name: vp-logging-in-go
 description: The logging variation point in Go — the internal/logging/masked package copied from templates (a slog.Handler writing the payload masked by log:"mask" / log:"omit" tags, proto debug_redact, and secret names, cut to LOG_PAYLOAD_MAX_BYTES, kept by LOG_PAYLOAD, with the request_id of the context) and the logger line of main.go replaced
 whenToUse: when a Go application built on the base plateau must log the data of its calls, when you mark a field of a Go command, request type, or proto message as secret or not to log, or when you review such an application's log
-updated: 20261022
+updated: 20261102
 tags:
   - stack/go
   - concern/architecture
@@ -93,4 +93,8 @@ Set `LOG_PAYLOAD=errors` in the deployment of a service whose request volume mak
 - [ ] After a change to `masked/`, the mutation run of the [leak catalog](library/architecture/spec/vp-logging.skill/leak-catalog.md) leaves only the survivors it lists for Go.
 
 # Example
+One call of the example, each part with its class and file:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the base plateau's to-do planner with the logging variation point attached: `make run`, `make test`.

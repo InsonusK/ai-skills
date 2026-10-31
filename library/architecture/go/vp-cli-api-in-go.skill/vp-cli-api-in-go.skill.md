@@ -2,7 +2,7 @@
 name: vp-cli-api-in-go
 description: The CLI API variation point in Go — internal/api/cli/pipeline copied from templates (Run building the cobra command line with --output, --version, usage errors as the invalid kind, the generic Command adapter, the run log), one {Resource}Handler per resource in internal/api/cli/endpoint, the registration in internal/api/cli/commands.go with each action's flags, JSON output, and text form, and the startup entry replaced by cliapi.Entry in main.go
 whenToUse: when a Go application built on the base plateau must be run from a command line, when you offer a new command as an action of such an application, or when you review its internal/api/cli package
-updated: 20261025
+updated: 20261102
 tags:
   - stack/go
   - concern/architecture
@@ -106,4 +106,8 @@ Offer a further command of an existing resource by adding its field, its line of
 - [ ] `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).
 
 # Example
+One call of the example, each part with its class and file:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the base plateau's to-do planner as a command line: `make run`, `make test`, `./bin/todo --help`.

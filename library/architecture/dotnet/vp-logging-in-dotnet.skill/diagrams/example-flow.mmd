@@ -1,0 +1,17 @@
+sequenceDiagram
+    autonumber
+    participant Part as LoggingMiddleware<br/>src/Middleware/Logging/LoggingMiddleware.cs
+    participant Handler as MaskedLogProvider<br/>src/MaskedLogging/MaskedLogProvider.cs
+    participant Mask as PayloadMask<br/>src/MaskedLogging/PayloadMask.cs
+    participant Output as Standard error
+
+    Part->>+Handler: a record, its data only in the payload attribute
+    Note over Handler: adds the request id of the call
+    Note over Handler: LOG_PAYLOAD policy: keep the payload of this record, or drop it
+    Handler->>+Mask: the payload
+    Note over Mask: marked fields masked or omitted, the rest kept
+    Mask-->>-Handler: the masked payload, and what it could not parse
+    Note over Handler: unreadable data is never written raw: a WARN instead
+    Handler->>+Output: one JSON line
+    Output-->>-Handler: written
+    Handler-->>-Part: done

@@ -2,7 +2,7 @@
 name: vp-http-api-in-dotnet
 description: The HTTP API variation point in dotnet — Api/Http/Pipeline copied from templates (settings, the server on its own WebApplication, the request log, the error answers as google.rpc.Status, the docs), one {Resource}Handler class per resource in Api/Http/Endpoint written as Minimal API routes, the registration in Api/Http/Routes.cs with AddHttpApi and its list of middlewares in Program.cs, and the contract either hand-written in OpenAPI with routes over records of their own, or, as the HTTP form of a gRPC contract, generated from the proto file's google.api.http annotations with the routes over the generated messages (ProtoJson)
 whenToUse: when a dotnet application built on the base plateau must be served over HTTP, when a dotnet service with a gRPC contract needs its HTTP form, when you serve a new command over HTTP in such an application, or when you review its Api/Http folders
-updated: 20261025
+updated: 20261102
 tags:
   - stack/dotnet
   - concern/architecture
@@ -167,5 +167,9 @@ Serve a further command of an existing resource by adding its route line to `Map
 - [ ] `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow) and [attach-proto.allow](./attach-proto.allow).
 
 # Example
+One call of the example, each part with its class and file:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the base plateau's to-do planner with the HTTP API attached: `make run`, `make test`.
 - [examples-proto/](./examples-proto/README.md) — the HTTP form of the gRPC example's proto contract, with a path parameter, 201, 404, 409, a deprecated rpc, and the first service and infrastructure (lists kept in memory): `make run`, `make proto-gen`, `make test`.

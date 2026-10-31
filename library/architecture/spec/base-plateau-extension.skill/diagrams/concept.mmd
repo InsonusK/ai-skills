@@ -1,0 +1,31 @@
+sequenceDiagram
+    autonumber
+    participant Caller as API caller
+    participant RequestLog as Request log, fixed
+    participant AnswerFailures as Answer failures, fixed
+    participant Auth as API middleware
+    participant Endpoint as Route of the contract
+    participant Log as Command middleware
+    participant Access as Command middleware
+    participant Batch as Command middleware
+    participant Handler as Command handler
+
+    Caller->>+RequestLog: a request
+    RequestLog->>+AnswerFailures: the request
+    AnswerFailures->>+Auth: the request
+    Note over Auth: a step that needs the transport, a sample
+    Auth->>+Endpoint: the route of the contract
+    Endpoint->>+Log: the command
+    Log->>+Access: the command
+    Note over Access: a step for every API, a sample
+    Access->>+Batch: the command
+    Note over Batch: the last of the list runs next to the handler
+    Batch->>+Handler: the command
+    Handler-->>-Batch: the result
+    Batch-->>-Access: the result
+    Access-->>-Log: the result
+    Log-->>-Endpoint: the result
+    Endpoint-->>-Auth: 200 with JSON
+    Auth-->>-AnswerFailures: the answer
+    AnswerFailures-->>-RequestLog: a rejection at any step arrives here as google.rpc.Status
+    RequestLog-->>-Caller: the answer

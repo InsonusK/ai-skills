@@ -2,7 +2,7 @@
 name: vp-health-in-go
 description: The health variation point in Go — the internal/api/management package copied from templates (MANAGEMENT_LISTEN_PORT, /health/live, /health/ready, /health, readiness checks, graceful stop) and one management entry added to the entry.RunAll list in main.go
 whenToUse: when a Go application built on the base plateau runs as a long-running service, when a Go service variation point adds a readiness check, or when you review a Go service's health endpoints
-updated: 20261025
+updated: 20261102
 tags:
   - stack/go
   - concern/architecture
@@ -75,5 +75,9 @@ Fill the deployment templates of [devops-service-deploy](library/devops/core/dev
 - [ ] `make test` passes; `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).
 
 # Example
+One call of the example, each part with its class and file:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the base plateau's to-do planner with the health endpoints attached: `make run`, `make test`; `main.go` shows where readiness checks go.
 - [glossary/](./glossary/README.md) — how the three [health endpoints](./glossary/health-endpoints.md) differ, and how a [readiness check](./glossary/readiness-check.md) works.

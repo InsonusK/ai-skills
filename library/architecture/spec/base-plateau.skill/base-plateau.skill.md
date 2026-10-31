@@ -2,7 +2,7 @@
 name: base-plateau
 description: The base plateau every application of the architecture catalog starts from — a program that starts, runs exactly one command, reports its result and exits — with its four layers, the direction of their dependencies, the command registry, the runner of the entry points, and the composition root a variation point attaches to
 whenToUse: when you create a new service or CLI application from the architecture catalog, when you write or review a variation point (an API, a client, a store, TaskBox, ...) that attaches to the base plateau, or when you check whether an application still keeps the base plateau's layer and dependency rules
-updated: 20261025
+updated: 20261102
 tags:
   - stack
   - concern/architecture
@@ -22,6 +22,8 @@ adr:
 - **Nothing outside the process** - The base plateau uses no store, client, broker, or listener; each of them arrives as a variation point. Decision recorded in [one-startup-command](./adr/one-startup-command.md).
 - **A command is any request** - The base plateau does not split reads from writes; an operation that only reads is still a command with a handler.
 - **The composition root is the seam** - Every concrete type is built in one place, so a variation point attaches by adding lines there.
+
+@import "./diagrams/concept.mmd" {as="mermaid"}
 
 # Scope
 - Covers what the base plateau contains, for every stack; the layer rules themselves are [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md)'s, and how a variation point attaches is [base-plateau-extension](library/architecture/spec/base-plateau-extension.skill/base-plateau-extension.skill.md)'s.

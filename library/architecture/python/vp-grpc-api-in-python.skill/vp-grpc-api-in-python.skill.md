@@ -2,7 +2,7 @@
 name: vp-grpc-api-in-python
 description: The gRPC API variation point in Python — api/grpc/pipeline and the fixed api/grpc/middleware copied from templates (settings, call() that turns a request into a command and its result into the response, the grpc.aio server with reflection behind a switch and graceful stop, every unary call run through the call log, the answer of every failure by its kind, and the application's interceptors), one {Service}Handler module per proto service in api/grpc/endpoint, services.py with the entry factory, the proto contract with its code generated into src/{package}/gen/api/ by make proto-gen, and the startup entry replaced in main.py
 whenToUse: when a Python application built on the base plateau must be served over gRPC, when you serve a new command over gRPC in such an application, or when you review its api/grpc package
-updated: 20261025
+updated: 20261102
 tags:
   - stack/python
   - concern/architecture
@@ -153,4 +153,8 @@ Raise `KindError(Kind.UNIMPLEMENTED, "{Rpc} is deprecated since {version}")` fro
 - [ ] `make test` and `make lint` pass; `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).
 
 # Example
+One call of the example, each part with its class and file:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the base plateau's to-do planner with the gRPC API attached: `make run`, then `grpcurl -plaintext -d '{"titles":["buy milk"]}' localhost:9090 todo.v1.ItemsService/PlanItems`.

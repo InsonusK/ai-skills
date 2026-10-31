@@ -2,7 +2,7 @@
 name: vp-http-api-in-go
 description: The HTTP API variation point in Go — internal/api/http/pipeline copied from templates (settings, the generic Endpoint, the server with graceful stop, the request log, the docs), one {Resource}Handler per resource in internal/api/http/endpoint, the registration in internal/api/http/routes.go, the contract either hand-written in OpenAPI or, as the HTTP form of a gRPC contract, generated from the proto file's google.api.http annotations with the routes over the generated messages, and one httpapi.Entry in main.go with its list of middlewares
 whenToUse: when a Go application built on the base plateau must be served over HTTP, when a Go service with a gRPC contract needs its HTTP form, when you serve a new command over HTTP in such an application, or when you review its internal/api/http packages
-updated: 20261025
+updated: 20261102
 tags:
   - stack/go
   - concern/architecture
@@ -169,5 +169,9 @@ Serve a further command of an existing resource by adding its field, its line of
 - [ ] `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow) and [attach-proto.allow](./attach-proto.allow).
 
 # Example
+One call of the example, each part with its class and file:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the base plateau's to-do planner with the HTTP API attached: `make run`, `make test`.
 - [examples-proto/](./examples-proto/README.md) — the HTTP form of the gRPC example's proto contract, with a path parameter, 201, 404, 409, and a deprecated rpc: `make run`, `make proto-gen`, `make test`.

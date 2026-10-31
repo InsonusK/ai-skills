@@ -2,7 +2,7 @@
 name: vp-http-api
 description: The HTTP API variation point — an entry point attached to the base plateau that serves commands as versioned HTTP routes, answers errors by their kind, publishes its OpenAPI contract and Swagger UI, stops gracefully, and replaces the startup entry without editing any other base file
 whenToUse: when an application built on the base plateau must be reachable over HTTP — adding the HTTP entry point, serving a new command over HTTP, or reviewing the HTTP entry point of such an application
-updated: 20261025
+updated: 20261102
 tags:
   - stack
   - concern/architecture
@@ -19,6 +19,8 @@ tags:
 - **A thin translation** - The HTTP entry point decodes, calls, and encodes; it makes no business decision, as [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md) requires of every api layer.
 - **The HTTP contract is the entry point's own** - Request and response types belong to the HTTP entry point and are mapped to and from the command's types, so a change of a command's result does not change the published contract unnoticed.
 - **Written once for every command** - Decoding errors, mapping errors to statuses, and writing JSON are one generic piece of code; serving a command adds a route, its two types, and its two mappings.
+
+@import "./diagrams/concept.mmd" {as="mermaid"}
 
 # Scope
 - Covers an HTTP API whose contract is written by hand in OpenAPI, and the HTTP form of a gRPC contract — the same proto file served over HTTP, as [api-develop](library/common-workflow/develop/api-develop.skill/api-develop.skill.md) recommends — in a service that also has [vp-grpc-api](library/architecture/spec/vp-grpc-api.skill/vp-grpc-api.skill.md).

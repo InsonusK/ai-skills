@@ -2,7 +2,7 @@
 name: vp-cli-api-in-python
 description: The CLI API variation point in Python — api/cli/pipeline copied from templates (run building the click command line with --version and help at every level, usage errors as the invalid kind, a crashed action as a failure with no kind, the generic command adapter with --output json|text, the run log), one {Resource}Handler module per resource in api/cli/endpoint, commands.py with the entry factory, and the startup entry replaced by cli_api.entry in main.py
 whenToUse: when a Python application built on the base plateau must be run from a command line, when you offer a new command as an action of such an application, or when you review its api/cli package
-updated: 20261026
+updated: 20261102
 tags:
   - stack/python
   - concern/architecture
@@ -107,4 +107,8 @@ Offer a further command of an existing resource by adding its handler, its line 
 - [ ] `make test` and `make lint` pass; `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).
 
 # Example
+One call of the example, each part with its class and file:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the base plateau's to-do planner as a command line: `make run`, `make test`, `.venv/bin/todo --help`.

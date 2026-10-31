@@ -2,7 +2,7 @@
 name: base-plateau-extension-in-python
 description: How a variation point extends the base plateau in Python — every middleware a package of its own under command/middleware/ or api/{kind}/middleware/ with a {Name}Middleware class, the command middleware of the Middleware protocol in the list main.py gives build_handlers, wrapped around every typed handler by decorate, marks as runtime-checkable protocols a command satisfies, the HTTP entry factory http_api.entry with its list of API middleware inside the fixed RequestLogMiddleware and AnswerFailuresMiddleware, rejections as KindError, the variation point's own settings, and attach.allow — with a sample access variation point attached to the HTTP example
 whenToUse: when you write, attach, or review a variation point of a Python application built on the base plateau, when you add a middleware around Python commands or around HTTP requests, or when you add a command to such an application
-updated: 20261026
+updated: 20261102
 tags:
   - stack/python
   - concern/architecture
@@ -245,4 +245,8 @@ change README.md
 - [ ] `attach.allow` names every changed base file; `bash test/check-vp-attach.sh`, `make test`, and `make lint` pass.
 
 # Example
+One call of the example, each part with its class and file:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the HTTP example with the sample access variation point attached: `make init`, `make run`, then the `curl` calls of its readme; `make test`, `make lint`.

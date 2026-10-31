@@ -2,7 +2,7 @@
 name: vp-health
 description: The health variation point — a management entry point attached to the base plateau that answers the orchestrator's probes with /health/live, /health/ready, and /health on a port of its own, the same in every long-running service whatever its other entry points, runs the readiness checks the service variation points add, and is never published through the ingress
 whenToUse: when an application built on the base plateau runs as a long-running service (it has an HTTP, gRPC, or listener entry point), when a service variation point adds a readiness check, when you write the probes of such a service's deployment, or when you review its health endpoints
-updated: 20261021
+updated: 20261102
 tags:
   - stack
   - concern/architecture
@@ -21,6 +21,8 @@ adr:
 # Core Principle
 - **A port for the operator, a port for the client** - The management port serves the orchestrator and the operator; the API port serves clients; an ingress routes only the API port.
 - **Readiness is the sum of the dependencies** - The entry point has no check of its own; each service variation point brings the check of the dependency it adds.
+
+@import "./diagrams/concept.mmd" {as="mermaid"}
 
 # Scope
 - Covers the health endpoints of a long-running service. A one-shot application (the startup command alone, a CLI) has no probes; attached to one, the entry point stops when the command is done.

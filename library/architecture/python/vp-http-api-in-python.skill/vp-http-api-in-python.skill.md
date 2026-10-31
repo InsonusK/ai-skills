@@ -2,7 +2,7 @@
 name: vp-http-api-in-python
 description: The HTTP variation point in Python — the api/http/pipeline package copied from templates (FastAPI app with binding by pydantic models, every error answered as google.rpc.Status through exception handlers and one ASGI layer, the request log with X-Request-Id, the committed OpenAPI contract and Swagger UI served without a CDN, uvicorn on its own socket stopped by the entry's event, the application's middlewares around the contract's routes), one module per resource in api/http/endpoint, routes.py with the entry factory, the contract either hand-written in OpenAPI or, as the HTTP form of a gRPC contract, generated from the proto file's google.api.http annotations with the routes over the generated messages (proto.py), and the entry listed in main.py
 whenToUse: when a Python application built on the base plateau must be reachable over HTTP, when you serve a new command over HTTP in a Python service, or when you review a Python service's HTTP entry point
-updated: 20261026
+updated: 20261102
 tags:
   - stack/python
   - concern/architecture
@@ -171,5 +171,9 @@ Copy the pipeline's and rpcstatus's scenarios — the middlewares in their order
 - [ ] `make test` and `make lint` pass; `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow) and [attach-proto.allow](./attach-proto.allow).
 
 # Example
+One call of the example, each part with its class and file:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the base plateau with the HTTP variation point: `make run`, then `POST /v1/items/plan`; Swagger UI at `/swagger/`.
 - [examples-proto/](./examples-proto/README.md) — the HTTP form of the gRPC example's proto contract, with a path parameter, 201, 404, 409, and a deprecated rpc: `make run`, `make proto-gen`, `make test`.

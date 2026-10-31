@@ -2,7 +2,7 @@
 name: vp-health-in-dotnet
 description: The health variation point in dotnet — Api/Management copied from templates (MANAGEMENT_LISTEN_PORT, /health/live, /health/ready, /health, readiness checks as ASP.NET IHealthCheck, graceful stop) on the shared web host, and one management entry added to the EntryRunner list in Program.cs
 whenToUse: when a dotnet application built on the base plateau runs as a long-running service, when a dotnet service variation point adds a readiness check, or when you review a dotnet service's health endpoints
-updated: 20261025
+updated: 20261102
 tags:
   - stack/dotnet
   - concern/architecture
@@ -79,5 +79,9 @@ Copy the example's `src/App/App.Host.Tests/features/Management/` and `Steps/Mana
 - [ ] `make test` passes; `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).
 
 # Example
+One call of the example, each part with its class and file:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the base plateau's to-do planner with the health endpoints attached: `make test`; `Program.cs` shows where readiness checks go.
 - [glossary/](./glossary/README.md) — how the three [health endpoints](./glossary/health-endpoints.md) differ, and how a [readiness check](./glossary/readiness-check.md) works.
