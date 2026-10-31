@@ -1,0 +1,28 @@
+sequenceDiagram
+    autonumber
+    participant Api as ItemsHandler<br/>src/App/App.Host/Api/Http/Endpoint/ItemsHandler.cs
+    participant Sender as ScopedSender<br/>src/BuildingBlocks/Pipeline/ScopedSender.cs
+    participant Handler as AddItemHandler<br/>src/Modules/Todo/Todo.Application/Commands/AddItemHandler.cs
+    participant Service as ItemListsService<br/>src/Modules/Todo/Todo.Application/Services/ItemListsService.cs
+    participant Store as PostgresListStore<br/>src/Infrastructure/Postgres/Postgres/Stores/PostgresListStore.cs
+    participant DB as PostgreSQL
+
+    Api->>+Sender: Send(AddItemCommand)
+    Note over Sender: opens the command's scope: one AppDbContext
+    Sender->>+Handler: Handle, through the command middleware
+    Handler->>+Service: AddAsync(listId, item)
+    Service->>+Store: InsertAsync(listId, row)
+    Store->>+DB: SaveChangesAsync: INSERT INTO list_items
+    alt the row is stored
+        DB-->>Store: the row
+        Store-->>Service: done
+        Service-->>Handler: done
+        Handler-->>Sender: AddItemResult
+    else unique index broken
+        DB-->>-Store: 23505
+        Store-->>-Service: DuplicateKeyException
+        Service-->>-Handler: conflict, ItemAlreadyInList
+        Handler-->>-Sender: conflict
+    end
+    Note over Sender: disposes the scope and its context
+    Sender-->>-Api: the result, or the conflict
