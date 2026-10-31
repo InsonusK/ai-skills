@@ -58,9 +58,9 @@ Keep every schema change as a migration in the repository, and apply them as [de
 - Fix: the job by default; a scenario for the job's exit codes.
 
 ### Bring the readiness check
-Give the health variation point a check that the database answers a query, so readiness holds traffic back during an outage.
-- Risk: a service that cannot reach its database keeps receiving traffic and answers every call unavailable.
-- Fix: pass the check in the composition root per [vp-health](library/architecture/spec/vp-health.skill/vp-health.skill.md); liveness stays free of it.
+Bring a named check that the database answers a query, through the contract [vp-health](library/architecture/spec/vp-health.skill/vp-health.skill.md) reads, so readiness holds traffic back during an outage, and keep this variation point building and running without the health one.
+- Risk: a service that cannot reach its database keeps receiving traffic and answers every call unavailable; a type of the health entry point in the database code makes one optional variation point require the other.
+- Fix: the stack extension names the contract; liveness stays free of the check.
 
 ### Test stores on the real engine
 Run the scenarios of stores and migrations on a real PostgreSQL the project provides, by `TEST_DATABASE_DSN` or a server running in its dev container, each scenario on a database it creates and drops, and let a scenario fail, never skip, when none is there. Decision recorded in [test-database-from-the-project](./adr/test-database-from-the-project.md).
@@ -78,5 +78,5 @@ Attach the variation point by changing no command, entity, or domain service; on
 - [ ] A taken key, no rows, and an unavailable database are outcomes of the store, turned into kinds by the service.
 - [ ] `DATABASE_DSN` is required; no failure and no log repeats its value.
 - [ ] Migrations run in exactly one mode; the job exits 0 on an up-to-date database.
-- [ ] The readiness check of the database is passed to the health variation point when the service has one.
+- [ ] The database brings its named readiness check with no type of the health variation point.
 - [ ] Store scenarios run on a real PostgreSQL, each on its own database, and fail without one.
