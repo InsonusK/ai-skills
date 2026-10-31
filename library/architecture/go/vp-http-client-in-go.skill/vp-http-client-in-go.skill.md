@@ -125,4 +125,8 @@ One call of the example, with its real classes:
 
 @import "./diagrams/example-flow.mmd" {as="mermaid"}
 
+The classes that do it, by package, and how they relate:
+
+@import "./diagrams/example-classes.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the base plateau's startup command planning with another service's todo API: `make run` against its emulator, or against the running HTTP example of [vp-http-api-in-go](library/architecture/go/vp-http-api-in-go.skill/vp-http-api-in-go.skill.md).

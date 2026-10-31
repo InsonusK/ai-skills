@@ -1,0 +1,86 @@
+classDiagram
+    direction LR
+    namespace command {
+        class PlanRemoteItemsHandler {
+            +Handle(ctx, cmd)
+        }
+        class remotePlanner {
+            <<interface>>
+            Plan(ctx, titles)
+        }
+    }
+    namespace service {
+        class RemotePlanner {
+            +Plan(ctx, titles)
+        }
+        class todoAPI {
+            <<interface>>
+            PlanItems(ctx, titles)
+        }
+    }
+    namespace todoapi {
+        class Client {
+            +PlanItems(ctx, titles)
+        }
+        class Item {
+            +Title string
+            +Done bool
+        }
+    }
+    namespace mock {
+        class Emulator {
+            <<func>>
+            answers every operation
+        }
+    }
+    namespace httpclient {
+        class HttpClient["Client"] {
+            +Call(ctx, method, path, request, response)
+            -attempt(ctx, ...)
+        }
+        class Config {
+            +Name, Host, Port, TLS, Timeout
+            +BaseURL()
+        }
+        class Operation {
+            +Method, Path string
+            +Retryable bool
+        }
+    }
+    namespace outcome {
+        class StatusError {
+            +Code Code
+            +Message string
+            +HTTPStatus int
+        }
+        class Code {
+            <<enum>>
+            google.rpc.Code
+        }
+    }
+    namespace pipeline {
+        class Call {
+            +API string
+            +Operation string
+            +Retryable bool
+        }
+        class Middleware {
+            <<func type>>
+            ctx, call, next
+        }
+    }
+
+    PlanRemoteItemsHandler --> remotePlanner : uses
+    RemotePlanner ..|> remotePlanner
+    RemotePlanner --> todoAPI : uses
+    Client ..|> todoAPI
+    RemotePlanner ..> StatusError : maps to kinds
+    StatusError --> Code
+    Client --> HttpClient : one Call per operation
+    Client --> Item : maps to
+    Client ..> Emulator : mock
+    HttpClient --> Config
+    HttpClient --> Operation : the listed ones
+    HttpClient --> Middleware : runs around each attempt
+    HttpClient ..> Call : gives each middleware
+    HttpClient ..> StatusError : returns

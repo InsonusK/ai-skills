@@ -1,0 +1,51 @@
+classDiagram
+    direction LR
+    namespace retry {
+        class RetryMiddleware["Middleware"] {
+            <<func>>
+            Middleware(cfg, logger)
+        }
+        class Config {
+            +Attempts int
+            +Backoff Duration
+        }
+    }
+    namespace pipeline {
+        class Call {
+            +API string
+            +Operation string
+            +Retryable bool
+        }
+        class Middleware {
+            <<func type>>
+            ctx, call, next
+        }
+    }
+    namespace outcome {
+        class ErrUnavailable {
+            <<error>>
+        }
+    }
+    namespace httpclient {
+        class HttpClient["Client"] {
+            +Call(ctx, method, path, request, response)
+        }
+        class Operation {
+            +Method, Path string
+            +Retryable bool
+        }
+    }
+    namespace todoapi {
+        class Operations {
+            <<var>>
+            Retryable: true on POST /v1/items/plan
+        }
+    }
+
+    RetryMiddleware ..|> Middleware
+    RetryMiddleware --> Config
+    RetryMiddleware ..> Call : reads Retryable
+    RetryMiddleware ..> ErrUnavailable : repeats on
+    HttpClient --> Middleware : runs around each attempt
+    HttpClient --> Operation : the listed ones
+    Operations --> Operation

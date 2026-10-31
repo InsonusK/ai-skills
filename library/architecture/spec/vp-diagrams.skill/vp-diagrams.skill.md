@@ -1,6 +1,6 @@
 ---
 name: vp-diagrams
-description: How a variation point of the architecture catalog is drawn — mermaid only for what flows or connects, the concept in its spec skill without classes or a language, one call of the example in each stack extension with its real classes, a text tree only for a file layout, and every diagram parsed before it is committed
+description: How a variation point of the architecture catalog is drawn — mermaid only for what flows or connects, the concept in its spec skill without classes or a language, one call of the example and its classes in each stack extension with their real names, a text tree only for a file layout, and every diagram parsed before it is committed
 whenToUse: when you create or revise a variation point's spec or stack skill, or draw or review a diagram of one
 updated: 20261031
 tags:
@@ -10,7 +10,7 @@ tags:
 ---
 
 # Goal
-- **A variation point read at a glance** - A reader sees from its diagrams how a variation point works before reading its rules: the concept in the spec skill, one real call in each stack extension.
+- **A variation point read at a glance** - A reader sees from its diagrams how a variation point works before reading its rules: the concept in the spec skill, one real call and the classes that make it in each stack extension.
 
 # Core Principle
 - **Two levels, one tool** - The spec skill shows the idea with no language in it; the stack extension shows the same idea as the example really runs it. Both are mermaid, so they read alike, diff as text, and are drawn the way [mermaid-diagram](library/common-workflow/mermaid-diagram.skill.md) says.
@@ -31,6 +31,12 @@ Draw in `{stack}/{vp}-in-{stack}.skill/diagrams/example-flow.mmd` a `sequenceDia
 - Risk: a diagram whose names are not the code's sends the reader looking for classes that do not exist; a diagram of every branch is read by nobody.
 - Fix: one path through the parts; the outcomes are notes.
 
+### Draw the classes of the example in each stack extension
+Draw in `{stack}/{vp}-in-{stack}.skill/diagrams/example-classes.mmd` a `classDiagram` of the types the variation point adds or uses, grouped by package with `namespace`, each with the members a reader calls, with who uses, implements, and calls what, and import it after `example-flow.mmd`; give a type whose name repeats in two packages a diagram id of its own and its real name as the label (`class HttpClient["Client"]`).
+- Violation: a type that is not in the example; every private field and helper drawn; a dot in a `namespace` name, which mermaid does not parse (`Client_Http`).
+- Risk: the sequence shows the order of the calls, not where the code lives, so a reader cannot go from the picture to the class to change.
+- Fix: search the example for every type and member of the diagram before committing it.
+
 ### Keep a text tree for a file layout
 Write the layout of a variation point's files as a text tree in a code block, not as a diagram.
 - Risk: a file tree in mermaid is a picture of what a tree already says, and it takes more lines to change.
@@ -44,5 +50,6 @@ Parse each new or changed `.mmd` with mermaid's own parser.
 # Check list
 - [ ] The spec skill imports `diagrams/concept.mmd`, with roles and no class names.
 - [ ] Each stack extension imports `diagrams/example-flow.mmd` in Example, with the example's real names.
+- [ ] Each stack extension imports `diagrams/example-classes.mmd` after it; every type and member on it is in the example.
 - [ ] No flow is drawn in ASCII; only file layouts stay text trees.
 - [ ] Every diagram parses.

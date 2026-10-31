@@ -91,4 +91,8 @@ One call of the example, with its real classes:
 
 @import "./diagrams/example-flow.mmd" {as="mermaid"}
 
+The classes that do it, by package, and how they relate:
+
+@import "./diagrams/example-classes.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the base plateau's startup command planning with another service's todo API: `make run` against its emulator, or against the running gRPC example of [vp-grpc-api-in-python](library/architecture/python/vp-grpc-api-in-python.skill/vp-grpc-api-in-python.skill.md).

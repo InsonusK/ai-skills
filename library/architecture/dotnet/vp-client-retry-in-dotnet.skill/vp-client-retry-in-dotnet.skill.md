@@ -67,4 +67,8 @@ One call of the example, with its real classes:
 
 @import "./diagrams/example-flow.mmd" {as="mermaid"}
 
+The classes that do it, by package, and how they relate:
+
+@import "./diagrams/example-classes.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the HTTP client example with the retry attached: `TODO_API_HOST=localhost TODO_API_HTTP_PORT=1 make run` shows three attempts and two "api client call retried" warnings before the startup command fails unavailable.

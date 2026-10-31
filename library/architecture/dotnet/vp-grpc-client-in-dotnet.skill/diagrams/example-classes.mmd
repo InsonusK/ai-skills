@@ -1,0 +1,116 @@
+classDiagram
+    direction LR
+    namespace Todo_Application {
+        class PlanRemoteItemsHandler {
+            +Handle(command, token)
+        }
+        class IRemotePlanner {
+            <<interface>>
+            PlanAsync(titles, token)
+        }
+        class RemotePlannerService {
+            +PlanAsync(titles, token)
+        }
+        class RemotePlannerErrors {
+            <<static>>
+            +Unavailable(cause)
+            +TitlesRejected(reason, cause)
+        }
+    }
+    namespace TodoApi_Abstractions {
+        class ITodoApi {
+            <<interface>>
+            PlanItemsAsync(titles, token)
+        }
+        class TodoApiItem {
+            <<record>>
+            +Title, Done
+        }
+    }
+    namespace TodoApi {
+        class TodoApiClient {
+            +Methods$
+            +PlanItemsAsync(titles, token)
+            +Dispose()
+        }
+        class TodoApiMock {
+            <<internal>>
+            +Bind(binder)$
+            +PlanItems(request, context)
+        }
+        class ItemsServiceClient {
+            <<generated, internal>>
+        }
+    }
+    namespace Client_Grpc {
+        class GrpcApiClient {
+            +CallInvoker
+            +Dispose()
+        }
+        class CallInterceptor {
+            +AsyncUnaryCall(...)
+            -Attempt(...)
+        }
+        class EmulatorCallInvoker {
+            <<internal>>
+            +AsyncUnaryCall(...)
+        }
+        class GrpcApiConfig {
+            <<record>>
+            +Name, Host, Port, Tls, Timeout
+            +Load(prefix)$
+        }
+        class GrpcMethod {
+            <<record>>
+            +Name, Retryable
+        }
+    }
+    namespace Client_Abstractions {
+        class ApiUnavailableException {
+            +Api string
+        }
+        class ApiStatusException {
+            +Code ApiStatusCode
+            +StatusMessage string
+            +HttpStatus int?
+        }
+        class ApiStatusCode {
+            <<enum>>
+            google.rpc.Code
+        }
+    }
+    namespace Client_Pipeline {
+        class ClientCall {
+            <<record>>
+            +Api, Operation, Retryable
+        }
+        class IClientMiddleware {
+            <<interface>>
+            RunAsync(call, next, token)
+        }
+        class ClientPipeline {
+            <<static>>
+            +RunAsync(call, middlewares, attempt, token)
+        }
+    }
+
+    PlanRemoteItemsHandler --> IRemotePlanner : uses
+    RemotePlannerService ..|> IRemotePlanner
+    RemotePlannerService --> ITodoApi : uses
+    RemotePlannerService ..> RemotePlannerErrors : outcomes to kinds
+    RemotePlannerService ..> ApiUnavailableException : catches
+    RemotePlannerService ..> ApiStatusException : catches
+    ApiStatusException --> ApiStatusCode
+    TodoApiClient ..|> ITodoApi
+    ITodoApi --> TodoApiItem
+    TodoApiClient --> ItemsServiceClient : one call per method
+    TodoApiClient --> GrpcApiClient : owns
+    ItemsServiceClient --> GrpcApiClient : over CallInvoker
+    GrpcApiClient --> CallInterceptor
+    GrpcApiClient --> GrpcApiConfig
+    GrpcApiClient ..> EmulatorCallInvoker : mock
+    EmulatorCallInvoker ..> TodoApiMock : binds
+    CallInterceptor --> GrpcMethod : the listed ones
+    CallInterceptor --> IClientMiddleware : runs around each attempt
+    CallInterceptor ..> ClientPipeline
+    CallInterceptor ..> ClientCall
