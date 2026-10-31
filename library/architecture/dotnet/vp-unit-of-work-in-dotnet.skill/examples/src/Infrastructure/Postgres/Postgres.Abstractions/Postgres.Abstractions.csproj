@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- What the services see of the database: the stores' interfaces and their
+       technical outcomes, in the technique's terms. No package: EF Core and
+       Npgsql stay in the Postgres project. -->
+  <ItemGroup>
+    <!-- For the Postgres project: IUnitOfWork and its errors. -->
+    <ProjectReference Include="..\..\..\Shared\Shared.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,29 @@
+<Solution>
+  <!-- Every test project sits beside the project it tests (skill cucumber-testing-in-dotnet). -->
+  <Folder Name="/src/">
+    <Project Path="src/Shared/Shared.csproj" />
+    <Project Path="src/BuildingBlocks/BuildingBlocks.csproj" />
+    <Project Path="src/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj" />
+    <Project Path="src/Middleware/Middleware.csproj" />
+    <Project Path="src/Middleware.Tests/Middleware.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/Infrastructure/Postgres/">
+    <Project Path="src/Infrastructure/Postgres/Postgres.Abstractions/Postgres.Abstractions.csproj" />
+    <Project Path="src/Infrastructure/Postgres/Postgres/Postgres.csproj" />
+    <Project Path="src/Infrastructure/Postgres/Postgres.Testing/Postgres.Testing.csproj" />
+    <Project Path="src/Infrastructure/Postgres/Postgres.Tests/Postgres.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/App/">
+    <Project Path="src/App/App.Host/App.Host.csproj" />
+    <Project Path="src/App/App.Host.Tests/App.Host.Tests.csproj" />
+    <Project Path="src/App/App.Migrate/App.Migrate.csproj" />
+    <Project Path="src/App/App.Migrate.Tests/App.Migrate.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/Modules/Todo/">
+    <Project Path="src/Modules/Todo/Todo.Domain/Todo.Domain.csproj" />
+    <Project Path="src/Modules/Todo/Todo.Domain.Tests/Todo.Domain.Tests.csproj" />
+    <Project Path="src/Modules/Todo/Todo.Commands/Todo.Commands.csproj" />
+    <Project Path="src/Modules/Todo/Todo.Application/Todo.Application.csproj" />
+    <Project Path="src/Modules/Todo/Todo.Application.Tests/Todo.Application.Tests.csproj" />
+  </Folder>
+</Solution>

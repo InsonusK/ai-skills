@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The application's PostgreSQL: the one AppDbContext, the rows, the stores,
+       and the migrations. Only the composition roots (App.Host, App.Migrate)
+       reference this project; a service sees Postgres.Abstractions. -->
+  <ItemGroup>
+    <ProjectReference Include="..\Postgres.Abstractions\Postgres.Abstractions.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <!-- dotnet ef generates the migrations with it; nothing of it is deployed. -->
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" />
+  </ItemGroup>
+</Project>

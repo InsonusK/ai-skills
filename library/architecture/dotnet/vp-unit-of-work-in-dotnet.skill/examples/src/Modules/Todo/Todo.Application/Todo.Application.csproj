@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The command handlers of the module, one file per command. -->
+  <ItemGroup>
+    <ProjectReference Include="..\Todo.Commands\Todo.Commands.csproj" />
+    <ProjectReference Include="..\Todo.Domain\Todo.Domain.csproj" />
+    <!-- The interface of the store its service uses; never the store itself. -->
+    <ProjectReference Include="..\..\..\Infrastructure\Postgres\Postgres.Abstractions\Postgres.Abstractions.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MediatR" />
+  </ItemGroup>
+</Project>
