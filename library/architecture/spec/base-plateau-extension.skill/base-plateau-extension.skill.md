@@ -134,6 +134,11 @@ Give every variation point's example an `attach.allow` file naming its base exam
 - Risk: an edit of a base file that no list names makes the variation point depend on that edit, and the next variation point that attaches finds a base it does not know.
 - Fix: run the attach check of this repository (`bash test/check-vp-attach.sh`); every file it reports changed and not allowed is either moved to the variation point's directory or turned into an extension point here.
 
+### Draw every variation point
+Draw each variation point as [vp-diagrams](library/architecture/spec/vp-diagrams.skill/vp-diagrams.skill.md) says: the concept in its spec skill, one real call with each part's class and file in each stack extension.
+- Risk: a variation point without diagrams is read rule by rule before anyone sees how it works.
+- Fix: run the diagram check of this repository (`bash test/check-vp-diagrams.sh`); it fails on a skill without its diagram and on a participant whose file is not in the example.
+
 ### Name the per-API code a sample
 Add a file two variation points of one base both add identically, except the code an application writes per API or per use that the example only shows (an adapter of an API and the service over it), which the `attach.allow` names a sample (`sample {glob}`).
 - Violation: fixed code copied from templates, or a shared build file, named a sample.
@@ -149,6 +154,7 @@ Add a cross-cutting step (logging, a unit of work, a metric, an access check) as
 
 # Check list
 - [ ] The variation point's example changes only the base files its `attach.allow` names, and `bash test/check-vp-attach.sh` passes.
+- [ ] The variation point is drawn per vp-diagrams, and `bash test/check-vp-diagrams.sh` passes.
 - [ ] Every handler is built and wrapped in the command registry; the composition root gives it the list of command middleware and the services.
 - [ ] A handler that runs another command gets that command's wrapped handler from the registry.
 - [ ] Every middleware lives in `middleware/{name}/` of the layer it wraps and is named `{Name}Middleware`.
