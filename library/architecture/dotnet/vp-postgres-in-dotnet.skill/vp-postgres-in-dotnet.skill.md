@@ -117,16 +117,16 @@ Change the row, run `make migration NAME={What}`, read what it wrote, and commit
 - Risk: the model and the schema drift, and `MigrateAsync` stops the deployment; `EnsureCreated` leaves no history.
 - Fix: a new migration for every further change. Decision recorded in [migration-job-as-a-project](./adr/migration-job-as-a-project.md).
 
-### Give the health variation point its check
-With [vp-health-in-dotnet](library/architecture/dotnet/vp-health-in-dotnet.skill/vp-health-in-dotnet.skill.md) attached, pass the check of `AspNetCore.HealthChecks.NpgSql`, its package added to `App.Host`.
+### Register the readiness check
+`AddPostgres` registers the check of `AspNetCore.HealthChecks.NpgSql` under the name `database` in the framework's registry, the same in every application, whether or not it has a health entry point.
 
 ```csharp
-services.AddManagement(new ReadinessCheck("database", new NpgSqlHealthCheck(new NpgSqlHealthCheckOptions(postgres.Dsn))));
+services.AddHealthChecks().AddNpgSql(config.Dsn, name: "database");
 ```
 
-- Violation: a readiness check that sends a command.
-- Risk: a check through a command fails on a business rule and holds traffic back for nothing.
-- Fix: the check opens a connection of its own. The proto example has no health entry, so this line is not in it; the check runs in `Postgres.Tests`, on a database that answers and on one that does not.
+- Violation: a readiness check that sends a command; a `using` of `Api/Management` in the Postgres project; a line for the check in `Program.cs`.
+- Risk: a check through a command fails on a business rule and holds traffic back for nothing; a type of the health entry point here stops the project building without it.
+- Fix: the check opens a connection of its own, and [vp-health-in-dotnet](library/architecture/dotnet/vp-health-in-dotnet.skill/vp-health-in-dotnet.skill.md) reads the registry; with no health entry point nothing runs the check. `Postgres.Tests` takes the check from the registry by its name and runs it on a database that answers and on one that does not.
 
 ### Create the database of each scenario
 Create a `TestDatabase` per scenario, apply `PostgresMigrations.ApplyAsync` where the scenario needs the schema, and dispose it after the scenario.

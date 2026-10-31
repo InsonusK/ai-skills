@@ -17,10 +17,14 @@ public static class PostgresModule
     /// so do the failures a store turns into its outcomes - a duplicate key is
     /// an answer of the service, not an error record. No retrying execution
     /// strategy: a repeat of a command's statements is its caller's decision.
+    /// Its readiness check goes to the framework's registry, which belongs to no
+    /// variation point: the health entry point reads it when the application
+    /// has one, and nothing runs the check when it has none.
     /// </summary>
     public static IServiceCollection AddPostgres(this IServiceCollection services, PostgresConfig config)
     {
         services.AddLogging(logging => logging.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Warning));
+        services.AddHealthChecks().AddNpgSql(config.Dsn, name: "database");
         return services.AddDbContext<AppDbContext>(options => Configure(options, config));
     }
 
