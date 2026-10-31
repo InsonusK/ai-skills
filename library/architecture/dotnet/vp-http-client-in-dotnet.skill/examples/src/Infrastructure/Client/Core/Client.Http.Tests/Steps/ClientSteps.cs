@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using BuildingBlocks.Logging;
 using Client.Abstractions;
+using Client.Pipeline;
 using Microsoft.Extensions.Logging;
 using Reqnroll;
 using Xunit;
@@ -20,6 +21,22 @@ public sealed class ClientSteps(ITestOutputHelper output) : IDisposable
 {
     private readonly TestApi _api = new();
     private readonly RecordingLogger _logger = new();
+    private readonly List<IClientMiddleware> _middlewares = [];
+    private readonly List<ClientCall> _seen = [];
+
+    /// <summary>The test API's operations the client may call.</summary>
+    private static readonly IReadOnlyList<HttpOperation> Operations = [new(HttpMethod.Post, "/v1/echo", Retryable: true)];
+
+    /// <summary>A client middleware that records the call and sends it twice.</summary>
+    private sealed class Twice(List<ClientCall> seen) : IClientMiddleware
+    {
+        public async Task RunAsync(ClientCall call, ClientAttempt next, CancellationToken cancellationToken)
+        {
+            seen.Add(call);
+            await next(cancellationToken);
+            await next(cancellationToken);
+        }
+    }
     private bool _down;
     private HttpMessageHandler? _emulator;
     private Echo? _answer;
@@ -53,14 +70,14 @@ public sealed class ClientSteps(ITestOutputHelper output) : IDisposable
     {
         if (_emulator is not null)
         {
-            return new HttpApiClient(new HttpApiConfig("test-api", HttpApiConfig.Mock, 80, false, TimeSpan.FromSeconds(1)), _logger, _emulator);
+            return new HttpApiClient(new HttpApiConfig("test-api", HttpApiConfig.Mock, 80, false, TimeSpan.FromSeconds(1)), _logger, _emulator, Operations, _middlewares);
         }
         if (!_down)
         {
             _api.Start();
         }
         var timeout = _api.Delay > TimeSpan.Zero ? TimeSpan.FromMilliseconds(50) : TimeSpan.FromSeconds(1);
-        return new HttpApiClient(new HttpApiConfig("test-api", "127.0.0.1", _api.Port, false, timeout), _logger, new Emulator("unused"));
+        return new HttpApiClient(new HttpApiConfig("test-api", "127.0.0.1", _api.Port, false, timeout), _logger, new Emulator("unused"), Operations, _middlewares);
     }
 
     private async Task Call(string method, string path, string text)
@@ -87,6 +104,16 @@ public sealed class ClientSteps(ITestOutputHelper output) : IDisposable
             await Call(method, path, text);
         }
     }
+
+    [Given("a client middleware that sends every call twice")]
+    public void GivenAClientMiddlewareThatSendsTwice() => _middlewares.Add(new Twice(_seen));
+
+    [Then("the middleware should have seen the call {string} of {string}, retryable {string}")]
+    public void ThenTheMiddlewareShouldHaveSeen(string operation, string api, string retryable) =>
+        Assert.Equal(new ClientCall(api, operation, bool.Parse(retryable)), Assert.Single(_seen));
+
+    [Then("the test API should have received {int} requests")]
+    public void ThenTheTestApiShouldHaveReceivedRequests(int count) => Assert.Equal(count, _api.Received.Count);
 
     [Then("the call should succeed with the text {string}")]
     public void ThenTheCallShouldSucceed(string text)

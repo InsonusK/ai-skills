@@ -10,6 +10,7 @@ using App.Host.Version;
 using BuildingBlocks.Logging;
 using BuildingBlocks.Pipeline;
 using Client.Http;
+using Client.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Middleware.Logging;
@@ -72,7 +73,14 @@ public static class Program
             return EntryRunner.ExitFailure;
         }
         services.AddSingleton<ITodoApi>(provider =>
-            new TodoApiClient(todoApiConfig, provider.GetRequiredService<ILoggerFactory>().CreateLogger("Client.TodoApi")));
+        {
+            var loggers = provider.GetRequiredService<ILoggerFactory>();
+            // [client middleware] - run around the attempts of every call of
+            // the todo API, the first the outermost. A variation point (the
+            // retry) adds its middleware to this list.
+            IReadOnlyList<IClientMiddleware> todoApiMiddlewares = [];
+            return new TodoApiClient(todoApiConfig, loggers.CreateLogger("Client.TodoApi"), todoApiMiddlewares);
+        });
         services.AddSingleton<IRemotePlanner, RemotePlannerService>();
 
         // [handlers] - the handler of every command of each module, and the

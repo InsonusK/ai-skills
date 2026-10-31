@@ -30,7 +30,7 @@ service ─► client.Method ─► fixed client code: listed? ─► [client mi
 
 # Scope
 - Covers the repeat of a call the API did not answer. A circuit breaker, a hedged call, or a retry of a whole command are not here.
-- The implementation for each stack is described in its stack-specialized extension: `vp-client-retry-in-go`; the dotnet and Python extensions are planned.
+- The implementation for each stack is described in its stack-specialized extension: `vp-client-retry-in-go`, `vp-client-retry-in-dotnet`; the Python extension is planned.
 
 # Rule
 
@@ -48,7 +48,7 @@ Read the retry of each API from `{API}_RETRY_ATTEMPTS` (default `3`: the attempt
 - Fix: the jitter spreads the repeats; the operator sets fewer attempts where the caller's deadline is short.
 
 ### Bound each attempt by the timeout, all by the caller
-Give each attempt the whole `{API}_TIMEOUT`, and end the repeats with the deadline of the call being served: start no wait that would end past it.
+Give each attempt the whole `{API}_TIMEOUT`, and end the repeats with the deadline of the call being served: where the stack carries the deadline as a value (Go `context.Context`), start no wait that would end past it; where it carries only a cancellation (dotnet `CancellationToken`, Python), end the wait when the caller cancels and answer the outcome of the last attempt.
 - Risk: a timeout shared by all attempts leaves the repeats no time after a slow first attempt; repeats past the caller's deadline answer nobody and load the API that is recovering.
 - Fix: the attempt sets its own timeout inside the client; the middleware checks the caller's deadline before each wait.
 
@@ -65,6 +65,6 @@ Attach the retry by adding its middleware and by changing no file of the client'
 # Check list
 - [ ] Only a call of a marked operation that ended unavailable is sent again.
 - [ ] `{API}_RETRY_ATTEMPTS` and `{API}_RETRY_BACKOFF` set the retry of each API; the waits double with jitter.
-- [ ] Each attempt has the whole `{API}_TIMEOUT`; no wait ends past the caller's deadline.
+- [ ] Each attempt has the whole `{API}_TIMEOUT`; no wait outlives the caller's deadline or cancellation.
 - [ ] Each repeat writes one WARN record "api client call retried".
 - [ ] No file of the client's example changed but the composition root and the readme.

@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The adapter of the todo API over HTTP and its mock. Only App.Host
+       references it, to build it in [services]. -->
+  <ItemGroup>
+    <ProjectReference Include="..\TodoApi.Abstractions\TodoApi.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Core\Client.Http\Client.Http.csproj" />
+  </ItemGroup>
+</Project>

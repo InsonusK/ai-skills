@@ -41,12 +41,12 @@ src/Modules/{Module}/{Module}.Application/Services/    I{Service}.cs, {Service}S
 ## MUST
 
 ### Copy the client code from templates
-Copy [Client.Abstractions](./templates/src/Infrastructure/Client/Core/Client.Abstractions/) and [Client.Http](./templates/src/Infrastructure/Client/Core/Client.Http/) to `src/Infrastructure/Client/Core/`, with the example's `Client.Http.Tests`, and add the three projects to the solution.
+Copy [Client.Abstractions](./templates/src/Infrastructure/Client/Core/Client.Abstractions/), [Client.Pipeline](./templates/src/Infrastructure/Client/Core/Client.Pipeline/), and [Client.Http](./templates/src/Infrastructure/Client/Core/Client.Http/) to `src/Infrastructure/Client/Core/`, with the example's `Client.Pipeline.Tests` and `Client.Http.Tests`, and add the five projects to the solution.
 - Risk: a retyped client drifts in its timeout, its outcomes, or its log from every other dotnet client of the catalog.
 - Fix: copy the files unchanged; `make test` passes.
 
 ### One client per API, behind its abstractions
-Write each API as two projects under `src/Infrastructure/Client/{Api}/`: `{Api}.Abstractions` with `I{Api}`, one method per operation in the API's terms and its own item records, referencing only `Client.Abstractions`; and `{Api}` with `{Api}Client : I{Api}` holding `Prefix` (`"TODO_API"`), `Operations` (the method and path of every operation it calls), and per operation one method that calls `HttpApiClient.CallAsync` with private request and response records and maps the answer.
+Write each API as two projects under `src/Infrastructure/Client/{Api}/`: `{Api}.Abstractions` with `I{Api}`, one method per operation in the API's terms and its own item records, referencing only `Client.Abstractions`; and `{Api}` with `{Api}Client : I{Api}` holding `Prefix` (`"TODO_API"`), `Operations` (an `HttpOperation` - method, path, and `Retryable` where a repeat does what one call does - for every operation it calls), the client middleware in its constructor, and per operation one method that calls `HttpApiClient.CallAsync` with private request and response records and maps the answer.
 
 ```csharp
 public async Task<IReadOnlyList<TodoApiItem>> PlanItemsAsync(IReadOnlyList<string> titles, CancellationToken cancellationToken)
@@ -84,11 +84,16 @@ catch (ApiStatusException rejected) when (rejected.Code == ApiStatusCode.Invalid
 - Fix: the scenario "Any other answer is a failure with no kind" of the example's `RemotePlanner.feature`.
 
 ### Build the client and the service in Program.cs
-Load the settings with `HttpApiConfig.Load({Api}Client.Prefix)` in `// [services]` of `Program.cs`, stopping the start with "startup failed" on a `FormatException`, and register the client as a singleton of `I{Api}` built with a logger of the logger factory, and the service as a singleton of its interface.
+Load the settings with `HttpApiConfig.Load({Api}Client.Prefix)` in `// [services]` of `Program.cs`, stopping the start with "startup failed" on a `FormatException`, and register the client as a singleton of `I{Api}` built with a logger of the logger factory, and the service as a singleton of its interface. Give every client the client middleware of its API, per [api-client](library/develop/core/api-client.skill/api-client.skill.md): build the list in `// [client middleware]` inside the client's registration - empty until a variation point (`vp-client-retry`) adds one - and pass it to the client's constructor.
 
 ```csharp
 services.AddSingleton<ITodoApi>(provider =>
-    new TodoApiClient(todoApiConfig, provider.GetRequiredService<ILoggerFactory>().CreateLogger("Client.TodoApi")));
+{
+    var loggers = provider.GetRequiredService<ILoggerFactory>();
+    // [client middleware]
+    IReadOnlyList<IClientMiddleware> todoApiMiddlewares = [];
+    return new TodoApiClient(todoApiConfig, loggers.CreateLogger("Client.TodoApi"), todoApiMiddlewares);
+});
 services.AddSingleton<IRemotePlanner, RemotePlannerService>();
 ```
 

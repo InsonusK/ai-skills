@@ -32,7 +32,7 @@ public sealed class TodoApiSteps(ITestOutputHelper output) : IDisposable
     {
         if (_mocked)
         {
-            return new TodoApiClient(new HttpApiConfig("todo-api", HttpApiConfig.Mock, 80, false, TimeSpan.FromSeconds(1)), NullLogger.Instance);
+            return new TodoApiClient(new HttpApiConfig("todo-api", HttpApiConfig.Mock, 80, false, TimeSpan.FromSeconds(1)), NullLogger.Instance, []);
         }
         var probe = new TcpListener(IPAddress.Loopback, 0);
         probe.Start();
@@ -49,7 +49,7 @@ public sealed class TodoApiSteps(ITestOutputHelper output) : IDisposable
             await context.Response.OutputStream.WriteAsync(Encoding.UTF8.GetBytes(_answer));
             context.Response.Close();
         });
-        return new TodoApiClient(new HttpApiConfig("todo-api", "127.0.0.1", port, false, TimeSpan.FromSeconds(1)), NullLogger.Instance);
+        return new TodoApiClient(new HttpApiConfig("todo-api", "127.0.0.1", port, false, TimeSpan.FromSeconds(1)), NullLogger.Instance, []);
     }
 
     [When("I call PlanItems with the titles {string}")]
@@ -80,11 +80,11 @@ public sealed class TodoApiSteps(ITestOutputHelper output) : IDisposable
     [Then("the adapter should call exactly these operations, each in the contract:")]
     public void ThenTheAdapterShouldCallExactly(Table table)
     {
-        var expected = table.Rows.Select(row => (row["method"], row["path"])).ToList();
-        Assert.Equal(expected, TodoApiClient.Operations.Select(operation => (operation.Method.Method, operation.Path)).ToList());
+        var expected = table.Rows.Select(row => (row["method"], row["path"], row["retryable"] == "yes")).ToList();
+        Assert.Equal(expected, TodoApiClient.Operations.Select(operation => (operation.Method.Method, operation.Path, operation.Retryable)).ToList());
         using var contract = JsonDocument.Parse(File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "contract", "openapi.json")));
         var paths = contract.RootElement.GetProperty("paths");
-        foreach (var (method, path) in TodoApiClient.Operations)
+        foreach (var (method, path, _) in TodoApiClient.Operations)
         {
             Assert.True(paths.TryGetProperty(path, out var operations) && operations.TryGetProperty(method.Method.ToLowerInvariant(), out _),
                 $"{method} {path} is no operation of the contract");
