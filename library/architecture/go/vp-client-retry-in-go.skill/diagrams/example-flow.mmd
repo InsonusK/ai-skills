@@ -1,8 +1,8 @@
 sequenceDiagram
     autonumber
-    participant Client as httpclient.Client
-    participant Retry as retry.Middleware
-    participant Attempt as One attempt of the client
+    participant Client as httpclient.Client.Call<br/>internal/infrastructure/client/core/httpclient/client.go
+    participant Retry as retry.Middleware<br/>internal/infrastructure/client/middleware/retry/retry.go
+    participant Attempt as httpclient.Client.attempt<br/>internal/infrastructure/client/core/httpclient/client.go
     participant API as Todo API
 
     Client->>+Retry: the call, Retryable, next

@@ -26,9 +26,9 @@ Draw in `spec/{vp}.skill/diagrams/concept.mmd` the parts of the variation point 
 - Fix: `vp-client-retry`'s `concept.mmd`: a `sequenceDiagram` of the call, the loop, and the outcome.
 
 ### Draw one call of the example in each stack extension
-Draw in `{stack}/{vp}-in-{stack}.skill/diagrams/example-flow.mmd` a `sequenceDiagram` of one call of the example with its real classes and methods, numbered, with activations, its error paths as notes at the part that decides them, and import it in the Example section.
+Draw in `{stack}/{vp}-in-{stack}.skill/diagrams/example-flow.mmd` a `sequenceDiagram` of one call of the example, numbered, with activations, each participant the real class and the file that holds it, relative to the example's root (`participant Retry as retry.Middleware<br/>internal/infrastructure/client/middleware/retry/retry.go`), its error paths as notes at the part that decides them, and import it in the Example section.
 - Violation: names that are not in the example; every branch drawn as its own arrows through every layer.
-- Risk: a diagram whose names are not the code's sends the reader looking for classes that do not exist; a diagram of every branch is read by nobody.
+- Risk: a diagram without its files leaves the reader searching for the code it describes; a diagram whose names are not the code's sends them after classes that do not exist; a diagram of every branch is read by nobody.
 - Fix: one path through the parts; the outcomes are notes.
 
 ### Draw the classes of the example in each stack extension
@@ -49,7 +49,7 @@ Parse each new or changed `.mmd` with mermaid's own parser.
 
 # Check list
 - [ ] The spec skill imports `diagrams/concept.mmd`, with roles and no class names.
-- [ ] Each stack extension imports `diagrams/example-flow.mmd` in Example, with the example's real names.
+- [ ] Each stack extension imports `diagrams/example-flow.mmd` in Example; each participant names its real class and its file.
 - [ ] Each stack extension imports `diagrams/example-classes.mmd` after it; every type and member on it is in the example.
 - [ ] No flow is drawn in ASCII; only file layouts stay text trees.
 - [ ] Every diagram parses.

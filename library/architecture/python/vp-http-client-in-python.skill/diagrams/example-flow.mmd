@@ -1,10 +1,10 @@
 sequenceDiagram
     autonumber
-    participant Handler as PlanRemoteItemsHandler
-    participant Service as RemotePlanner
-    participant Adapter as TodoApi
-    participant Client as HttpClient
-    participant API as Todo API, or its emulator with TODO_API_HOST=mock
+    participant Handler as PlanRemoteItemsHandler<br/>src/todo/command/plan_remote_items.py
+    participant Service as RemotePlanner<br/>src/todo/service/remote_planner.py
+    participant Adapter as TodoApi<br/>src/todo/infrastructure/client/todo_api/todo_api.py
+    participant Client as HttpClient<br/>src/todo/infrastructure/client/core/httpclient/client.py
+    participant API as Todo API, or with TODO_API_HOST=mock its emulator<br/>src/todo/infrastructure/client/todo_api/mock/todo_api_mock.py
 
     Handler->>+Service: plan(titles)
     Service->>+Adapter: plan_items(titles)

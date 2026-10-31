@@ -1,8 +1,8 @@
 sequenceDiagram
     autonumber
-    participant Client as HttpApiClient
-    participant Retry as RetryMiddleware
-    participant Attempt as One attempt of the client
+    participant Client as HttpApiClient.CallAsync<br/>src/Infrastructure/Client/Core/Client.Http/HttpApiClient.cs
+    participant Retry as RetryMiddleware<br/>src/Infrastructure/Client/Middleware/Retry/RetryMiddleware.cs
+    participant Attempt as HttpApiClient.AttemptAsync<br/>src/Infrastructure/Client/Core/Client.Http/HttpApiClient.cs
     participant API as Todo API
 
     Client->>+Retry: RunAsync(call, next, token)

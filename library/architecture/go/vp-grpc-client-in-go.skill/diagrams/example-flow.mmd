@@ -1,10 +1,10 @@
 sequenceDiagram
     autonumber
-    participant Service as service.RemotePlanner
-    participant Adapter as todoapi.Client
-    participant Stub as todo.ItemsServiceClient
-    participant Interceptor as grpcclient interceptor
-    participant API as Todo API, or its emulator with TODO_API_HOST=mock
+    participant Service as service.RemotePlanner<br/>internal/service/remote_planner.go
+    participant Adapter as todoapi.Client<br/>internal/infrastructure/client/todoapi/todoapi.go
+    participant Stub as todo.ItemsServiceClient<br/>gen/client/todo/todo_grpc.pb.go
+    participant Interceptor as grpcclient interceptor and attempt<br/>internal/infrastructure/client/core/grpcclient/client.go
+    participant API as Todo API, or with TODO_API_HOST=mock its emulator<br/>internal/infrastructure/client/todoapi/mock/todoapi_mock.go
 
     Service->>+Adapter: PlanItems(ctx, titles)
     Adapter->>+Stub: PlanItems(ctx, request)

@@ -1,8 +1,8 @@
 sequenceDiagram
     autonumber
-    participant Client as HttpClient
-    participant Retry as RetryMiddleware
-    participant Attempt as One attempt of the client
+    participant Client as HttpClient.call<br/>src/todo/infrastructure/client/core/httpclient/client.py
+    participant Retry as RetryMiddleware<br/>src/todo/infrastructure/client/middleware/retry/middleware.py
+    participant Attempt as HttpClient._attempt<br/>src/todo/infrastructure/client/core/httpclient/client.py
     participant API as Todo API
 
     Client->>+Retry: __call__(call, call_next)

@@ -1,10 +1,10 @@
 sequenceDiagram
     autonumber
-    participant Handler as PlanRemoteItemsHandler
-    participant Service as RemotePlannerService
-    participant Adapter as TodoApiClient
-    participant Client as HttpApiClient
-    participant API as Todo API, or its emulator with TODO_API_HOST=mock
+    participant Handler as PlanRemoteItemsHandler<br/>src/Modules/Todo/Todo.Application/Commands/PlanRemoteItemsHandler.cs
+    participant Service as RemotePlannerService<br/>src/Modules/Todo/Todo.Application/Services/RemotePlannerService.cs
+    participant Adapter as TodoApiClient<br/>src/Infrastructure/Client/TodoApi/TodoApi/TodoApiClient.cs
+    participant Client as HttpApiClient<br/>src/Infrastructure/Client/Core/Client.Http/HttpApiClient.cs
+    participant API as Todo API, or with TODO_API_HOST=mock its emulator<br/>src/Infrastructure/Client/TodoApi/TodoApi/Mock/TodoApiMock.cs
 
     Handler->>+Service: PlanAsync(titles, token)
     Service->>+Adapter: PlanItemsAsync(titles, token)

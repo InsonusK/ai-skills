@@ -1,10 +1,10 @@
 sequenceDiagram
     autonumber
-    participant Service as RemotePlannerService
-    participant Adapter as TodoApiClient
-    participant Stub as ItemsServiceClient, generated, internal
-    participant Interceptor as CallInterceptor
-    participant API as Todo API, or its emulator with TODO_API_HOST=mock
+    participant Service as RemotePlannerService<br/>src/Modules/Todo/Todo.Application/Services/RemotePlannerService.cs
+    participant Adapter as TodoApiClient<br/>src/Infrastructure/Client/TodoApi/TodoApi/TodoApiClient.cs
+    participant Stub as ItemsServiceClient, generated at build<br/>docs/integration/client/todo/todo.proto
+    participant Interceptor as CallInterceptor<br/>src/Infrastructure/Client/Core/Client.Grpc/CallInterceptor.cs
+    participant API as Todo API, or with TODO_API_HOST=mock its emulator<br/>src/Infrastructure/Client/TodoApi/TodoApi/Mock/TodoApiMock.cs
 
     Service->>+Adapter: PlanItemsAsync(titles, token)
     Adapter->>+Stub: PlanItemsAsync(request, token)
