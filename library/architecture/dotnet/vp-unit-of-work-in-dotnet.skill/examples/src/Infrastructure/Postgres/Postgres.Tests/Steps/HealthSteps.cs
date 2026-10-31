@@ -1,5 +1,6 @@
-using HealthChecks.NpgSql;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 using Reqnroll;
 using Xunit;
 
@@ -17,12 +18,15 @@ public sealed class HealthSteps(PostgresWorld world)
     [When("the readiness check runs")]
     public async Task WhenTheReadinessCheckRuns()
     {
-        // The check the composition root passes to AddManagement (vp-health-in-dotnet).
-        var check = new NpgSqlHealthCheck(new NpgSqlHealthCheckOptions(world.Config!.Dsn));
-        _result = await check.CheckHealthAsync(new HealthCheckContext
-        {
-            Registration = new HealthCheckRegistration("database", check, HealthStatus.Unhealthy, null),
-        });
+        // The check as the health entry point finds it: by name, in the registry
+        // AddPostgres filled, with no type of the health variation point.
+        var services = new ServiceCollection();
+        services.AddPostgres(world.Config!);
+        await using var provider = services.BuildServiceProvider();
+        var registration = Assert.Single(
+            provider.GetRequiredService<IOptions<HealthCheckServiceOptions>>().Value.Registrations,
+            registration => registration.Name == "database");
+        _result = await registration.Factory(provider).CheckHealthAsync(new HealthCheckContext { Registration = registration });
     }
 
     [Then("the readiness check should be {string}")]
