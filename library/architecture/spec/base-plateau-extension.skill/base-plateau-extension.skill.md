@@ -135,7 +135,7 @@ Give every variation point's example an `attach.allow` file naming its base exam
 - Fix: run the attach check of this repository (`bash test/check-vp-attach.sh`); every file it reports changed and not allowed is either moved to the variation point's directory or turned into an extension point here.
 
 ### Draw every variation point
-Draw each variation point as [vp-diagrams](library/architecture/spec/vp-diagrams.skill/vp-diagrams.skill.md) says: the concept in its spec skill, one real call with each part's class and file in each stack extension.
+Draw each variation point as [vp-diagrams](library/common-workflow/architecture/design/vp-diagrams.skill.md) says: the concept in its spec skill, one real call with each part's class and file in each stack extension.
 - Risk: a variation point without diagrams is read rule by rule before anyone sees how it works.
 - Fix: run the diagram check of this repository (`bash test/check-vp-diagrams.sh`); it fails on a skill without its diagram and on a participant whose file is not in the example.
 

@@ -21,7 +21,6 @@ imports() {
 
 count=0
 for skill in library/architecture/spec/*.skill; do
-    [ "$(basename "$skill")" = vp-diagrams.skill ] && continue # the rule itself
     imports "$skill" concept
     count=$((count + 1))
 done
