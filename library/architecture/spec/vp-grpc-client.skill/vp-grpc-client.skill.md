@@ -2,7 +2,7 @@
 name: vp-grpc-client
 description: The gRPC client variation point — a client of another service's gRPC API attached to the base plateau in its infrastructure, with the service over it, calling code generated from the copied proto contract over one fixed connection (the {API} settings, the timeout, the call log, the request id, the gRPC status read as an outcome, the mock as a gRPC server inside the process) and checked against that contract
 whenToUse: when an application built on the base plateau must call a gRPC API of another service, or the HTTP form of a proto contract — adding the client, calling a further method of it, replacing the consumed proto with a new version, or reviewing such a client
-updated: 20261030
+updated: 20261031
 tags:
   - stack
   - concern/architecture
@@ -18,18 +18,7 @@ tags:
 - **Generated from the contract, mapped by hand** - The messages and the stub come from the copied `.proto` by the generator of the stack; the client writes per method only the mapping between them and its own types, so no message is retyped and none reaches the service.
 - **One connection, one interceptor** - The connection of each API carries every call through one fixed interceptor that bounds it by the timeout, sends the request id, writes the two log records, and turns the gRPC status into the client's outcome; a method of the client is one call of the generated stub.
 
-```
-docs/integration/client/{api-name}/{name}.proto      the provider's contract, copied unchanged
-        │ generator: the generated types kept the client's (package option replaced, or internal)
-        ▼
-messages + stub, never edited                        gen/client/{api-name}/ committed, or compiled at build time
-        │
-infrastructure/client/{api}/      client:  stub call ─► own types       mock/{api}_mock: the generated server implemented
-        │                                  │
-        ▼                                  ▼
-infrastructure/client/core/{grpc client}   connection: target or in-memory emulator; interceptor:
-                                           timeout · x-request-id · 2 records · status → unavailable | status error
-```
+@import "./diagrams/concept.mmd" {as="mermaid"}
 
 # Scope
 - Covers unary calls to a gRPC API whose contract is a `.proto` file (skill api-develop), and the HTTP form of a proto contract, which is called over gRPC instead.

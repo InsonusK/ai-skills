@@ -1,0 +1,20 @@
+sequenceDiagram
+    autonumber
+    participant Handler as PlanRemoteItemsHandler<br/>internal/command/plan_remote_items.go
+    participant Service as service.RemotePlanner<br/>internal/service/remote_planner.go
+    participant Adapter as todoapi.Client<br/>internal/infrastructure/client/todoapi/todoapi.go
+    participant Client as httpclient.Client<br/>internal/infrastructure/client/core/httpclient/client.go
+    participant API as Todo API, or with TODO_API_HOST=mock its emulator<br/>internal/infrastructure/client/todoapi/mock/todoapi_mock.go
+
+    Handler->>+Service: Plan(ctx, titles)
+    Service->>+Adapter: PlanItems(ctx, titles)
+    Adapter->>+Client: Call(ctx, POST, path, request, &answer)
+    Note over Client: the operation is in the adapter's list, the client middleware run around each attempt
+    Note over Client: record "http client request sent"
+    Client->>+API: POST /v1/items/plan, JSON, X-Request-Id, within TODO_API_TIMEOUT
+    API-->>-Client: answer, or none
+    Note over Client: record "http client response received"
+    Client-->>-Adapter: answer, or outcome.ErrUnavailable, or outcome.StatusError
+    Adapter-->>-Service: []todoapi.Item, or the outcome
+    Note over Service: ErrUnavailable: entity.ErrUnavailable. Code INVALID_ARGUMENT: entity.ErrInvalid. Anything else: no kind
+    Service-->>-Handler: []entity.Item, or an error

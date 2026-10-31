@@ -1,0 +1,15 @@
+flowchart LR
+    contract["openapi.json<br/>the provider's, copied unchanged"]
+    scenario["contract scenario"]
+    service["service<br/>outcomes to kinds"]
+    adapter["adapter of the API<br/>one method per operation, own types"]
+    fixed["fixed client code<br/>URL, timeout, JSON, log, request id, outcomes"]
+    middleware["client middleware<br/>around each attempt, optional"]
+    api["the other service's API"]
+    emulator["emulator<br/>inside the process"]
+
+    service --> adapter --> fixed --> middleware
+    middleware -- "{API}_HOST=host" --> api
+    middleware -- "{API}_HOST=mock" --> emulator
+    scenario -. "holds the operations against" .-> contract
+    scenario -. reads .-> adapter

@@ -2,7 +2,7 @@
 name: vp-client-retry-in-dotnet
 description: The client retry variation point in dotnet — the Retry project in src/Infrastructure/Client/Middleware copied from templates (RetryConfig.Load reading {API}_RETRY_ATTEMPTS and {API}_RETRY_BACKOFF, RetryMiddleware repeating a retryable call on ApiUnavailableException with doubled, jittered waits that the caller's cancellation ends, and a WARN record per repeat), listed in the client middleware of an API in Program.cs
 whenToUse: when a dotnet application with a client of another service's API (vp-http-client-in-dotnet, vp-grpc-client-in-dotnet) must repeat calls the API did not answer, when you mark an operation retryable, or when you review a dotnet client retry
-updated: 20261030
+updated: 20261031
 tags:
   - stack/dotnet
   - concern/architecture
@@ -63,4 +63,12 @@ Set `Retryable: true` on each `HttpOperation` or `GrpcMethod` of the adapter's l
 - [ ] `make test` passes; `bash test/check-vp-attach.sh` in this repository reports no file changed beyond [attach.allow](./attach.allow).
 
 # Example
+One call of the example, with its real classes:
+
+@import "./diagrams/example-flow.mmd" {as="mermaid"}
+
+The classes that do it, by package, and how they relate:
+
+@import "./diagrams/example-classes.mmd" {as="mermaid"}
+
 - [examples/](./examples/README.md) — the HTTP client example with the retry attached: `TODO_API_HOST=localhost TODO_API_HTTP_PORT=1 make run` shows three attempts and two "api client call retried" warnings before the startup command fails unavailable.

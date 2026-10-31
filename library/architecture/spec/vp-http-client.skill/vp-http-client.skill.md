@@ -2,7 +2,7 @@
 name: vp-http-client
 description: The HTTP client variation point — a client of another service's HTTP API attached to the base plateau in its infrastructure, with the service over it, built on fixed client code (the {API} settings, the timeout, JSON in and out, google.rpc.Status read from an error, the call log, the request id, the mock against an emulator) and checked against the copied OpenAPI contract
 whenToUse: when an application built on the base plateau must call an HTTP API of another service — adding the client, calling a further operation of it, or reviewing such a client
-updated: 20261030
+updated: 20261031
 tags:
   - stack
   - concern/architecture
@@ -17,6 +17,8 @@ tags:
 # Core Principle
 - **Written by hand, held to the contract** - The client has request and response types of its own for the operations it calls, mapped to the application's values; one scenario holds each operation's method and path against the copied `openapi.json`, so no generator is needed and none drifts.
 - **One call, written once** - Building the URL, the timeout, JSON in and out, reading `google.rpc.Status` from an error, the two log records, the request id, and the mock are one piece of fixed code; an operation of the client is one call of it with its path and its two types.
+
+@import "./diagrams/concept.mmd" {as="mermaid"}
 
 # Scope
 - Covers calls to an HTTP API whose contract is `openapi.json` with JSON bodies and `google.rpc.Status` errors (skill api-develop). The HTTP form of a proto contract is called through `vp-grpc-client` instead, over gRPC.

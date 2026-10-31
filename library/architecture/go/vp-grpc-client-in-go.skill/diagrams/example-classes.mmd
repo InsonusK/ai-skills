@@ -1,0 +1,108 @@
+classDiagram
+    direction LR
+    namespace command {
+        class PlanRemoteItemsHandler {
+            +Handle(ctx, cmd)
+        }
+        class remotePlanner {
+            <<interface>>
+            Plan(ctx, titles)
+        }
+    }
+    namespace service {
+        class RemotePlanner {
+            +Plan(ctx, titles)
+        }
+        class todoAPI {
+            <<interface>>
+            PlanItems(ctx, titles)
+        }
+    }
+    namespace todoapi {
+        class Client {
+            +PlanItems(ctx, titles)
+            +Close()
+        }
+        class Item {
+            +Title string
+            +Done bool
+        }
+    }
+    namespace todo {
+        class ItemsServiceClient {
+            <<generated>>
+            PlanItems(ctx, request)
+        }
+        class UnimplementedItemsServiceServer {
+            <<generated>>
+        }
+    }
+    namespace mock {
+        class emulator {
+            +PlanItems(ctx, request)
+        }
+    }
+    namespace grpcclient {
+        class GrpcClient["Client"] {
+            +ClientConn
+            +Close()
+        }
+        class Config {
+            +Name, Host, Port, TLS, Timeout
+            +Target()
+        }
+        class Method {
+            +Name string
+            +Retryable bool
+        }
+        class interceptor {
+            <<func>>
+            one per connection
+        }
+        class attempt {
+            <<func>>
+            one attempt
+        }
+    }
+    namespace outcome {
+        class StatusError {
+            +Code Code
+            +Message string
+            +HTTPStatus int
+        }
+        class Code {
+            <<enum>>
+            google.rpc.Code
+        }
+    }
+    namespace pipeline {
+        class Call {
+            +API string
+            +Operation string
+            +Retryable bool
+        }
+        class Middleware {
+            <<func type>>
+            ctx, call, next
+        }
+    }
+
+    PlanRemoteItemsHandler --> remotePlanner : uses
+    RemotePlanner ..|> remotePlanner
+    RemotePlanner --> todoAPI : uses
+    Client ..|> todoAPI
+    RemotePlanner ..> StatusError : maps to kinds
+    StatusError --> Code
+    Client --> ItemsServiceClient : one call per method
+    Client --> Item : maps to
+    Client --> GrpcClient : owns
+    ItemsServiceClient --> GrpcClient : over
+    GrpcClient --> interceptor
+    GrpcClient --> Config
+    interceptor --> Method : the listed ones
+    interceptor --> Middleware : runs around each attempt
+    interceptor --> attempt
+    interceptor ..> Call : gives each middleware
+    interceptor ..> StatusError : returns
+    emulator --|> UnimplementedItemsServiceServer
+    GrpcClient ..> emulator : mock

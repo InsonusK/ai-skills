@@ -1,0 +1,16 @@
+flowchart LR
+    contract["{name}.proto<br/>the provider's, copied unchanged"]
+    generated["generated messages and stub<br/>kept the adapter's"]
+    scenario["contract scenarios"]
+    service["service<br/>outcomes to kinds"]
+    adapter["adapter of the API<br/>one method per method, own types"]
+    interceptor["one interceptor per connection<br/>timeout, x-request-id, log, status to outcome"]
+    middleware["client middleware<br/>around each attempt, optional"]
+    api["the other service's API"]
+    emulator["emulator: generated server<br/>inside the process"]
+
+    contract -- generator --> generated
+    service --> adapter --> generated --> interceptor --> middleware
+    middleware -- "{API}_HOST=host" --> api
+    middleware -- "{API}_HOST=mock" --> emulator
+    scenario -. "holds against the contract" .-> generated

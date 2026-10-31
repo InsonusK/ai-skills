@@ -2,7 +2,7 @@
 name: vp-client-retry
 description: The client retry variation point — a client middleware that sends a call of an operation its client marked safe to repeat again while the other service's API does not answer, at most {API}_RETRY_ATTEMPTS attempts, waiting {API}_RETRY_BACKOFF doubled with jitter, each attempt bounded by {API}_TIMEOUT and all of them by the caller's deadline, every repeat logged
 whenToUse: when an application that calls another service's API over HTTP or gRPC must ride out a short outage of it — attaching the retry, marking an operation retryable, tuning how often and how long a client repeats, or reviewing such a retry
-updated: 20261030
+updated: 20261031
 tags:
   - stack
   - concern/architecture
@@ -18,15 +18,7 @@ tags:
 # Core Principle
 - **One middleware, every transport** - The retry sees the call (its API, its operation, its mark) and its attempts, never a request or a message, so one middleware per stack serves every client of every API.
 
-```
-caller ── ctx (deadline) ─────────────────────────────────────────────────────────┐
-service ─► client.Method ─► fixed client code: listed? ─► [client middleware] ─► attempt ─► API
-                                                  │ retry
-                                                  ├─ not Retryable, or not unavailable ─► return as is
-                                                  └─ unavailable: WARN "api client call retried"
-                                                     wait backoff ±50% (×2 each time), attempt again,
-                                                     up to {API}_RETRY_ATTEMPTS, no wait past the deadline
-```
+@import "./diagrams/concept.mmd" {as="mermaid"}
 
 # Scope
 - Covers the repeat of a call the API did not answer. A circuit breaker, a hedged call, or a retry of a whole command are not here.

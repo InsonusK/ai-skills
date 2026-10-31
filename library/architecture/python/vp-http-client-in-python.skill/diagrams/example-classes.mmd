@@ -1,0 +1,93 @@
+classDiagram
+    direction LR
+    namespace command {
+        class PlanRemoteItemsHandler {
+            +handle(command)
+        }
+        class RemotePlanner_protocol["RemotePlanner"] {
+            <<Protocol>>
+            plan(titles)
+        }
+    }
+    namespace service {
+        class RemotePlanner {
+            +plan(titles)
+        }
+        class TodoApi_protocol["TodoApi"] {
+            <<Protocol>>
+            plan_items(titles)
+        }
+        class TodoServiceUnavailableError {
+        }
+        class TitlesRejectedError {
+        }
+    }
+    namespace todo_api {
+        class TodoApi {
+            +plan_items(titles)
+            +aclose()
+        }
+        class Item {
+            <<dataclass>>
+            +title, done
+        }
+        class emulator {
+            <<function>>
+            answers every operation
+        }
+    }
+    namespace core_httpclient {
+        class HttpClient {
+            +call(method, path, request, decode)
+            -_attempt(...)
+            +aclose()
+        }
+        class HttpConfig {
+            <<dataclass>>
+            +name, host, port, tls, timeout
+            +base_url
+        }
+        class Operation {
+            <<dataclass>>
+            +method, path, retryable
+        }
+    }
+    namespace core_outcomes {
+        class ApiUnavailableError {
+            +api
+        }
+        class ApiStatusError {
+            +code, message, http_status
+        }
+        class StatusCode {
+            <<IntEnum>>
+            google.rpc.Code
+        }
+    }
+    namespace core_pipeline {
+        class Call {
+            <<dataclass>>
+            +api, operation, retryable
+        }
+        class Middleware {
+            <<Protocol>>
+            __call__(call, call_next)
+        }
+    }
+
+    PlanRemoteItemsHandler --> RemotePlanner_protocol : uses
+    RemotePlanner ..|> RemotePlanner_protocol
+    RemotePlanner --> TodoApi_protocol : uses
+    TodoApi ..|> TodoApi_protocol
+    RemotePlanner ..> ApiUnavailableError : catches
+    RemotePlanner ..> ApiStatusError : catches
+    RemotePlanner ..> TodoServiceUnavailableError : raises
+    RemotePlanner ..> TitlesRejectedError : raises
+    ApiStatusError --> StatusCode
+    TodoApi --> Item : maps to
+    TodoApi --> HttpClient : one call per operation
+    TodoApi ..> emulator : mock
+    HttpClient --> HttpConfig
+    HttpClient --> Operation : the listed ones
+    HttpClient --> Middleware : runs around each attempt
+    HttpClient ..> Call
