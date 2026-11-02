@@ -12,10 +12,11 @@ namespace Todo.Application;
 public static class TodoModule
 {
     /// <summary>
-    /// Registers the module's handlers and their services; the store the
-    /// services keep the lists in (<c>IListStore</c>) is the infrastructure's,
-    /// registered in the composition root's "// [services]". Scoped like the
-    /// store: a singleton would hold one context for every command.
+    /// Registers the module's handlers and their services; the repository the
+    /// services keep the lists in (<c>IRepository&lt;ItemRow&gt;</c>) is the
+    /// infrastructure's, registered by the composition root's "// [services]".
+    /// Scoped like the repository: a singleton would hold one context for every
+    /// command.
     /// </summary>
     public static IServiceCollection AddTodoModule(this IServiceCollection services) =>
         services

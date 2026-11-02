@@ -4,7 +4,7 @@ sequenceDiagram
     participant Middleware as UnitOfWorkMiddleware<br/>src/Middleware/UnitOfWork/UnitOfWorkMiddleware.cs
     participant Import as ImportItemsHandler<br/>src/Modules/Todo/Todo.Application/Commands/ImportItemsHandler.cs
     participant Add as AddItemHandler<br/>src/Modules/Todo/Todo.Application/Commands/AddItemHandler.cs
-    participant Store as PostgresListStore<br/>src/Infrastructure/Postgres/Postgres/Stores/PostgresListStore.cs
+    participant Repository as PostgresRepository of ItemRow<br/>src/Infrastructure/Postgres/Postgres/Repositories/PostgresRepository.cs
     participant Unit as PostgresUnitOfWork<br/>src/Infrastructure/Postgres/Postgres/UnitOfWork/PostgresUnitOfWork.cs
     participant DB as PostgreSQL
 
@@ -13,13 +13,13 @@ sequenceDiagram
     Middleware->>+Import: next
     loop one nested AddItemCommand per title, through ScopedSender and the same scope
         Import->>+Add: Send: the middleware calls TryBegin, false, and passes on
-        Add->>+Store: InsertAsync, through ItemListsService
-        Store->>+Unit: SaveChangesAsync: the context shows the save
+        Add->>+Repository: InsertAsync, through ItemListsService
+        Repository->>+Unit: SaveChangesAsync: the context shows the save
         Note over Unit,DB: the first save opens the transaction, each save has a savepoint
-        Unit-->>-Store: go on
-        Store->>+DB: INSERT
-        DB-->>-Store: the row, or 23505
-        Store-->>-Add: done, or DuplicateKeyException told as a conflict
+        Unit-->>-Repository: go on
+        Repository->>+DB: INSERT
+        DB-->>-Repository: the row, or 23505
+        Repository-->>-Add: done, or DuplicateKeyException told as a conflict
         Add-->>-Import: result, or the conflict
     end
     Import-->>-Middleware: result, or the conflict

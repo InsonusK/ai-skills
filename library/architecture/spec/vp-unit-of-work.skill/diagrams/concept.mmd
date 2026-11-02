@@ -3,24 +3,24 @@ sequenceDiagram
     participant Middleware as Command middleware
     participant Command as Outermost command
     participant Nested as Nested command, or notification handler
-    participant Store as Store
+    participant Repository as Repository
     participant DB as Database
 
     Middleware->>Middleware: begin the unit: nothing is sent yet
     Middleware->>+Command: run
-    Command->>+Store: read
-    Store-->>-Command: rows, outside any transaction
+    Command->>+Repository: read
+    Repository-->>-Command: rows, outside any transaction
     Note over Command: calls of another service belong here, before the first write
     Command->>+Nested: run, through the command middleware, which joins
-    Nested->>+Store: write
-    Store->>+DB: the first write opens the transaction
-    DB-->>-Store: done
-    Store-->>-Nested: done
+    Nested->>+Repository: write
+    Repository->>+DB: the first write opens the transaction
+    DB-->>-Repository: done
+    Repository-->>-Nested: done
     Nested-->>-Command: result
-    Command->>+Store: write
-    Store->>+DB: in the same transaction
-    DB-->>-Store: done, or a failure
-    Store-->>-Command: done, or the outcome
+    Command->>+Repository: write
+    Repository->>+DB: in the same transaction
+    DB-->>-Repository: done, or a failure
+    Repository-->>-Command: done, or the outcome
     Command-->>-Middleware: result, or an error
     alt the command returned
         Middleware->>DB: commit

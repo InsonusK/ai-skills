@@ -21,7 +21,7 @@ namespace Postgres.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Postgres.Rows.ItemRow", b =>
+            modelBuilder.Entity("Postgres.Abstractions.Rows.ItemRow", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()

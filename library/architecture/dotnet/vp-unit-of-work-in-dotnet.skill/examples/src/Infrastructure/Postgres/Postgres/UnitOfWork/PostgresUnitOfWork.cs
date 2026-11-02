@@ -11,11 +11,11 @@ namespace Postgres.UnitOfWork;
 /// <summary>
 /// The unit of work over <see cref="AppDbContext"/>, one per command scope. It
 /// watches the context's saves: the first save after <see cref="TryBegin"/> opens
-/// the transaction, so a command that only reads holds none, and a store keeps
+/// the transaction, so a command that only reads holds none, and a repository keeps
 /// calling SaveChangesAsync, unaware of it. EF Core protects each save inside the
 /// transaction with a savepoint, so a duplicate key a command handles leaves the
-/// transaction usable. Statements that do not pass through SaveChanges
-/// (ExecuteUpdate, ExecuteDelete, raw SQL) open no transaction.
+/// transaction usable. A statement past SaveChanges (ExecuteUpdate, ExecuteDelete,
+/// raw SQL) opens the transaction by the empty save of PostgresStatements.WriteAsync.
 /// </summary>
 public sealed class PostgresUnitOfWork : SaveChangesInterceptor, IUnitOfWork
 {

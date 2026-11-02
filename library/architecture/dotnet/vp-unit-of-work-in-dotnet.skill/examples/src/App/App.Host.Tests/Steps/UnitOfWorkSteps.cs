@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Middleware.UnitOfWork;
 using Postgres;
 using Postgres.Abstractions;
-using Postgres.Stores;
 using Postgres.Testing;
 using Postgres.UnitOfWork;
 using Reqnroll;
@@ -37,7 +36,6 @@ public sealed class UnitOfWorkSteps
         services.AddLogging();
         services.AddPostgres(_database.Config);
         services.AddPostgresUnitOfWork();
-        services.AddScoped<IListStore, PostgresListStore>();
         services.AddTodoModule();
         services.AddCommandScope();
         services.AddCommandMiddleware(typeof(UnitOfWorkMiddleware<,>));

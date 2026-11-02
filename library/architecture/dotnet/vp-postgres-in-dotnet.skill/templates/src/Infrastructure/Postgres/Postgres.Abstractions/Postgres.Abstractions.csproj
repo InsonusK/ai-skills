@@ -1,5 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- What the services see of the database: the stores' interfaces and their
-       technical outcomes, in the technique's terms. No package: EF Core and
-       Npgsql stay in the Postgres project. -->
+  <!-- What the services see of the database: the repository's contract, its
+       technical outcomes, the rows, and the specifications that pick them. The
+       specifications' package knows no EF Core: EF Core and Npgsql stay in the
+       Postgres project. -->
+  <ItemGroup>
+    <PackageReference Include="Ardalis.Specification" />
+  </ItemGroup>
 </Project>

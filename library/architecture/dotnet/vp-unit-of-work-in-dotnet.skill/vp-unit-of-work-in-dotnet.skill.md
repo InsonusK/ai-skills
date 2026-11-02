@@ -1,8 +1,8 @@
 ---
 name: vp-unit-of-work-in-dotnet
-description: The unit of work variation point in dotnet — IUnitOfWork in Shared, UnitOfWorkMiddleware listed last in the command middleware, and PostgresUnitOfWork, a SaveChanges interceptor scoped with the command that opens the transaction on the first save, with nested commands and notification handlers joining through ScopedSender and stores left unchanged
+description: The unit of work variation point in dotnet — IUnitOfWork in Shared, UnitOfWorkMiddleware listed last in the command middleware, and PostgresUnitOfWork, a SaveChanges interceptor scoped with the command that opens the transaction on the first save, with nested commands and notification handlers joining through ScopedSender and repositories left unchanged
 whenToUse: when a dotnet application with vp-postgres-in-dotnet has a command that writes in several places, runs nested commands, or handles a notification that writes, or when you review a dotnet unit of work
-updated: 20261031
+updated: 20261102
 tags:
   - stack/dotnet
   - concern/architecture
@@ -14,11 +14,11 @@ adr:
 
 # Goal
 - **The unit of work variation point in dotnet** - A dotnet application that keeps every property of [vp-unit-of-work](library/architecture/spec/vp-unit-of-work.skill/vp-unit-of-work.skill.md); this skill details its implementation for dotnet and restates none of its rules.
-- **Attached by the listed changes only** - Attaching it adds files and changes only what [attach.allow](./attach.allow) names, which the repository's attach check verifies against [vp-postgres-in-dotnet](library/architecture/dotnet/vp-postgres-in-dotnet.skill/vp-postgres-in-dotnet.skill.md)'s example: no store, service, or handler changes.
+- **Attached by the listed changes only** - Attaching it adds files and changes only what [attach.allow](./attach.allow) names, which the repository's attach check verifies against [vp-postgres-in-dotnet](library/architecture/dotnet/vp-postgres-in-dotnet.skill/vp-postgres-in-dotnet.skill.md)'s example: no repository, service, or handler changes.
 
 # Core Principle
 - **The scope is the unit** - `ScopedSender` gives a command, its nested commands, and its notification handlers one scope, so one `AppDbContext` and one `PostgresUnitOfWork`.
-- **The saves open the transaction** - `PostgresUnitOfWork` watches `SaveChanges`, so a store stays unaware of it and a command that only reads holds nothing. Decision recorded in [saves-watched-by-an-interceptor](./adr/saves-watched-by-an-interceptor.md).
+- **The saves open the transaction** - `PostgresUnitOfWork` watches `SaveChanges`, so a repository stays unaware of it and a command that only reads holds nothing. Decision recorded in [saves-watched-by-an-interceptor](./adr/saves-watched-by-an-interceptor.md).
 
 ```
 src/
@@ -62,18 +62,23 @@ Let a handler run its nested commands by `await sender.Send(...)`, one after ano
 - Risk: a context serves one call at a time; a handler built by hand joins nothing.
 - Fix: EF Core wraps each save in a savepoint, so a duplicate key the handler catches leaves the transaction usable.
 
-### Write only through SaveChanges
-Let a store write only through the context's change tracker, so the interceptor sees every write; a bulk `ExecuteUpdate`, `ExecuteDelete`, or raw SQL write needs its own decision recorded in the store.
-- Violation: `ExecuteDeleteAsync` in a store of an application with this variation point, with no comment.
-- Risk: the statement runs outside the transaction when it comes first, so a rollback does not undo it.
-- Fix: load and change through the tracker, or save first so the transaction is open.
+### Write past SaveChanges only through WriteAsync
+Run `ExecuteUpdate`, `ExecuteDelete`, raw SQL, and a bulk copy in `PostgresStatements.WriteAsync`, as [vp-postgres-in-dotnet](library/architecture/dotnet/vp-postgres-in-dotnet.skill/vp-postgres-in-dotnet.skill.md) requires of every statement past the contract.
+- Violation: `ExecuteDeleteAsync` called directly in a repository.
+- Risk: the statement runs outside the transaction when it comes first, so a rollback does not undo it, and the compiler does not stop it.
+- Fix: the empty save of `WriteAsync` opens the transaction, and its savepoint keeps a reported failure from breaking it; `Delete` of a selector already runs there.
+
+### Run the shared scenarios
+Name both `conformance/` folders in [conformance.copy](./conformance.copy): the example is a full copy of the PostgreSQL one, so it runs those scenarios too.
+- Risk: a change of the repository breaks the unit of work, and only a run of the two together shows it.
+- Fix: `make conformance-sync` writes the copies; the steps of `unit-of-work.feature` are in `Postgres.Tests/Steps/UnitOfWorkSteps.cs`.
 
 # Check list
 - [ ] `src/Shared/UnitOfWork`, `src/Middleware/UnitOfWork`, and `Postgres/UnitOfWork` are unchanged copies of the templates.
 - [ ] `AddPostgresUnitOfWork()` follows `AddPostgres`; `UnitOfWorkMiddleware` is last in `AddCommandMiddleware`.
 - [ ] Only the middleware calls `IUnitOfWork`; nested commands go through `ISender`, one at a time.
-- [ ] Every write of a store passes through `SaveChanges`.
-- [ ] `make test` passes with `TEST_DATABASE_DSN` set; `bash test/check-vp-attach.sh` in this repository reports no file changed beyond [attach.allow](./attach.allow).
+- [ ] Every write of a repository passes through `SaveChanges` or `WriteAsync`.
+- [ ] `make test` passes with `TEST_DATABASE_DSN` set; `bash test/check-vp-attach.sh` in this repository reports no file changed beyond [attach.allow](./attach.allow); `bash test/check-conformance.sh` reports no copy changed.
 
 # Example
 One import of the example, with its real classes:

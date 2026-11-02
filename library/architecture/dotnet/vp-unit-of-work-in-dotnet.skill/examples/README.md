@@ -39,13 +39,12 @@ TEST_DATABASE_DSN='Host=localhost;Username=postgres' make test   # every scenari
 | Project | Layer |
 |---|---|
 | `src/App/App.Host` | composition root (`Program.cs`), the entry points (`Api/Grpc`, `Api/Http`), base settings |
-| `src/Middleware/UnitOfWork` | the command middleware that begins and ends the unit of work |
 | `src/App/App.Migrate` | the migration job, `/app/migrate` of the image |
 | `src/Modules/Todo/Todo.Commands` | the commands and their results — all an entry point sees |
-| `src/Modules/Todo/Todo.Application` | the command handlers, and `Services/` — the item lists over the store |
+| `src/Modules/Todo/Todo.Application` | the command handlers, and `Services/` — the item lists over the repository |
 | `src/Modules/Todo/Todo.Domain` | entities, domain services, the rule errors |
-| `src/Infrastructure/Postgres/Postgres.Abstractions` | the stores' interfaces and outcomes, in their own terms |
-| `src/Infrastructure/Postgres/Postgres` | `AppDbContext`, `Rows/`, `Stores/`, `UnitOfWork/`, `Migrations/`, settings |
+| `src/Infrastructure/Postgres/Postgres.Abstractions` | the repository's contract and outcomes, the rows, and the specifications |
+| `src/Infrastructure/Postgres/Postgres` | `AppDbContext`, `Repositories/`, `Rows/`, `UnitOfWork/`, `Migrations/`, settings |
 | `src/Infrastructure/Postgres/Postgres.Testing` | the database of one scenario |
 | `src/BuildingBlocks`, `src/Shared` | fixed code |
 | `third_party/proto` | the googleapis and openapiv2 annotations the proto file imports |

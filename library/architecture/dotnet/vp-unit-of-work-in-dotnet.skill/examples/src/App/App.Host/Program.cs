@@ -15,8 +15,6 @@ using Microsoft.Extensions.Logging;
 using Middleware.Logging;
 using Middleware.UnitOfWork;
 using Postgres;
-using Postgres.Abstractions;
-using Postgres.Stores;
 using Postgres.UnitOfWork;
 using Todo.Application;
 
@@ -61,10 +59,9 @@ public static class Program
         services.AddLogging(logging => logging.SetMinimumLevel(config.LogLevel).AddProvider(new JsonLogProvider(stderr)));
 
         // [services] - infrastructure and the services over it. One context per
-        // command scope, and every store over it scoped with it.
+        // command scope, and every repository over it scoped with it.
         services.AddPostgres(postgres);
         services.AddPostgresUnitOfWork();
-        services.AddScoped<IListStore, PostgresListStore>();
 
         // [handlers] - the handler of every command of each module, and the
         // command middleware wrapped around every one of them, the first the

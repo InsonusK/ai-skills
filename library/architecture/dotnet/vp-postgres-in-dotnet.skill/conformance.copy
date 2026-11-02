@@ -1,0 +1,3 @@
+# The shared scenarios of the PostgreSQL variation point this example runs:
+# written by `make conformance-sync`, checked by test/check-conformance.sh.
+vp-postgres.skill/conformance examples/src/Infrastructure/Postgres/Postgres.Tests/features

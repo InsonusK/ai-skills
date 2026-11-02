@@ -1,8 +1,8 @@
 ---
 name: vp-unit-of-work
-description: The unit of work variation point — a command middleware around the outermost command that keeps every write of that command, its nested commands, and its notification handlers in one transaction, opened on the first write and ended by the middleware alone, attached to a DB variation point with no change to a store, a service, or a handler
+description: The unit of work variation point — a command middleware around the outermost command that keeps every write of that command, its nested commands, and its notification handlers in one transaction, opened on the first write and ended by the middleware alone, attached to a DB variation point with no change to a repository, a service, or a handler
 whenToUse: when an application with a DB variation point has a command that writes in several places at once (nested commands, notification handlers, an outbox task), when you decide whether an application needs a unit of work, or when you review one
-updated: 20261031
+updated: 20261102
 tags:
   - stack
   - concern/architecture
@@ -12,7 +12,7 @@ tags:
 
 # Goal
 - **All or nothing** - Every write of one command and of the commands it runs is kept, or none is, so a failure halfway leaves nothing to clean up.
-- **Attached, not edited** - A store keeps saving as it does in [vp-postgres](library/architecture/spec/vp-postgres.skill/vp-postgres.skill.md): the variation point only puts a transaction around its saves, so no store, service, or handler changes.
+- **Attached, not edited** - A repository keeps saving as it does in [vp-postgres](library/architecture/spec/vp-postgres.skill/vp-postgres.skill.md): the variation point only puts a transaction around its writes, so no repository, service, or handler changes.
 - **Reads hold nothing** - A command that writes nothing opens no transaction.
 
 # Core Principle
@@ -59,9 +59,20 @@ Call other services before the command's first write, or after it through an out
 - Fix: read first, write last; show the user the consistency table.
 
 ### Attach without editing
-Attach the variation point by changing no store, service, or handler; only the composition root and the build files.
-- Risk: a unit of work written into the stores cannot be removed, and a store written for it fails without it.
+Attach the variation point by changing no repository, service, or handler; only the composition root and the build files.
+- Risk: a unit of work written into a repository cannot be removed, and a repository written for it fails without it.
 - Fix: the stack extension lists the files it changes; a check compares its example with the DB example against that list.
+
+### Hold every write of the command
+Keep a statement past the repository's contract in the transaction as well, also when it is the first write of the command.
+- Violation: a mass delete that runs before the first save, on a connection with no transaction.
+- Risk: the statement stays after a rollback, while the writes after it are undone.
+- Fix: the one call the stack extension of [vp-postgres](library/architecture/spec/vp-postgres.skill/vp-postgres.skill.md#go-past-the-contract-with-a-method-of-its-own) names opens the transaction before the statement.
+
+### Pass the shared scenarios
+Run this skill's [conformance/](./conformance/) scenarios in every stack, unedited, through a copy named in the stack skill's `conformance.copy`, as [conformance-scenarios-copied-into-each-stack](library/architecture/spec/vp-logging.skill/adr/conformance-scenarios-copied-into-each-stack.md) decides.
+- Risk: a stack holds its saves in the transaction and leaves a statement out, and only a rollback in production shows it.
+- Fix: step definitions are the stack's own; a stack's example also takes the copies of `vp-postgres`, since it is a full copy of that example.
 
 # Check list
 - [ ] Every command runs through the middleware; nested commands and notification handlers join its unit.
@@ -69,4 +80,6 @@ Attach the variation point by changing no store, service, or handler; only the c
 - [ ] The caller's cancellation does not reach the commit or the rollback.
 - [ ] A failed commit is told as unavailable.
 - [ ] No other service is called between the first write and the end of a command.
-- [ ] No store, service, or handler changed to attach it.
+- [ ] A statement past the contract is held in the transaction, also as the first write.
+- [ ] No repository, service, or handler changed to attach it.
+- [ ] The stack skill's `conformance.copy` names this skill's `conformance/` folder, and every copy is unedited.
