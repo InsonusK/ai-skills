@@ -48,14 +48,6 @@ Feature: The repository reports what the service must tell apart
     When I delete that row
     Then the repository should report a changed row
 
-  @category/negative
-  Scenario: The second save of a versioned row is a changed row
-    Given two connections read one versioned row
-    When the first saves its change
-    And the second saves its change
-    Then the repository should report a changed row
-    And the first change should be kept
-
   @category/edge
   Scenario Outline: A failed write leaves nothing pending for the next one
     Given one session for the whole scenario

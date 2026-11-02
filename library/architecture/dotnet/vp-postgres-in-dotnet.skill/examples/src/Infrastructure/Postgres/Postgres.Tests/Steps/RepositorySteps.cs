@@ -1,5 +1,4 @@
 using System.Globalization;
-using Microsoft.EntityFrameworkCore;
 using Postgres.Abstractions;
 using Reqnroll;
 using Xunit;
@@ -50,8 +49,6 @@ public sealed class RepositorySteps(PostgresWorld world, ITestOutputHelper outpu
     private Reads? _secondOrder;
     private int _updated;
     private int _deleted;
-    private VersionedRow? _firstVersioned;
-    private VersionedRow? _secondVersioned;
 
     private long OwnerId(string name) => _owners[name];
 
@@ -341,32 +338,6 @@ public sealed class RepositorySteps(PostgresWorld world, ITestOutputHelper outpu
     public void ThenNoFailure() => Assert.Null(_error);
 
     // ---- outcomes
-
-    [Given("two connections read one versioned row")]
-    public async Task GivenTwoConnectionsRead()
-    {
-        await world.Repository<VersionedRow>().InsertAsync(new VersionedRow { Title = "start" }, CancellationToken.None);
-        _firstVersioned = await world.Session().Set<VersionedRow>().AsNoTracking().SingleAsync();
-        _secondVersioned = await world.Session().Set<VersionedRow>().AsNoTracking().SingleAsync();
-    }
-
-    [When("the first saves its change")]
-    public Task WhenTheFirstSaves()
-    {
-        _firstVersioned!.Title = "first";
-        return AttemptAsync("first save", () => world.Repository<VersionedRow>().UpdateAsync(_firstVersioned, CancellationToken.None));
-    }
-
-    [When("the second saves its change")]
-    public Task WhenTheSecondSaves()
-    {
-        _secondVersioned!.Title = "second";
-        return AttemptAsync("second save", () => world.Repository<VersionedRow>().UpdateAsync(_secondVersioned, CancellationToken.None));
-    }
-
-    [Then("the first change should be kept")]
-    public async Task ThenTheFirstChangeShouldBeKept() =>
-        Assert.Equal(1, await world.CountAsync("SELECT count(*) FROM versioned WHERE title = 'first'"));
 
     [When("the database answers the failure {string}")]
     public Task WhenTheDatabaseAnswers(string sqlState) =>

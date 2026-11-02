@@ -1,8 +1,8 @@
 ---
 name: a selector is no snapshot
-description: What a selector guarantees between its calls - nothing by default with a row version where edits meet, a snapshot transaction for every selector, or locks on the picked rows
+description: What a selector guarantees between its calls - nothing, a snapshot transaction for every selector, or locks on the picked rows
 problem: A count and an update of one selector are two statements, and other writers run between them. Must a selector protect the picked rows, and at what cost?
-decision: A selector guarantees nothing between calls and takes no lock; the number of rows written comes from the write. A row people edit at the same time takes a version, opt-in per table. A worker claiming rows is step 4, with a row lock of its own.
+decision: A selector guarantees nothing between calls and takes no lock; the number of rows written comes from the write. A table whose rows change takes vp-row-version. A worker claiming rows is step 4, with a row lock of its own.
 tags:
   - stack
   - concern/architecture
@@ -14,17 +14,17 @@ tags:
 Checked on PostgreSQL 17.5: `Count` answered 2, a row arrived, `Update` changed 3, also inside a unit of work at the default isolation. A selector over unclosed tasks counts 0 after closing them. Two saves of one row with no version both succeed and the first edit is lost.
 
 # Selected variant
-[[#No guarantee by default, a version where edits meet]]
+[[#No guarantee between calls]]
 - Chosen by the agent on the owner's condition that throughput is not lowered by locks (2026-11-02).
 
 # Searched variants
 
-## No guarantee by default, a version where edits meet
+## No guarantee between calls
 
 **Selected.**
 
 ### Description
-Each call asks the database again. A table whose rows meet concurrent edits adds the version the engine keeps (`xmin` in PostgreSQL); the second save reports a changed row.
+Each call asks the database again. A table whose rows change takes `vp-row-version`, and the second save reports a changed row.
 
 ### Benefits
 - A selector costs one statement and holds no lock.
