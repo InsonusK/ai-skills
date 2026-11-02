@@ -31,7 +31,7 @@ EF Core allows one tracked instance per key: a row inserted and then read with n
 - Every read sees the database, which is what a selector promises.
 
 ### Costs
-- `Update(row)` writes every column, since nothing remembers which one changed; a row people edit at the same time needs its version.
+- `Update(row)` writes every column, since nothing remembers which one changed; a table whose rows change needs `vp-row-version`.
 - A query in a table's own method must not leave tracked rows behind.
 
 ## Tracked reads

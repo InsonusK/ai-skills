@@ -129,12 +129,6 @@ public Task<int> RenameAsync(string from, string to, CancellationToken cancellat
 - Risk: the rules of [vp-postgres](library/architecture/spec/vp-postgres.skill/vp-postgres.skill.md#go-past-the-contract-with-a-method-of-its-own) break, and the compiler does not stop it.
 - Fix: register the derived repository `Scoped` in `// [services]` under its own interface; [Statements.feature](./examples/src/Infrastructure/Postgres/Postgres.Tests/features/Statements.feature) shows both calls.
 
-### Version a row with xmin
-Add a `uint Version` property to the row and map it with `row.Property(item => item.Version).IsRowVersion()`, which needs no column of its own.
-- Violation: a version column kept by hand; a version on every row by habit.
-- Risk: a hand-kept version misses a write that forgot it.
-- Fix: PostgreSQL moves `xmin` on every write; a second save reports `RowChangedException`.
-
 ### Generate every migration
 Change the row, run `make migration NAME={What}`, read what it wrote, and commit it with the row; apply with `make migrate` locally and with `App.Migrate` in a deployment, publishing it beside `App.Host` so the image has `/app/migrate`.
 - Violation: a `HasPendingModelChanges` scenario removed; a migration edited after it was applied somewhere; `EnsureCreated` in the application.

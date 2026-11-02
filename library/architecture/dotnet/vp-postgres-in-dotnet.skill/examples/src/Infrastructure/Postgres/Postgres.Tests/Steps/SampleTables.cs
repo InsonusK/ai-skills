@@ -4,8 +4,8 @@ using Postgres.Repositories;
 
 namespace Postgres.Tests.Steps;
 
-// The tables of the shared scenarios: two tables with a relation, and a row with
-// a version. They exist only in this project: the application never ships them.
+// The tables of the shared scenarios: two tables with a relation. They exist only
+// in this project: the application never ships them.
 
 public sealed class OwnerRow
 {
@@ -20,14 +20,6 @@ public sealed class TaskRow
     public OwnerRow? Owner { get; set; }
     public required string Title { get; set; }
     public bool Done { get; set; }
-}
-
-/// <summary>A row that takes the engine's version, opt-in per table.</summary>
-public sealed class VersionedRow
-{
-    public long Id { get; set; }
-    public required string Title { get; set; }
-    public uint Version { get; set; }
 }
 
 /// <summary>A projection across the relation; properties, not a constructor, so that EF Core can order by them.</summary>
@@ -56,13 +48,6 @@ public sealed class SampleContext(DbContextOptions<SampleContext> options) : DbC
             row.Property(task => task.Done).HasColumnName("done");
             row.HasOne(task => task.Owner).WithMany().HasForeignKey(task => task.OwnerId);
             row.HasIndex(task => new { task.OwnerId, task.Title }).IsUnique();
-        });
-        model.Entity<VersionedRow>(row =>
-        {
-            row.ToTable("versioned");
-            row.Property(versioned => versioned.Id).HasColumnName("id");
-            row.Property(versioned => versioned.Title).HasColumnName("title");
-            row.Property(versioned => versioned.Version).IsRowVersion();
         });
     }
 }

@@ -1,6 +1,6 @@
 ---
 name: vp-postgres
-description: The PostgreSQL variation point — one database behind a repository with one contract in every stack (insert, update, delete, SelectBy), named specifications that pick rows, a selector that reads, updates, and deletes the picked rows, a service that turns the repository's outcomes (duplicate key, missing reference, row changed, unavailable) into error kinds, DATABASE_DSN that no log prints, migrations applied by a one-shot job or behind MIGRATE_ON_START, a readiness check, and shared scenarios on the real engine at TEST_DATABASE_DSN
+description: The PostgreSQL variation point — one database behind a repository with one contract in every stack (insert, update, delete, SelectBy), named specifications that pick rows, a selector that reads, updates, and deletes the picked rows, every table classified by who sets its identity and whether its rows change, a service that turns the repository's outcomes (duplicate key, missing reference, row changed, unavailable) into error kinds, DATABASE_DSN that no log prints, migrations applied by a one-shot job or behind MIGRATE_ON_START, a readiness check, and shared scenarios on the real engine at TEST_DATABASE_DSN
 whenToUse: when an application built on the base plateau must keep its data between runs in PostgreSQL, when you add a table, a specification, a repository method, or a migration, when you replace an in-memory store with a database, or when you review database code
 updated: 20261102
 tags:
@@ -32,12 +32,26 @@ adr:
 @import "./diagrams/concept.mmd" {as="mermaid"}
 
 # Scope
-- Covers one PostgreSQL database of one application: the repository, specifications, selectors, migrations, settings, readiness, and how their scenarios get a database. A transaction across several writes is `vp-unit-of-work`; SQLite is `vp-sqlite`; a worker claiming rows under a lock is step 4 of the [catalog](library/architecture/README.md) (TaskBox, Inbox, Outbox).
+- Covers one PostgreSQL database of one application: the repository, specifications, selectors, migrations, settings, readiness, and how their scenarios get a database. A transaction across several writes is `vp-unit-of-work`; what a table adds by its kind is `vp-row-version`, `vp-external-id`, and `vp-edit-timestamp`; SQLite is `vp-sqlite`; a worker claiming rows under a lock is step 4 of the [catalog](library/architecture/README.md) (TaskBox, Inbox, Outbox).
 - The implementation for each stack is described in its stack-specialized extension: `vp-postgres-in-dotnet`.
 
 # Rule
 
 ## MUST
+
+### Classify every table
+Decide for every table who sets the identity of its rows and whether they change, and attach the variation points the answer asks for.
+
+| Identity set by | Rows change | `vp-row-version` | `vp-external-id` |
+|---|---|---|---|
+| The service | No | No | No |
+| The caller | No | No | Yes |
+| The service | Yes | Yes | No |
+| The caller | Yes | Yes | Yes |
+
+- Violation: a table whose rows two users may change at once with no version; a version on a table of events that never change; a choice made per module.
+- Risk: with no version both saves succeed and the first edit is lost with no failure; an idle version on a table that never changes promises a check nothing needs.
+- Fix: each variation point attaches on its own, in any number, table by table; `vp-edit-timestamp` is a separate choice, for a table users create or edit, whatever its row of this table.
 
 ### Reach the database only through a repository
 Put every statement in a repository of the infrastructure layer, behind an interface, with a service as its only caller per [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md).
@@ -91,12 +105,6 @@ Treat every call of a selector as a new question to the database, and take the n
 - Risk: a row arriving between the calls makes the two numbers differ, also inside a unit of work; after `Update`, a selector over `UnclosedTasks` counts 0.
 - Fix: report the answer of `Update`; no lock is taken for a selector.
 
-### Version a row people edit at the same time
-Give a row a version the engine keeps when two writers may change it at once, and leave every other row without one.
-- Violation: two users loading one row and both saving, on a row with no version.
-- Risk: both saves succeed and the first edit is lost with no failure.
-- Fix: the version of a row is opt-in per table; the second save reports a changed row, which the service turns into a concurrent change.
-
 ### Report a repository's outcomes in its own terms
 Make a repository report the outcomes a service must tell apart as outcomes of its own, and let the service turn each into its kind and every other failure pass with no kind.
 
@@ -104,7 +112,7 @@ Make a repository report the outcomes a service must tell apart as outcomes of i
 |---|---|
 | Duplicate key | `Conflict` |
 | Missing reference: a foreign key broken | `NotFound`, or what the business says |
-| Row changed: gone, or its version moved | `ConcurrentChange` |
+| Row changed: gone, or changed meanwhile (`vp-row-version`) | `ConcurrentChange` |
 | No rows (`Single`, `First`: none; `All`, `Take`, `Page`: empty) | `NotFound`, when the service needs the rows |
 | Unavailable: no answer, or a failure a retry may cure | `Unavailable` |
 
@@ -153,6 +161,7 @@ Attach the variation point by changing no command, entity, or domain service; on
 - Fix: the stack extension lists the files it changes; a check compares its example with the base against that list.
 
 # Check list
+- [ ] Every table is classified, and takes the variation points its row of the table asks for.
 - [ ] Every statement is in a repository; a service is the only caller of a repository, and it builds entities from rows.
 - [ ] Every table gets the [contract](#give-every-repository-the-one-contract) from one generic repository; a method of its own only for what the contract cannot express.
 - [ ] A specification holds no order, no page, and no statement; `First`, `Take`, and `Page` need an order.
