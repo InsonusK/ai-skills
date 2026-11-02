@@ -1,5 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- The application's PostgreSQL: the one AppDbContext, the rows, the stores,
+  <!-- The application's PostgreSQL: the one AppDbContext, the mapping of the rows, the repository,
        and the migrations. Only the composition roots (App.Host, App.Migrate)
        reference this project; a service sees Postgres.Abstractions. -->
   <ItemGroup>
@@ -8,6 +8,7 @@
   <ItemGroup>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
     <PackageReference Include="AspNetCore.HealthChecks.NpgSql" />
+    <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" />
     <!-- dotnet ef generates the migrations with it; nothing of it is deployed. -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" />
   </ItemGroup>

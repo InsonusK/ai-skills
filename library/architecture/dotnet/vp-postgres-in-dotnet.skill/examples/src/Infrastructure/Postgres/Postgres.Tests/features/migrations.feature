@@ -1,3 +1,6 @@
+# Shared by every stack's PostgreSQL variation point. The source is
+# library/architecture/spec/vp-postgres.skill/conformance/; a stack's copy is
+# written by `make conformance-sync` and never edited.
 @type/infrastructure/db/postgres
 Feature: Migrations
   As a deployment
@@ -12,11 +15,6 @@ Feature: Migrations
 
   @category/boundary
   Scenario: A database already up to date stays as it is
-    Given a migrated database
-    And the list "home" holds "buy milk"
+    Given a migrated database with 1 rows in "list_items"
     When the migrations are applied
     Then the table "list_items" should exist with 1 rows
-
-  @category/negative
-  Scenario: Every change of the model has its migration
-    Then the model should have no change without a migration

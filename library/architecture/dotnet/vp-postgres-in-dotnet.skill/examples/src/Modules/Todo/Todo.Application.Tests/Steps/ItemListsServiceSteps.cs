@@ -1,4 +1,6 @@
 using Postgres.Abstractions;
+using Postgres.Abstractions.Rows;
+using Postgres.Testing;
 using Reqnroll;
 using Shared.Errors;
 using Todo.Application.Services;
@@ -8,46 +10,23 @@ using Xunit.Abstractions;
 
 namespace Todo.Application.Tests.Steps;
 
-/// <summary>The store the service uses, faked by hand: rows kept per list, or the failure the scenario set.</summary>
-public sealed class FakeListStore : IListStore
-{
-    private readonly Dictionary<string, List<ListRow>> _rows = [];
-    public Exception? Failure { get; set; }
-
-    public Task InsertAsync(string listId, ListRow row, CancellationToken cancellationToken)
-    {
-        if (Failure is not null)
-        {
-            throw Failure;
-        }
-        _rows.TryAdd(listId, []);
-        _rows[listId].Add(row);
-        return Task.CompletedTask;
-    }
-
-    public Task<IReadOnlyList<ListRow>?> SelectAsync(string listId, CancellationToken cancellationToken) =>
-        Failure is not null
-            ? throw Failure
-            : Task.FromResult<IReadOnlyList<ListRow>?>(_rows.TryGetValue(listId, out var rows) ? rows : null);
-}
-
 [Binding]
 public sealed class ItemListsServiceSteps(ITestOutputHelper output)
 {
-    private readonly FakeListStore _store = new();
+    private readonly InMemoryRepository<ItemRow> _rows = new();
     private IReadOnlyList<Item>? _items;
     private Exception? _error;
 
-    private ItemListsService Service() => new(_store);
+    private ItemListsService Service() => new(_rows);
 
     [Given("the store answers a duplicate key")]
-    public void GivenTheStoreAnswersADuplicateKey() => _store.Failure = new DuplicateKeyException("duplicate key");
+    public void GivenTheStoreAnswersADuplicateKey() => _rows.Failure = new DuplicateKeyException("duplicate key");
 
     [Given("the store answers that the database is unavailable")]
-    public void GivenTheStoreAnswersUnavailable() => _store.Failure = new StoreUnavailableException("no connection");
+    public void GivenTheStoreAnswersUnavailable() => _rows.Failure = new StoreUnavailableException("no connection");
 
     [Given("the store fails with {string}")]
-    public void GivenTheStoreFailsWith(string message) => _store.Failure = new IOException(message);
+    public void GivenTheStoreFailsWith(string message) => _rows.Failure = new IOException(message);
 
     [When("I add {string} to the list {string} through the service")]
     public async Task WhenIAdd(string title, string listId)

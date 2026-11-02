@@ -10,5 +10,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Todo.Application\Todo.Application.csproj" />
+    <ProjectReference Include="..\..\..\Infrastructure\Postgres\Postgres.Testing\Postgres.Testing.csproj" />
   </ItemGroup>
 </Project>

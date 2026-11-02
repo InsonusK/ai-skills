@@ -17,6 +17,13 @@ public sealed class ConfigSteps
         _set.Add(name);
     }
 
+    [Given("a usable DATABASE_DSN with the password {string}")]
+    public void GivenAUsableDsn(string password) =>
+        GivenTheEnvironmentVariableIs("DATABASE_DSN", $"Host=db;Database=todo;Username=todo;Password={password}");
+
+    [Given("an unusable DATABASE_DSN holding {string}")]
+    public void GivenAnUnusableDsn(string text) => GivenTheEnvironmentVariableIs("DATABASE_DSN", $"postgres:{text}@db");
+
     [When("the settings are loaded")]
     public void WhenTheSettingsAreLoaded()
     {
