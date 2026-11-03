@@ -18,7 +18,9 @@ variation points add entries above and services below.
 Every entry point is one `Entry` in the `[entries]` list of the composition root, run together
 by the base plateau's runner (Go: `entry.RunAll`, dotnet: `EntryRunner.RunAllAsync`, Python: `run_all`): an API variation point replaces the startup
 entry with its own, the health variation point adds one, so variation points combine by
-listing, with no code written for a combination.
+listing, with no code written for a combination. Two optional variation points that work
+together meet the same way: through a contract neither owns (a database and health, through
+the readiness check), each proving its half against it, with no example for the pair.
 
 How a variation point attaches — the extension points, the command registry, and the two
 ordered lists of middleware (around commands, around an API's requests), every middleware

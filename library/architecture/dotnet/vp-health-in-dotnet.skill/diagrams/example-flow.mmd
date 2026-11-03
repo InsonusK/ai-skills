@@ -7,7 +7,7 @@ sequenceDiagram
     Probe->>+Server: GET /health/live
     Server-->>-Probe: 200: the process runs
     Probe->>+Server: GET /health/ready
-    loop every readiness check given, none in the base plateau
+    loop every readiness check registered, none in the base plateau
         Server->>+Check: check the dependency
         Check-->>-Server: ok, or an error
     end
