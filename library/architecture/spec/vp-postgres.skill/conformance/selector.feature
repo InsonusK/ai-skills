@@ -125,13 +125,13 @@ Feature: The selector works on the rows a specification picks
   @category/happy
   Scenario: ThenBy adds a key to the order
     Given the owner "bob"
-    And the task "d" of "bob" is open
+    And the task "aa" of "bob" is open
     When I select every open task ordered by owner, then by title
     Then All should answer the rows:
       | title | done  |
       | a     | false |
       | b     | false |
-      | d     | false |
+      | aa    | false |
 
   @category/edge
   Scenario: An order gives a new selector and leaves the first one as it is

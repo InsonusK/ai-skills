@@ -1,0 +1,17 @@
+# The PostgreSQL variation point attaches to the proto example of the HTTP
+# variation point, the one that keeps its lists in memory: it deletes that
+# store and adds internal/infrastructure/postgres (the fixed code, the
+# application's tables and migrations) and the migration job cmd/migrate. The
+# base files it changes are the composition root, the service over the store
+# with its scenarios (the repository, and the unavailable answer), and the
+# module's build files.
+base library/architecture/go/vp-http-api-in-go.skill/examples-proto
+change cmd/todo/main.go
+change internal/service/item_lists.go
+change internal/service/features/item_lists.feature
+change internal/service/test/steps_test.go
+change go.mod
+change go.sum
+change Makefile
+change README.md
+delete internal/infrastructure/memory/*
