@@ -1,0 +1,4 @@
+# The shared scenarios this example runs: written by `make conformance-sync`,
+# checked by test/check-conformance.sh.
+vp-postgres.skill/conformance examples/src/Infrastructure/Postgres/Postgres.Tests/features
+vp-unit-of-work.skill/conformance examples/src/Infrastructure/Postgres/Postgres.Tests/features
