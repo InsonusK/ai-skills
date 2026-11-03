@@ -2,7 +2,7 @@
 name: app-layers-in-dotnet
 description: The application layers in dotnet — one project per layer of each module (Domain, Commands, Application) plus Shared, BuildingBlocks, App.Host, and an Abstractions and an implementation project per infrastructure, project references that let the compiler hold the direction of the calls, entry points and other modules that see only a module's Commands, service interfaces declared beside their consumer, and entities that guard their state
 whenToUse: when you design a dotnet application or feature, when you add or change a dotnet entry point, command, handler, entity, or domain service, or when you review such a change
-updated: 20261030
+updated: 20261031
 tags:
   - stack/dotnet
   - concern/architecture
@@ -22,7 +22,7 @@ adr:
 - **A module is entered only by its commands** - An entry point and another module both send a module's commands through `ISender`; nothing else of a module is visible outside it. Decision recorded in [commands-project-and-service-interfaces](./adr/commands-project-and-service-interfaces.md).
 
 # Scope
-- Covers every layer of app-layers and the composition root. What a database store looks like in dotnet (`DbContext`, repositories, specifications, the unit of work) is the DB variation point's.
+- Covers every layer of app-layers and the composition root. What a database store looks like in dotnet (`DbContext`, rows, stores, migrations) is the variation point `vp-postgres-in-dotnet`'s, and the unit of work `vp-unit-of-work-in-dotnet`'s.
 
 # Rule
 

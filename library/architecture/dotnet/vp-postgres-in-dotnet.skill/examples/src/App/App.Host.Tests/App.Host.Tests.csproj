@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="Reqnroll.xUnit" />
+    <PackageReference Include="Microsoft.AspNetCore.TestHost" />
+    <PackageReference Include="Grpc.Net.Client" />
+    <PackageReference Include="Grpc.Tools" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\App.Host\App.Host.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Postgres\Postgres.Testing\Postgres.Testing.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- The test service of the gRPC pipeline's scenarios. -->
+    <Protobuf Include="Protos\test.proto" GrpcServices="Both" />
+  </ItemGroup>
+</Project>
