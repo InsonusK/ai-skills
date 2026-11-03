@@ -2,7 +2,7 @@
 name: vp-unit-of-work
 description: The unit of work variation point — a command middleware around the outermost command that keeps every write of that command, its nested commands, and its notification handlers in one transaction, opened on the first write and ended by the middleware alone, attached to a DB variation point with no change to a repository, a service, or a handler
 whenToUse: when an application with a DB variation point has a command that writes in several places at once (nested commands, notification handlers, an outbox task), when you decide whether an application needs a unit of work, or when you review one
-updated: 20261102
+updated: 20261103
 tags:
   - stack
   - concern/architecture
@@ -23,7 +23,7 @@ tags:
 
 # Scope
 - Covers the local transaction of one command over one database. A write to another system is not rolled back by it: that is [workflow-consistency-design](library/common-workflow/architecture/core/workflow-consistency-design.skill/workflow-consistency-design.skill.md) and the outbox variation point.
-- The implementation for each stack is described in its stack-specialized extension: `vp-unit-of-work-in-dotnet`.
+- The implementation for each stack is described in its stack-specialized extensions: `vp-unit-of-work-in-dotnet`, `vp-unit-of-work-in-go`.
 
 # Rule
 
