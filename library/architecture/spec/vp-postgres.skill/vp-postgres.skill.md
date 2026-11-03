@@ -33,7 +33,7 @@ adr:
 
 # Scope
 - Covers one PostgreSQL database of one application: the repository, specifications, selectors, migrations, settings, readiness, and how their scenarios get a database. A transaction across several writes is `vp-unit-of-work`; what a table adds by its kind is `vp-row-version`, `vp-external-id`, and `vp-edit-timestamp`; SQLite is `vp-sqlite`; a worker claiming rows under a lock is step 4 of the [catalog](library/architecture/README.md) (TaskBox, Inbox, Outbox).
-- The implementation for each stack is described in its stack-specialized extension: `vp-postgres-in-dotnet`, `vp-postgres-in-go`.
+- The implementation for each stack is described in its stack-specialized extension: `vp-postgres-in-dotnet`, `vp-postgres-in-go`, `vp-postgres-in-python`.
 
 # Rule
 

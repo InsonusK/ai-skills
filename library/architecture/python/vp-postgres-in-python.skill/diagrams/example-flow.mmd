@@ -1,0 +1,26 @@
+sequenceDiagram
+    autonumber
+    participant Endpoint as ItemsHandler<br/>src/todo/api/http/endpoint/items.py
+    participant Handler as AddItemHandler<br/>src/todo/command/add_item.py
+    participant Service as ItemLists<br/>src/todo/service/item_lists.py
+    participant Repository as postgres.Repository of ItemRow<br/>src/todo/infrastructure/postgres/repository.py
+    participant Outcomes as translate<br/>src/todo/infrastructure/postgres/outcomes.py
+    participant DB as PostgreSQL
+
+    Endpoint->>+Handler: handle(AddItemCommand), through the command middleware
+    Handler->>+Service: add(list_id, item)
+    Service->>+Repository: insert(ItemRow)
+    Repository->>+DB: INSERT INTO list_items RETURNING id, in a session of its own
+    alt the row is stored
+        DB-->>Repository: the generated id, committed
+        Repository-->>Service: None
+        Service-->>Handler: None
+        Handler-->>Endpoint: AddItemResult, 201
+    else unique key taken
+        DB-->>-Repository: 23505
+        Repository->>+Outcomes: translate(error, "insert into list_items")
+        Outcomes-->>-Repository: DuplicateKeyError, the error its cause
+        Repository-->>-Service: DuplicateKeyError
+        Service-->>-Handler: ItemAlreadyListedError, kind conflict
+        Handler-->>-Endpoint: the error, 409
+    end
