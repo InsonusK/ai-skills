@@ -46,6 +46,14 @@ func (d *Database) Ping(ctx context.Context) error {
 	return translate(d.gorm.WithContext(ctx).Exec("SELECT 1").Error, "ping")
 }
 
+// Use adds a GORM plugin to every statement of the database: how another
+// variation point (the unit of work) reaches the statements of every
+// repository with no edit of this package. Called in the composition root,
+// before the first statement.
+func (d *Database) Use(plugin gorm.Plugin) error {
+	return d.gorm.Use(plugin)
+}
+
 // SQL is the pool itself, for its limits (SetMaxOpenConns) and for a tool
 // that needs database/sql; a statement goes through a repository.
 func (d *Database) SQL() (*sql.DB, error) {

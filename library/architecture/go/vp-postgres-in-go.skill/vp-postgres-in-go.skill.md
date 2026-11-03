@@ -27,7 +27,7 @@ adr:
 cmd/migrate/main.go                    copied: the job, /app/migrate of the image
 internal/infrastructure/postgres/      copied, never edited
 ├── config.go                          Config: DATABASE_DSN hidden from every print, MIGRATE_ON_START
-├── database.go                        Open (no statement), Ping (the readiness check), SQL, Close
+├── database.go                        Open (no statement), Ping (the readiness check), Use (a GORM plugin), SQL, Close
 ├── repository.go                      Statements.Run, Repository[TRow], Projections[TRow, TResult]
 ├── selector.go                        Selector, OrderedSelector, ResultSelector, OrderedResultSelector
 ├── specification.go                   Specification, SpecificationOf, Projection, ProjectionOf, Key
