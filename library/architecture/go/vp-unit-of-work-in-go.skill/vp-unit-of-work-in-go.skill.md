@@ -44,10 +44,24 @@ Fill and copy [templates/](./templates/) to the module, replacing `{module-path}
 Call `unitofwork.Attach(db)` right after `postgres.Open` in `// [services]`, and add `commandunitofwork.Middleware(units)` as the last of the command middleware.
 
 ```go
+import (
+	"{module-path}/internal/infrastructure/postgres/unitofwork"
+	commandunitofwork "{module-path}/internal/command/middleware/unitofwork"
+)
+
 // [services]
 db, err := postgres.Open(dbConfig)
+if err != nil {
+	logger.Error("startup failed", "error", err)
+	return 1
+}
 defer db.Close()
-units, err := unitofwork.Attach(db)   // a failure: logger.Error("startup failed", ...), return 1
+units, err := unitofwork.Attach(db) // before postgres.Migrate and every service
+if err != nil {
+	logger.Error("startup failed", "error", err)
+	return 1
+}
+// ... postgres.Migrate and the services, as vp-postgres-in-go builds them
 
 // [handlers]
 handlers := command.NewHandlers([]pipeline.Middleware{

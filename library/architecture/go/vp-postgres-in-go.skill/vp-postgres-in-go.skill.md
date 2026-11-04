@@ -50,19 +50,43 @@ Fill and copy [templates/](./templates/) to the module, replacing `{module-path}
 - Fix: a table adds its row, its specifications, and its migration; searching the copies for `{module-path}` returns nothing.
 
 ### Open the database in the composition root
-Load `postgres.LoadConfig()`, `postgres.Open` it, apply `postgres.Migrate` only when `MigrateOnStart` is set, and build each service over `postgres.NewRepository[TRow](db)`, all in `// [services]` of `cmd/{app}/main.go`.
+Load `postgres.LoadConfig()`, `postgres.Open` it, apply `postgres.Migrate` only when `MigrateOnStart` is set, and build each service over `postgres.NewRepository[TRow](db)`, all in `// [services]` of `cmd/{app}/main.go`; pass each service to `command.NewHandlers` in `// [handlers]`, which hands it to the handlers that take its interface.
 
 ```go
+import (
+	"{module-path}/internal/infrastructure/postgres"
+	"{module-path}/internal/infrastructure/postgres/migrations"
+	"{module-path}/internal/infrastructure/postgres/tables"
+	"{module-path}/internal/service"
+)
+
 // [services]
-dbConfig, err := postgres.LoadConfig()   // a failure: logger.Error("startup failed", ...), return 1
-db, err := postgres.Open(dbConfig)
-defer db.Close()
-if dbConfig.MigrateOnStart {
-	err = postgres.Migrate(ctx, db, migrations.Files)
+dbConfig, err := postgres.LoadConfig()
+if err != nil {
+	logger.Error("startup failed", "error", err) // names the variable, never the DSN
+	return 1
 }
-items := postgres.NewRepository[tables.ItemRow]
-itemLists := service.NewItemLists(items(db))
+db, err := postgres.Open(dbConfig)
+if err != nil {
+	logger.Error("startup failed", "error", err)
+	return 1
+}
+defer db.Close() // after entry.RunAll returns: every entry point has stopped
+if dbConfig.MigrateOnStart {
+	if err := postgres.Migrate(ctx, db, migrations.Files); err != nil {
+		logger.Error("startup failed", "error", err)
+		return 1
+	}
+}
+itemLists := service.NewItemLists(postgres.NewRepository[tables.ItemRow](db))
+
+// [handlers]
+handlers := command.NewHandlers([]pipeline.Middleware{
+	commandlogging.Middleware(logger),
+}, itemLists)
 ```
+
+A second service over the database is one more line in `// [services]` and one more argument of `command.NewHandlers`, the same `db`: `planner := service.NewPlanner(postgres.NewRepository[tables.PlanRow](db))`.
 
 - Violation: `gorm.Open` in a service; a repository built per call; `fmt.Println(dbConfig.DSN())`.
 - Risk: each pool holds its own connections; the DSN, with its password, reaches the log.
@@ -110,14 +134,34 @@ func (s ItemsOfList) Pick(query *gorm.DB) *gorm.DB {
 Declare in the service the methods it needs of `postgres.Repository[TRow]`, ask `SelectBy` for a selector, and turn its outcomes into kinds as [vp-postgres](library/architecture/spec/vp-postgres.skill/vp-postgres.skill.md#report-a-repositorys-outcomes-in-its-own-terms) requires, leaving the repository's failure out of a kind's text.
 
 ```go
+// internal/service/item_lists.go
+
+// itemRows is what ItemLists needs of its infrastructure;
+// postgres.Repository[tables.ItemRow] has it.
 type itemRows interface {
 	Insert(ctx context.Context, row *tables.ItemRow) error
 	SelectBy(specification postgres.Specification[tables.ItemRow]) postgres.Selector[tables.ItemRow]
 }
 
-rows, err := s.rows.SelectBy(tables.ItemsOfList{ListID: listID}).OrderBy(tables.ItemPosition).All(ctx)
-if errors.Is(err, postgres.ErrUnavailable) {
-	return nil, errListsUnavailable // fmt.Errorf("%w: the lists are unavailable", entity.ErrUnavailable)
+type ItemLists struct {
+	rows itemRows
+}
+
+func NewItemLists(rows itemRows) *ItemLists {
+	return &ItemLists{rows: rows}
+}
+
+var errListsUnavailable = fmt.Errorf("%w: the lists are unavailable", entity.ErrUnavailable)
+
+func (s *ItemLists) Items(ctx context.Context, listID string) ([]entity.Item, error) {
+	rows, err := s.rows.SelectBy(tables.ItemsOfList{ListID: listID}).OrderBy(tables.ItemPosition).All(ctx)
+	if errors.Is(err, postgres.ErrUnavailable) {
+		return nil, errListsUnavailable
+	}
+	if err != nil {
+		return nil, err
+	}
+	// ... rows to entities: the selector stops here
 }
 ```
 
