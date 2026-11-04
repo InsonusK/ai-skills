@@ -46,7 +46,7 @@ Every table answers two questions; each answer is one variation point, attached 
 | later | `vp-idempotency`: header `Idempotency-Key` (gRPC metadata `idempotency-key`), a table of keys with the stored answer, in front of the command; a request whose key is known gets the stored answer and the command does not run |
 
 - Each wave is its own PR; wave 0 is #280.
-- The shared scenarios run on test tables the application never ships: `notes` (service id, changes) and `drafts` (caller id, changes).
+- The shared scenarios run on test tables the application never ships: `notes` (service id, changes) and `drafts` (caller id, changes). So a stack's external id example is attached to its row version example, and `drafts` runs where the two meet.
 
 ## 6. Done when
 

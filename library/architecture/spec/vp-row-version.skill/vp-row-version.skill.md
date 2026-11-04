@@ -1,8 +1,8 @@
 ---
 name: vp-row-version
-description: The row version variation point — a table whose rows change takes a version the database engine keeps, every read answers it, the caller gives it back with a write, and the one write that finds another version reports a changed row, so no edit is lost silently, with no lock and no read before the write, attached to vp-postgres table by table
+description: The row version variation point — a table whose rows change declares a version the database engine keeps, every read and every save answers it as an opaque text, the caller gives it back with a write, and the base repository's one write that finds another version reports a changed row, so no edit is lost silently, with no lock and no read before the write, attached to vp-postgres table by table
 whenToUse: when rows of a table change after they are created, when two users or two processes may change one row, when you decide whether a table needs a version, or when you review how an edit reaches the database
-updated: 20261102
+updated: 20261104
 tags:
   - stack
   - concern/architecture
@@ -10,6 +10,7 @@ tags:
 adr:
   - adr/version-kept-by-the-engine.md
   - adr/one-check-in-the-write.md
+  - adr/version-compared-by-the-base-repository.md
 ---
 
 # Goal
@@ -21,7 +22,8 @@ adr:
 # Core Principle
 - **The engine keeps the version** - The database moves it on every write, by whatever code, so no writer can forget it.
 - **One check, in the write** - The write itself compares the version, so nothing can change between a check and the save.
-- **A version is an opaque value** - It is compared for equality and carried; nothing computes with it or reads a time out of it.
+- **A version is an opaque value** - It is compared for equality and carried; nothing computes with it or reads a time out of it, and every contract carries it as text.
+- **The table declares, the base compares** - A row that changes declares its version; the repository of [vp-postgres](library/architecture/spec/vp-postgres.skill/vp-postgres.skill.md) compares a version a row declares, so a table that never changes is written as it always was. Decision recorded in [version-compared-by-the-base-repository](./adr/version-compared-by-the-base-repository.md).
 
 @import "./diagrams/concept.mmd" {as="mermaid"}
 
@@ -35,10 +37,10 @@ adr:
 ## MUST
 
 ### Mark every table
-Mark every row of the application as one that changes or one that never does, and let a check fail on a row with no mark.
+Mark every row of the application as one that changes, by declaring its version, or one that never does, and let a check fail on a row with no mark.
 - Violation: a new table with no mark; a version on a table of events; a table marked as unchanging with a service that updates it.
 - Risk: a table nobody decided about keeps losing edits with no failure.
-- Fix: a row that changes carries the version; a check over the mapped rows fails while one has neither mark.
+- Fix: a row that changes declares the version; a check over the mapped rows fails while one has neither mark.
 
 ### Let the engine keep the version
 Take the version from what the engine moves on every write, never from the application or from a clock the application reads. Decision recorded in [version-kept-by-the-engine](./adr/version-kept-by-the-engine.md).
@@ -46,11 +48,11 @@ Take the version from what the engine moves on every write, never from the appli
 - Risk: a write by another path leaves the version as it was, and the next save overwrites that write with no failure.
 - Fix: `xmin` in PostgreSQL. A time a reader needs is `vp-edit-timestamp`, and it decides nothing here.
 
-### Answer the version with every read a caller may edit from
-Answer the version with the row, through the service and the API, to every caller that may send a change back.
-- Violation: a read that answers the fields with no version; a version dropped between the service and the API.
-- Risk: the caller has nothing to give back, so the check covers milliseconds inside one command, and two people who opened one form overwrite each other.
-- Fix: the API's contract carries it: a field of the message in a proto contract, `ETag` on a hand-written HTTP API.
+### Answer the version with every read and every save
+Answer the version with the row, through the service and the API, to every caller that may send a change back: on a read, and the new version on the answer of a create and of an update.
+- Violation: a read that answers the fields with no version; a version dropped between the service and the API; a create that answers only the id, so the caller cannot make its first edit; a version typed as a number in the contract.
+- Risk: the caller has nothing to give back, so the check covers milliseconds inside one command, and two people who opened one form overwrite each other; a contract that types the version as the engine's number breaks when the engine changes.
+- Fix: the API's contract carries it as text: `string version` of the message in a proto contract, `ETag` on a hand-written HTTP API; the repository puts the new version on the row it saved.
 
 ### Require the version on a write
 Refuse with the kind `Invalid` a change of an existing row that comes with no version.
@@ -75,15 +77,16 @@ Run this skill's [conformance/](./conformance/) scenarios in every stack, unedit
 - Risk: a stack answers a different contract under the same names.
 - Fix: step definitions are the stack's own; the scenarios run on a table `notes` of the test project, which the application never ships.
 
-### Attach without editing the base
-Attach the variation point by changing no fixed file of [vp-postgres](library/architecture/spec/vp-postgres.skill/vp-postgres.skill.md); only the composition root, the rows that change, and the services over them.
-- Risk: a version written into the base repository makes every table carry it, also the tables that never change.
+### Declare the version, never write its check
+Attach the variation point by declaring the version on each row that changes and carrying it through its services and API, and change no fixed file of [vp-postgres](library/architecture/spec/vp-postgres.skill/vp-postgres.skill.md), whose repository compares a version a row declares.
+- Violation: a repository of a table that compares the version itself; a plugin or a subclass of the base repository for versioned rows; a version declared on every row by a base class.
+- Risk: a second check drifts from the base's and misses a path (a selector's `Update`); a version on every row promises a check the tables that never change do not need.
 - Fix: the stack extension lists the files it changes; a check compares its example with the base against that list.
 
 # Check list
-- [ ] Every row is marked; a check fails on a row with no mark.
+- [ ] Every row is marked; a row that changes declares its version; a check fails on a row with no mark.
 - [ ] The version comes from the engine; no code sets it.
-- [ ] Every read a caller may edit from answers the version; a change without one is `Invalid`.
-- [ ] The version is compared only in the write.
+- [ ] Every read, create, and update answers the version as text; a change without one is `Invalid`.
+- [ ] The version is compared only in the write, by the base repository; no file of vp-postgres changed.
 - [ ] A changed row is a `ConcurrentChange`; no service retries a person's edit.
 - [ ] The stack skill's `conformance.copy` names this skill's `conformance/` folder, and every copy is unedited.

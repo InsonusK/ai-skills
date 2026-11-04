@@ -2,7 +2,7 @@
 name: vp-postgres
 description: The PostgreSQL variation point — one database behind a repository with one contract in every stack (insert, update, delete, SelectBy), named specifications that pick rows, a selector that reads, updates, and deletes the picked rows, every table classified by who sets its identity and whether its rows change, a service that turns the repository's outcomes (duplicate key, missing reference, row changed, unavailable) into error kinds, DATABASE_DSN that no log prints, migrations applied by a one-shot job or behind MIGRATE_ON_START, a readiness check, and shared scenarios on the real engine at TEST_DATABASE_DSN
 whenToUse: when an application built on the base plateau must keep its data between runs in PostgreSQL, when you add a table, a specification, a repository method, or a migration, when you replace an in-memory store with a database, or when you review database code
-updated: 20261103
+updated: 20261104
 tags:
   - stack
   - concern/architecture
@@ -42,16 +42,16 @@ adr:
 ### Classify every table
 Decide for every table who sets the identity of its rows and whether they change, and attach the variation points the answer asks for.
 
-| Identity set by | Rows change | `vp-row-version` | `vp-external-id` |
-|---|---|---|---|
-| The service | No | No | No |
-| The caller | No | No | Yes |
-| The service | Yes | Yes | No |
-| The caller | Yes | Yes | Yes |
+| Identity set by | Rows change | Key | `vp-row-version` | `vp-external-id` |
+|---|---|---|---|---|
+| The service | No | `bigint` identity | No | No |
+| The caller | No | the caller's UUID v7 | No | Yes |
+| The service | Yes | `bigint` identity | Yes | No |
+| The caller | Yes | the caller's UUID v7 | Yes | Yes |
 
 - Violation: a table whose rows two users may change at once with no version; a version on a table of events that never change; a choice made per module.
 - Risk: with no version both saves succeed and the first edit is lost with no failure; an idle version on a table that never changes promises a check nothing needs.
-- Fix: each variation point attaches on its own, in any number, table by table; `vp-edit-timestamp` is a separate choice, for a table users create or edit, whatever its row of this table.
+- Fix: each variation point attaches on its own, in any number, table by table, per [vp-row-version](library/architecture/spec/vp-row-version.skill/vp-row-version.skill.md) and [vp-external-id](library/architecture/spec/vp-external-id.skill/vp-external-id.skill.md); `vp-edit-timestamp` is a separate choice, for a table users create or edit, whatever its row of this table.
 
 ### Reach the database only through a repository
 Put every statement in a repository of the infrastructure layer, behind an interface, with a service as its only caller per [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md).
@@ -64,7 +64,7 @@ Implement this contract for every table, under these names in the stack's spelli
 
 | Object | Method | Answers |
 |---|---|---|
-| Repository | `Insert(row)`, `Update(row)`, `Delete(row)` | One row, saved at once |
+| Repository | `Insert(row)`, `Update(row)`, `Delete(row)` | One row, saved at once; `Update` and `Delete` by its key, and by the version the row declares, if any (the new one put back on the row) |
 | Repository | `SelectBy(specification)` | A selector; no statement runs yet |
 | Selector | `All()` | A list of every picked row, as row objects; an empty list when none is picked |
 | Selector | `Single()` | The one picked row as an object, or none; more than one is a failure with no kind |
