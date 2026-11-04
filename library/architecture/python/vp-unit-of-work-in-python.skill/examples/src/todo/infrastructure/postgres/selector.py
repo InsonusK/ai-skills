@@ -234,9 +234,12 @@ class RowSelector(_Selection[TRow]):
                 await session.flush()
                 return len(modified)
             # Each row saved by its version, in the session's transaction: a
-            # row changed since the read above fails the whole call.
-            for row in modified:
+            # row changed since the read above fails the whole call. Every
+            # picked row leaves the session first, so no autoflush of the
+            # first save writes the others without their version.
+            for row in rows:
                 session.expunge(row)
+            for row in modified:
                 if not await self._saved_by(session, row):
                     raise RowChangedError(f"update {self._what}: a picked row was changed meanwhile")
             return len(modified)

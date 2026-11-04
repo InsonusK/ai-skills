@@ -1,0 +1,34 @@
+@type/tech-check
+Feature: Command logging middleware
+  As an operator of the application
+  I want every command logged when it is called and when it ends, with its parameters
+  So that every command run is visible without reading each handler
+
+  @category/happy
+  Scenario: A handled command is logged when called, with its parameters, and when handled, with its result
+    Given a handler that succeeds, wrapped with logging as "PlanItems"
+    When the wrapped handler handles the command "buy milk"
+    Then the records should be:
+      | level | msg             | command   | payload  | failed |
+      | INFO  | command called  | PlanItems | buy milk |        |
+      | INFO  | command handled | PlanItems | ok       | false  |
+
+  @category/error
+  Scenario: A failed command is logged at warn level with its error and its parameters
+    Given a handler that fails with "boom", wrapped with logging as "PlanItems"
+    When the wrapped handler handles the command "buy milk"
+    Then the wrapped handler should return the error "boom"
+    And the records should be:
+      | level | msg            | command   | payload  | failed |
+      | INFO  | command called | PlanItems | buy milk |        |
+      | WARN  | command failed | PlanItems | buy milk | true   |
+
+  @category/error
+  Scenario: A failed command with a kind logs the message it answered and, apart, its cause
+    Given a handler that fails as unavailable with "the lists are unavailable" caused by "dial tcp 10.0.0.5:5432: connection refused", wrapped with logging as "AddItem"
+    When the wrapped handler handles the command "buy milk"
+    Then the wrapped handler should return the error "the lists are unavailable"
+    And the records should be:
+      | level | msg            | command | error                     | cause                                      | exception |
+      | INFO  | command called | AddItem |                           |                                            |           |
+      | WARN  | command failed | AddItem | the lists are unavailable | dial tcp 10.0.0.5:5432: connection refused |           |

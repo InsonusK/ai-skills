@@ -1,0 +1,5 @@
+# The shared scenarios this example runs: written by `make conformance-sync`,
+# checked by test/check-conformance.sh. The example is a full copy of the
+# PostgreSQL one, so it runs those scenarios too.
+vp-postgres.skill/conformance examples/src/todo/infrastructure/postgres/features
+vp-row-version.skill/conformance examples/src/todo/infrastructure/postgres/rowversion/features

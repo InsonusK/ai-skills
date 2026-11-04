@@ -1,0 +1,38 @@
+# The row version variation point attaches to the PostgreSQL example: it adds
+# the scenarios of the version and the mark of a row that never changes, and
+# changes only the application over a table that changes - its row, its
+# service, its commands, its contract and entry points. No fixed file of
+# vp-postgres-in-python changes: its repository compares a version a row
+# declares.
+base library/architecture/python/vp-postgres-in-python.skill/examples
+# the row declares its version; ItemOfList picks one item
+change src/todo/infrastructure/postgres/tables/__init__.py
+change src/todo/infrastructure/postgres/tables/items.py
+# KeptItem carries the id and the version from the service to the command
+change src/todo/domain/entity/__init__.py
+# the service answers ids and versions, saves under the caller's version
+change src/todo/service/item_lists.py
+change src/todo/service/errors.py
+change src/todo/service/features/item_lists.feature
+change src/todo/service/test/item_lists_steps_test.py
+# the commands carry the version; CompleteItem is registered
+change src/todo/command/__init__.py
+change src/todo/command/add_item.py
+change src/todo/command/list_items.py
+change src/todo/command/plan_items.py
+change src/todo/command/handlers.py
+change src/todo/command/features/item_lists.feature
+change src/todo/command/test/item_lists_steps_test.py
+# the contract: an item's id and version, CompleteItem; what protoc generates from it
+change docs/integration/api/todo/todo.proto
+change docs/integration/api/todo/todo.swagger.json
+change src/todo/gen/api/todo/todo_pb2*
+# the entry points serve CompleteItem and answer ids and versions
+change src/todo/api/grpc/endpoint/items.py
+change src/todo/api/grpc/endpoint/features/items.feature
+change src/todo/api/grpc/endpoint/test/*_test.py
+change src/todo/api/http/endpoint/items.py
+change src/todo/api/http/endpoint/lists.py
+change src/todo/api/http/endpoint/features/*.feature
+change src/todo/api/http/endpoint/test/*_test.py
+change README.md
