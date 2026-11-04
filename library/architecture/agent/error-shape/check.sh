@@ -20,8 +20,15 @@ done
 
 # 1. No kind wrapped by fmt.Errorf in Go: an error with a kind is errorkind.New or Wrap.
 kinds='Err(Invalid|NotFound|Conflict|ConcurrentChange|FailedPrecondition|Unauthenticated|PermissionDenied|ResourceExhausted|Unimplemented|Unavailable)\b'
+# A call may span lines, so each file is read whole. A technical outcome of
+# an infrastructure (outcome.ErrUnavailable) is not a kind and may be wrapped;
+# so may an error of a kind, by context ("%s: %w", operation, err).
 while read -r hit; do fail "$hit: a kind wrapped by fmt.Errorf; use errorkind.New or errorkind.Wrap"; done < <(
-    grep -rnE --include=*.go "fmt\.Errorf\(\"[^\"]*%w[^\"]*\"[^)]*([(, ]|entity\.|errorkind\.|pipeline\.)$kinds" "${scope[@]}" 2>/dev/null)
+    find "${scope[@]}" -name '*.go' -print0 2>/dev/null | xargs -0 perl -0777 -ne '
+        while (/fmt\.Errorf\(\s*"%w[^"]*"((?:[^()]|\((?1)\))*?)[\s(,](?:(?:(?:entity|errorkind|pipeline|commandpipeline)\.)?'"$kinds"'|kinds\[[^\]]*\]|kind(?!\w))/g) {
+            my $line = 1 + (substr($_, 0, $-[0]) =~ tr/\n//);
+            print "$ARGV:$line\n";
+        }')
 
 # 2. The kinds live in the shared area, not in the domain.
 while read -r file; do fail "$file: the kinds moved to the shared area (INVARIANTS.md section 2)"; done < <(

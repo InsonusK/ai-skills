@@ -21,6 +21,8 @@ import (
 	"encoding/hex"
 	"io"
 	"log/slog"
+
+	"github.com/example/todo/internal/shared/errorkind"
 )
 
 // The attribute keys every part logs under.
@@ -33,6 +35,12 @@ const (
 	// FailedKey is true on a record of a call that ended with an error, so a
 	// handler can keep the payload of failed calls only.
 	FailedKey = "failed"
+	// ErrorKey holds the error of a failed call: the message of an error with
+	// a kind, which its caller was answered, or the text of any other error.
+	ErrorKey = "error"
+	// CauseKey holds the cause of an error with a kind: the technical failure
+	// behind its message, which the caller never sees.
+	CauseKey = "cause"
 )
 
 // Payload is the payload attribute of a record: v is the call's data as it is
@@ -41,6 +49,18 @@ func Payload(v any) slog.Attr { return slog.Any(PayloadKey, v) }
 
 // Failed is the failed attribute of a record.
 func Failed(failed bool) slog.Attr { return slog.Bool(FailedKey, failed) }
+
+// Error is the error attribute of a record of a failed call, and beside it
+// the cause attribute when err is an error with a kind and a cause - the
+// record reads what the caller was told and why.
+func Error(err error) slog.Attr {
+	kinded := errorkind.Of(err)
+	if kinded == nil || kinded.Cause == nil {
+		return slog.String(ErrorKey, err.Error())
+	}
+	// A group with no key is written inline: two attributes, not an object.
+	return slog.Group("", slog.String(ErrorKey, err.Error()), slog.String(CauseKey, kinded.Cause.Error()))
+}
 
 // NewHandler is the base plateau's handler: one JSON line per record on w at
 // level and above, every payload attribute dropped.

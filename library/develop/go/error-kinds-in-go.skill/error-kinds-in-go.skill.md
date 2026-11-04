@@ -17,6 +17,7 @@ tags:
 # Core Principle
 - **Three fixed files** - The error, its re-export, and the table are copied from templates and never edited by an application: every kind the table names already exists.
 - **Message for the caller, cause for the log** - `(*errorkind.Error).Error()` is its `Message` alone, so no print of the error shows its `Cause`; `Unwrap` gives `errors.Is` the kind and the cause.
+- **The outermost error decides the kind** - `KindOf` takes the kind of the first `*errorkind.Error` in the chain; `errors.Is` would also see a kind inside its cause, which the service has told the caller in other terms.
 
 ```
 internal/shared/errorkind/errorkind.go    ErrInvalid, ... - the kinds; Error{Kind, Message, Cause}, New, Wrap, KindOf, Of
@@ -46,7 +47,7 @@ if errors.Is(err, postgres.ErrUnavailable) {
 ```
 
 - Violation: `fmt.Errorf("%w: no list %q", errorkind.ErrNotFound, id)`; `fmt.Errorf("%w: the todo service: %v", errorkind.ErrUnavailable, err)`; `fmt.Errorf("plan: %v", err)` with `%v`; a check `strings.Contains(err.Error(), "not found")`.
-- Risk: the text of a wrap with `fmt.Errorf` is answered to the caller whole, and a cause written into it names hosts, users, and queries; an error that lost its kind is answered `INTERNAL`.
+- Risk: a kind wrapped by `fmt.Errorf` is answered with the kind's name alone, its message lost; a cause written into a message names hosts, users, and queries to the caller; an error that lost its kind is answered `INTERNAL`.
 - Fix: the message says what happened in the caller's terms, the cause holds the failure; fixed errors are package variables beside the code that returns them, errors carrying a value are built at the return (`errorkind.New(errorkind.ErrNotFound, fmt.Sprintf("no list %q", id))`); a kind is checked only with `errors.Is(err, pipeline.Err{Kind})` or `pipeline.KindOf(err)`.
 
 ### Answer through rpcstatus in every network entry point

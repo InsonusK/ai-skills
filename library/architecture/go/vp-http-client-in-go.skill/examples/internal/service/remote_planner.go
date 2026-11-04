@@ -10,6 +10,7 @@ import (
 	"github.com/example/todo/internal/domain/entity"
 	"github.com/example/todo/internal/infrastructure/client/core/outcome"
 	"github.com/example/todo/internal/infrastructure/client/todoapi"
+	"github.com/example/todo/internal/shared/errorkind"
 )
 
 // todoAPI is what RemotePlanner needs of its infrastructure; todoapi.Client has it.
@@ -35,9 +36,12 @@ func (s *RemotePlanner) Plan(ctx context.Context, titles []string) ([]entity.Ite
 	var status *outcome.StatusError
 	switch {
 	case errors.Is(err, outcome.ErrUnavailable):
-		return nil, fmt.Errorf("%w: the todo service: %v", entity.ErrUnavailable, err)
+		// The transport's text names hosts and addresses: it is the cause, for
+		// the log, and never reaches the caller.
+		return nil, errorkind.Wrap(errorkind.ErrUnavailable, "the todo service is unavailable", err)
 	case errors.As(err, &status) && status.Code == outcome.CodeInvalidArgument:
-		return nil, fmt.Errorf("%w: the todo service rejected the titles: %s", entity.ErrInvalid, status.Message)
+		// The other service's message is for its caller, and so for ours.
+		return nil, errorkind.Wrap(errorkind.ErrInvalid, "the todo service rejected the titles: "+status.Message, err)
 	case err != nil:
 		return nil, fmt.Errorf("the todo service: %w", err)
 	}

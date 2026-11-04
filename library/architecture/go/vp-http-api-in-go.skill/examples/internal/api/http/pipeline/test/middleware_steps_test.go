@@ -1,13 +1,12 @@
 package test
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/cucumber/godog"
 
 	"github.com/example/todo/internal/api/http/middleware/answerfailures"
-	"github.com/example/todo/internal/command/pipeline"
+	"github.com/example/todo/internal/shared/errorkind"
 )
 
 func registerMiddlewareSteps(sc *godog.ScenarioContext, w *World) {
@@ -35,7 +34,7 @@ func (w *World) theMiddlewaresLogging(outer, inner string) error {
 func (w *World) aRejectingMiddleware(message string) error {
 	w.middlewares = append(w.middlewares, func(http.Handler) http.Handler {
 		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-			answerfailures.WriteError(rw, fmt.Errorf("%w: %s", pipeline.ErrUnauthenticated, message))
+			answerfailures.WriteError(rw, errorkind.New(errorkind.ErrUnauthenticated, message))
 		})
 	})
 	return nil

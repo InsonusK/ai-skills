@@ -12,11 +12,13 @@ import (
 
 	commandlogging "github.com/example/todo/internal/command/middleware/logging"
 	"github.com/example/todo/internal/command/pipeline"
+	"github.com/example/todo/internal/shared/errorkind"
 )
 
 func registerLoggingSteps(sc *godog.ScenarioContext, w *World) {
 	sc.Step(`^a handler that succeeds, wrapped with logging as "([^"]*)"$`, w.aSucceedingHandler)
 	sc.Step(`^a handler that fails with "([^"]*)", wrapped with logging as "([^"]*)"$`, w.aFailingHandler)
+	sc.Step(`^a handler that fails as unavailable with "([^"]*)" caused by "([^"]*)", wrapped with logging as "([^"]*)"$`, w.aHandlerFailingWithACause)
 	sc.Step(`^the wrapped handler handles the command "([^"]*)"$`, w.theWrappedHandlerHandles)
 	sc.Step(`^the wrapped handler should return the error "([^"]*)"$`, w.theWrappedHandlerShouldReturn)
 	sc.Step(`^the records should be:$`, w.theRecordsShouldBe)
@@ -37,6 +39,13 @@ func (w *World) aSucceedingHandler(ctx context.Context, name string) error {
 
 func (w *World) aFailingHandler(ctx context.Context, message, name string) error {
 	w.wrap(name, func(context.Context, string) (string, error) { return "", errors.New(message) })
+	return nil
+}
+
+func (w *World) aHandlerFailingWithACause(ctx context.Context, message, cause, name string) error {
+	w.wrap(name, func(context.Context, string) (string, error) {
+		return "", errorkind.Wrap(errorkind.ErrUnavailable, message, errors.New(cause))
+	})
 	return nil
 }
 

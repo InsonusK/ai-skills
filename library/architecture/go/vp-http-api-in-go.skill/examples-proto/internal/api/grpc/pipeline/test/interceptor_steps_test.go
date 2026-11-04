@@ -2,14 +2,13 @@ package test
 
 import (
 	"context"
-	"fmt"
 	"log/slog"
 
 	"github.com/cucumber/godog"
 	"google.golang.org/grpc"
 
 	grpcpipeline "github.com/example/todo/internal/api/grpc/pipeline"
-	"github.com/example/todo/internal/command/pipeline"
+	"github.com/example/todo/internal/shared/errorkind"
 )
 
 func registerInterceptorSteps(sc *godog.ScenarioContext, w *World) {
@@ -36,7 +35,7 @@ func (w *World) theInterceptorsLogging(outer, inner string) error {
 func (w *World) aRejectingInterceptor(message string) error {
 	w.interceptors = append(w.interceptors, grpcpipeline.Interceptor(
 		func(context.Context, any, *grpc.UnaryServerInfo, grpc.UnaryHandler) (any, error) {
-			return nil, fmt.Errorf("%w: %s", pipeline.ErrUnauthenticated, message)
+			return nil, errorkind.New(errorkind.ErrUnauthenticated, message)
 		}))
 	return nil
 }

@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/pflag"
 
 	commandpipeline "{module-path}/internal/command/pipeline"
+	"{module-path}/internal/shared/errorkind"
 )
 
 // The values of the --output flag.
@@ -47,11 +48,11 @@ func Command[TCommand, TResult any](
 	action.RunE = func(cmd *cobra.Command, _ []string) error {
 		output, err := cmd.Flags().GetString(outputFlag)
 		if err != nil || (output != outputJSON && output != outputText) {
-			return fmt.Errorf("%w: --output must be json or text, not %q", commandpipeline.ErrInvalid, output)
+			return errorkind.New(errorkind.ErrInvalid, fmt.Sprintf("--output must be json or text, not %q", output))
 		}
 		c, err := read()
 		if err != nil {
-			return fmt.Errorf("%w: %s (see %s --help)", commandpipeline.ErrInvalid, err, cmd.CommandPath())
+			return errorkind.New(errorkind.ErrInvalid, fmt.Sprintf("%s (see %s --help)", err, cmd.CommandPath()))
 		}
 		result, err := handler.Handle(cmd.Context(), c)
 		if err != nil {

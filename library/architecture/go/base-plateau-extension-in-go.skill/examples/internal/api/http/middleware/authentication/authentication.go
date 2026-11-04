@@ -6,14 +6,13 @@
 package authentication
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/example/todo/internal/api/http/middleware/answerfailures"
 	httppipeline "github.com/example/todo/internal/api/http/pipeline"
 	"github.com/example/todo/internal/command/middleware/access"
-	"github.com/example/todo/internal/command/pipeline"
+	"github.com/example/todo/internal/shared/errorkind"
 )
 
 // Middleware identifies the caller: a request
@@ -33,7 +32,7 @@ func Middleware(tokens map[string]access.Identity) httppipeline.Middleware {
 			token, isBearer := strings.CutPrefix(header, "Bearer ")
 			identity, known := tokens[token]
 			if !isBearer || !known {
-				answerfailures.WriteError(w, fmt.Errorf("%w: the bearer token names no known caller", pipeline.ErrUnauthenticated))
+				answerfailures.WriteError(w, errorkind.New(errorkind.ErrUnauthenticated, "the bearer token names no known caller"))
 				return
 			}
 			next.ServeHTTP(w, r.WithContext(access.WithIdentity(r.Context(), identity)))

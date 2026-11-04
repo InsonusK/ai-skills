@@ -41,7 +41,8 @@ In a shared area, which every layer may import, as dotnet's `Shared` project.
 ## 3. The answer to the caller
 
 - An entry point answers the code of the kind and the message of the kinded error itself, never the text of a wrapper.
-  - Go: `rpcstatus.Of` finds the `*errorkind.Error` with `errors.As` and answers its `Message`.
+  - Go: `rpcstatus.Of` finds the `*errorkind.Error` with `errors.As` and answers its `Message`. The outermost `*errorkind.Error` decides the kind: a kind in its cause is not the error's. A kind returned bare is answered with its name.
+  - The CLI prints the same message: `Error: {message}`.
   - Python: `rpcstatus.of` answers `message` of the `KindError` in the chain, as today.
   - dotnet: `RpcStatus` answers `Message`, as today.
 - The cause never reaches the caller.
@@ -53,10 +54,11 @@ One JSON line per record. Every stack writes the same fields for an error:
 
 | Field | An error with a kind | An error with no kind |
 |---|---|---|
-| `error` | its message | its text |
+| `error` | its message (in Go, with the context wrapped around it on the way up) | its text |
 | `cause` | the text of its cause chain, when it has a cause | — |
 | `exception` | — | the stack, as today |
 
+- Only the record that ends a failed command writes `cause`; the other records of an error (startup, readiness, a retry of a client's outcome) log errors with no kind, as their text.
 - The cause chain is written as text, the messages joined by `: `: Go `Cause.Error()`, Python `str()` along `__cause__`, dotnet `Message` along `InnerException`.
 - No stack is written for an error with a kind: a cause names what failed, and a stack of a rejected request is noise.
 - The logging variation point writes the same fields: it changes how the payload is written, not the error.

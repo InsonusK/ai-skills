@@ -91,23 +91,23 @@ Write the mock of each client as `internal/infrastructure/client/{api}/mock/{api
 - Fix: the emulator's scenario runs the client mocked and checks its answer.
 
 ### Map the outcomes in the service
-Write the service over the client in `internal/service/` with an unexported interface of the client's methods it uses, turning `outcome.ErrUnavailable` into `entity.ErrUnavailable`, each `*outcome.StatusError` code it expects into an error of the kind that fits, and anything else into an error with no kind, wrapping the client's error with `%v`, never `%w`, where it carries a kind of its own.
+Write the service over the client in `internal/service/` with an unexported interface of the client's methods it uses, turning `outcome.ErrUnavailable` into an error of `errorkind.ErrUnavailable` with the client's error as its cause, each `*outcome.StatusError` code it expects into an error of the kind that fits, and anything else into an error with no kind, wrapping the client's error with `%v`, never `%w`, where it carries a kind of its own.
 
 ```go
 var status *outcome.StatusError
 switch {
 case errors.Is(err, outcome.ErrUnavailable):
-	return nil, fmt.Errorf("%w: the todo service: %v", entity.ErrUnavailable, err)
+	return nil, errorkind.Wrap(errorkind.ErrUnavailable, "the todo service is unavailable", err)
 case errors.As(err, &status) && status.Code == outcome.CodeInvalidArgument:
-	return nil, fmt.Errorf("%w: the todo service rejected the titles: %s", entity.ErrInvalid, status.Message)
+	return nil, errorkind.Wrap(errorkind.ErrInvalid, "the todo service rejected the titles: "+status.Message, err)
 case err != nil:
 	return nil, fmt.Errorf("the todo service: %w", err)
 }
 ```
 
-- Violation: an entity built from the API's answer whose error is wrapped with `%w`.
-- Risk: an item the other service got wrong is answered to this service's client as its own invalid input.
-- Fix: the scenario "Any other answer is a failure with no kind" of the example's `remote_planner.feature`.
+- Violation: an entity built from the API's answer whose error is wrapped with `%w`; the client's error formatted into the message (`"the todo service: " + err.Error()`).
+- Risk: an item the other service got wrong is answered to this service's client as its own invalid input; the transport's text, with its hosts and addresses, reaches the client.
+- Fix: the scenarios "Any other answer is a failure with no kind" and "An API that does not answer is unavailable, its failure kept as the cause" of the example's `remote_planner.feature`.
 
 ### Build the client and the service in main.go
 Build the client with `{api}.New(logger, middlewares)` in `// [services]` of `cmd/{app}/main.go`, stopping the start with its error, close it with `defer`, build the service over it, and pass the service to `command.NewHandlers`. Build the client middleware of the API in `// [client middleware]` before it - empty until a variation point (`vp-client-retry`) adds one - and pass it to `{api}.New(logger, middlewares)`, which hands the client's `Methods` and the list to `grpcclient.New`; the client refuses a call of an operation not in `Methods`, and `Retryable` on a `grpcclient.Method` marks one safe to repeat, as [api-client](library/develop/core/api-client.skill/api-client.skill.md) requires.

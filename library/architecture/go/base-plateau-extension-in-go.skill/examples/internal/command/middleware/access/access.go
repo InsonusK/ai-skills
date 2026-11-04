@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/example/todo/internal/command/pipeline"
+	"github.com/example/todo/internal/shared/errorkind"
 )
 
 // Restricted is the mark of a command only a caller with a role may run. A
@@ -29,10 +30,10 @@ func Middleware() pipeline.Middleware {
 		}
 		identity, ok := IdentityOf(ctx)
 		if !ok {
-			return nil, fmt.Errorf("%w: %s needs a caller", pipeline.ErrUnauthenticated, name)
+			return nil, errorkind.New(errorkind.ErrUnauthenticated, fmt.Sprintf("%s needs a caller", name))
 		}
 		if !identity.HasRole(restricted.RequiredRole()) {
-			return nil, fmt.Errorf("%w: %s needs the role %s", pipeline.ErrPermissionDenied, name, restricted.RequiredRole())
+			return nil, errorkind.New(errorkind.ErrPermissionDenied, fmt.Sprintf("%s needs the role %s", name, restricted.RequiredRole()))
 		}
 		return next(ctx, cmd)
 	}

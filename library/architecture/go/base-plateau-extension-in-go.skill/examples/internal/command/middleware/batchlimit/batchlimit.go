@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/example/todo/internal/command/pipeline"
+	"github.com/example/todo/internal/shared/errorkind"
 )
 
 // Batch is the mark of a command that works on many items at once and tells
@@ -25,8 +26,7 @@ type Batch interface {
 func Middleware(limit int) pipeline.Middleware {
 	return func(ctx context.Context, name string, cmd any, next pipeline.Next) (any, error) {
 		if batch, ok := cmd.(Batch); ok && batch.BatchSize() > limit {
-			return nil, fmt.Errorf("%w: %s takes at most %d items at once, got %d",
-				pipeline.ErrResourceExhausted, name, limit, batch.BatchSize())
+			return nil, errorkind.New(errorkind.ErrResourceExhausted, fmt.Sprintf("%s takes at most %d items at once, got %d", name, limit, batch.BatchSize()))
 		}
 		return next(ctx, cmd)
 	}

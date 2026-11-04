@@ -78,9 +78,14 @@ func (e *Error) Unwrap() []error {
 }
 
 // KindOf returns the kind err carries, or nil when it carries none - a
-// failure of the service, which a client is answered without its message. A
+// failure of the service, which a client is answered without its message.
+// The outermost *Error decides: errors.Is would also see the kind of an
+// *Error in its cause, which a service told the caller in other terms. A
 // kind returned bare (return errorkind.ErrUnimplemented) carries it too.
 func KindOf(err error) error {
+	if kinded := Of(err); kinded != nil {
+		return kinded.Kind
+	}
 	for _, kind := range Kinds {
 		if errors.Is(err, kind) {
 			return kind

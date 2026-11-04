@@ -68,7 +68,7 @@ return entry.ExitCode(err)
 
 - Violation: `cobra.Command.Execute` called in `main.go`, an `os.Exit` inside the CLI package, or the startup entry kept beside the CLI.
 - Risk: an exit code computed outside `entry.ExitCode` ignores the error kind; an `os.Exit` skips the graceful stop of every other entry.
-- Fix: import `cliapi "{module-path}/internal/api/cli"`; the entry prints the error as `Error: ...` and returns it, its `ReportsErrors: true` keeps `RunAll` from logging it a second time, and `entry.ExitCode` turns it into the exit code. The logs of the command's run stay on stderr.
+- Fix: import `cliapi "{module-path}/internal/api/cli"`; the entry prints the error as `Error: ...` — for an error with a kind, its own message, as the network entry points answer it — and returns it, its `ReportsErrors: true` keeps `RunAll` from logging it a second time, and `entry.ExitCode` turns it into the exit code. The logs of the command's run stay on stderr.
 
 ### Add the cobra module
 Add `github.com/spf13/cobra` at `v1.10.2` with `go get` and run `go mod tidy`.
