@@ -15,9 +15,10 @@ PlanItemsHandler ◄── LoggingMiddleware ◄── ISender ◄── entry p
 | Piece | Role |
 |---|---|
 | `ErrorKind` | the ten kinds; `null` (no kind) is a failure of the service |
-| `ErrorKindException` | the exception carrying a kind and the caller's message |
+| `ErrorKindException` | the exception carrying a kind, the caller's message, and, as its inner exception, the cause the log writes |
 | `{Module}Errors` | one factory method per error of the module: kind and text written once |
 | `ErrorKindException.KindOf` | the kind of an exception or of its inner exceptions |
+| `ErrorKindException.CauseOf` | the text of the cause of the exception with a kind, for the log's `cause` |
 
 ## Example
 

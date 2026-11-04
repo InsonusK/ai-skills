@@ -14,7 +14,7 @@ Feature: Batch limit by a value of the command
   Scenario: A batch above the limit is rejected as resource exhausted before its handler
     Given the batch limit 3
     When a batch of 4 items goes through the batch limit
-    Then the call should be rejected as resource exhausted with "resource exhausted: Echo takes at most 3 items at once, got 4"
+    Then the call should be rejected as resource exhausted with "Echo takes at most 3 items at once, got 4"
     And the handler should not have run
 
   @category/happy

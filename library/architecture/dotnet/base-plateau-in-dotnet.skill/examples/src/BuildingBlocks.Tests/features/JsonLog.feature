@@ -32,6 +32,14 @@ Feature: Base log provider
     When a record "command failed" is logged with an error "item titles repeat" of the kind "Invalid"
     Then the line should have "error" = "item titles repeat"
     And the line should have no "exception"
+    And the line should have no "cause"
+
+  @category/error
+  Scenario: A failed command with a kind logs the message it answered and, apart, its cause
+    When a record "command failed" is logged with an error "the lists are unavailable" of the kind "Unavailable" caused by "dial tcp 10.0.0.5:5432: connection refused"
+    Then the line should have "error" = "the lists are unavailable"
+    And the line should have "cause" = "dial tcp 10.0.0.5:5432: connection refused"
+    And the line should have no "exception"
 
   @category/happy
   Scenario: A request id begun for a call is read back

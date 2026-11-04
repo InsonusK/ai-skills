@@ -9,6 +9,7 @@ import (
 
 	"github.com/example/todo/internal/domain/entity"
 	"github.com/example/todo/internal/infrastructure/memory"
+	"github.com/example/todo/internal/shared/errorkind"
 )
 
 // lists is what ItemLists needs of its infrastructure; memory.Lists has it.
@@ -32,7 +33,7 @@ func NewItemLists(store lists) *ItemLists {
 func (s *ItemLists) Add(ctx context.Context, listID string, item entity.Item) error {
 	err := s.store.Insert(ctx, listID, memory.Row{Title: item.Title(), Done: item.Done()})
 	if errors.Is(err, memory.ErrDuplicateKey) {
-		return fmt.Errorf("%w: list %q already has an item %q", entity.ErrConflict, listID, item.Title())
+		return errorkind.Wrap(errorkind.ErrConflict, fmt.Sprintf("list %q already has an item %q", listID, item.Title()), err)
 	}
 	return err
 }
@@ -41,7 +42,7 @@ func (s *ItemLists) Add(ctx context.Context, listID string, item entity.Item) er
 func (s *ItemLists) Items(ctx context.Context, listID string) ([]entity.Item, error) {
 	rows, err := s.store.Select(ctx, listID)
 	if errors.Is(err, memory.ErrNoRows) {
-		return nil, fmt.Errorf("%w: no list %q", entity.ErrNotFound, listID)
+		return nil, errorkind.Wrap(errorkind.ErrNotFound, fmt.Sprintf("no list %q", listID), err)
 	}
 	if err != nil {
 		return nil, err

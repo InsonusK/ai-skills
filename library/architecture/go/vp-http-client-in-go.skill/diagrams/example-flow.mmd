@@ -16,5 +16,5 @@ sequenceDiagram
     Note over Client: record "http client response received"
     Client-->>-Adapter: answer, or outcome.ErrUnavailable, or outcome.StatusError
     Adapter-->>-Service: []todoapi.Item, or the outcome
-    Note over Service: ErrUnavailable: entity.ErrUnavailable. Code INVALID_ARGUMENT: entity.ErrInvalid. Anything else: no kind
+    Note over Service: ErrUnavailable: errorkind.Wrap(ErrUnavailable, message, err). Code INVALID_ARGUMENT: errorkind.Wrap(ErrInvalid, ...). Anything else: no kind
     Service-->>-Handler: []entity.Item, or an error

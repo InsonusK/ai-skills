@@ -25,7 +25,7 @@ The Go base plateau writes `{"time","level","msg",...attributes}` and drops the 
 **Selected.**
 
 ### Description
-`JsonLogProvider` writes `time`, `level` (`DEBUG`, `INFO`, `WARN`, `ERROR`), `msg`, the attributes in order, `error` for an exception (and `exception` with its stack when it has no kind), and skips `payload`.
+`JsonLogProvider` writes `time`, `level` (`DEBUG`, `INFO`, `WARN`, `ERROR`), `msg`, the attributes in order, `error` for an exception, then `cause` with the messages of its inner exceptions for an exception with a kind, or `exception` with its stack for one with no kind, and skips `payload`.
 
 ### Benefits
 - No package; the exact fields and units (a duration in nanoseconds) of the Go base plateau.

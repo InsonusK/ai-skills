@@ -1,4 +1,5 @@
 import asyncio
+import json
 import logging
 from dataclasses import dataclass, field
 
@@ -7,7 +8,8 @@ from pytest_bdd import given, parsers, scenarios, then, when
 
 from todo.command.middleware.logging import LoggingMiddleware
 from todo.command.pipeline import Handler, HandlerFunc, decorate
-from todo.log import FAILED_KEY, PAYLOAD_KEY, attributes_of, level_name
+from todo.log import FAILED_KEY, PAYLOAD_KEY, JsonFormatter, attributes_of, level_name
+from todo.shared.errors import Kind, KindError
 
 scenarios("../features/logging.feature")
 
@@ -58,12 +60,20 @@ def a_failing_handler(world: World, message: str, name: str) -> None:
     world.wrapped = decorate(name, HandlerFunc(fail), [LoggingMiddleware(world.logger())])
 
 
+@given(parsers.parse('a handler that fails as unavailable with "{message}" caused by "{cause}", wrapped with logging as "{name}"'))
+def a_handler_failing_with_a_cause(world: World, message: str, cause: str, name: str) -> None:
+    async def fail(command: str) -> str:
+        raise KindError(Kind.UNAVAILABLE, message) from ConnectionRefusedError(cause)
+
+    world.wrapped = decorate(name, HandlerFunc(fail), [LoggingMiddleware(world.logger())])
+
+
 @when(parsers.parse('the wrapped handler handles the command "{command}"'))
 def the_wrapped_handler_handles(world: World, command: str) -> None:
     assert world.wrapped is not None
     try:
         asyncio.run(world.wrapped.handle(command))
-    except RuntimeError as error:
+    except Exception as error:
         world.error = error
     print(f"when: handle {command!r} -> error {world.error!r}, {len(world.recorder.records)} records")
 
@@ -85,12 +95,18 @@ def the_records_should_be(world: World, datatable: list[list[str]]) -> None:
     got = []
     for record in world.recorder.records:
         given = attributes_of(record)
+        # The error's fields are written by the formatter from the record's
+        # exception, so they are read from the line it writes.
+        line = json.loads(JsonFormatter().format(record))
         cells = {
             "level": level_name(record.levelno),
             "msg": record.getMessage(),
             "command": _cell(given.get("command")),
             "payload": _cell(given.get(PAYLOAD_KEY)),
             "failed": _cell(given.get(FAILED_KEY)),
+            "error": _cell(line.get("error")),
+            "cause": _cell(line.get("cause")),
+            "exception": _cell(line.get("exception")),
         }
         got.append([cells[column] for column in header])
     print(f"then: records {got}")

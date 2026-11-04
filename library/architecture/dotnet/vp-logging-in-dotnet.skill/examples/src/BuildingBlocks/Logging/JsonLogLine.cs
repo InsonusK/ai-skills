@@ -9,7 +9,10 @@ namespace BuildingBlocks.Logging;
 
 /// <summary>
 /// One record as one JSON line on <paramref name="output"/>: <c>time</c>,
-/// <c>level</c>, <c>msg</c>, then the attributes as given, then the error. The
+/// <c>level</c>, <c>msg</c>, then the attributes as given, then the error:
+/// <c>error</c> with its message, then <c>cause</c> for an error with a kind
+/// and an inner exception, or <c>exception</c> with the stack for an error
+/// with no kind. The
 /// fields are the same as the Go base plateau's, so one log pipeline reads
 /// every stack. Every provider writes through it - the base plateau's
 /// <see cref="JsonLogProvider"/>, the logging variation point's - so the
@@ -53,10 +56,16 @@ public sealed class JsonLogLine(TextWriter output)
             {
                 json.WriteString("error", exception.Message);
                 // A failure of the service is debugged from its stack; a
-                // rejected request (an error with a kind) needs none.
+                // rejected request (an error with a kind) needs none, and its
+                // cause, apart from the message its caller was answered, names
+                // what failed.
                 if (ErrorKindException.KindOf(exception) is null)
                 {
                     json.WriteString("exception", exception.ToString());
+                }
+                else if (ErrorKindException.CauseOf(exception) is { } cause)
+                {
+                    json.WriteString("cause", cause);
                 }
             }
             json.WriteEndObject();

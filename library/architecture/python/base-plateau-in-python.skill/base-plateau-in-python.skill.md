@@ -2,7 +2,7 @@
 name: base-plateau-in-python
 description: The base plateau in Python — the package layout of its four layers under src/{package}/, the async Handler protocol, the Middleware list with decorate, the command registry build_handlers, the error kinds, the startup entry, the runner of the entry points with the exit codes, the stdlib logger writing one JSON line per record, the composition root with its three marked sections, and the pytest-bdd scenarios that cover each layer
 whenToUse: when you create a new Python service or Python CLI application from the architecture catalog, or when you attach a variation point to, or review, a Python application built on the base plateau
-updated: 20261102
+updated: 20261104
 tags:
   - stack/python
   - concern/architecture
@@ -34,7 +34,8 @@ src/{package}/
 │   └── handlers.py                the command registry: Handlers, build_handlers
 ├── command/pipeline/              copied: Handler, HandlerFunc, Middleware, decorate, the error kinds
 ├── command/middleware/logging/    copied: LoggingMiddleware - one package per command middleware
-└── domain/entity, domain/service  entities, kinds.py and the rule errors; domain services
+├── domain/entity, domain/service  entities and the rule errors; domain services
+└── shared/errors                  the error kinds and KindError, which every layer may import
 ```
 
 # Rule
@@ -52,7 +53,8 @@ Create the packages [app-layers-in-python](library/develop/python/app-layers-in-
 | [command registry](./glossary/command-registry.md): `Handlers`, `build_handlers` | `command/handlers.py` |
 | [handler contract](./glossary/handler-contract.md), `HandlerFunc`, `Middleware` with `decorate`, the error kinds re-exported | `command/pipeline` |
 | command middleware, one package each: `LoggingMiddleware` in the base plateau | `command/middleware/{name}` |
-| entities, the error kinds (`kinds.py`) and the rule errors | `domain/entity` |
+| entities and the rule errors | `domain/entity` |
+| the error kinds and `KindError` (`kinds.py`) | `shared/errors` |
 | domain services | `domain/service` |
 | composition root | `main.py` |
 | base settings (`LOG_LEVEL` only) | `config` |
@@ -130,7 +132,7 @@ Name a type parameter after what it stands for (`TCommand`, `TResult`), never by
 # Check list
 - [ ] Packages follow [Base packages](#base-packages) and [app-layers-in-python](library/develop/python/app-layers-in-python.skill.md).
 - [ ] `command/pipeline`, `command/middleware/logging`, `api/startup`, `api/core/entry`, `log`, and the error-kinds modules are filled copies of the templates; none contains `{package}`.
-- [ ] Every business-rule error is a `KindError` subclass; code outside the domain checks kinds only through `command.pipeline`.
+- [ ] Every business-rule error is a `KindError` subclass; an entry point checks kinds through `command.pipeline`.
 - [ ] Every command lives in its own module in `command` with a handler matching `Handler[TCommand, TResult]`, and has a field and a line in `command/handlers.py`.
 - [ ] `run` in `main.py` has the `# [services]`, `# [handlers]`, `# [entries]` sections in this order; `[handlers]` is one `build_handlers` call; `[entries]` is one `run_all` call returning `exit_code(...)`.
 - [ ] Every record is written through the logger of `new_logger` with fixed text and `attrs(...)`.

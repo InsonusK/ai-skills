@@ -3,8 +3,9 @@ from dataclasses import dataclass, field
 import pytest
 from pytest_bdd import parsers, scenarios, then, when
 
-from todo.domain.entity import DuplicateTitleError, EmptyTitleError, Item, KindError, NoItemsError
+from todo.domain.entity import DuplicateTitleError, EmptyTitleError, Item, NoItemsError
 from todo.domain.service import Planner
+from todo.shared.errors import KindError
 
 scenarios("../features/planner.feature")
 

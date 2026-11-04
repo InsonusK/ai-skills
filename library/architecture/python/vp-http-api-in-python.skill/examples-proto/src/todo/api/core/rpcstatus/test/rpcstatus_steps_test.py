@@ -42,6 +42,14 @@ def a_command_fails_wrapped(world: World, kind: str, message: str, outer: str) -
         _answer(world, wrapped)
 
 
+@when(parsers.parse('a command fails with the kind "{kind}" and the message "{message}", caused by "{cause}"'))
+def a_command_fails_with_a_cause(world: World, kind: str, message: str, cause: str) -> None:
+    try:
+        raise KindError(Kind(kind), message) from ConnectionRefusedError(cause)
+    except KindError as error:
+        _answer(world, error)
+
+
 @when(parsers.parse('a command fails with the plain error "{message}"'))
 def a_command_fails_with_a_plain_error(world: World, message: str) -> None:
     _answer(world, RuntimeError(message))

@@ -25,7 +25,7 @@ http response sent      200, duration               payload: the response body a
 | gRPC entry point | `grpc call received` | `grpc call answered` (`code`, `duration`, `failed`) | the request message / the response message |
 | CLI entry point | `cli call received` (once parsed) | `cli call answered` (`duration`, `failed`) | the flags given / the output as printed |
 
-The out record of a **failure** repeats the input, so it is in the log even when the logging variation point keeps the payload of failed records only (`LOG_PAYLOAD=errors`). The response is logged as it was sent, not as the command returned it, so a fault in turning a result into the response shows in the log. Every entry point also puts a **request id** into the context (`logging.WithRequestID`): the client's (`X-Request-Id`, `x-request-id`) or a new one, sent back in the response.
+The out record of a **failure** repeats the input, so it is in the log even when the logging variation point keeps the payload of failed records only (`LOG_PAYLOAD=errors`). A failure's record holds the error in `error` and, for an error with a kind built with a cause (`errorkind.Wrap`), that cause in `cause`: the client is answered the message alone, and the log keeps what broke. The response is logged as it was sent, not as the command returned it, so a fault in turning a result into the response shows in the log. Every entry point also puts a **request id** into the context (`logging.WithRequestID`): the client's (`X-Request-Id`, `x-request-id`) or a new one, sent back in the response.
 
 ## How it works
 
@@ -46,6 +46,7 @@ The base handler drops the payload so that no data — and no secret in it — i
 | `logging.NewHandler(w, level)` | the base handler: JSON lines, payload dropped |
 | `logging.Payload(v)`, `logging.PayloadKey` | the one attribute the data of a call goes in |
 | `logging.Failed(bool)`, `logging.FailedKey` | whether the call ended with an error |
+| `logging.Error(err)`, `ErrorKey`, `CauseKey` | the error of a failed call: `error`, the message of an error with a kind or the text of one with none; `cause`, the text of its cause, only for an error with a kind that has one |
 | `logging.WithRequestID`, `RequestID`, `NewRequestID` | the request id in the context |
 
 ## Example
@@ -55,6 +56,12 @@ The base handler drops the payload so that no data — and no secret in it — i
 {"level":"INFO","msg":"command called","command":"PlanItems"}
 {"level":"INFO","msg":"command handled","command":"PlanItems","duration":1253,"failed":false}
 {"level":"INFO","msg":"http response sent","method":"POST","path":"/v1/items/plan","status":200,"duration":2101,"failed":false}
+```
+
+A command that failed as unavailable, its cause apart from the message the client got:
+
+```json
+{"level":"WARN","msg":"command failed","command":"PlanRemoteItems","duration":3012,"error":"the todo service is unavailable","cause":"POST /v1/items/plan: dial tcp 10.0.0.5:8080: connection refused","failed":true}
 ```
 
 ## Related concepts

@@ -56,7 +56,7 @@ the `spec/` skills come along because every stack skill links its spec.
 | Service | `internal/service` | `src/{package}/service` | `src/Modules/{Module}/{Module}.Application/Services` (interface beside its consumer) |
 | Infrastructure | `internal/infrastructure/{kind}`; clients of other services' APIs in `internal/infrastructure/client/{api}`, their fixed code in `client/core/` | `src/{package}/infrastructure/{kind}`; clients in `infrastructure/client/{api}` | `src/Infrastructure/{Infra}/{Infra}.Abstractions` + `{Infra}` |
 | Composition root | `cmd/{app}/main.go` | `src/{package}/main.py` | `src/App/App.Host/Program.cs` (`RunAsync`) |
-| Error kinds | `internal/domain/entity/kinds.go` | `src/{package}/domain/entity/kinds.py` (exceptions) | `src/Shared/Errors` |
+| Error kinds and the error with a kind (kind, message, cause) | `internal/shared/errorkind` | `src/{package}/shared/errors` (exceptions, the cause as `__cause__`) | `src/Shared/Errors` (the cause as the inner exception) |
 
 ## Variation points by application type
 
@@ -105,7 +105,7 @@ variation points are formed (2026-10-18).
 | Go gRPC entry point (`Call`, `Server` with reflection, panic recovery, graceful stop, `LoadConfig`) | templates of `vp-grpc-api-in-go` | identical in every Go gRPC service except the module path |
 | Go CLI entry point (`Run`, `Command` over cobra, `--output`, usage errors as invalid) | templates of `vp-cli-api-in-go` | identical in every Go CLI except the module path |
 | Go logging (`internal/logging`, `internal/logging/masked`: payload attribute, masked handler) | templates of `base-plateau-in-go` and `vp-logging-in-go` | identical in every Go application; one masking for all services |
-| Go error kinds (`entity/kinds.go`, `pipeline/errors.go` with `KindOf`, `api/rpcstatus`) | templates of `error-kinds-in-go` | identical in every Go application; a service would import the kinds and the table instead of copying them; the skill would keep only when to choose each kind |
+| Go error kinds (`shared/errorkind`, `pipeline/errors.go` with `KindOf`, `api/rpcstatus`) | templates of `error-kinds-in-go` | identical in every Go application; a service would import the kinds and the table instead of copying them; the skill would keep only when to choose each kind |
 | Testing tooling (`tools/testing`, `tools/normalize_*`, `tools/livingdoc`, `report-template`) | example of `solution-conformance-testing-in-go`; not copied into plateau or variation-point examples | ~2,000 lines copied into every real project; a version bump would update every project at once |
 | dotnet fixed code (`Shared`: error kinds; `BuildingBlocks`: `AddCommandMiddleware`, `JsonLogProvider`, `LogAttr`, `RequestId`; `Middleware`: `LoggingMiddleware`; `Api/Core/Entry`, `Api/Startup`; `Api/Core/Errors/RpcStatus`, `Api/Core/Hosting/WebHost`, `Api/Http/Pipeline` with `ProtoJson`, `Api/Grpc/Pipeline`, `Api/Management`) | templates of `base-plateau-in-dotnet`, `error-kinds-in-dotnet`, `vp-http-api-in-dotnet`, `vp-grpc-api-in-dotnet`, `vp-health-in-dotnet` | no placeholder at all: one NuGet package (or two: `Shared` with no dependency, the rest over MediatR) |
 | TaskBox | `taskbox-spec` published; `taskbox-go` code proven, not yet packaged | already decided as a library (ADR `contract-vp-realized-by-libraries`) |

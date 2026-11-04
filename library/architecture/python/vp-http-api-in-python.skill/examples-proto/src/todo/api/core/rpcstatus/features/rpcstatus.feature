@@ -31,6 +31,12 @@ Feature: Error kinds answered by one table
     And the rpc message should be "no list 42"
 
   @category/error
+  Scenario: An error with a cause is answered with its own message, never the cause's
+    When a command fails with the kind "unavailable" and the message "the lists are unavailable", caused by "dial tcp 10.0.0.5:5432: connection refused"
+    Then the rpc code should be 14
+    And the rpc message should be "the lists are unavailable"
+
+  @category/error
   Scenario: An error with no kind is INTERNAL without its message
     When a command fails with the plain error "connection refused to 10.0.0.5:5432"
     Then the rpc code should be 13

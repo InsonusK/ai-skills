@@ -10,7 +10,7 @@ import (
 
 	"github.com/cucumber/godog"
 
-	"github.com/example/todo/internal/command/pipeline"
+	"github.com/example/todo/internal/shared/errorkind"
 )
 
 func registerAPISteps(sc *godog.ScenarioContext, w *World) {
@@ -45,7 +45,7 @@ func (w *World) commandFails(ctx context.Context, message string) error {
 }
 
 func (w *World) commandConflicts(ctx context.Context, message string) error {
-	w.echoErr = fmt.Errorf("%w: %s", pipeline.ErrConflict, message)
+	w.echoErr = errorkind.New(errorkind.ErrConflict, message)
 	return nil
 }
 

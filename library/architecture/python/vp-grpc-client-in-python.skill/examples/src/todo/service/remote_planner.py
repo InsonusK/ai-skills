@@ -2,10 +2,11 @@
 
 from typing import Protocol
 
-from todo.domain.entity import Item, KindError
+from todo.domain.entity import Item
 from todo.infrastructure.client.core.outcomes import ApiStatusError, ApiUnavailableError, StatusCode
 from todo.infrastructure.client.todo_api import Item as AnsweredItem
 from todo.service.errors import TitlesRejectedError, TodoServiceUnavailableError
+from todo.shared.errors import KindError
 
 
 class TodoApi(Protocol):

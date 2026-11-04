@@ -2,7 +2,7 @@
 name: base-plateau-extension-in-go
 description: How a variation point extends the base plateau in Go — every middleware a package of its own under internal/command/middleware/ or internal/api/{kind}/middleware/ with a function Middleware, the command middleware as pipeline.Middleware in the list main.go gives command.NewHandlers, wrapped around every typed handler by pipeline.Decorate, marks as methods a command has, each API's Entry factory with its list of API middleware (httpapi.Middleware, grpcapi.Interceptor) inside the fixed requestlog and answerfailures, rejections as errors of a kind, the variation point's own settings, and attach.allow — with a sample access variation point attached to the HTTP example
 whenToUse: when you write, attach, or review a variation point of a Go application built on the base plateau, when you add a middleware around Go commands or around HTTP or gRPC requests, or when you add a command to such an application
-updated: 20261102
+updated: 20261104
 tags:
   - stack/go
   - concern/architecture
@@ -93,7 +93,7 @@ Put each command middleware in `internal/command/middleware/{name}/` and each AP
 - Fix: the sample's `command/middleware/access`, `command/middleware/batchlimit`, and `api/http/middleware/authentication`. A package named like another the composition root imports is imported under an alias: `commandlogging "{module-path}/internal/command/middleware/logging"` beside `internal/logging`.
 
 ### Write a command middleware as a pipeline.Middleware
-Return a `pipeline.Middleware` from `Middleware`; let it call `next(ctx, cmd)` once with the command unchanged, or return an error wrapping a kind of `pipeline` to reject the command.
+Return a `pipeline.Middleware` from `Middleware`; let it call `next(ctx, cmd)` once with the command unchanged, or return an error of a kind, built by `errorkind.New`, to reject the command.
 
 ```go
 // by the command's mark: internal/command/middleware/access/access.go
@@ -105,10 +105,10 @@ func Middleware() pipeline.Middleware {
 		}
 		identity, ok := IdentityOf(ctx)
 		if !ok {
-			return nil, fmt.Errorf("%w: %s needs a caller", pipeline.ErrUnauthenticated, name)
+			return nil, errorkind.New(errorkind.ErrUnauthenticated, fmt.Sprintf("%s needs a caller", name))
 		}
 		if !identity.HasRole(restricted.RequiredRole()) {
-			return nil, fmt.Errorf("%w: %s needs the role %s", pipeline.ErrPermissionDenied, name, restricted.RequiredRole())
+			return nil, errorkind.New(errorkind.ErrPermissionDenied, fmt.Sprintf("%s needs the role %s", name, restricted.RequiredRole()))
 		}
 		return next(ctx, cmd)
 	}
@@ -118,8 +118,7 @@ func Middleware() pipeline.Middleware {
 func Middleware(limit int) pipeline.Middleware {
 	return func(ctx context.Context, name string, cmd any, next pipeline.Next) (any, error) {
 		if batch, ok := cmd.(Batch); ok && batch.BatchSize() > limit {
-			return nil, fmt.Errorf("%w: %s takes at most %d items at once, got %d",
-				pipeline.ErrResourceExhausted, name, limit, batch.BatchSize())
+			return nil, errorkind.New(errorkind.ErrResourceExhausted, fmt.Sprintf("%s takes at most %d items at once, got %d", name, limit, batch.BatchSize()))
 		}
 		return next(ctx, cmd)
 	}
@@ -182,7 +181,7 @@ func Middleware(tokens map[string]access.Identity) httppipeline.Middleware {
 			token, isBearer := strings.CutPrefix(header, "Bearer ")
 			identity, known := tokens[token]
 			if !isBearer || !known {
-				answerfailures.WriteError(w, fmt.Errorf("%w: the bearer token names no known caller", pipeline.ErrUnauthenticated))
+				answerfailures.WriteError(w, errorkind.New(errorkind.ErrUnauthenticated, "the bearer token names no known caller"))
 				return
 			}
 			next.ServeHTTP(w, r.WithContext(access.WithIdentity(r.Context(), identity)))
