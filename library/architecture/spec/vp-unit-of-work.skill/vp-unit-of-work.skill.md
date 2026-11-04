@@ -23,7 +23,7 @@ tags:
 
 # Scope
 - Covers the local transaction of one command over one database. A write to another system is not rolled back by it: that is [workflow-consistency-design](library/common-workflow/architecture/core/workflow-consistency-design.skill/workflow-consistency-design.skill.md) and the outbox variation point.
-- The implementation for each stack is described in its stack-specialized extensions: `vp-unit-of-work-in-dotnet`, `vp-unit-of-work-in-go`.
+- The implementation for each stack is described in its stack-specialized extensions: `vp-unit-of-work-in-dotnet`, `vp-unit-of-work-in-python`, `vp-unit-of-work-in-go`.
 
 # Rule
 
