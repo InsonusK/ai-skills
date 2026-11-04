@@ -19,7 +19,7 @@ clients (later) ─┘                     │
 |---|---|
 | `logger.Write(level, message, attrs...)` | one record: the message is fixed text, every value an attribute |
 | `LogAttr.Of`, `LogAttr.Payload`, `LogAttr.Failed` | an attribute; the data of a call; whether the call failed |
-| `JsonLogLine` | one record as one JSON line: `time`, `level`, `msg`, the attributes given, the error; every provider writes through it |
+| `JsonLogLine` | one record as one JSON line: `time`, `level`, `msg`, the attributes given, the error (`error`; `cause` for an error with a kind, `exception` with the stack for one with none); every provider writes through it |
 | `JsonLogProvider` | the base provider: every attribute but the payload, through `JsonLogLine` |
 | `RequestId.Begin(id)` | the id of the call being served, carried along its async calls |
 

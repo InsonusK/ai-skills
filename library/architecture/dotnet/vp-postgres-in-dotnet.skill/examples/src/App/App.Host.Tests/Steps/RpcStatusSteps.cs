@@ -28,6 +28,10 @@ public sealed class RpcStatusSteps(ITestOutputHelper output)
     public void WhenACommandFailsWithTheKindWrapped(string kind, string message, string wrapper) =>
         Answer(new InvalidOperationException(wrapper, Kinded(kind, message)));
 
+    [When("a command fails with the kind {string} and the message {string}, caused by {string}")]
+    public void WhenACommandFailsWithTheKindCausedBy(string kind, string message, string cause) =>
+        Answer(new ErrorKindException(Enum.Parse<ErrorKind>(kind.Replace(" ", ""), ignoreCase: true), message, new IOException(cause)));
+
     [When("a command fails with the plain error {string}")]
     public void WhenACommandFailsWithThePlainError(string message) => Answer(new InvalidOperationException(message));
 

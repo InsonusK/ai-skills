@@ -1,8 +1,8 @@
 ---
 name: error-kinds-in-dotnet
-description: The error kinds in dotnet — an ErrorKind enum and an ErrorKindException declared once in the Shared project, thrown through one factory method per error in each module's errors class, read by entry points only through ErrorKindException.KindOf, with exceptions rather than Result types as the one channel of errors
+description: The error kinds in dotnet — an ErrorKind enum and an ErrorKindException (kind, message for the caller, inner exception as the cause for the log) declared once in the Shared project, thrown through one factory method per error in each module's errors class, read by entry points only through ErrorKindException.KindOf, with exceptions rather than Result types as the one channel of errors
 whenToUse: when a dotnet command, domain service, entity, or service raises an error a caller must act on, when a dotnet entry point turns an exception into its answer, or when you review either
-updated: 20261021
+updated: 20261104
 tags:
   - stack/dotnet
   - concern/architecture
@@ -18,11 +18,12 @@ adr:
 
 # Core Principle
 - **One channel of errors** - An error a caller can act on is an exception carrying its kind, like every other failure; entry points and pipeline behaviors catch one thing. Decision recorded in [exceptions-carry-the-kind](./adr/exceptions-carry-the-kind.md).
+- **Message for the caller, cause for the log** - An `ErrorKindException`'s `Message` is what an entry point answers; its inner exception is the technical failure behind it, which only the log writes, as `cause`.
 - **Two fixed files** - The kinds and the exception are copied from templates and never edited by an application: every kind the table names already exists.
 
 ```
 src/Shared/Errors/ErrorKind.cs                          Invalid, NotFound, ... - the kinds
-src/Shared/Errors/ErrorKindException.cs                 the exception + KindOf
+src/Shared/Errors/ErrorKindException.cs                 the exception + KindOf, ErrorOf, CauseOf
 src/Modules/{Module}/{Module}.Domain/Errors/{Module}Errors.cs   the module's errors, one factory each
 src/App/App.Host/Api/Core/Errors/RpcStatus.cs                kind → RpcCode (google.rpc.Code) → HTTP status, message
 ```
@@ -45,11 +46,11 @@ Declare each error a caller can act on as a static method of `{Module}Errors` in
 - Risk: the same error written twice drifts in kind or text; a shared instance has its stack overwritten by every throw; an exception without a kind is answered `INTERNAL`.
 - Fix: `TodoErrors.EmptyTitle()`; a service's error (a record not found) is a method of the same class or of the service's own errors class, still built on `ErrorKindException`.
 
-### Keep the kind when wrapping
-Wrap an exception only as the inner exception of the new one (`new InvalidOperationException("plan", error)`), and never catch an `ErrorKindException` to throw a new exception without it.
-- Violation: `catch (ErrorKindException e) { throw new Exception(e.Message); }`; a check `error.Message.Contains("not found")`.
-- Risk: an error that lost its kind is answered `INTERNAL`, and the caller cannot tell its own mistake from a crash.
-- Fix: pass it as `innerException`; read a kind only with `ErrorKindException.KindOf(error)`, which walks the chain of inner exceptions.
+### Keep the kind when wrapping, and give the cause as the inner exception
+Wrap an exception only as the inner exception of the new one (`new InvalidOperationException("plan", error)`), pass the technical failure behind an `ErrorKindException` as its inner exception (`RemotePlannerErrors.Unavailable(error)`), and never catch an `ErrorKindException` to throw a new exception without it.
+- Violation: `catch (ErrorKindException e) { throw new Exception(e.Message); }`; a check `error.Message.Contains("not found")`; the failure formatted into the message (`$"the todo service: {error.Message}"`).
+- Risk: an error that lost its kind is answered `INTERNAL`, and the caller cannot tell its own mistake from a crash; a failure in the message names hosts, users, and queries to the caller.
+- Fix: pass it as `innerException`; read a kind only with `ErrorKindException.KindOf(error)`, which walks the chain of inner exceptions; the base plateau's `JsonLogLine` writes `ErrorKindException.CauseOf(error)` as `cause`, and no stack, for an error with a kind.
 
 ### Entry points read the kind, never the error
 Map an exception to an answer in an entry point only by `ErrorKindException.KindOf(error)`: one `switch` over `ErrorKind?` in the one place of the stack that holds the table, `null` meaning a failure of the service.
@@ -67,5 +68,5 @@ Copy [RpcStatus.cs](./templates/src/App/App.Host/Api/Core/Errors/RpcStatus.cs) t
 - [ ] `src/Shared/Shared.csproj` and `src/Shared/Errors/{ErrorKind,ErrorKindException}.cs` are copies of the templates.
 - [ ] Every error a caller can act on is a factory method of a `{Module}Errors` class returning an `ErrorKindException` of one kind of the table.
 - [ ] No code declares another kind type, throws a shared exception instance, or checks an error by its text.
-- [ ] Every wrap keeps the original as the inner exception; entry points read kinds only through `ErrorKindException.KindOf`.
+- [ ] Every wrap keeps the original as the inner exception, a technical failure behind an `ErrorKindException` too; no message holds a failure's text; entry points read kinds only through `ErrorKindException.KindOf`.
 - [ ] In a service with a network entry point, `src/App/App.Host/Api/Core/Errors/RpcStatus.cs` is a copy of the template, and every such entry point answers errors only through `RpcStatus.Of`.
