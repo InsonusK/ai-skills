@@ -17,6 +17,7 @@ import (
 	commandlogging "github.com/example/todo/internal/command/middleware/logging"
 	"github.com/example/todo/internal/command/pipeline"
 	"github.com/example/todo/internal/logging"
+	"github.com/example/todo/internal/shared/errorkind"
 )
 
 // logf logs a step's action or observation through stdout, so the line stays
@@ -154,5 +155,5 @@ func (w *World) sendWithHeaders(method, path, body string, headers map[string]st
 
 // errRejected is a business-rule error as the command layer returns it.
 func errRejected(message string) error {
-	return fmt.Errorf("%w: %s", pipeline.ErrInvalid, message)
+	return errorkind.New(errorkind.ErrInvalid, message)
 }

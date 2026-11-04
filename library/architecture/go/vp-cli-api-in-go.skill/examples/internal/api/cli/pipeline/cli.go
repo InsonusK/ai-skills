@@ -25,6 +25,7 @@ import (
 
 	commandpipeline "github.com/example/todo/internal/command/pipeline"
 	"github.com/example/todo/internal/logging"
+	"github.com/example/todo/internal/shared/errorkind"
 )
 
 // Resource is one resource of the command line - `todo items ...` - with its
@@ -64,7 +65,7 @@ func Run(ctx context.Context, logger *slog.Logger, name, version string, args []
 	// runs once the arguments are parsed, before the action: the first record
 	root.PersistentPreRun = func(cmd *cobra.Command, _ []string) { logReceived(cmd, logger) }
 	root.SetFlagErrorFunc(func(cmd *cobra.Command, err error) error {
-		return fmt.Errorf("%w: %s (see %s --help)", commandpipeline.ErrInvalid, err, cmd.CommandPath())
+		return errorkind.New(errorkind.ErrInvalid, fmt.Sprintf("%s (see %s --help)", err, cmd.CommandPath()))
 	})
 	for _, resource := range resources {
 		group := &cobra.Command{Use: resource.Name, Short: resource.Short, Args: noArgs, RunE: showHelp}
@@ -86,9 +87,15 @@ func Run(ctx context.Context, logger *slog.Logger, name, version string, args []
 		err = handled.err
 	case commandpipeline.KindOf(err) == nil:
 		// cobra's own errors - an unknown command, a missing argument - carry no kind
-		err = fmt.Errorf("%w: %s (see %s --help)", commandpipeline.ErrInvalid, err, name)
+		err = errorkind.New(errorkind.ErrInvalid, fmt.Sprintf("%s (see %s --help)", err, name))
 	}
-	fmt.Fprintln(stderr, "Error:", err)
+	// An error with a kind prints its own message, as an HTTP or gRPC entry
+	// point answers it: not the text of a wrapper on its way up, nor its cause.
+	if kinded := errorkind.Of(err); kinded != nil {
+		fmt.Fprintln(stderr, "Error:", kinded.Message)
+	} else {
+		fmt.Fprintln(stderr, "Error:", err)
+	}
 	return err
 }
 
@@ -115,7 +122,7 @@ func execute(ctx context.Context, logger *slog.Logger, root *cobra.Command, args
 // bogus` is an unknown command instead of the group's help.
 func noArgs(cmd *cobra.Command, args []string) error {
 	if len(args) > 0 {
-		return fmt.Errorf("%w: unknown command %q for %q (see %s --help)", commandpipeline.ErrInvalid, args[0], cmd.CommandPath(), cmd.CommandPath())
+		return errorkind.New(errorkind.ErrInvalid, fmt.Sprintf("unknown command %q for %q (see %s --help)", args[0], cmd.CommandPath(), cmd.CommandPath()))
 	}
 	return nil
 }

@@ -69,14 +69,9 @@ public static class Program
         // has only the startup command; an API variation point replaces its
         // registration, the health variation point adds one.
         services.AddStartupEntry(() => new PlanItemsCommand(StartupEntry.EnvList("STARTUP_TITLES")), stdout);
-        // Readiness checks go here, one argument per dependency the service
-        // needs before it takes traffic. The base plateau has none; a service
-        // variation point adds its own, built in [services], e.g.
-        //
-        //   services.AddManagement(
-        //       new ReadinessCheck("database", new NpgSqlHealthCheck(...)),
-        //       new ReadinessCheck("user-api", userApiCheck));
-        //
+        // A service variation point's readiness check is not listed here: its
+        // own registration in [services] calls AddHealthChecks(), and this
+        // entry reads what is registered. The base plateau registers none.
         // /health/ready answers 503 and names a check while it is unhealthy.
         services.AddManagement();
 

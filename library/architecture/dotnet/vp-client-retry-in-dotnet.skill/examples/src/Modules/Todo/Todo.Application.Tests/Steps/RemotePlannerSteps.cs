@@ -69,6 +69,17 @@ public sealed class RemotePlannerSteps(ITestOutputHelper output)
         Assert.Contains(text, _error!.Message);
     }
 
+    [Then("planning should fail with the kind {string} and the message {string}")]
+    public void ThenPlanningShouldFailWithTheMessage(string kind, string message)
+    {
+        ThenPlanningShouldFailWithTheKind(kind);
+        Assert.Equal(message, _error!.Message);
+    }
+
+    [Then("the cause of the failure should mention {string}")]
+    public void ThenTheCauseShouldMention(string text) =>
+        Assert.Contains(text, ErrorKindException.CauseOf(_error) ?? "");
+
     [Then("planning should fail with no kind")]
     public void ThenPlanningShouldFailWithNoKind()
     {

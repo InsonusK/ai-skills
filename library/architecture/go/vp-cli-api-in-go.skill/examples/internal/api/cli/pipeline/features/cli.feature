@@ -32,6 +32,13 @@ Feature: Command line
     And stderr should mention "the name is taken"
     And stdout should be empty
 
+  @category/negative
+  Scenario: A rejection wrapped on its way up prints its own message, not the wrapper's nor its cause
+    Given the command is rejected with the kind "conflict" and "the name is taken", caused by "duplicate key", wrapped in "echo"
+    When I run "test echo --text hi"
+    Then running should fail with the kind "conflict"
+    And stderr should be the line "Error: the name is taken"
+
   @category/error
   Scenario: A failure of the handler keeps no kind
     Given the command fails with "connection refused"

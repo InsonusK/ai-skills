@@ -4,9 +4,10 @@ from dataclasses import dataclass, field
 import pytest
 from pytest_bdd import given, parsers, scenarios, then, when
 
-from todo.domain.entity import Item, kind_of
+from todo.domain.entity import Item
 from todo.infrastructure.memory import DuplicateKeyError, NoRowsError, Row
 from todo.service import ItemLists
+from todo.shared.errors import kind_of
 
 scenarios("../features/item_lists.feature")
 

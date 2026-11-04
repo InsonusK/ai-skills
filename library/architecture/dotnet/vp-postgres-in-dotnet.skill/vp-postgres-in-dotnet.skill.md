@@ -60,16 +60,55 @@ Copy [templates/src](./templates/src/), with `dotnet-tools.json` of the example 
 Load `PostgresConfig.Load()` in the `try` of `AppConfig.Load()`, call `AddPostgres` in `// [services]`, which registers `IRepository<>` for every row, call `AddCommandScope()` after every `Add{Module}Module()`, register each service over a repository `Scoped`, and turn `ValidateScopes` on.
 
 ```csharp
+// src/App/App.Host/Program.cs, RunAsync
+AppConfig config;
+PostgresConfig postgres;
+try
+{
+    config = AppConfig.Load();
+    postgres = PostgresConfig.Load();   // names the variable, never the DSN
+}
+catch (FormatException configError)
+{
+    using var bootLogging = LoggerFactory.Create(logging => logging.AddProvider(new JsonLogProvider(stderr)));
+    bootLogging.CreateLogger("App.Host").Write(LogLevel.Error, "startup failed", configError);
+    return EntryRunner.ExitFailure;
+}
+
 // [services]
 services.AddPostgres(postgres);
 
 // [handlers]
-services.AddTodoModule();          // .AddScoped<IItemLists, ItemListsService>()
-services.AddCommandScope();
+services.AddTodoModule();      // the module registers its services over the repositories
+services.AddCommandScope();    // after every Add{Module}Module
+services.AddCommandMiddleware(
+    typeof(LoggingMiddleware<,>));
 
-// before the entries
+// after the entries, before they run
 await using var provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true });
-if (postgres.MigrateOnStart) { await PostgresMigrations.ApplyAsync(postgres, stopping); } // in a try: a failure logs "startup failed", exit 1
+var logger = provider.GetRequiredService<ILoggerFactory>().CreateLogger("App.Host");
+if (postgres.MigrateOnStart)
+{
+    try
+    {
+        await PostgresMigrations.ApplyAsync(postgres, stopping);
+    }
+    catch (Exception migrationError)
+    {
+        logger.Write(LogLevel.Error, "startup failed", migrationError);
+        return EntryRunner.ExitFailure;
+    }
+}
+```
+
+The service over a repository is registered by its module, not by `Program.cs`; a second service over the database is one more `AddScoped` line there.
+
+```csharp
+// src/Modules/Todo/Todo.Application/TodoModule.cs
+public static IServiceCollection AddTodoModule(this IServiceCollection services) =>
+    services
+        .AddMediatR(mediatr => mediatr.RegisterServicesFromAssemblyContaining<PlanItemsHandler>())
+        .AddScoped<IItemLists, ItemListsService>();   // scoped, as IRepository<ItemRow> is
 ```
 
 - Violation: `AddSingleton<IItemLists, ItemListsService>` over a scoped repository; an entry point resolving `IMediator`; a handler running nested commands with `Task.WhenAll`.
@@ -104,10 +143,34 @@ public sealed class ItemsOfList : Specification<ItemRow>
 - Fix: a condition across tables follows a navigation property; a projection's type has `required ... { get; init; }` properties, filled by an object initializer.
 
 ### Use the repository from the service
-Inject `IRepository<TRow>`, ask `SelectBy` for a selector, and turn its outcomes into kinds as [vp-postgres](library/architecture/spec/vp-postgres.skill/vp-postgres.skill.md#report-a-repositorys-outcomes-in-its-own-terms) requires.
+Inject `IRepository<TRow>`, ask `SelectBy` for a selector, and turn its outcomes into kinds as [vp-postgres](library/architecture/spec/vp-postgres.skill/vp-postgres.skill.md#report-a-repositorys-outcomes-in-its-own-terms) requires, passing the outcome as the inner exception.
 
 ```csharp
-var items = await rows.SelectBy(new ItemsOfList(listId)).OrderBy(row => row.Id).AllAsync(cancellationToken);
+// src/Modules/Todo/Todo.Application/Services/ItemListsService.cs
+public sealed class ItemListsService(IRepository<ItemRow> rows) : IItemLists
+{
+    public async Task AddAsync(string listId, Item item, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await rows.InsertAsync(new ItemRow { ListId = listId, Title = item.Title, Done = item.Done }, cancellationToken);
+        }
+        catch (DuplicateKeyException duplicate)
+        {
+            throw TodoErrors.ItemAlreadyInList(listId, item.Title, duplicate);
+        }
+        catch (StoreUnavailableException unavailable)
+        {
+            throw TodoErrors.ListsUnavailable(unavailable);   // ErrorKind.Unavailable, "the lists are unavailable"
+        }
+    }
+
+    public async Task<IReadOnlyList<Item>> ItemsAsync(string listId, CancellationToken cancellationToken)
+    {
+        var items = await rows.SelectBy(new ItemsOfList(listId)).OrderBy(row => row.Id).AllAsync(cancellationToken);
+        // ... rows to entities: the selector stops here
+    }
+}
 ```
 
 - Violation: `AppDbContext` in a service; a repository returning `IQueryable`; a failed save caught to retry on the same row object with no new read.

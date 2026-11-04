@@ -1,0 +1,20 @@
+sequenceDiagram
+    autonumber
+    participant Root as Program.cs
+    participant Db as AddPostgres<br/>brought by vp-postgres
+    participant Registry as HealthCheckServiceOptions<br/>the framework's, in the application's container
+    participant Mgmt as ManagementServer<br/>src/App/App.Host/Api/Management/ManagementServer.cs
+    participant Probe as Orchestrator probe
+
+    Root->>+Db: services.AddPostgres(postgres)
+    Db->>Registry: AddHealthChecks().AddNpgSql(dsn, name: "database")
+    Db-->>-Root: registered
+    Root->>+Mgmt: services.AddManagement(), no argument
+    Mgmt-->>-Root: one more Entry
+    Note over Root: EntryRunner starts every entry
+    Root->>+Mgmt: run the management entry
+    Mgmt->>+Registry: every registration
+    Registry-->>-Mgmt: "database", whatever else is there
+    Probe->>Mgmt: GET /health/ready
+    Note over Mgmt,Probe: without vp-health nothing reads the registry, and the check never runs
+    Mgmt-->>-Probe: 200, or 503 naming the failed checks

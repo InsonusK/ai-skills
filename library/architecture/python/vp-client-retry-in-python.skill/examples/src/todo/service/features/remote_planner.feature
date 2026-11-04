@@ -11,10 +11,11 @@ Feature: RemotePlanner service
     Then the planned items should be the open items "buy milk|walk the dog"
 
   @category/error
-  Scenario: An API that does not answer is unavailable
+  Scenario: An API that does not answer is unavailable, its failure kept as the cause
     Given the todo API is unavailable
     When I plan "a" remotely
-    Then planning should fail with the kind "unavailable"
+    Then planning should fail with the kind "unavailable" and the message "the todo service is unavailable"
+    And the cause of the failure should mention "connection refused"
 
   @category/negative
   Scenario: Titles the API rejects are invalid, with its message

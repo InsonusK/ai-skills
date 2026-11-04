@@ -13,6 +13,7 @@ import (
 	"github.com/example/todo/internal/infrastructure/client/core/outcome"
 	"github.com/example/todo/internal/infrastructure/client/todoapi"
 	"github.com/example/todo/internal/service"
+	"github.com/example/todo/internal/shared/errorkind"
 )
 
 func logf(format string, args ...any) {
@@ -44,7 +45,7 @@ func registerWorldHooks(sc *godog.ScenarioContext, w *World) {
 	})
 }
 
-var kinds = map[string]error{"invalid": entity.ErrInvalid, "unavailable": entity.ErrUnavailable}
+var kinds = map[string]error{"invalid": errorkind.ErrInvalid, "unavailable": errorkind.ErrUnavailable}
 
 func registerSteps(sc *godog.ScenarioContext, w *World) {
 	sc.Step(`^the todo API plans "([^"]*)"$`, func(titles string) error {
@@ -93,6 +94,19 @@ func registerSteps(sc *godog.ScenarioContext, w *World) {
 	sc.Step(`^planning should fail with the kind "([^"]*)" mentioning "([^"]*)"$`, func(kind, text string) error {
 		if !errors.Is(w.err, kinds[kind]) || !strings.Contains(w.err.Error(), text) {
 			return fmt.Errorf("error %v, want the kind %s mentioning %q", w.err, kind, text)
+		}
+		return nil
+	})
+	sc.Step(`^planning should fail with the kind "([^"]*)" and the message "([^"]*)"$`, func(kind, message string) error {
+		if !errors.Is(w.err, kinds[kind]) || w.err.Error() != message {
+			return fmt.Errorf("error %q, want the kind %s and the message %q", w.err, kind, message)
+		}
+		return nil
+	})
+	sc.Step(`^the cause of the failure should mention "([^"]*)"$`, func(text string) error {
+		kinded := errorkind.Of(w.err)
+		if kinded == nil || kinded.Cause == nil || !strings.Contains(kinded.Cause.Error(), text) {
+			return fmt.Errorf("error %#v, want a cause mentioning %q", w.err, text)
 		}
 		return nil
 	})

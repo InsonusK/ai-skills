@@ -9,6 +9,7 @@ import (
 	"github.com/cucumber/godog"
 
 	"github.com/example/todo/internal/command/pipeline"
+	"github.com/example/todo/internal/shared/errorkind"
 )
 
 var kinds = map[string]error{"invalid": pipeline.ErrInvalid, "conflict": pipeline.ErrConflict}
@@ -16,7 +17,17 @@ var kinds = map[string]error{"invalid": pipeline.ErrInvalid, "conflict": pipelin
 func registerCLISteps(sc *godog.ScenarioContext, w *World) {
 	sc.Step(`^the command answers "([^"]*)"$`, func(text string) error { w.echoAnswer = text; return nil })
 	sc.Step(`^the command is rejected with the kind "([^"]*)" and "([^"]*)"$`, func(kind, message string) error {
-		w.echoErr = fmt.Errorf("%w: %s", kinds[kind], message)
+		w.echoErr = errorkind.New(kinds[kind], message)
+		return nil
+	})
+	sc.Step(`^the command is rejected with the kind "([^"]*)" and "([^"]*)", caused by "([^"]*)", wrapped in "([^"]*)"$`, func(kind, message, cause, outer string) error {
+		w.echoErr = fmt.Errorf("%s: %w", outer, errorkind.Wrap(kinds[kind], message, errors.New(cause)))
+		return nil
+	})
+	sc.Step(`^stderr should be the line "([^"]*)"$`, func(want string) error {
+		if got := w.stderr.String(); got != want+"\n" {
+			return fmt.Errorf("stderr: got %q, want %q", got, want+"\n")
+		}
 		return nil
 	})
 	sc.Step(`^the command fails with "([^"]*)"$`, func(message string) error { w.echoErr = errors.New(message); return nil })

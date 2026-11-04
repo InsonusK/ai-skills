@@ -12,7 +12,6 @@ from todo.domain.entity.errors import (
     TitleTooLongError,
 )
 from todo.domain.entity.item import Item
-from todo.domain.entity.kinds import Kind, KindError, kind_of
 
 __all__ = [
     "MAX_TITLE_LENGTH",
@@ -20,9 +19,6 @@ __all__ = [
     "DuplicateTitleError",
     "EmptyTitleError",
     "Item",
-    "Kind",
-    "KindError",
     "NoItemsError",
     "TitleTooLongError",
-    "kind_of",
 ]

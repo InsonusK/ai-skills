@@ -1,6 +1,6 @@
 """The errors of the services, each carrying its kind."""
 
-from todo.domain.entity import Kind, KindError
+from todo.shared.errors import Kind, KindError
 
 
 class TodoServiceUnavailableError(KindError):

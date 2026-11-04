@@ -2,7 +2,7 @@
 name: base-plateau-in-go
 description: The base plateau in Go — the package layout of its four layers, the generic Handler contract, the command middleware list with the typed adapter Decorate and the logging middleware in internal/command/middleware/logging, the command registry command.Handlers, the error kinds, the startup entry, the runner of the entry points with the exit codes, the composition root with its three marked sections, and the scenarios that cover each layer
 whenToUse: when you create a new Go service or Go CLI application from the architecture catalog, or when you attach a variation point to, or review, a Go application built on the base plateau
-updated: 20261102
+updated: 20261104
 tags:
   - stack/go
   - concern/architecture
@@ -34,11 +34,12 @@ Create the packages [app-layers-in-go](library/develop/go/app-layers-in-go.skill
 | [pipeline](./glossary/pipeline.md): handler contract, `HandlerFunc`, `Middleware` with `Decorate`, the error kinds re-exported | `internal/command/pipeline` |
 | [command middleware](./glossary/command-middleware.md), one package each: `logging.Middleware` in the base plateau | `internal/command/middleware/{name}` |
 | command factories, when an input needs one | `internal/command/factory` |
-| entities, the error kinds (`kinds.go`) and the rule errors | `internal/domain/entity` |
+| entities and the rule errors | `internal/domain/entity` |
+| the error kinds and the error with a kind (`errorkind.go`), which every layer may import | `internal/shared/errorkind` |
 | domain services | `internal/domain/service` |
 | composition root | `cmd/{app}/main.go` |
 | base settings (`LOG_LEVEL` only) | `internal/config` |
-| [logging](./glossary/logging.md): `NewHandler`, `Payload`, `Failed`, request id | `internal/logging` |
+| [logging](./glossary/logging.md): `NewHandler`, `Payload`, `Failed`, `Error`, request id | `internal/logging` |
 | version of the build | `internal/version` — `var Version`, per `project-version-in-go` |
 
 - Risk: a part in a package of its own choosing breaks every variation point's instruction that names the file to edit.
@@ -50,9 +51,9 @@ Fill and copy [handler.go](./templates/internal/command/pipeline/handler.go) and
 - Fix: copy the templates; after filling, searching the copied files for `{module-path}` returns nothing.
 
 ### Errors carry a kind of error-kinds
-Copy `kinds.go` and `pipeline/errors.go` from the templates of [error-kinds-in-go](library/develop/go/error-kinds-in-go.skill/error-kinds-in-go.skill.md), and declare every business-rule error in `internal/domain/entity/errors.go` as `fmt.Errorf("%w: {what broke}", Err{Kind})`, the kind chosen by [error-kinds](library/develop/core/error-kinds.skill/error-kinds.skill.md)'s table — see the [error kind](./glossary/error-kind.md).
+Copy `shared/errorkind/errorkind.go` and `pipeline/errors.go` from the templates of [error-kinds-in-go](library/develop/go/error-kinds-in-go.skill/error-kinds-in-go.skill.md), and declare every business-rule error in `internal/domain/entity/errors.go` as `errorkind.New(errorkind.Err{Kind}, "{what broke}")`, the kind chosen by [error-kinds](library/develop/core/error-kinds.skill/error-kinds.skill.md)'s table — see the [error kind](./glossary/error-kind.md).
 - Risk: an entry point comparing individual errors must change with every new rule; a rule error with the wrong kind tells the caller to fix an input that is correct.
-- Fix: the example's `ErrAlreadyDone` wraps `ErrFailedPrecondition` (the input is valid, the item's state forbids it); the others wrap `ErrInvalid`.
+- Fix: the example's `ErrAlreadyDone` is of `ErrFailedPrecondition` (the input is valid, the item's state forbids it); the others are of `ErrInvalid`.
 
 ### One file per command
 Write a command, its result types, and its handler in `internal/command/{command_name}.go`: the command and result as structs (results with `json` tags), the handler as a struct with a `New{Command}Handler` constructor and a `Handle(ctx context.Context, cmd {Command}) ({Command}Result, error)` method; register it with a field and a line of the [command registry](./glossary/command-registry.md).
@@ -73,8 +74,8 @@ handlers := command.NewHandlers([]pipeline.Middleware{
 ```
 
 ### Build the logger from logging.NewHandler
-Build the one `*slog.Logger` in `run` as `slog.New(logging.NewHandler(stderr, cfg.LogLevel))`, pass it to every middleware and entry point, and log the data of a call only as `logging.Payload(v)` with `logging.Failed(err != nil)` on the record that ends it.
-- Violation: `slog.NewJSONHandler` in `main.go`; `logger.Info("called", "body", body)`; a second logger built in a package.
+Build the one `*slog.Logger` in `run` as `slog.New(logging.NewHandler(stderr, cfg.LogLevel))`, pass it to every middleware and entry point, and log the data of a call only as `logging.Payload(v)` with `logging.Failed(err != nil)` on the record that ends it, and the error of a failed command as `logging.Error(err)`.
+- Violation: `slog.NewJSONHandler` in `main.go`; `logger.Info("called", "body", body)`; a second logger built in a package; `slog.Any("error", err)` for a command's error, which drops its cause.
 - Risk: data logged under another key escapes the base handler's drop and the logging variation point's mask.
 - Fix: the logging variation point replaces only this line of `main.go`.
 
@@ -118,7 +119,7 @@ Read the base settings from environment variables in `config.Load() (Config, err
 # Check list
 - [ ] Packages follow [Base packages](#base-packages) and [app-layers-in-go](library/develop/go/app-layers-in-go.skill.md).
 - [ ] `internal/command/pipeline/{handler,middleware}.go`, `internal/command/middleware/logging/logging.go`, `internal/api/startup/startup.go`, `internal/api/core/entry/entry.go`, and `internal/logging/logging.go` are filled copies of the templates; none contains `{module-path}`.
-- [ ] Every business-rule error wraps one kind of `kinds.go`; code outside the domain checks kinds only through `pipeline`.
+- [ ] Every business-rule error is an `errorkind.New` of one kind; an entry point checks kinds through `pipeline`.
 - [ ] Every command lives in its own file in `internal/command` with a handler matching `Handler[TCommand, TResult]`, and has a field and a line in `internal/command/handlers.go`.
 - [ ] `run` in `cmd/{app}/main.go` has the `// [services]`, `// [handlers]`, `// [entries]` sections in this order; `[handlers]` is one `command.NewHandlers` call; `[entries]` is one `entry.RunAll` call returning `entry.ExitCode(err)`.
 - [ ] The example holds no testing tooling; its `Makefile` runs `go test ./...`.

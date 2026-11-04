@@ -14,6 +14,6 @@ Feature: Interceptors of the contract's calls
   Scenario: A call an interceptor rejects with an error kind is answered by its kind and logged as failed
     Given an interceptor that rejects every call as unauthenticated with "no token"
     When I call the test method with "hi"
-    Then the call should fail with Unauthenticated and the message "unauthenticated: no token"
+    Then the call should fail with Unauthenticated and the message "no token"
     And the command should not have been called
     And one "grpc call answered" record should be logged with the method "/test.v1.EchoService/Echo", the code "Unauthenticated", and failed "true"

@@ -11,6 +11,7 @@ import (
 
 	"github.com/example/todo/internal/command"
 	"github.com/example/todo/internal/domain/entity"
+	"github.com/example/todo/internal/shared/errorkind"
 )
 
 // fakePlanner is the remote planner faked: the titles it plans or the error
@@ -37,7 +38,7 @@ func (f *fakePlanner) Plan(_ context.Context, titles []string) ([]entity.Item, e
 	return items, nil
 }
 
-var kinds = map[string]error{"invalid": entity.ErrInvalid, "unavailable": entity.ErrUnavailable}
+var kinds = map[string]error{"invalid": errorkind.ErrInvalid, "unavailable": errorkind.ErrUnavailable}
 
 func registerPlanRemoteItemsSteps(sc *godog.ScenarioContext) {
 	var planner *fakePlanner
@@ -52,7 +53,7 @@ func registerPlanRemoteItemsSteps(sc *godog.ScenarioContext) {
 		return nil
 	})
 	sc.Step(`^the remote planner fails with the kind "([^"]*)"$`, func(kind string) error {
-		planner.err = fmt.Errorf("%w: answered by the scenario", kinds[kind])
+		planner.err = errorkind.New(kinds[kind], "answered by the scenario")
 		return nil
 	})
 	sc.Step(`^I send PlanRemoteItems with the titles "([^"]*)"$`, func(titles string) error {

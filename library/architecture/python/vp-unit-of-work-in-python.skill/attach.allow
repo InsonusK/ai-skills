@@ -1,0 +1,11 @@
+# The unit of work variation point attaches to the PostgreSQL example: it adds
+# the unit of work over the database (the router of its connections in
+# src/todo/infrastructure/postgres/unit_of_work), the command middleware that
+# ends it, and the sample command ImportItems with its scenarios, and changes
+# only these files: the composition root, which attaches the unit and lists the
+# middleware, the command registry, which builds ImportItems over the decorated
+# AddItem, and the readme.
+base library/architecture/python/vp-postgres-in-python.skill/examples
+change src/todo/main.py
+change src/todo/command/handlers.py
+change README.md

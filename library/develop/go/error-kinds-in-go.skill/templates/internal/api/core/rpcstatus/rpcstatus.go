@@ -13,6 +13,7 @@ import (
 	"net/http"
 
 	"{module-path}/internal/command/pipeline"
+	"{module-path}/internal/shared/errorkind"
 )
 
 // Code is a google.rpc.Code; the numbers are those of grpc-go's codes.Code,
@@ -57,14 +58,21 @@ var codeOfKind = map[error]Code{
 const InternalMessage = "internal error"
 
 // Of returns the code and the message a client is answered with for an error
-// a command returned: the kind's code with the error's message, or Internal
-// with InternalMessage when the error has no kind - its own message may hold
-// connection strings or stack details and goes only to the log.
+// a command returned: the kind's code with the Message of the error of that
+// kind - never the text of a wrapper on its way up, nor its cause, which go
+// only to the log. An error with no kind is Internal with InternalMessage:
+// its text may hold connection strings or stack details.
 func Of(err error) (Code, string) {
-	if code, ok := codeOfKind[pipeline.KindOf(err)]; ok {
-		return code, err.Error()
+	kind := pipeline.KindOf(err)
+	code, ok := codeOfKind[kind]
+	if !ok {
+		return Internal, InternalMessage
 	}
-	return Internal, InternalMessage
+	if kinded := errorkind.Of(err); kinded != nil {
+		return code, kinded.Message
+	}
+	// A kind returned bare has no message of its own: its name is all there is.
+	return code, kind.Error()
 }
 
 // HTTPStatus is the HTTP status of the code by the canonical gRPC-to-HTTP

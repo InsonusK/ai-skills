@@ -44,6 +44,11 @@ public sealed partial class JsonLogSteps(ITestOutputHelper output)
     public void WhenARecordIsLoggedWithAnErrorOfTheKind(string message, string error, string kind) =>
         Log(logger => logger.Write(LogLevel.Warning, message, Thrown(new ErrorKindException(Enum.Parse<ErrorKind>(kind), error))));
 
+    [When("a record {string} is logged with an error {string} of the kind {string} caused by {string}")]
+    public void WhenARecordIsLoggedWithAnErrorWithACause(string message, string error, string kind, string cause) =>
+        Log(logger => logger.Write(LogLevel.Warning, message, Thrown(
+            new ErrorKindException(Enum.Parse<ErrorKind>(kind), error, new IOException(cause)))));
+
     // An exception as a handler raises it, with a stack.
     private static Exception Thrown(Exception error)
     {

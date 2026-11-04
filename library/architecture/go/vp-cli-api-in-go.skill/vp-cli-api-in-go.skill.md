@@ -2,7 +2,7 @@
 name: vp-cli-api-in-go
 description: The CLI API variation point in Go — internal/api/cli/pipeline copied from templates (Run building the cobra command line with --output, --version, usage errors as the invalid kind, the generic Command adapter, the run log), one {Resource}Handler per resource in internal/api/cli/endpoint, the registration in internal/api/cli/commands.go with each action's flags, JSON output, and text form, and the startup entry replaced by cliapi.Entry in main.go
 whenToUse: when a Go application built on the base plateau must be run from a command line, when you offer a new command as an action of such an application, or when you review its internal/api/cli package
-updated: 20261102
+updated: 20261104
 tags:
   - stack/go
   - concern/architecture
@@ -68,7 +68,7 @@ return entry.ExitCode(err)
 
 - Violation: `cobra.Command.Execute` called in `main.go`, an `os.Exit` inside the CLI package, or the startup entry kept beside the CLI.
 - Risk: an exit code computed outside `entry.ExitCode` ignores the error kind; an `os.Exit` skips the graceful stop of every other entry.
-- Fix: import `cliapi "{module-path}/internal/api/cli"`; the entry prints the error as `Error: ...` and returns it, its `ReportsErrors: true` keeps `RunAll` from logging it a second time, and `entry.ExitCode` turns it into the exit code. The logs of the command's run stay on stderr.
+- Fix: import `cliapi "{module-path}/internal/api/cli"`; the entry prints the error as `Error: ...` — for an error with a kind, its own message, as the network entry points answer it — and returns it, its `ReportsErrors: true` keeps `RunAll` from logging it a second time, and `entry.ExitCode` turns it into the exit code. The logs of the command's run stay on stderr.
 
 ### Add the cobra module
 Add `github.com/spf13/cobra` at `v1.10.2` with `go get` and run `go mod tidy`.

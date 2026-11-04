@@ -1,8 +1,8 @@
 ---
 name: error-kinds
-description: The kinds of error an application's commands return and how every entry point answers them — eleven kinds (invalid, not found, conflict, concurrent change, failed precondition, unauthenticated, permission denied, resource exhausted, unimplemented, unavailable, and no kind for a failure of the service), when to choose each, and one table from kind to gRPC code, HTTP status, and CLI exit code, with the canonical gRPC-to-HTTP mapping
+description: The kinds of error an application's commands return and how every entry point answers them — eleven kinds (invalid, not found, conflict, concurrent change, failed precondition, unauthenticated, permission denied, resource exhausted, unimplemented, unavailable, and no kind for a failure of the service), when to choose each, an error with a kind holding a kind, a message for the caller, and a cause for the log, and one table from kind to gRPC code, HTTP status, and CLI exit code, with the canonical gRPC-to-HTTP mapping
 whenToUse: when a command, domain service, entity, or service returns an error a caller must act on, when an entry point (HTTP, gRPC, CLI, a listener) turns an error into its response, when you choose between two kinds (conflict or failed precondition, invalid or not found), or when you review either
-updated: 20261022
+updated: 20261104
 tags:
   - stack
   - concern/architecture
@@ -20,6 +20,7 @@ tags:
 - **The command says what happened, the entry point says it in its protocol** - A command returns a kind (`not found`), never a status (`404`); each entry point turns the kind into its own answer through this one table.
 - **A kind is about the request, not the code path** - The kind says what the caller can do about it: fix the input, pick another name, retry later, ask for a permission. Two errors the caller handles the same way share a kind.
 - **No kind means the service failed** - Any error that carries no kind is the service's own failure, answered `INTERNAL` without its message.
+- **Three parts of an error with a kind** - Its kind, which the entry point answers by the table; its message, written for the caller and answered as it is; and, when a technical failure lies behind it, its cause, which only the log writes.
 
 # Scope
 - Covers the errors a command returns and how entry points answer them. Codes an entry point sets by itself, with no command involved, are listed in [Codes an entry point sets itself](#codes-an-entry-point-sets-itself).
@@ -68,7 +69,7 @@ Decide the kinds that are easy to confuse by these tests.
 Return a kind from the layer where the outcome is known — an entity for a rule, a service for a missing record, a command for a missing permission — and let only an entry point turn it into a status, a code, or an exit code.
 - Violation: a command returning `404`, an HTTP status type, or a gRPC status; an entry point choosing a status by the error's text.
 - Risk: the command depends on one transport, and the next entry point must translate a foreign status back into its own.
-- Fix: the kind wraps the error (`not found: order 42`); every entry point answers it through the one table of its stack.
+- Fix: the error carries the kind beside its message (kind `not found`, message `no order 42`); every entry point answers it through the one table of its stack.
 
 ### Answer every kind through one table
 Map kinds to codes in one place shared by every entry point of the application, and derive the HTTP status from the gRPC code by the canonical mapping.
@@ -92,10 +93,10 @@ Map kinds to codes in one place shared by every entry point of the application, 
 - Fix: one table in code, used by every entry point; a new kind is one row there.
 
 ### Show the message of a kind, hide the rest
-Send the error's message to the client for every kind, and send only `internal error` for an error with no kind, logging the full error.
-- Violation: `INTERNAL` carrying `dial tcp 10.0.0.5:5432: connection refused`; a kind's message holding a secret or another user's data.
+Send the message of the error with the kind to the client — not the text of what wrapped it on the way up, nor its cause — and send only `internal error` for an error with no kind, logging the full error.
+- Violation: `INTERNAL` carrying `dial tcp 10.0.0.5:5432: connection refused`; `UNAVAILABLE` carrying `the todo service: dial tcp 10.0.0.5:8080: connection refused`; a kind's message holding a secret or another user's data.
 - Risk: an internal message leaks addresses, queries, and stack details; a client denied a useful message for a rejected request cannot fix it.
-- Fix: write a kind's message for the caller (`item titles repeat`); log the failure in the handler's logging decorator, not in the answer.
+- Fix: write a kind's message for the caller (`item titles repeat`, `the todo service is unavailable`), keep the failure behind it as its cause, and log both — `error` the message, `cause` the cause, no stack — in the handler's logging decorator, not in the answer.
 
 ## SHOULD
 
@@ -108,3 +109,4 @@ Set `CANCELLED` (the client went away), `DEADLINE_EXCEEDED` (the call's deadline
 - [ ] No command, service, or entity returns a status, a code, or an exit code.
 - [ ] Every entry point answers kinds through the one shared table; the HTTP status comes from the canonical mapping.
 - [ ] An error with no kind is answered `INTERNAL` with `internal error`; its full text goes only to the log.
+- [ ] An error with a kind is answered with its own message; the failure behind it is its cause, written to the log as `cause` and never into the message.
