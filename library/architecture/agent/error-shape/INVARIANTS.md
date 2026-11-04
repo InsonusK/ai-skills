@@ -65,12 +65,13 @@ One JSON line per record. Every stack writes the same fields for an error:
 
 ## 5. Scope
 
-| In | Out (later, with the DB branches) |
+| In | Out |
 |---|---|
-| `library/develop/{core,go,python,dotnet}/error-kinds*` | `vp-postgres-in-*`, `vp-unit-of-work-in-*`, PRs #281–#284 |
+| `library/develop/{core,go,python,dotnet}/error-kinds*` | — (the DB variation points joined in wave 5, once #281–#284 merged) |
 | `base-plateau-in-*`, `base-plateau-extension-in-*` | |
 | `vp-{http,grpc,cli}-api-in-*`, `vp-health-in-*`, `vp-logging-in-*` | |
 | `vp-{http,grpc}-client-in-*`, `vp-client-retry-in-*` | |
+| `vp-postgres-in-*`, `vp-unit-of-work-in-*` (wave 5) | |
 
 - A file the dotnet DB examples share with their base gets the same new content as the base, and nothing else in them changes. Otherwise `check-vp-attach.sh` fails on the copy.
 

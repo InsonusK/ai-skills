@@ -29,7 +29,7 @@ Feature: Request log
     Then one "http response sent" record should be logged with:
       | method | path     | status | failed |
       | POST   | /v1/echo | 400    | true   |
-    And the "http response sent" record should hold the response body '{"code":3,"message":"invalid: item titles repeat","details":[]}'
+    And the "http response sent" record should hold the response body '{"code":3,"message":"item titles repeat","details":[]}'
     And the "http response sent" record should hold the query "mode" = "" and the body '{"text":"a"}'
 
   @category/happy

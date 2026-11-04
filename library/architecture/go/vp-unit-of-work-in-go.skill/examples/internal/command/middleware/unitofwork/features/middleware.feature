@@ -41,9 +41,10 @@ Feature: Unit of work middleware
     And the command should fail with "taken"
 
   @category/error
-  Scenario: A failed commit is told as unavailable, without its cause
+  Scenario: A failed commit is told as unavailable, its cause kept for the log only
     Given the commit fails with "connection to 10.0.0.5 lost"
     When a command runs through the unit of work middleware
     Then the unit of work should have been asked for "begin|commit|rollback"
     And the command should fail with the kind "unavailable"
     And the command's error should not mention "10.0.0.5"
+    And the cause of the command's error should mention "10.0.0.5"

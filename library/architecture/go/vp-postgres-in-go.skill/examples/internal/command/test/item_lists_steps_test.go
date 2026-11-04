@@ -11,6 +11,7 @@ import (
 	"github.com/example/todo/internal/command"
 	"github.com/example/todo/internal/command/pipeline"
 	"github.com/example/todo/internal/domain/entity"
+	"github.com/example/todo/internal/shared/errorkind"
 )
 
 // fakeLists is the item lists service, faked: it records what it was given
@@ -51,7 +52,7 @@ func registerItemListsSteps(sc *godog.ScenarioContext) {
 		return ctx, nil
 	})
 	sc.Step(`^the item lists answer the kind "([^"]*)"$`, func(kind string) error {
-		w.lists.err = fmt.Errorf("%w: from the item lists", kinds[kind])
+		w.lists.err = errorkind.New(kinds[kind], "from the item lists")
 		return nil
 	})
 	sc.Step(`^the item lists hold "([^"]*)" for the list "([^"]*)"$`, func(titles, listID string) error {

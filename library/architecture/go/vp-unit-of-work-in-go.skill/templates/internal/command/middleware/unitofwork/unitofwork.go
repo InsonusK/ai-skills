@@ -10,9 +10,9 @@ package unitofwork
 
 import (
 	"context"
-	"fmt"
 
 	"{module-path}/internal/command/pipeline"
+	"{module-path}/internal/shared/errorkind"
 )
 
 // Units is the unit of work as the middleware sees it, with no package of the
@@ -27,11 +27,13 @@ type Units interface {
 	Rollback(ctx context.Context)
 }
 
-// errNotCommitted is the answer of a failed commit, the kind unavailable with
-// no cause: a kind's text reaches the caller, and the cause may name the
-// database. The commit may have reached the database, so a command a caller
-// retries after it is idempotent.
-var errNotCommitted = fmt.Errorf("%w: the changes could not be committed: the database does not answer", pipeline.ErrUnavailable)
+// notCommitted is the answer of a failed commit, the kind unavailable with
+// the commit's failure as its cause: the caller is answered the message, the
+// log writes the cause, which may name the database. The commit may have
+// reached the database, so a command a caller retries after it is idempotent.
+func notCommitted(cause error) error {
+	return errorkind.Wrap(errorkind.ErrUnavailable, "the changes could not be committed: the database does not answer", cause)
+}
 
 // Middleware ends the unit of work of every outermost command. Listed last,
 // so a command the middleware before it reject opens nothing and a failed
@@ -58,7 +60,7 @@ func Middleware(units Units) pipeline.Middleware {
 		}
 		if err := units.Commit(ending); err != nil {
 			units.Rollback(ending)
-			return nil, errNotCommitted
+			return nil, notCommitted(err)
 		}
 		return result, nil
 	}

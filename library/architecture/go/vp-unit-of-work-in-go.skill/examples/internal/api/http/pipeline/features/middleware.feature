@@ -16,7 +16,7 @@ Feature: Middlewares of the contract routes
     Given a middleware that rejects every request as unauthenticated with "no token"
     When I POST "/v1/echo" with the body '{"text":"hi"}'
     Then the response status should be 401
-    And the error body should have code 16 and the message "unauthenticated: no token"
+    And the error body should have code 16 and the message "no token"
     And the command should not have been called
     And one "http response sent" record should be logged with:
       | method | path     | status | failed |

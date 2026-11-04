@@ -2,7 +2,7 @@
 name: vp-postgres-in-go
 description: The PostgreSQL variation point in Go — internal/infrastructure/postgres copied from templates (Config of DATABASE_DSN and MIGRATE_ON_START, Database with Ping, the generic Repository and Projections over GORM with their selectors, the translation of pgx's codes into outcomes, Migrate over goose, postgrestest), rows and specification types per table in package tables, SQL migrations embedded by package migrations and checked against the rows, the job cmd/migrate, and the shared scenarios at TEST_DATABASE_DSN
 whenToUse: when a Go application built on the base plateau must keep its data in PostgreSQL, when you add a table, a specification, a repository method, or a migration in Go, or when you review a Go repository or migration
-updated: 20261103
+updated: 20261104
 tags:
   - stack/go
   - concern/architecture
@@ -131,7 +131,7 @@ func (s ItemsOfList) Pick(query *gorm.DB) *gorm.DB {
 - Fix: a join is `Joins("JOIN owners ON owners.id = tasks.owner_id")` and its columns are qualified; a related row is loaded by `Preload`; a projection names each column of its result, `Select("owners.name AS owner, tasks.title")`, and is read by `postgres.NewProjections[TRow, TResult](db).SelectBy`.
 
 ### Use the repository from the service
-Declare in the service the methods it needs of `postgres.Repository[TRow]`, ask `SelectBy` for a selector, and turn its outcomes into kinds as [vp-postgres](library/architecture/spec/vp-postgres.skill/vp-postgres.skill.md#report-a-repositorys-outcomes-in-its-own-terms) requires, leaving the repository's failure out of a kind's text.
+Declare in the service the methods it needs of `postgres.Repository[TRow]`, ask `SelectBy` for a selector, and turn its outcomes into kinds as [vp-postgres](library/architecture/spec/vp-postgres.skill/vp-postgres.skill.md#report-a-repositorys-outcomes-in-its-own-terms) requires, with `errorkind.Wrap` and the repository's failure as the cause, never in the message.
 
 ```go
 // internal/service/item_lists.go
@@ -151,12 +151,14 @@ func NewItemLists(rows itemRows) *ItemLists {
 	return &ItemLists{rows: rows}
 }
 
-var errListsUnavailable = fmt.Errorf("%w: the lists are unavailable", entity.ErrUnavailable)
+func listsUnavailable(cause error) error {
+	return errorkind.Wrap(errorkind.ErrUnavailable, "the lists are unavailable", cause)
+}
 
 func (s *ItemLists) Items(ctx context.Context, listID string) ([]entity.Item, error) {
 	rows, err := s.rows.SelectBy(tables.ItemsOfList{ListID: listID}).OrderBy(tables.ItemPosition).All(ctx)
 	if errors.Is(err, postgres.ErrUnavailable) {
-		return nil, errListsUnavailable
+		return nil, listsUnavailable(err) // the driver's text goes to the log as the cause
 	}
 	if err != nil {
 		return nil, err
@@ -165,9 +167,9 @@ func (s *ItemLists) Items(ctx context.Context, listID string) ([]entity.Item, er
 }
 ```
 
-- Violation: `*gorm.DB` in a service; a selector returned by a service method; `fmt.Errorf("%w: ...: %w", entity.ErrUnavailable, err)`.
-- Risk: a query built above the repository depends on GORM; the text of an error with a kind is answered to the caller (`rpcstatus.Of`), and the driver's text names the database's host and user.
-- Fix: the service sees package `postgres`'s types and `tables` only; an error with no kind keeps its cause, since only the log reads it.
+- Violation: `*gorm.DB` in a service; a selector returned by a service method; `fmt.Errorf("%w: %v", errorkind.ErrUnavailable, err)`; the driver's text in the message of an `errorkind.Wrap`.
+- Risk: a query built above the repository depends on GORM; the message of an error with a kind is answered to the caller (`rpcstatus.Of`), and the driver's text names the database's host and user.
+- Fix: the service sees package `postgres`'s types and `tables` only; the repository's failure is the cause of the error with a kind, which the log writes as `cause`.
 
 ### Pass a statement of its own through Run
 Declare a `{Thing}Repository` struct that embeds `*postgres.Repository[TRow]`, with an interface that adds its methods to the contract, and run a statement past the contract in `Run`.

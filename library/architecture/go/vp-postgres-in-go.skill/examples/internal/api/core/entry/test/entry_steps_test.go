@@ -14,6 +14,7 @@ import (
 
 	"github.com/example/todo/internal/api/core/entry"
 	"github.com/example/todo/internal/command/pipeline"
+	"github.com/example/todo/internal/shared/errorkind"
 )
 
 // logf logs a step's action or observation through stdout, so the line stays
@@ -117,7 +118,7 @@ func (w *World) aOneShotEntryFailsWithKind(ctx context.Context, name, kindName s
 	if !ok {
 		return fmt.Errorf("unknown kind %q", kindName)
 	}
-	w.add(name, func(context.Context) error { return fmt.Errorf("%w: the reason", kind) })
+	w.add(name, func(context.Context) error { return errorkind.New(kind, "the reason") })
 	return nil
 }
 
@@ -182,7 +183,7 @@ func (w *World) theExitCodeShouldBe(ctx context.Context, want int) error {
 }
 
 func (w *World) anEntryReportsItsOwnError(ctx context.Context, name, message, kindName string) error {
-	w.add(name, func(context.Context) error { return fmt.Errorf("%w: %s", kinds[kindName], message) })
+	w.add(name, func(context.Context) error { return errorkind.New(kinds[kindName], message) })
 	w.entries[len(w.entries)-1].ReportsErrors = true
 	return nil
 }

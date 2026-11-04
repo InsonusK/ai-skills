@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/example/todo/internal/command/pipeline"
+	"github.com/example/todo/internal/shared/errorkind"
 )
 
 func registerCallSteps(sc *godog.ScenarioContext, w *World) {
@@ -35,7 +35,7 @@ func (w *World) commandAnswers(ctx context.Context, text string) error {
 }
 
 func (w *World) commandRejected(ctx context.Context, message string) error {
-	w.echoErr = fmt.Errorf("%w: %s", pipeline.ErrInvalid, message)
+	w.echoErr = errorkind.New(errorkind.ErrInvalid, message)
 	return nil
 }
 
@@ -45,7 +45,7 @@ func (w *World) commandFails(ctx context.Context, message string) error {
 }
 
 func (w *World) commandConflicts(ctx context.Context, message string) error {
-	w.echoErr = fmt.Errorf("%w: %s", pipeline.ErrConflict, message)
+	w.echoErr = errorkind.New(errorkind.ErrConflict, message)
 	return nil
 }
 

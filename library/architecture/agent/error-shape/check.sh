@@ -10,11 +10,10 @@ cd "$ROOT"
 status=0
 fail() { echo "ERROR $*" >&2; status=1; }
 
-# The skills in scope: every stack skill of the catalog but the DB ones, and
-# the error-kinds skills (INVARIANTS.md section 5).
+# The skills in scope: every stack skill of the catalog, the DB ones too since
+# the DB wave, and the error-kinds skills (INVARIANTS.md section 5).
 scope=()
 for skill in library/architecture/{go,python,dotnet}/*.skill library/develop/{go,python,dotnet}/error-kinds-in-*.skill; do
-    case "$skill" in *vp-postgres-in-*|*vp-unit-of-work-in-*) continue ;; esac
     scope+=("$skill")
 done
 
