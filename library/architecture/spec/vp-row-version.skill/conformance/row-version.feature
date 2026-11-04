@@ -62,6 +62,13 @@ Feature: The version of a row
     Then no failure should be reported
     And the note "mine" should be there for any other connection
 
+  @category/happy
+  Scenario: A delete with a version a caller kept and nobody moved deletes the row
+    Given a caller keeps the version of the note "a"
+    When the caller deletes with the version it kept
+    Then no failure should be reported
+    And the note "a" should be gone for any other connection
+
   @category/negative
   Scenario: A delete with a moved version is a changed row
     Given a caller keeps the version of the note "a"
