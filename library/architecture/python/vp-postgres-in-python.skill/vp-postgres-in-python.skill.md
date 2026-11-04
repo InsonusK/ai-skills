@@ -50,16 +50,45 @@ Copy [templates/](./templates/) to the project, replacing `{package}` with the p
 - Fix: a table adds its row, its specifications, and its migration; searching the copies for `{package}` returns nothing.
 
 ### Open the database in the composition root
-Load `postgres.load_config()`, build `postgres.Database` over it, apply `postgres.migrate` only when `migrate_on_start` is set, build each service over `postgres.Repository(database, {Thing}Row)`, all in `# [services]` of `main.py`, and close the database after `run_all`.
+Load `postgres.load_config()`, build `postgres.Database` over it, apply `postgres.migrate` only when `migrate_on_start` is set, build each service over `postgres.Repository(database, {Thing}Row)`, all in `# [services]` of `main.py`, pass each service to `build_handlers` in `# [handlers]` as the keyword its handlers take, and close the database after `run_all`.
 
 ```python
+from {package}.infrastructure import postgres
+from {package}.infrastructure.postgres import migrations
+from {package}.infrastructure.postgres.tables import ItemRow
+from {package}.service import ItemLists
+
 # [services]
-database_config = postgres.load_config()   # a ValueError: logger.error("startup failed", ...), return 1
+try:
+    database_config = postgres.load_config()
+except ValueError as error:
+    logger.error("startup failed", exc_info=error)   # names the variable, never the DSN
+    return 1
 database = postgres.Database(database_config)
 if database_config.migrate_on_start:
-    await postgres.migrate(database, migrations.LOCATION)
+    try:
+        await postgres.migrate(database, migrations.LOCATION)
+    except Exception as error:
+        logger.error("startup failed", exc_info=error)
+        await database.close()
+        return 1
 item_lists = ItemLists(postgres.Repository(database, ItemRow))
+
+# [handlers]
+handlers = build_handlers(
+    [
+        LoggingMiddleware(logger),
+    ],
+    lists=item_lists,
+)
+
+# [entries]
+ended_by = await run_all(logger, stopping, ...)
+await database.close()   # every entry point has stopped
+return exit_code(ended_by)
 ```
+
+A second service over the database is one more line in `# [services]` and one more keyword of `build_handlers`, the same `database`: `planner = Planner(postgres.Repository(database, PlanRow))`, then `build_handlers(..., lists=item_lists, planner=planner)`.
 
 - Violation: `create_async_engine` in a service; a repository built per call; `print(database_config.url())`.
 - Risk: each pool holds its own connections; the URL's text names the host and the user, and a DSN printed whole carries the password.
@@ -105,14 +134,32 @@ class ItemsOfList(Specification[ItemRow]):
 Declare in the service a `Protocol` of the methods it needs of `postgres.Repository[TRow]`, ask `select_by` for a selector, and turn its outcomes into kinds as [vp-postgres](library/architecture/spec/vp-postgres.skill/vp-postgres.skill.md#report-a-repositorys-outcomes-in-its-own-terms) requires, raising the kind `from` the outcome.
 
 ```python
+# src/{package}/service/item_lists.py
+from typing import Protocol
+
+from {package}.infrastructure.postgres import DuplicateKeyError, Selector, Specification, UnavailableError
+from {package}.infrastructure.postgres.tables import ItemRow
+
+
 class ItemRows(Protocol):
+    """What ItemLists needs of the rows of list_items; postgres.Repository[ItemRow] has it."""
+
     async def insert(self, row: ItemRow) -> None: ...
+
     def select_by(self, specification: Specification[ItemRow]) -> Selector[ItemRow]: ...
 
-try:
-    rows = await self._rows.select_by(ItemsOfList(list_id)).order_by(ItemPosition).all()
-except UnavailableError as error:
-    raise ListsUnavailableError() from error   # KindError(Kind.UNAVAILABLE, "the lists are unavailable")
+
+class ItemLists:
+    def __init__(self, rows: ItemRows) -> None:
+        self._rows = rows
+
+    async def add(self, list_id: str, item: Item) -> None:
+        try:
+            await self._rows.insert(ItemRow(list_id=list_id, title=item.title, done=item.done))
+        except DuplicateKeyError as error:
+            raise ItemAlreadyListedError(list_id, item.title) from error
+        except UnavailableError as error:
+            raise ListsUnavailableError() from error   # KindError(Kind.UNAVAILABLE, "the lists are unavailable")
 ```
 
 - Violation: an `AsyncSession` in a service; a selector returned by a service method; `KindError(Kind.UNAVAILABLE, str(error))`.
