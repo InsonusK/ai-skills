@@ -13,8 +13,12 @@ public sealed class AccessConfigSteps
     private AccessConfig? _config;
     private FormatException? _error;
 
+    // A hook of Reqnroll runs for every scenario of the assembly unless it is
+    // scoped: unscoped, the hook of another feature's scenario would clear the
+    // variables between this feature's Given and When.
     [BeforeScenario]
     [AfterScenario]
+    [Scope(Feature = "Access settings")]
     public void ClearTheVariables()
     {
         foreach (var name in Variables)
