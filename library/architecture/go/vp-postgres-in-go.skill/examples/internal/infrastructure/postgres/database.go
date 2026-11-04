@@ -26,6 +26,9 @@ func Open(cfg Config) (*Database, error) {
 		// The engine's failures are translated by this package (outcomes.go),
 		// from the codes of the engine, not by GORM.
 		TranslateError: false,
+		// A read names every column of the row, not *: a row's version is
+		// the system column xmin, which * leaves out (version.go).
+		QueryFields: true,
 		// No statement before the first call of a repository.
 		DisableAutomaticPing: true,
 		// A write of one row needs no transaction of its own; the unit of work
