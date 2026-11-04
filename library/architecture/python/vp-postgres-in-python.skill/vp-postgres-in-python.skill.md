@@ -2,7 +2,7 @@
 name: vp-postgres-in-python
 description: The PostgreSQL variation point in Python — src/{package}/infrastructure/postgres copied from templates (Config of DATABASE_DSN and MIGRATE_ON_START, Database with its session per call and ping, the generic Repository and Projections over SQLAlchemy 2's async ORM on asyncpg with their selectors, the translation of SQLSTATE into outcomes, migrate over Alembic, postgrestest), rows and specification classes per table in tables/, Alembic migrations checked by alembic check, the job todo-migrate, and the shared scenarios at TEST_DATABASE_DSN
 whenToUse: when a Python application built on the base plateau must keep its data in PostgreSQL, when you add a table, a specification, a repository method, or a migration in Python, or when you review a Python repository or migration
-updated: 20261103
+updated: 20261104
 tags:
   - stack/python
   - concern/architecture
@@ -32,6 +32,7 @@ src/{package}/infrastructure/postgres/ copied, never edited
 ├── selector.py                        Selector, OrderedSelector, ResultSelector, OrderedResultSelector
 ├── specification.py                   Specification, Projection, Key, Columns
 ├── outcomes.py                        DuplicateKeyError, MissingReferenceError, RowChangedError, UnavailableError, RefusedError
+├── version.py                         version_column (xmin): compared by update, delete, a selector's update when a row declares it
 ├── migrate.py                         migrate(database, migrations.LOCATION)
 ├── postgrestest/                      copied: create (a database per scenario), not_answering, Failing
 ├── tables/                            per table: the row, its keys, its specifications; Row, their base
