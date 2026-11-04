@@ -12,3 +12,7 @@ One line per choice; ⚠️ marks a fork with real trade-offs, decided by the ow
 - 2026-11-04, agent: the version is an opaque `string` in every contract.
 - 2026-11-04, agent: a versioned row answers its new version on create and on update.
 - 2026-11-04, agent: the entry point refuses an id that is no UUID v7 as `invalid`; no check of its time.
+- 2026-11-04, agent: Go declares the version as a field `postgres.Version` tagged `column:xmin;->;-:migration`; the base reads every column by name (`QueryFields`), since `*` leaves `xmin` out, and refuses (`ErrRefused`) a write of a versioned row with no version, a defect of a caller that skipped the read.
+- 2026-11-04, agent: the example's changing table is `list_items`: `CompleteItem` (proto 1.2.0, `POST /v1/lists/{listId}/items/{itemId}/complete`) reads the item, applies the entity's rule, and saves under the caller's version; every item answered carries `id` and `version`. Go's layers let no command import the service, so the id and the version go up in `entity.KeptItem`.
+- 2026-11-04, agent: a row that never changes is marked by a method `NeverChanges()` (Go `tables.NeverChanges`); the shared scenario checks every mapped row has the version or the mark.
+- 2026-11-04, agent: the shared scenarios gain "A delete with a version a caller kept and nobody moved deletes the row": the stale delete alone left the successful one unchecked.
