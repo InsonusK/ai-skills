@@ -78,8 +78,7 @@ if dbConfig.MigrateOnStart {
 		return 1
 	}
 }
-newItemRows := postgres.NewRepository[tables.ItemRow] // the repository of one row type
-itemLists := service.NewItemLists(newItemRows(db))
+itemLists := service.NewItemLists(postgres.NewRepository[tables.ItemRow](db))
 
 // [handlers]
 handlers := command.NewHandlers([]pipeline.Middleware{
