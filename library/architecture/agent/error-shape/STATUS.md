@@ -6,7 +6,7 @@ The plan by waves; each wave passes `check.sh`, gets a fresh-eyes audit, and is 
 |---|---|---|
 | 0 | `INVARIANTS.md`, `DECISIONS.md`, `check.sh`; the sample: Go's `base-plateau-in-go` example and `error-kinds-in-go` | done; `INVARIANTS.md` agreed by the owner |
 | 1 | Go: every other example in scope (shared copies, then each VP's own files), the templates, the Go skills | done: 11 examples pass `go vet` and `go test` |
-| 2 | Python: `shared/errors`, every example in scope, the templates, `error-kinds-in-python`, the Python skills | — |
+| 2 | Python: `shared/errors`, every example in scope, the templates, `error-kinds-in-python`, the Python skills | done: 11 examples pass `make test` and `make lint` |
 | 3 | dotnet: `cause` in `JsonLogLine`, every copy (the DB examples' copies too), `error-kinds-in-dotnet`, the dotnet skills | — |
 | 4 | `error-kinds` (core), the catalog's README, the glossaries and ADRs that list the log fields | — |
 

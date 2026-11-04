@@ -3,7 +3,8 @@ from dataclasses import dataclass
 import pytest
 from pytest_bdd import given, parsers, scenarios, then, when
 
-from todo.domain.entity import AlreadyDoneError, EmptyTitleError, Item, KindError, TitleTooLongError
+from todo.domain.entity import AlreadyDoneError, EmptyTitleError, Item, TitleTooLongError
+from todo.shared.errors import KindError
 
 scenarios("../features/item.feature")
 

@@ -23,7 +23,7 @@ import traceback
 from datetime import datetime, timedelta
 from typing import Any, TextIO
 
-from {package}.domain.entity import kind_of
+from {package}.shared.errors import cause_of, kind_of
 
 PAYLOAD_KEY = "payload"
 """The data of a call: a command's parameters, a request's query, headers, and
@@ -74,9 +74,10 @@ def json_value(value: Any) -> Any:
 
 class JsonFormatter(logging.Formatter):
     """One record as one JSON line: time, level, msg, the attributes, then
-    the error - error with its message, and exception with its stack when it
-    carries no kind (a failure of the service is debugged from its stack; a
-    rejected request needs none). The fields are those of every stack, so one
+    the error - error with its message; for an error with a kind, cause with
+    the text of its cause, when it has one; for an error with no kind,
+    exception with its stack (a failure of the service is debugged from its
+    stack; a rejected request needs none, and its cause names what failed). The fields are those of every stack, so one
     log pipeline reads them all.
 
     The base plateau's formatter leaves the payload attribute out; the
@@ -97,6 +98,8 @@ class JsonFormatter(logging.Formatter):
             line["error"] = str(error)
             if kind_of(error) is None:
                 line["exception"] = "".join(traceback.format_exception(error)).rstrip()
+            elif (cause := cause_of(error)) is not None:
+                line["cause"] = cause
         return json.dumps(line, ensure_ascii=False, separators=(",", ":"), default=str)
 
     def attributes(self, record: logging.LogRecord) -> dict[str, Any]:

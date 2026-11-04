@@ -4,10 +4,11 @@ from dataclasses import dataclass, field
 import pytest
 from pytest_bdd import given, parsers, scenarios, then, when
 
-from todo.domain.entity import Item, Kind, kind_of
+from todo.domain.entity import Item
 from todo.infrastructure.client.core.outcomes import ApiStatusError, ApiUnavailableError, StatusCode
 from todo.infrastructure.client.todo_api import Item as AnsweredItem
 from todo.service import RemotePlanner
+from todo.shared.errors import Kind, cause_of, kind_of
 
 scenarios("../features/remote_planner.feature")
 
@@ -80,6 +81,17 @@ def planning_should_fail_with_the_kind(world: World, kind: str) -> None:
 @then(parsers.parse('planning should fail with the kind "{kind}" mentioning "{text}"'))
 def planning_should_fail_mentioning(world: World, kind: str, text: str) -> None:
     assert kind_of(world.error) is Kind(kind) and text in str(world.error), world.error
+
+
+@then(parsers.parse('planning should fail with the kind "{kind}" and the message "{message}"'))
+def planning_should_fail_with_the_message(world: World, kind: str, message: str) -> None:
+    assert kind_of(world.error) is Kind(kind) and str(world.error) == message, world.error
+
+
+@then(parsers.parse('the cause of the failure should mention "{text}"'))
+def the_cause_should_mention(world: World, text: str) -> None:
+    cause = cause_of(world.error)
+    assert cause is not None and text in cause, f"the cause of {world.error!r} is {cause!r}"
 
 
 @then("planning should fail with no kind")

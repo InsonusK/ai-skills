@@ -18,7 +18,7 @@ clients (later) ─┘                     │
 |---|---|
 | `attrs(**values)` | the `extra=` of a record: its attributes, in order, kept apart from the fields of `LogRecord` |
 | `PAYLOAD_KEY`, `FAILED_KEY` | the data of a call; whether the call failed |
-| `JsonFormatter` | the base formatter: `time`, `level` (`DEBUG`, `INFO`, `WARN`, `ERROR`), `msg`, the attributes but the payload, `error` and — with no kind — `exception` with the stack; a duration in nanoseconds |
+| `JsonFormatter` | the base formatter: `time`, `level` (`DEBUG`, `INFO`, `WARN`, `ERROR`), `msg`, the attributes but the payload, `error` with the error's message, then — for an error with a kind raised from another — `cause` with the text of that chain, or — with no kind — `exception` with the stack; a duration in nanoseconds |
 | `new_logger(stream, level)` | the application's one `logging.Logger`, not a child of the root logger, writing to standard error |
 | `request_id_scope(id)`, `request_id()` | the id of the call being served, in a `contextvars.ContextVar`, so each asyncio task has its own |
 

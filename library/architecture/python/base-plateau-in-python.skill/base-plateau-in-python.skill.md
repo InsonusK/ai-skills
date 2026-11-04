@@ -34,7 +34,8 @@ src/{package}/
 │   └── handlers.py                the command registry: Handlers, build_handlers
 ├── command/pipeline/              copied: Handler, HandlerFunc, Middleware, decorate, the error kinds
 ├── command/middleware/logging/    copied: LoggingMiddleware - one package per command middleware
-└── domain/entity, domain/service  entities, kinds.py and the rule errors; domain services
+├── domain/entity, domain/service  entities and the rule errors; domain services
+└── shared/errors                  the error kinds and KindError, which every layer may import
 ```
 
 # Rule
@@ -52,7 +53,8 @@ Create the packages [app-layers-in-python](library/develop/python/app-layers-in-
 | [command registry](./glossary/command-registry.md): `Handlers`, `build_handlers` | `command/handlers.py` |
 | [handler contract](./glossary/handler-contract.md), `HandlerFunc`, `Middleware` with `decorate`, the error kinds re-exported | `command/pipeline` |
 | command middleware, one package each: `LoggingMiddleware` in the base plateau | `command/middleware/{name}` |
-| entities, the error kinds (`kinds.py`) and the rule errors | `domain/entity` |
+| entities and the rule errors | `domain/entity` |
+| the error kinds and `KindError` (`kinds.py`) | `shared/errors` |
 | domain services | `domain/service` |
 | composition root | `main.py` |
 | base settings (`LOG_LEVEL` only) | `config` |
@@ -130,7 +132,7 @@ Name a type parameter after what it stands for (`TCommand`, `TResult`), never by
 # Check list
 - [ ] Packages follow [Base packages](#base-packages) and [app-layers-in-python](library/develop/python/app-layers-in-python.skill.md).
 - [ ] `command/pipeline`, `command/middleware/logging`, `api/startup`, `api/core/entry`, `log`, and the error-kinds modules are filled copies of the templates; none contains `{package}`.
-- [ ] Every business-rule error is a `KindError` subclass; code outside the domain checks kinds only through `command.pipeline`.
+- [ ] Every business-rule error is a `KindError` subclass; an entry point checks kinds through `command.pipeline`.
 - [ ] Every command lives in its own module in `command` with a handler matching `Handler[TCommand, TResult]`, and has a field and a line in `command/handlers.py`.
 - [ ] `run` in `main.py` has the `# [services]`, `# [handlers]`, `# [entries]` sections in this order; `[handlers]` is one `build_handlers` call; `[entries]` is one `run_all` call returning `exit_code(...)`.
 - [ ] Every record is written through the logger of `new_logger` with fixed text and `attrs(...)`.

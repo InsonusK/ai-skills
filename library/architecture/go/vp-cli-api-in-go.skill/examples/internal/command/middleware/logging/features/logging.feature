@@ -29,6 +29,6 @@ Feature: Command logging middleware
     When the wrapped handler handles the command "buy milk"
     Then the wrapped handler should return the error "the lists are unavailable"
     And the records should be:
-      | level | msg            | command | error                     | cause                                      |
-      | INFO  | command called | AddItem |                           |                                            |
-      | WARN  | command failed | AddItem | the lists are unavailable | dial tcp 10.0.0.5:5432: connection refused |
+      | level | msg            | command | error                     | cause                                      | exception |
+      | INFO  | command called | AddItem |                           |                                            |           |
+      | WARN  | command failed | AddItem | the lists are unavailable | dial tcp 10.0.0.5:5432: connection refused |           |
