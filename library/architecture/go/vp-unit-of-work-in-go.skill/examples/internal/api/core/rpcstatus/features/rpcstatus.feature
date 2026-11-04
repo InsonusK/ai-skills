@@ -7,9 +7,9 @@ Feature: Error kinds answered by one table
   @category/happy
   Scenario Outline: An error of a kind is answered with its code, its HTTP status, and its message
     When a command fails with the kind "<kind>" and the message "the reason"
-    Then the code should be <code>
-    And the HTTP status should be <http>
-    And the message should be "plan items: <kind>: the reason"
+    Then the rpc code should be <code>
+    And the rpc code's HTTP status should be <http>
+    And the rpc message should be "the reason"
 
     Examples:
       | kind                | code | http |
@@ -24,16 +24,28 @@ Feature: Error kinds answered by one table
       | unimplemented       | 12   | 501  |
       | unavailable         | 14   | 503  |
 
+  @category/happy
+  Scenario: An error wrapped on its way up keeps its kind and its own message
+    When a command fails with the kind "not found" and the message "no list 42", wrapped in "plan failed"
+    Then the rpc code should be 5
+    And the rpc message should be "no list 42"
+
+  @category/error
+  Scenario: An error with a cause is answered with its own message, never the cause's
+    When a command fails with the kind "unavailable" and the message "the lists are unavailable", caused by "dial tcp 10.0.0.5:5432: connection refused"
+    Then the rpc code should be 14
+    And the rpc message should be "the lists are unavailable"
+
   @category/error
   Scenario: An error with no kind is INTERNAL without its message
-    When a command fails with the plain error "dial tcp 10.0.0.5:5432: connection refused"
-    Then the code should be 13
-    And the HTTP status should be 500
-    And the message should be "internal error"
+    When a command fails with the plain error "connection refused to 10.0.0.5:5432"
+    Then the rpc code should be 13
+    And the rpc code's HTTP status should be 500
+    And the rpc message should be "internal error"
 
   @category/happy
   Scenario Outline: The codes an entry point sets itself have their canonical HTTP status
-    Then the code <code> should have the HTTP status <http>
+    Then the rpc code <code> should have the HTTP status <http>
 
     Examples:
       | code | http | name              |

@@ -21,7 +21,7 @@ Feature: ItemsService
   Scenario: A title already in the list is ALREADY_EXISTS
     Given AddItem fails with the kind conflict
     When I call ItemsService.AddItem with the list "home" and the title "buy milk"
-    Then the call should fail with AlreadyExists and the message "conflict: the title is taken"
+    Then the call should fail with AlreadyExists and the message "the title is taken"
 
   @category/happy
   Scenario: ListItems becomes the ListItems command and its items come back

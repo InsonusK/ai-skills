@@ -6,11 +6,12 @@ from typing import TypeVar
 import pytest
 from pytest_bdd import given, parsers, scenarios, then, when
 
-from todo.domain.entity import Item, kind_of
+from todo.domain.entity import Item
 from todo.infrastructure import postgres
 from todo.infrastructure.postgres import DuplicateKeyError, UnavailableError, migrations, postgrestest
 from todo.infrastructure.postgres.tables import ItemRow
 from todo.service import ItemLists
+from todo.shared.errors import kind_of
 
 scenarios("../features/item_lists.feature")
 

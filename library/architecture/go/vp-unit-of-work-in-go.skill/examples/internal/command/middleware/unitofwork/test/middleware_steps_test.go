@@ -10,6 +10,7 @@ import (
 
 	"github.com/example/todo/internal/command/middleware/unitofwork"
 	"github.com/example/todo/internal/command/pipeline"
+	"github.com/example/todo/internal/shared/errorkind"
 )
 
 func logf(format string, args ...any) { fmt.Printf(format+"\n", args...) }
@@ -121,6 +122,13 @@ func registerMiddlewareSteps(sc *godog.ScenarioContext) {
 	sc.Step(`^the command should fail with the kind "unavailable"$`, func() error {
 		if !errors.Is(w.err, pipeline.ErrUnavailable) {
 			return fmt.Errorf("the command failed with %v, want the kind unavailable", w.err)
+		}
+		return nil
+	})
+	sc.Step(`^the cause of the command's error should mention "([^"]*)"$`, func(text string) error {
+		kinded := errorkind.Of(w.err)
+		if kinded == nil || kinded.Cause == nil || !strings.Contains(kinded.Cause.Error(), text) {
+			return fmt.Errorf("the command's error %#v has no cause mentioning %q", w.err, text)
 		}
 		return nil
 	})

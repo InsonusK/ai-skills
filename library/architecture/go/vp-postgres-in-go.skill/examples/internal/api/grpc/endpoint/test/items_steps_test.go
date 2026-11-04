@@ -11,7 +11,7 @@ import (
 
 	"github.com/example/todo/gen/api/todo"
 	"github.com/example/todo/internal/command"
-	"github.com/example/todo/internal/command/pipeline"
+	"github.com/example/todo/internal/shared/errorkind"
 )
 
 func registerItemsSteps(sc *godog.ScenarioContext, w *World) {
@@ -72,7 +72,7 @@ func (w *World) planShouldHaveReceived(ctx context.Context, titles string) error
 }
 
 func (w *World) addConflicts(ctx context.Context) error {
-	w.addErr = fmt.Errorf("%w: the title is taken", pipeline.ErrConflict)
+	w.addErr = errorkind.New(errorkind.ErrConflict, "the title is taken")
 	return nil
 }
 

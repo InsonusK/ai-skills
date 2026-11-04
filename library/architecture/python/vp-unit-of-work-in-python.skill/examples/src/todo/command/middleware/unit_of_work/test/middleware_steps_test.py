@@ -6,6 +6,7 @@ from pytest_bdd import given, parsers, scenarios, then, when
 
 from todo.command.middleware.unit_of_work import UnitOfWorkMiddleware
 from todo.command.pipeline import Kind, kind_of
+from todo.shared.errors import cause_of
 
 scenarios("../features/middleware.feature")
 
@@ -108,6 +109,12 @@ def the_cancellation_reached(world: World) -> None:
 @then('the command should fail with the kind "unavailable"')
 def fails_unavailable(world: World) -> None:
     assert kind_of(world.error) == Kind.UNAVAILABLE, world.error
+
+
+@then(parsers.parse("the cause of the command's error should mention \"{text}\""))
+def cause_mentions(world: World, text: str) -> None:
+    cause = cause_of(world.error)
+    assert cause is not None and text in cause, f"the cause of {world.error!r} is {cause!r}"
 
 
 @then(parsers.parse("the command's message should not mention \"{text}\""))

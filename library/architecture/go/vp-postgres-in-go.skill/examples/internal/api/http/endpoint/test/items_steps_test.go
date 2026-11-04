@@ -9,7 +9,7 @@ import (
 	"github.com/cucumber/godog"
 
 	"github.com/example/todo/internal/command"
-	"github.com/example/todo/internal/command/pipeline"
+	"github.com/example/todo/internal/shared/errorkind"
 )
 
 func registerItemsSteps(sc *godog.ScenarioContext, w *World) {
@@ -45,7 +45,7 @@ func (w *World) addReturns(ctx context.Context, title string) error {
 }
 
 func (w *World) addConflicts(ctx context.Context, message string) error {
-	w.addErr = fmt.Errorf("%w: %s", pipeline.ErrConflict, message)
+	w.addErr = errorkind.New(errorkind.ErrConflict, message)
 	return nil
 }
 

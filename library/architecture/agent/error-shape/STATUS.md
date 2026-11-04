@@ -9,9 +9,9 @@ The plan by waves; each wave passes `check.sh`, gets a fresh-eyes audit, and is 
 | 2 | Python: `shared/errors`, every example in scope, the templates, `error-kinds-in-python`, the Python skills | done: 11 examples pass `make test` and `make lint` |
 | 3 | dotnet: `cause` in `JsonLogLine`, every copy (the DB examples' copies too), `error-kinds-in-dotnet`, the dotnet skills | done: 12 examples pass `dotnet test` (the two DB ones on PostgreSQL 17.5) |
 | 4 | `error-kinds` (core), the catalog's README, the glossaries and ADRs that list the log fields | done; `check.sh --ground` passes |
+| 5 | the DB variation points, merged meanwhile: Go and Python `vp-postgres`, `vp-unit-of-work` take their base's new files; their services and the failed commit build `errorkind.Wrap` / `raise ... from` with the store's failure as the cause | done |
 
 Examples in scope, per stack: `base-plateau`, `base-plateau-extension`, `vp-cli-api` (Go, Python), `vp-client-retry`, `vp-grpc-api`, `vp-grpc-client`, `vp-health`, `vp-http-api` (`examples`, `examples-proto`), `vp-http-client`, `vp-logging`.
 
 Found on the way, not part of this migration: `AccessConfig.feature` of `base-plateau-extension-in-dotnet` fails about one run in six - its scenarios set and read environment variables while xUnit runs them in parallel (`AccessConfigSteps.ThenTheTokenShouldName` sees no tokens).
 
-Left for the DB branches (#281-#284), once merged: `vp-postgres-in-*` and `vp-unit-of-work-in-*` build their errors with the new shape (Go `errorkind.Wrap` for a store's failure, Python `shared.errors`); the dotnet DB examples already carry the new shared files.
