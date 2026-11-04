@@ -1,0 +1,23 @@
+sequenceDiagram
+    autonumber
+    participant Client as a client<br/>src/App/App.Host/Api/Http/Endpoint/ListsHandler.cs
+    participant Handler as CompleteItemHandler<br/>src/Modules/Todo/Todo.Application/Commands/CompleteItemHandler.cs
+    participant Service as ItemListsService<br/>src/Modules/Todo/Todo.Application/Services/ItemListsService.cs
+    participant Repository as PostgresRepository of ItemRow<br/>src/Infrastructure/Postgres/Postgres/Repositories/PostgresRepository.cs
+    participant DB as PostgreSQL
+
+    Client->>+Handler: CompleteItemCommand(home, 1, version 7) from POST .../items/1/complete
+    Handler->>+Service: ItemAsync(home, 1)
+    Service->>+Repository: SelectBy(ItemOfList).SingleAsync
+    Repository->>+DB: SELECT ..., xmin FROM list_items
+    DB-->>-Repository: the row, xmin 9: another caller changed it
+    Repository-->>-Service: ItemRow, Version 9
+    Service-->>-Handler: KeptItem, Version 9
+    Note over Handler: kept.Item.Complete(), then kept.Version = 7, the caller's, not 9
+    Handler->>+Service: SaveAsync(home, kept at version 7)
+    Service->>+Repository: UpdateAsync(ItemRow with Version 7)
+    Repository->>+DB: UPDATE ... WHERE id = 1 AND xmin = 7 RETURNING xmin
+    DB-->>-Repository: no row: DbUpdateConcurrencyException
+    Repository-->>-Service: RowChangedException
+    Service-->>-Handler: TodoErrors.ItemChanged(..., changed)
+    Handler-->>-Client: 409 ABORTED: read it again

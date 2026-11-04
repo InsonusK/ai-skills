@@ -1,0 +1,37 @@
+# The row version variation point attaches to the PostgreSQL example: it adds
+# the scenarios of the version, the mark of a row that never changes, and the
+# migration EF Core writes for the row version (no DDL: xmin is a system
+# column), and changes only the application over a table that changes - its
+# row, its service, its commands, its contract and entry points. No fixed file
+# of vp-postgres-in-dotnet changes: EF Core compares a row version a row has.
+base library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples
+# the row carries its version; the model snapshot follows it
+change src/Infrastructure/Postgres/Postgres.Abstractions/Rows/ItemRow.cs
+change src/Infrastructure/Postgres/Postgres/Rows/ItemRowConfiguration.cs
+change src/Infrastructure/Postgres/Postgres/Migrations/AppDbContextModelSnapshot.cs
+# the service answers ids and versions, saves under the caller's version
+change src/Modules/Todo/Todo.Application/Services/IItemLists.cs
+change src/Modules/Todo/Todo.Application/Services/ItemListsService.cs
+change src/Modules/Todo/Todo.Domain/Errors/TodoErrors.cs
+change src/Modules/Todo/Todo.Application.Tests/features/ItemListsService.feature
+change src/Modules/Todo/Todo.Application.Tests/Steps/ItemListsServiceSteps.cs
+# the commands carry the version
+change src/Modules/Todo/Todo.Commands/PlanItemsCommand.cs
+change src/Modules/Todo/Todo.Application/Commands/AddItemHandler.cs
+change src/Modules/Todo/Todo.Application/Commands/ListItemsHandler.cs
+change src/Modules/Todo/Todo.Application.Tests/features/ItemLists.feature
+change src/Modules/Todo/Todo.Application.Tests/Steps/ItemListsSteps.cs
+# the contract: an item's id and version, CompleteItem
+change docs/integration/api/todo/todo.proto
+change docs/integration/api/todo/todo.swagger.json
+# the entry points serve CompleteItem and answer ids and versions
+change src/App/App.Host/Api/Grpc/Endpoint/ItemsHandler.cs
+change src/App/App.Host/Api/Http/Endpoint/ListsHandler.cs
+change src/App/App.Host.Tests/features/Grpc/Items.feature
+change src/App/App.Host.Tests/features/Http/*.feature
+change src/App/App.Host.Tests/Steps/Grpc/ItemsServiceSteps.cs
+change src/App/App.Host.Tests/Steps/Http/ResourceSteps.cs
+# the whole application over its database: a completion under a moved version
+change src/App/App.Host.Tests/features/Persistence.feature
+change src/App/App.Host.Tests/Steps/PersistenceSteps.cs
+change README.md

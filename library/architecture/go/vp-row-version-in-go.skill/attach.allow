@@ -1,0 +1,32 @@
+# The row version variation point attaches to the PostgreSQL example: it adds
+# the scenarios of the version and the marker of a row that never changes,
+# and changes only the application over a table that changes - its row, its
+# service, its commands, its contract and entry points. No fixed file of
+# vp-postgres-in-go changes: its repository compares a version a row declares.
+base library/architecture/go/vp-postgres-in-go.skill/examples
+# the row declares its version; ItemOfList picks one item
+change internal/infrastructure/postgres/tables/items.go
+# the service answers ids and versions, saves under the caller's version
+change internal/service/item_lists.go
+change internal/service/features/item_lists.feature
+change internal/service/test/steps_test.go
+# the commands carry the version; CompleteItem is registered
+change internal/command/add_item.go
+change internal/command/list_items.go
+change internal/command/plan_items.go
+change internal/command/handlers.go
+change internal/command/features/item_lists.feature
+change internal/command/test/item_lists_steps_test.go
+# the contract: an item's id and version, CompleteItem; what buf generates from it
+change docs/integration/api/todo/todo.proto
+change docs/integration/api/todo/todo.swagger.json
+change gen/api/todo/*.go
+# the entry points serve CompleteItem and answer ids and versions
+change internal/api/grpc/endpoint/items.go
+change internal/api/grpc/endpoint/features/items.feature
+change internal/api/grpc/endpoint/test/*_test.go
+change internal/api/http/endpoint/items.go
+change internal/api/http/endpoint/lists.go
+change internal/api/http/endpoint/features/*.feature
+change internal/api/http/endpoint/test/*_test.go
+change README.md

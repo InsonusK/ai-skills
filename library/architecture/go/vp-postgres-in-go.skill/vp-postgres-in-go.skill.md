@@ -32,6 +32,7 @@ internal/infrastructure/postgres/      copied, never edited
 ├── selector.go                        Selector, OrderedSelector, ResultSelector, OrderedResultSelector
 ├── specification.go                   Specification, SpecificationOf, Projection, ProjectionOf, Key
 ├── outcomes.go                        ErrDuplicateKey, ErrMissingReference, ErrRowChanged, ErrUnavailable, ErrRefused
+├── version.go                         Version (xmin): compared by Update, Delete, a selector's Update when a row declares it
 ├── migrate.go                         Migrate(ctx, db, migrations.Files)
 ├── postgrestest/                      copied: Create (a database per scenario), NotAnswering, Failing
 ├── tables/                            per table: the row, its keys, its specifications

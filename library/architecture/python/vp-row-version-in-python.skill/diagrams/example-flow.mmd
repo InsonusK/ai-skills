@@ -1,0 +1,23 @@
+sequenceDiagram
+    autonumber
+    participant Client as a client<br/>src/todo/api/http/endpoint/lists.py
+    participant Handler as CompleteItemHandler<br/>src/todo/command/complete_item.py
+    participant Service as ItemLists<br/>src/todo/service/item_lists.py
+    participant Repository as postgres.Repository of ItemRow<br/>src/todo/infrastructure/postgres/repository.py
+    participant DB as PostgreSQL
+
+    Client->>+Handler: CompleteItemCommand(home, 1, version 7) from POST .../items/1/complete
+    Handler->>+Service: item(home, 1)
+    Service->>+Repository: select_by(ItemOfList).single()
+    Repository->>+DB: SELECT ..., xmin FROM list_items
+    DB-->>-Repository: the row, xmin 9: another caller changed it
+    Repository-->>-Service: ItemRow, version 9
+    Service-->>-Handler: KeptItem, version 9
+    Note over Handler: kept.item.complete(), then kept.version = 7, the caller's, not 9
+    Handler->>+Service: save(home, kept at version 7)
+    Service->>+Repository: update(ItemRow(version=7))
+    Repository->>+DB: UPDATE ... WHERE id = 1 AND xmin = 7 RETURNING xmin
+    DB-->>-Repository: no row
+    Repository-->>-Service: RowChangedError
+    Service-->>-Handler: raise ItemChangedError() from the outcome
+    Handler-->>-Client: 409 ABORTED: read it again

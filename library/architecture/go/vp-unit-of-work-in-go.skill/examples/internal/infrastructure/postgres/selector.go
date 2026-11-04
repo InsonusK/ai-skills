@@ -229,9 +229,18 @@ func (s *rowSelector[TRow]) Update(ctx context.Context, change func(row *TRow)) 
 			}
 			for i := range rows {
 				change(&rows[i])
-				saved := saveRow(tx, &rows[i])
+				write, err := s.statements.versioned(ctx, tx, &rows[i], "update")
+				if err != nil {
+					return err
+				}
+				saved := saveRow(write, &rows[i])
 				if saved.Error != nil {
 					return saved.Error
+				}
+				// A row whose version moved since the read above fails the
+				// whole call: every row or none.
+				if s.statements.version != nil && saved.RowsAffected == 0 {
+					return fmt.Errorf("%w: a picked row was changed meanwhile", ErrRowChanged)
 				}
 				changed += saved.RowsAffected
 			}

@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import InstrumentedAttribute
 
 from todo.infrastructure.postgres.database import Database
-from todo.infrastructure.postgres.outcomes import RefusedError, translate
+from todo.infrastructure.postgres.outcomes import RefusedError, RowChangedError, translate
 from todo.infrastructure.postgres.specification import Columns, Key
 
 T = TypeVar("T")
@@ -202,13 +202,17 @@ class RowSelector(_Selection[TRow]):
         fetch: Fetch,
         refused: RefusedError | None,
         key: Sequence[InstrumentedAttribute[Any]],
+        saved_by: Callable[[AsyncSession, Any], Awaitable[bool]] | None = None,
         order: tuple[tuple[Any, bool], ...] = (),
     ) -> None:
         super().__init__(database, what, picked, fetch, refused, order)
         self._key = key
+        # The repository's save of one versioned row, or None for a table
+        # that never changes, whose rows one flush saves.
+        self._saved_by = saved_by
 
     def _with(self, order: tuple[tuple[Any, bool], ...]) -> Self:
-        return type(self)(self._database, self._what, self._picked, self._fetch, self._refused, self._key, order)
+        return type(self)(self._database, self._what, self._picked, self._fetch, self._refused, self._key, self._saved_by, order)
 
     def order_by(self, key: Key[TRow]) -> "RowSelector[TRow]":
         return self._with(self._by(key, descending=False, restart=True))
@@ -224,10 +228,21 @@ class RowSelector(_Selection[TRow]):
             rows: list[TRow] = await self._fetch(session, self._picked())
             for row in rows:
                 change(row)
-            changed = sum(1 for row in rows if session.is_modified(row))
-            # One flush in the session's transaction: every row or none.
-            await session.flush()
-            return changed
+            modified = [row for row in rows if session.is_modified(row)]
+            if self._saved_by is None:
+                # One flush in the session's transaction: every row or none.
+                await session.flush()
+                return len(modified)
+            # Each row saved by its version, in the session's transaction: a
+            # row changed since the read above fails the whole call. Every
+            # picked row leaves the session first, so no autoflush of the
+            # first save writes the others without their version.
+            for row in rows:
+                session.expunge(row)
+            for row in modified:
+                if not await self._saved_by(session, row):
+                    raise RowChangedError(f"update {self._what}: a picked row was changed meanwhile")
+            return len(modified)
 
         return await self._read(run, write=True)
 

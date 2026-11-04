@@ -6,6 +6,7 @@ import (
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
+	"gorm.io/gorm/schema"
 )
 
 // Statements runs the statements of one table, each through the translation
@@ -15,6 +16,9 @@ import (
 type Statements struct {
 	db    *gorm.DB
 	table string
+	// version is the field of the row's version (version.go), or nil for a
+	// row of a table that never changes.
+	version *schema.Field
 }
 
 // Run runs statement on a session of ctx and answers the rows it touched.
@@ -48,44 +52,61 @@ type Repository[TRow any] struct {
 // map, or one with no primary key, is a defect of the composition root, so it
 // stops the start.
 func NewRepository[TRow any](db *Database) *Repository[TRow] {
-	table, key := mappingOf[TRow](db.gorm)
+	rowSchema := mappingOf[TRow](db.gorm)
+	table, key := rowSchema.Table, ""
+	if field := rowSchema.PrioritizedPrimaryField; field != nil {
+		key = field.DBName
+	}
 	if key == "" {
 		panic(fmt.Sprintf("postgres: the row %s has no primary key", table))
 	}
-	return &Repository[TRow]{Statements: Statements{db: db.gorm, table: table}, key: key}
+	return &Repository[TRow]{Statements: Statements{db: db.gorm, table: table, version: versionField(rowSchema)}, key: key}
 }
 
-// Insert saves row; a key the database generates is set on row.
+// Insert saves row; a key the database generates, and the version of a row
+// that declares one, are set on row.
 func (r *Repository[TRow]) Insert(ctx context.Context, row *TRow) error {
 	_, err := r.Run(ctx, "insert into "+r.table, func(session *gorm.DB) *gorm.DB {
 		// A related row is saved by its own repository, never with this one.
-		return session.Omit(clause.Associations).Create(row)
+		return r.returningVersion(session, r.key).Omit(clause.Associations).Create(row)
 	})
 	return err
 }
 
-// Update saves every column of row by its primary key; a row no longer there
-// is ErrRowChanged.
+// Update saves every column of row by its primary key, and by its version
+// when the row declares one, whose new value it puts on row; a row no longer
+// there, or one whose version moved, is ErrRowChanged.
 func (r *Repository[TRow]) Update(ctx context.Context, row *TRow) error {
-	n, err := r.Run(ctx, "update "+r.table, func(session *gorm.DB) *gorm.DB {
+	n, err := r.write(ctx, "update", row, func(session *gorm.DB) *gorm.DB {
 		return saveRow(session, row)
 	})
 	if err == nil && n == 0 {
-		return fmt.Errorf("update %s: %w: no row has its key", r.table, ErrRowChanged)
+		return fmt.Errorf("update %s: %w: no row has its key and its version", r.table, ErrRowChanged)
 	}
 	return err
 }
 
-// Delete deletes row by its primary key; a row no longer there is
+// Delete deletes row by its primary key, and by its version when the row
+// declares one; a row no longer there, or one whose version moved, is
 // ErrRowChanged.
 func (r *Repository[TRow]) Delete(ctx context.Context, row *TRow) error {
-	n, err := r.Run(ctx, "delete from "+r.table, func(session *gorm.DB) *gorm.DB {
+	n, err := r.write(ctx, "delete from", row, func(session *gorm.DB) *gorm.DB {
 		return session.Delete(row)
 	})
 	if err == nil && n == 0 {
-		return fmt.Errorf("delete from %s: %w: no row has its key", r.table, ErrRowChanged)
+		return fmt.Errorf("delete from %s: %w: no row has its key and its version", r.table, ErrRowChanged)
 	}
 	return err
+}
+
+// write runs a write of row with the comparison of its version added.
+func (s Statements) write(ctx context.Context, verb string, row any, statement func(session *gorm.DB) *gorm.DB) (int64, error) {
+	session, err := s.versioned(ctx, s.session(ctx), row, verb)
+	if err != nil {
+		return 0, err
+	}
+	result := statement(session)
+	return result.RowsAffected, translate(result.Error, verb+" "+s.table)
 }
 
 // SelectBy gives the selector over the rows specification picks. No statement
@@ -116,8 +137,7 @@ type Projections[TRow, TResult any] struct {
 // NewProjections is the reader of projections from the table of TRow into
 // TResult.
 func NewProjections[TRow, TResult any](db *Database) *Projections[TRow, TResult] {
-	table, _ := mappingOf[TRow](db.gorm)
-	return &Projections[TRow, TResult]{Statements: Statements{db: db.gorm, table: table}}
+	return &Projections[TRow, TResult]{Statements: Statements{db: db.gorm, table: mappingOf[TRow](db.gorm).Table}}
 }
 
 // SelectBy gives the selector over the results projection answers; like the
@@ -139,16 +159,13 @@ func saveRow(session *gorm.DB, row any) *gorm.DB {
 	return session.Model(row).Select("*").Omit(clause.Associations).Updates(row)
 }
 
-// mappingOf answers the table of TRow and its primary key's column.
-func mappingOf[TRow any](db *gorm.DB) (table, key string) {
+// mappingOf answers how GORM maps TRow: its table, its columns, its key.
+func mappingOf[TRow any](db *gorm.DB) *schema.Schema {
 	statement := &gorm.Statement{DB: db}
 	if err := statement.Parse(new(TRow)); err != nil {
 		panic(fmt.Sprintf("postgres: %T is no row GORM maps: %v", *new(TRow), err))
 	}
-	if field := statement.Schema.PrioritizedPrimaryField; field != nil {
-		key = field.DBName
-	}
-	return statement.Schema.Table, key
+	return statement.Schema
 }
 
 // refusal applies pick to a statement that never runs and answers ErrRefused
