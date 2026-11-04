@@ -1,0 +1,35 @@
+sequenceDiagram
+    autonumber
+    participant Caller as a scenario<br/>internal/command/middleware/unitofwork/test/nested_steps_test.go
+    participant Middleware as commandunitofwork.Middleware<br/>internal/command/middleware/unitofwork/unitofwork.go
+    participant Import as ImportItemsHandler<br/>internal/command/import_items.go
+    participant Add as AddItemHandler<br/>internal/command/add_item.go
+    participant Repository as postgres.Repository of ItemRow<br/>internal/infrastructure/postgres/repository.go
+    participant Unit as the GORM plugin<br/>internal/infrastructure/postgres/unitofwork/unitofwork.go
+    participant DB as PostgreSQL
+
+    Caller->>+Middleware: Handlers.ImportItems.Handle(ctx, ImportItemsCommand)
+    Middleware->>Unit: Begin(ctx): a new unit in ctx, true, this command ends it
+    Middleware->>+Import: next(ctx)
+    loop one nested AddItemCommand per title, through the decorated AddItem
+        Import->>+Add: Handle(ctx): the middleware calls Begin, false, and passes on
+        Add->>+Repository: Insert(ctx, &ItemRow), through service.ItemLists
+        Repository->>+Unit: the callback before the write
+        Note over Unit,DB: the first write takes a connection and BEGIN, each write has a SAVEPOINT
+        Unit-->>-Repository: the statement runs in the unit's transaction
+        Repository->>+DB: INSERT
+        DB-->>-Repository: the row, or 23505: ROLLBACK TO SAVEPOINT
+        Repository-->>-Add: nil, or ErrDuplicateKey told as a conflict
+        Add-->>-Import: result, or the conflict
+    end
+    Import-->>-Middleware: result, or the conflict
+    alt the handler returned
+        Middleware->>+Unit: Commit(context.WithoutCancel(ctx))
+        Unit->>DB: COMMIT
+        Unit-->>-Middleware: nil, or a failure told as unavailable
+    else the handler failed
+        Middleware->>+Unit: Rollback(context.WithoutCancel(ctx))
+        Unit->>DB: ROLLBACK
+        Unit-->>-Middleware: done
+    end
+    Middleware-->>-Caller: the result, or the failure

@@ -2,7 +2,7 @@
 name: vp-postgres
 description: The PostgreSQL variation point — one database behind a repository with one contract in every stack (insert, update, delete, SelectBy), named specifications that pick rows, a selector that reads, updates, and deletes the picked rows, every table classified by who sets its identity and whether its rows change, a service that turns the repository's outcomes (duplicate key, missing reference, row changed, unavailable) into error kinds, DATABASE_DSN that no log prints, migrations applied by a one-shot job or behind MIGRATE_ON_START, a readiness check, and shared scenarios on the real engine at TEST_DATABASE_DSN
 whenToUse: when an application built on the base plateau must keep its data between runs in PostgreSQL, when you add a table, a specification, a repository method, or a migration, when you replace an in-memory store with a database, or when you review database code
-updated: 20261102
+updated: 20261103
 tags:
   - stack
   - concern/architecture
@@ -33,7 +33,7 @@ adr:
 
 # Scope
 - Covers one PostgreSQL database of one application: the repository, specifications, selectors, migrations, settings, readiness, and how their scenarios get a database. A transaction across several writes is `vp-unit-of-work`; what a table adds by its kind is `vp-row-version`, `vp-external-id`, and `vp-edit-timestamp`; SQLite is `vp-sqlite`; a worker claiming rows under a lock is step 4 of the [catalog](library/architecture/README.md) (TaskBox, Inbox, Outbox).
-- The implementation for each stack is described in its stack-specialized extension: `vp-postgres-in-dotnet`.
+- The implementation for each stack is described in its stack-specialized extension: `vp-postgres-in-dotnet`, `vp-postgres-in-go`, `vp-postgres-in-python`.
 
 # Rule
 

@@ -1,0 +1,26 @@
+sequenceDiagram
+    autonumber
+    participant Endpoint as endpoint.ItemsHandler<br/>internal/api/http/endpoint/items.go
+    participant Handler as AddItemHandler<br/>internal/command/add_item.go
+    participant Service as service.ItemLists<br/>internal/service/item_lists.go
+    participant Repository as postgres.Repository of ItemRow<br/>internal/infrastructure/postgres/repository.go
+    participant Outcomes as translate<br/>internal/infrastructure/postgres/outcomes.go
+    participant DB as PostgreSQL
+
+    Endpoint->>+Handler: Handle(AddItemCommand), through the command middleware
+    Handler->>+Service: Add(ctx, listID, item)
+    Service->>+Repository: Insert(ctx, &ItemRow)
+    Repository->>+DB: INSERT INTO list_items, no transaction of its own
+    alt the row is stored
+        DB-->>Repository: the generated id
+        Repository-->>Service: nil
+        Service-->>Handler: nil
+        Handler-->>Endpoint: AddItemResult, 201
+    else unique key taken
+        DB-->>-Repository: 23505
+        Repository->>+Outcomes: the driver's error
+        Outcomes-->>-Repository: ErrDuplicateKey, the cause kept
+        Repository-->>-Service: insert into list_items: duplicate key
+        Service-->>-Handler: ErrConflict: list already has the item
+        Handler-->>-Endpoint: conflict, 409
+    end
