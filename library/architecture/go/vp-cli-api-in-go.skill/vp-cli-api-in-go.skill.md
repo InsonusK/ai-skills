@@ -2,7 +2,7 @@
 name: vp-cli-api-in-go
 description: The CLI API variation point in Go — internal/api/cli/pipeline copied from templates (Run building the cobra command line with --output, --version, usage errors as the invalid kind, the generic Command adapter, the run log), one {Resource}Handler per resource in internal/api/cli/endpoint, the registration in internal/api/cli/commands.go with each action's flags, JSON output, and text form, and the startup entry replaced by cliapi.Entry in main.go
 whenToUse: when a Go application built on the base plateau must be run from a command line, when you offer a new command as an action of such an application, or when you review its internal/api/cli package
-updated: 20261102
+updated: 20261104
 tags:
   - stack/go
   - concern/architecture

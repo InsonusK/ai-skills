@@ -2,7 +2,7 @@
 name: base-plateau-in-python
 description: The base plateau in Python — the package layout of its four layers under src/{package}/, the async Handler protocol, the Middleware list with decorate, the command registry build_handlers, the error kinds, the startup entry, the runner of the entry points with the exit codes, the stdlib logger writing one JSON line per record, the composition root with its three marked sections, and the pytest-bdd scenarios that cover each layer
 whenToUse: when you create a new Python service or Python CLI application from the architecture catalog, or when you attach a variation point to, or review, a Python application built on the base plateau
-updated: 20261102
+updated: 20261104
 tags:
   - stack/python
   - concern/architecture

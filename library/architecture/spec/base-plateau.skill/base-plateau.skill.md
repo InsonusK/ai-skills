@@ -2,7 +2,7 @@
 name: base-plateau
 description: The base plateau every application of the architecture catalog starts from — a program that starts, runs exactly one command, reports its result and exits — with its four layers, the direction of their dependencies, the command registry, the runner of the entry points, and the composition root a variation point attaches to
 whenToUse: when you create a new service or CLI application from the architecture catalog, when you write or review a variation point (an API, a client, a store, TaskBox, ...) that attaches to the base plateau, or when you check whether an application still keeps the base plateau's layer and dependency rules
-updated: 20261102
+updated: 20261104
 tags:
   - stack
   - concern/architecture
@@ -55,7 +55,7 @@ Give every command exactly one handler, and give every handler the same contract
 ### Errors carry a kind of error-kinds
 Give every error a caller can act on one kind of [error-kinds](library/develop/core/error-kinds.skill/error-kinds.skill.md), exposed by the command layer, and leave a failure of the service with none.
 - Risk: an entry point that cannot tell a rejected command from a failure answers a typo with a server error, or a crash with a validation message.
-- Fix: every such error wraps its kind; an entry point answers the kind through error-kinds' table, never an individual error.
+- Fix: every such error carries its kind, its message for the caller, and, when a technical failure lies behind it, that failure as its cause; an entry point answers the kind through error-kinds' table and the message, never an individual error or its cause; the "command failed" record writes the cause apart, as `cause`.
 
 ### Startup command reports through the process interface
 Run the startup command once, write its result to standard output as one machine-readable line, write logs to standard error, and exit `0` on success, `2` when the command is rejected as invalid, and `1` on any other failure.
