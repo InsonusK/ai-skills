@@ -4,6 +4,11 @@ import (
 	"context"
 	"fmt"
 	"slices"
+	"time"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/dynamicpb"
 
 	"github.com/cucumber/godog"
 
@@ -13,6 +18,33 @@ import (
 
 func registerContractSteps(sc *godog.ScenarioContext, w *World) {
 	sc.Step(`^the gRPC API and its proto contract both have exactly the services:$`, w.bothHaveExactly)
+	sc.Step(`^every method of the proto contract should be implemented by its service$`, w.everyMethodImplemented)
+}
+
+// everyMethodImplemented calls every method of the contract with an empty
+// request: one the service left to the generated Unimplemented* type answers
+// UNIMPLEMENTED "method X not implemented"; any other answer means it is written.
+func (w *World) everyMethodImplemented(ctx context.Context) error {
+	conn, err := w.client()
+	if err != nil {
+		return err
+	}
+	services := todo.File_todo_todo_proto.Services()
+	for i := range services.Len() {
+		methods := services.Get(i).Methods()
+		for j := range methods.Len() {
+			method := methods.Get(j)
+			path := fmt.Sprintf("/%s/%s", services.Get(i).FullName(), method.Name())
+			callCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
+			err := conn.Invoke(callCtx, path, dynamicpb.NewMessage(method.Input()), dynamicpb.NewMessage(method.Output()))
+			cancel()
+			logf("then: %s -> %v", path, err)
+			if st := status.Convert(err); st.Code() == codes.Unimplemented && st.Message() == fmt.Sprintf("method %s not implemented", method.Name()) {
+				return fmt.Errorf("%s is not implemented", path)
+			}
+		}
+	}
+	return nil
 }
 
 // bothHaveExactly compares, as sets, the services of the table with the

@@ -29,7 +29,7 @@ for stack in ("go", "python", "dotnet"):
             for ex in sorted(glob.glob(f"{skill}/examples*")):
                 exname = os.path.basename(ex)
                 for unit, dest in lines:
-                    dest2 = exname + dest[len("examples"):]
+                    dest2 = exname + "/" + dest.split("/", 1)[1]
                     files = [f for f in os.listdir(f"{SPEC}/{unit}")]
                     # a unit is inherited only where the example holds it unchanged
                     if all(os.path.exists(f"{skill}/{dest2}/{f}") and open(f"{skill}/{dest2}/{f}", "rb").read() == open(f"{SPEC}/{unit}/{f}", "rb").read() for f in files):

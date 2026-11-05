@@ -24,9 +24,30 @@ public sealed class DocsSteps(HttpWorld world)
             : spec.GetProperty("servers")[0].GetProperty("url").GetString());
     }
 
-    // Relative, so it resolves under any prefix the ingress strips.
-    [Then("the HTTP response should redirect to the relative {string}")]
-    public void ThenTheHttpResponseShouldRedirectTo(string location) => Assert.Equal(location, world.Response!.Headers.Location?.OriginalString);
+    // The Location, resolved against the URL the client called (the published
+    // prefix and the path asked for), lands under the prefix: a relative one
+    // resolves under any prefix the ingress strips.
+    [Then("the HTTP response should redirect into {string}")]
+    public void ThenTheHttpResponseShouldRedirectInto(string prefix)
+    {
+        Assert.InRange((int)world.Response!.StatusCode, 300, 399);
+        var called = new Uri($"http://client{world.Config.BasePath}{world.Response.RequestMessage!.RequestUri!.AbsolutePath}");
+        var landed = new Uri(called, world.Response.Headers.Location!).AbsolutePath;
+        Assert.StartsWith(prefix, landed);
+    }
+
+    // Swagger UI's page, then the script that tells it where the spec is.
+    [When("I open the Swagger UI of the HTTP API")]
+    public async Task WhenIOpenTheSwaggerUi()
+    {
+        await world.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/swagger/index.html"));
+        Assert.Equal(200, (int)world.Response!.StatusCode);
+        await world.SendAsync(new HttpRequestMessage(HttpMethod.Get, "/swagger/index.js"));
+        Assert.Equal(200, (int)world.Response!.StatusCode);
+    }
+
+    [Then("the Swagger UI should load the spec from {string}")]
+    public void ThenTheSwaggerUiShouldLoadTheSpecFrom(string url) => Assert.Contains($"\"{url}\"", world.ResponseBody);
 
     [Then("the HTTP response should be the embedded spec")]
     public void ThenTheHttpResponseShouldBeTheEmbeddedSpec() => Assert.Equal(HttpDocs.PublishedSpec(""), world.ResponseBody);

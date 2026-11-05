@@ -6,31 +6,29 @@ Feature: API documentation
 
   @category/happy
   Scenario: With docs enabled under a prefix, every emitted URL carries the prefix
-    Given the docs are enabled
+    Given the HTTP docs are enabled
     And the service is published under "/todo"
-    When I GET "/openapi.json"
-    Then the response status should be 200
+    When I GET "/openapi.json" from the HTTP API
+    Then the HTTP status should be 200
     And the spec's server URL should be "/todo"
-    When I GET "/swagger/"
-    Then the response status should be 200
-    And the response body should mention "/todo/openapi.json"
-    When I GET "/swagger"
-    Then the response status should be 301
-    And the response should redirect to "/todo/swagger/"
+    When I open the Swagger UI of the HTTP API
+    Then the Swagger UI should load the spec from "/todo/openapi.json"
+    When I GET "/swagger" from the HTTP API
+    Then the HTTP response should redirect into "/todo/swagger"
 
   @category/boundary
   Scenario: Without a prefix the embedded spec is served unchanged
-    Given the docs are enabled
-    When I GET "/openapi.json"
-    Then the response should be the embedded spec
+    Given the HTTP docs are enabled
+    When I GET "/openapi.json" from the HTTP API
+    Then the HTTP response should be the embedded spec
 
   @category/security
   Scenario Outline: With docs disabled the documentation routes do not exist
-    When I GET "<path>"
-    Then the response status should be 404
+    When I GET "<path>" from the HTTP API
+    Then the HTTP status should be 404
 
     Examples:
       | path          |
       | /openapi.json |
-      | /swagger/     |
       | /swagger      |
+      | /swagger/     |

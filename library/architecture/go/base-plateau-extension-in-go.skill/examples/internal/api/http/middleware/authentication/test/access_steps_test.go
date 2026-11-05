@@ -54,6 +54,7 @@ func (w *World) theCallers(tokens string, limit int) error {
 // header when token is empty.
 func (w *World) post(token, path, body string) error {
 	req := httptest.NewRequest("POST", path, strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
 	if token != "" {
 		req.Header.Set("Authorization", "Bearer "+token)
 	}

@@ -60,6 +60,9 @@ func (w *World) send(method, path, body string) {
 	logger := slog.New(slog.NewTextHandler(io.Discard, nil))
 	server := httppipeline.NewServer(httppipeline.Config{}, httpapi.Routes(w.handlers()), logger, nil)
 	req := httptest.NewRequest(method, path, strings.NewReader(body))
+	if body != "" {
+		req.Header.Set("Content-Type", "application/json")
+	}
 	w.response = httptest.NewRecorder()
 	server.Handler().ServeHTTP(w.response, req)
 	logf("when: %s %s %s -> %d %s", method, path, body, w.response.Code, strings.TrimSpace(w.response.Body.String()))

@@ -18,7 +18,7 @@ def load_config() -> ManagementConfig:
     """Reads the settings; an unusable value raises ValueError naming its variable."""
     port = 8081
     if raw := os.environ.get("MANAGEMENT_LISTEN_PORT", ""):
-        if not raw.isdigit() or int(raw) > 65535:
+        if not raw.isdigit() or not 0 < int(raw) <= 65535:
             raise ValueError(f"management config: MANAGEMENT_LISTEN_PORT {raw!r} is not a port")
         port = int(raw)
     return ManagementConfig(listen_port=port)

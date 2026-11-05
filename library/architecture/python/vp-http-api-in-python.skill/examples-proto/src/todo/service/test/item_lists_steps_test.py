@@ -9,7 +9,7 @@ from todo.infrastructure.memory import DuplicateKeyError, NoRowsError, Row
 from todo.service import ItemLists
 from todo.shared.errors import kind_of
 
-scenarios("../features/item_lists.feature")
+scenarios("../features/item-lists-service.feature")
 
 
 @dataclass
@@ -60,7 +60,7 @@ def the_store_fails(world: World, message: str) -> None:
     world.store.error = OSError(message)
 
 
-@when(parsers.parse('I add "{title}" to the list "{list_id}"'))
+@when(parsers.parse('I add "{title}" to the list "{list_id}" through the service'))
 def i_add(world: World, title: str, list_id: str) -> None:
     try:
         asyncio.run(world.service().add(list_id, Item(title)))
@@ -69,7 +69,7 @@ def i_add(world: World, title: str, list_id: str) -> None:
     print(f"when: add {title!r} to {list_id!r} -> error {world.error!r}")
 
 
-@when(parsers.parse('I read the list "{list_id}"'))
+@when(parsers.parse('I read the list "{list_id}" through the service'))
 def i_read(world: World, list_id: str) -> None:
     try:
         world.items = asyncio.run(world.service().items(list_id))
@@ -78,7 +78,7 @@ def i_read(world: World, list_id: str) -> None:
     print(f"when: read {list_id!r} -> {[item.title for item in world.items]}, error {world.error!r}")
 
 
-@then(parsers.parse('the items should be "{titles}"'))
+@then(parsers.parse('the service should give the items "{titles}"'))
 def the_items_should_be(world: World, titles: str) -> None:
     assert [item.title for item in world.items] == titles.split("|"), world.error
 

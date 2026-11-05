@@ -28,7 +28,7 @@ def load_config() -> HttpConfig:
     """Reads the settings; an unusable value raises ValueError naming its variable."""
     port = 8080
     if raw := os.environ.get("HTTP_LISTEN_PORT", ""):
-        if not raw.isdigit() or int(raw) > 65535:
+        if not raw.isdigit() or not 0 < int(raw) <= 65535:
             raise ValueError(f"http config: HTTP_LISTEN_PORT {raw!r} is not a port")
         port = int(raw)
     docs = False

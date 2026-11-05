@@ -18,7 +18,7 @@ class World(Protocol):
     def logger(self) -> logging.Logger: ...
 
 
-@given(parsers.parse('the middlewares "{outer}" and "{inner}", each logging a record with its name'))
+@given(parsers.parse('the HTTP middlewares "{outer}" and "{inner}", each logging a record with its name'))
 def the_middlewares_logging(world: World, outer: str, inner: str) -> None:
     # In this order, each writing the record "middleware {name}" before it
     # passes the request on.
@@ -31,7 +31,7 @@ def the_middlewares_logging(world: World, outer: str, inner: str) -> None:
         world.middlewares.append(log_name)
 
 
-@given(parsers.parse('a middleware that rejects every request as unauthenticated with "{message}"'))
+@given(parsers.parse('an HTTP middleware that rejects every request as unauthenticated with "{message}"'))
 def a_rejecting_middleware(world: World, message: str) -> None:
     # As an authentication middleware rejects a request without credentials.
     async def reject(request: Request, call_next: CallNext) -> Response:

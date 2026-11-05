@@ -13,7 +13,7 @@ from todo.infrastructure.postgres.tables import ItemRow
 from todo.service import ItemLists
 from todo.shared.errors import kind_of
 
-scenarios("../features/item_lists.feature")
+scenarios("../features/item-lists-service.feature")
 
 T = TypeVar("T")
 

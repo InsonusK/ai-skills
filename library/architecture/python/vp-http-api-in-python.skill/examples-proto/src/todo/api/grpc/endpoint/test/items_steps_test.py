@@ -101,24 +101,35 @@ def world() -> World:
     return World()
 
 
-@given(parsers.re(r'PlanItems returns the items "(?P<titles>[^"]*)"'))
+@given(parsers.re(r'PlanItems returns the items "(?P<titles>[^"]*)" over gRPC'))
 def plan_items_returns(world: World, titles: str) -> None:
     world.plan_items.titles = titles.split("|") if titles else []
 
 
-@given("AddItem fails with the kind conflict")
-def add_item_fails_with_a_conflict(world: World) -> None:
-    world.add_item.error = KindError(Kind.CONFLICT, "the title is taken")
+@given(parsers.parse('AddItem returns the item "{title}" over gRPC'))
+def add_item_returns(world: World, title: str) -> None:
+    # The fake answers the title it received; the scenario names it to say so.
+    world.add_item.error = None
 
 
-@given(parsers.parse('ListItems holds "{titles}"'))
-def list_items_holds(world: World, titles: str) -> None:
+@given(parsers.parse('AddItem fails with the kind "{kind}" over gRPC'))
+def add_item_fails_with_the_kind(world: World, kind: str) -> None:
+    world.add_item.error = KindError(Kind(kind), "the title is taken")
+
+
+@given(parsers.parse('ListItems returns the items "{titles}" over gRPC'))
+def list_items_returns(world: World, titles: str) -> None:
     world.list_items.titles = titles.split("|")
 
 
 @when(parsers.parse('I call ItemsService.PlanItems with the titles "{titles}"'))
 def i_call_plan_items(world: World, titles: str) -> None:
     world.call(lambda stub: stub.PlanItems(todo_pb2.PlanItemsRequest(titles=titles.split("|"))))
+
+
+@when("I call ItemsService.PlanItems with no titles")
+def i_call_plan_items_with_no_titles(world: World) -> None:
+    world.call(lambda stub: stub.PlanItems(todo_pb2.PlanItemsRequest()))
 
 
 @when(parsers.parse('I call ItemsService.AddItem with the list "{list_id}" and the title "{title}"'))
@@ -136,46 +147,46 @@ def i_call_clear_list(world: World, list_id: str) -> None:
     world.call(lambda stub: stub.ClearList(todo_pb2.ClearListRequest(list_id=list_id)))
 
 
-@then(parsers.parse('the response should hold the items "{titles}", none done'))
+@then(parsers.parse('the gRPC response should hold the items "{titles}", none done'))
 def the_response_should_hold(world: World, titles: str) -> None:
-    items = world.answered(todo_pb2.PlanItemsResponse).items
-    assert [(item.title, item.done) for item in items] == [(title, False) for title in titles.split("|")]
+    response = world.response
+    assert isinstance(response, (todo_pb2.PlanItemsResponse, todo_pb2.ListItemsResponse)), (response, world.error)
+    assert [(item.title, item.done) for item in response.items] == [(title, False) for title in titles.split("|")]
 
 
-@then(parsers.parse('PlanItems should have received the titles "{titles}"'))
-def plan_items_should_have_received(world: World, titles: str) -> None:
-    assert world.plan_items.received == [PlanItemsCommand(titles=titles.split("|"))]
-
-
-@then(parsers.parse('the added item should be "{title}"'))
-def the_added_item_should_be(world: World, title: str) -> None:
+@then(parsers.parse('the gRPC response should hold the item "{title}"'))
+def the_response_should_hold_the_item(world: World, title: str) -> None:
     item = world.answered(todo_pb2.AddItemResponse).item
     assert (item.title, item.done) == (title, False)
 
 
-@then(parsers.parse('AddItem should have received the list "{list_id}" and the title "{title}"'))
+@then(parsers.parse('PlanItems should have received the titles "{titles}" over gRPC'))
+def plan_items_should_have_received(world: World, titles: str) -> None:
+    assert world.plan_items.received == [PlanItemsCommand(titles=titles.split("|"))]
+
+
+@then("PlanItems should have received no titles over gRPC")
+def plan_items_should_have_received_no_titles(world: World) -> None:
+    assert world.plan_items.received == [PlanItemsCommand(titles=[])]
+
+
+@then(parsers.parse('AddItem should have received the list "{list_id}" and the title "{title}" over gRPC'))
 def add_item_should_have_received(world: World, list_id: str, title: str) -> None:
     assert world.add_item.received == [AddItemCommand(list_id=list_id, title=title)]
 
 
-@then(parsers.parse('the listed items should be "{titles}" for the list "{list_id}"'))
-def the_listed_items_should_be(world: World, titles: str, list_id: str) -> None:
-    items = world.answered(todo_pb2.ListItemsResponse).items
-    assert [item.title for item in items] == titles.split("|")
+@then(parsers.parse('ListItems should have received the list "{list_id}" over gRPC'))
+def list_items_should_have_received(world: World, list_id: str) -> None:
     assert world.list_items.received == [ListItemsCommand(list_id=list_id)]
 
 
-@then(parsers.parse('the call should fail with {code} and the message "{message}"'))
+@then(parsers.re(r'the gRPC call of ItemsService should fail with (?P<code>[A-Z_]+)$'))
+def the_call_should_fail_with_the_code(world: World, code: str) -> None:
+    assert world.error is not None, world.response
+    assert world.error.code() == grpc.StatusCode[code]
+
+
+@then(parsers.re(r'the gRPC call of ItemsService should fail with (?P<code>[A-Z_]+) and the message "(?P<message>[^"]*)"$'))
 def the_call_should_fail_with(world: World, code: str, message: str) -> None:
     assert world.error is not None, world.response
     assert (world.error.code(), world.error.details()) == (grpc.StatusCode[code], message)
-
-
-@when("I call ItemsService.PlanItems with no titles")
-def i_call_plan_items_with_no_titles(world: World) -> None:
-    world.call(lambda stub: stub.PlanItems(todo_pb2.PlanItemsRequest()))
-
-
-@then("PlanItems should have received no titles")
-def plan_items_should_have_received_no_titles(world: World) -> None:
-    assert world.plan_items.received == [PlanItemsCommand(titles=[])]

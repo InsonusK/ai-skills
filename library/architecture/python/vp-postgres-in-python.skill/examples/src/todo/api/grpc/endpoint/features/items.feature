@@ -2,40 +2,43 @@
 Feature: ItemsService
   As a client of the service
   I want the methods of ItemsService to call their commands
-  So that I plan items over gRPC
+  So that I plan, add, and list items over gRPC
 
   @category/happy
   Scenario: PlanItems becomes the PlanItems command and its result comes back as the response
-    Given PlanItems returns the items "buy milk|walk the dog"
+    Given PlanItems returns the items "buy milk|walk the dog" over gRPC
     When I call ItemsService.PlanItems with the titles "buy milk|walk the dog"
-    Then the response should hold the items "buy milk|walk the dog", none done
-    And PlanItems should have received the titles "buy milk|walk the dog"
+    Then the gRPC response should hold the items "buy milk|walk the dog", none done
+    And PlanItems should have received the titles "buy milk|walk the dog" over gRPC
+
 
   @category/boundary
   Scenario: A request without titles is PlanItems with no titles
-    Given PlanItems returns the items ""
+    Given PlanItems returns the items "" over gRPC
     When I call ItemsService.PlanItems with no titles
-    Then PlanItems should have received no titles
+    Then PlanItems should have received no titles over gRPC
 
   @category/happy
   Scenario: AddItem becomes the AddItem command with the list and the title
+    Given AddItem returns the item "buy milk" over gRPC
     When I call ItemsService.AddItem with the list "home" and the title "buy milk"
-    Then the added item should be "buy milk"
-    And AddItem should have received the list "home" and the title "buy milk"
+    Then the gRPC response should hold the item "buy milk"
+    And AddItem should have received the list "home" and the title "buy milk" over gRPC
 
   @category/negative
   Scenario: A title already in the list is ALREADY_EXISTS
-    Given AddItem fails with the kind conflict
+    Given AddItem fails with the kind "conflict" over gRPC
     When I call ItemsService.AddItem with the list "home" and the title "buy milk"
-    Then the call should fail with ALREADY_EXISTS and the message "the title is taken"
+    Then the gRPC call of ItemsService should fail with ALREADY_EXISTS
 
   @category/happy
-  Scenario: ListItems becomes the ListItems command and its items come back
-    Given ListItems holds "buy milk|walk the dog"
+  Scenario: ListItems becomes the ListItems command with the list
+    Given ListItems returns the items "buy milk|walk the dog" over gRPC
     When I call ItemsService.ListItems with the list "home"
-    Then the listed items should be "buy milk|walk the dog" for the list "home"
+    Then the gRPC response should hold the items "buy milk|walk the dog", none done
+    And ListItems should have received the list "home" over gRPC
 
   @category/negative
-  Scenario: The deprecated ClearList answers UNIMPLEMENTED
+  Scenario: The deprecated ClearList answers UNIMPLEMENTED with the same message as its HTTP form
     When I call ItemsService.ClearList with the list "home"
-    Then the call should fail with UNIMPLEMENTED and the message "ClearList is deprecated since 1.1.0"
+    Then the gRPC call of ItemsService should fail with UNIMPLEMENTED and the message "ClearList is deprecated since 1.1.0"

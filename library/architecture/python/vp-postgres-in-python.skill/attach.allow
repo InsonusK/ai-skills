@@ -9,7 +9,7 @@ base library/architecture/python/vp-http-api-in-python.skill/examples-proto
 change src/todo/main.py
 change src/todo/service/item_lists.py
 change src/todo/service/errors.py
-change src/todo/service/features/item_lists.feature
+change src/todo/service/features/item-lists-service.feature
 change src/todo/service/test/item_lists_steps_test.py
 change pyproject.toml
 change Makefile

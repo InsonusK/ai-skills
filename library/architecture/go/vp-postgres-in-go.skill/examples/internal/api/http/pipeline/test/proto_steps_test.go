@@ -1,6 +1,7 @@
 package test
 
 import (
+	"github.com/cucumber/godog"
 	"net/http"
 
 	"google.golang.org/protobuf/types/known/apipb"
@@ -11,6 +12,10 @@ import (
 // The proto routes use apipb.Method, a well-known message with a snake_case
 // field (request_type_url), so these tests need no proto file of their own.
 func init() {
+	moreSteps = func(sc *godog.ScenarioContext, w *World) {
+		// The proto routes are served beside echo in every scenario of the package.
+		sc.Step(`^the HTTP routes read and write proto messages$`, func() error { return nil })
+	}
 	moreRoutes = func(w *World) []httppipeline.Route {
 		decode := func(r *http.Request) (echoCommand, error) {
 			msg := &apipb.Method{}

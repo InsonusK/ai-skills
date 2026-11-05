@@ -70,9 +70,15 @@ def add_item_returns(world: World, title: str) -> None:
     world.add_item.title = title
 
 
-@given(parsers.re(r'AddItem fails with the kind conflict and "(?P<message>.+)"$'))
-def add_item_fails_with_a_conflict(world: World, message: str) -> None:
-    world.add_item.error = KindError(Kind.CONFLICT, message.replace('\\"', '"'))
+@given(parsers.re(r"AddItem fails with the kind \"(?P<kind>[^\"]+)\" and '(?P<message>[^']+)'$"))
+def add_item_fails_with_the_kind(world: World, kind: str, message: str) -> None:
+    world.add_item.error = KindError(Kind(kind), message)
+
+
+@given("the HTTP API serves the application's routes")
+def the_api_serves_the_application_routes(world: World) -> None:
+    # Every scenario here calls the application's own routes over fake commands.
+    pass
 
 
 @given(parsers.parse('ListItems returns the items "{titles}"'))
@@ -80,22 +86,27 @@ def list_items_returns(world: World, titles: str) -> None:
     world.list_items.titles = titles.split("|")
 
 
-@when(parsers.re(r"I POST \"(?P<path>[^\"]+)\" with the body '(?P<body>[^']*)'$"))
+@when(parsers.re(r"I POST \"(?P<path>[^\"]+)\" to the HTTP API with the body '(?P<body>[^']*)'$"))
 def i_post(world: World, path: str, body: str) -> None:
     world.request("POST", path, body)
 
 
-@when(parsers.parse('I GET "{path}"'))
+@when(parsers.parse('I GET "{path}" from the HTTP API'))
 def i_get(world: World, path: str) -> None:
     world.request("GET", path)
 
 
-@then(parsers.parse("the response status should be {status:d}"))
+@then(parsers.parse("the HTTP status should be {status:d}"))
 def the_response_status_should_be(world: World, status: int) -> None:
     assert world.answered().status_code == status
 
 
-@then(parsers.re(r"the response body should be '(?P<body>[^']*)'$"))
+@then(parsers.re(r"the HTTP error should have code (?P<code>\d+) and the message (?P<quote>[\"'])(?P<message>.*)(?P=quote)$"))
+def the_error_should_have(world: World, code: str, message: str) -> None:
+    assert world.answered().json() == {"code": int(code), "message": message, "details": []}
+
+
+@then(parsers.re(r"the HTTP response body should be '(?P<body>[^']*)'$"))
 def the_response_body_should_be(world: World, body: str) -> None:
     assert world.answered().json() == json.loads(body)
 

@@ -6,25 +6,25 @@ Feature: Middlewares of the contract routes
 
   @category/happy
   Scenario: The middlewares wrap a contract route in the order of the list, inside the request log
-    Given the middlewares "outer" and "inner", each logging a record with its name
-    And the command is wrapped with logging
-    When I POST "/v1/echo" with the body '{"text":"hi"}'
-    Then the records should be, in order, "http request received|middleware outer|middleware inner|command called|command handled|http response sent"
+    Given the HTTP middlewares "outer" and "inner", each logging a record with its name
+    And the echo command is wrapped with logging
+    When I POST "/v1/echo" to the HTTP API with the body '{"text":"hi"}'
+    Then the HTTP records should be, in order, "http request received|middleware outer|middleware inner|command called|command handled|http response sent"
 
   @category/negative
   Scenario: A request a middleware rejects with an error kind is answered as google.rpc.Status and logged as failed
-    Given a middleware that rejects every request as unauthenticated with "no token"
-    When I POST "/v1/echo" with the body '{"text":"hi"}'
-    Then the response status should be 401
-    And the error body should have code 16 and the message "no token"
-    And the command should not have been called
+    Given an HTTP middleware that rejects every request as unauthenticated with "no token"
+    When I POST "/v1/echo" to the HTTP API with the body '{"text":"hi"}'
+    Then the HTTP status should be 401
+    And the HTTP error should have code 16 and the message "no token"
+    And the echo command should not have been called
     And one "http response sent" record should be logged with:
       | method | path     | status | failed |
       | POST   | /v1/echo | 401    | true   |
 
   @category/boundary
   Scenario: The docs are outside the middlewares
-    Given the docs are enabled
-    And a middleware that rejects every request as unauthenticated with "no token"
-    When I GET "/openapi.json"
-    Then the response status should be 200
+    Given the HTTP docs are enabled
+    And an HTTP middleware that rejects every request as unauthenticated with "no token"
+    When I GET "/openapi.json" from the HTTP API
+    Then the HTTP status should be 200

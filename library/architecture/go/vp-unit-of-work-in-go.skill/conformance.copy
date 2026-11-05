@@ -14,3 +14,10 @@ base-plateau.skill/conformance/planner examples/internal/domain/service/features
 vp-grpc-api.skill/conformance/rpcstatus examples/internal/api/core/rpcstatus/features
 vp-grpc-api.skill/conformance/grpc-pipeline examples/internal/api/grpc/pipeline/features
 vp-grpc-api.skill/conformance/grpc-contract examples/internal/api/grpc/endpoint/features
+vp-http-api.skill/conformance/http-pipeline examples/internal/api/http/pipeline/features
+vp-http-api.skill/conformance/proto-http-pipeline examples/internal/api/http/pipeline/features
+vp-http-api.skill/conformance/proto-http-contract examples/internal/api/http/endpoint/features
+vp-http-api.skill/conformance/proto-http-items examples/internal/api/http/endpoint/features
+vp-http-api.skill/conformance/proto-http-lists examples/internal/api/http/endpoint/features
+vp-http-api.skill/conformance/proto-grpc-items examples/internal/api/grpc/endpoint/features
+vp-http-api.skill/conformance/proto-item-lists examples/internal/command/features

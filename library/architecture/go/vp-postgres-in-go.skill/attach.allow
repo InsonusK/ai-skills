@@ -8,7 +8,7 @@
 base library/architecture/go/vp-http-api-in-go.skill/examples-proto
 change cmd/todo/main.go
 change internal/service/item_lists.go
-change internal/service/features/item_lists.feature
+change internal/service/features/item-lists-service.feature
 change internal/service/test/steps_test.go
 change go.mod
 change go.sum

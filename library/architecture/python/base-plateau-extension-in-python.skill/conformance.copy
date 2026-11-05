@@ -10,3 +10,6 @@ base-plateau.skill/conformance/plan-items examples/src/todo/command/features
 base-plateau.skill/conformance/item examples/src/todo/domain/entity/features
 base-plateau.skill/conformance/planner examples/src/todo/domain/service/features
 vp-grpc-api.skill/conformance/rpcstatus examples/src/todo/api/core/rpcstatus/features
+vp-http-api.skill/conformance/http-pipeline examples/src/todo/api/http/pipeline/features
+vp-http-api.skill/conformance/http-contract examples/src/todo/api/http/endpoint/features
+vp-http-api.skill/conformance/http-items examples/src/todo/api/http/endpoint/features

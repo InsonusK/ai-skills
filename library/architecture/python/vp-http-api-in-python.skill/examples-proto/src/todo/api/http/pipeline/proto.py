@@ -19,10 +19,12 @@ async def decode_proto[TMessage: Message](request: Request, message: TMessage) -
     generated request message, and returns it. A field is accepted by its
     lowerCamelCase or its proto name, and an unknown field is ignored, so a
     client built against a newer minor version of the contract still works. A
-    body that is not JSON, or not the message, raises a KindError of kind
+    body not declared as JSON, not JSON, or not the message, raises a KindError of kind
     invalid - 400 INVALID_ARGUMENT - before the command is called. Path
     parameters are not in the body: the route sets them from its own
     parameters."""
+    if request.headers.get("content-type", "").split(";")[0].strip() != "application/json":
+        raise KindError(Kind.INVALID, "Content-Type must be application/json")
     body = await request.body()
     try:
         document = json.loads(body)

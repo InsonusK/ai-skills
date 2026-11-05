@@ -42,7 +42,7 @@ def plan_items_returns(world: World, titles: str) -> None:
     world.plan_items.titles = titles.split("|") if titles else []
 
 
-@when(parsers.re(r"I POST \"(?P<path>[^\"]+)\" with the body '(?P<body>[^']*)'$"))
+@when(parsers.re(r"I POST \"(?P<path>[^\"]+)\" to the HTTP API with the body '(?P<body>[^']*)'$"))
 def i_post(world: World, path: str, body: str) -> None:
     app = Server(HttpConfig(), [ItemsHandler(plan_items=world.plan_items).router()], logging.Logger("test")).app()
     with TestClient(app) as client:
@@ -50,12 +50,12 @@ def i_post(world: World, path: str, body: str) -> None:
     print(f"when: POST {path} -> {world.response.status_code} {world.response.text}")
 
 
-@then(parsers.parse("the response status should be {status:d}"))
+@then(parsers.parse("the HTTP status should be {status:d}"))
 def the_response_status_should_be(world: World, status: int) -> None:
     assert world.response is not None and world.response.status_code == status
 
 
-@then(parsers.re(r"the response body should be '(?P<body>[^']*)'$"))
+@then(parsers.re(r"the HTTP response body should be '(?P<body>[^']*)'$"))
 def the_response_body_should_be(world: World, body: str) -> None:
     assert world.response is not None and world.response.json() == json.loads(body)
 

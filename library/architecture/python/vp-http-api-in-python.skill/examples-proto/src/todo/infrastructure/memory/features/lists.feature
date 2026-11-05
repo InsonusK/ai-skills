@@ -24,4 +24,4 @@ Feature: Item lists in memory
 
   @category/negative
   Scenario: A list with no row is no rows
-    Then selecting the list "work" should fail with no rows
+    Then selecting the list "work" should give no rows

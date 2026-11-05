@@ -8,7 +8,7 @@ from todo.command import AddItemCommand, AddItemHandler, AddItemResult, ListItem
 from todo.command.pipeline import Kind, KindError, kind_of
 from todo.domain.entity import Item
 
-scenarios("../features/item_lists.feature")
+scenarios("../features/item-lists.feature")
 
 
 @dataclass

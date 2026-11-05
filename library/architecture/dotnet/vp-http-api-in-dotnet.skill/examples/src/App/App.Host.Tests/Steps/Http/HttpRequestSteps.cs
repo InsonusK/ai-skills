@@ -13,7 +13,20 @@ namespace App.Host.Tests.Steps.Http;
 public sealed class HttpRequestSteps(HttpWorld world, ITestOutputHelper output)
 {
     [Given("the echo command answers {string}")]
-    public void GivenTheEchoCommandAnswers(string answer) => world.Echo.Answer = answer;
+    [When("the echo command answers {string}")]
+    public void GivenTheEchoCommandAnswers(string answer)
+    {
+        world.Echo.Answer = answer;
+        world.Echo.Failure = null;
+    }
+
+    [Given("the echo command fails with the kind {string} and {string}, wrapped in {string}")]
+    public void GivenTheEchoCommandFailsWrapped(string kind, string message, string outer) =>
+        world.Echo.Failure = new InvalidOperationException(outer, new ErrorKindException(Enum.Parse<ErrorKind>(kind.Replace(" ", ""), ignoreCase: true), message));
+
+    // A bug of the service: what Go calls a panic.
+    [Given("the echo command crashes")]
+    public void GivenTheEchoCommandCrashes() => world.Echo.Failure = new NullReferenceException("Object reference not set to an instance of an object.");
 
     [Given("the echo command is rejected with {string}")]
     public void GivenTheEchoCommandIsRejected(string message) => world.Echo.Failure = new ErrorKindException(ErrorKind.Invalid, message);

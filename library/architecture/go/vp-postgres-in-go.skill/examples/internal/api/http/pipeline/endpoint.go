@@ -5,6 +5,7 @@ package pipeline
 import (
 	"encoding/json"
 	"errors"
+	"mime"
 	"net/http"
 
 	"github.com/example/todo/internal/api/core/rpcstatus"
@@ -18,7 +19,7 @@ import (
 //  1. decode builds the command (TCommand) from the request; if it cannot,
 //     the answer is 400 INVALID_ARGUMENT and the handler is not called;
 //  2. the handler runs the command;
-//  3. an error is answered by its kind (see answerfailures.WriteError);
+//  3. an error is answered by its kind and, of no kind, logged (see answerfailures.WriteFailure);
 //  4. encode turns the result (TResult) into the response body, written as
 //     JSON with successStatus (201 created, 202 accepted, 200 otherwise).
 //
@@ -39,7 +40,7 @@ func Endpoint[TCommand, TResult any](
 		}
 		result, err := handler.Handle(r.Context(), cmd)
 		if err != nil {
-			answerfailures.WriteError(w, err)
+			answerfailures.WriteFailure(w, r, err)
 			return
 		}
 		writeJSON(w, successStatus, encode(result))
@@ -48,9 +49,13 @@ func Endpoint[TCommand, TResult any](
 
 // DecodeJSON reads the request body as JSON into a value of type TBody.
 // Unknown fields are ignored, so a client built against a newer minor version
-// of the contract still works.
+// of the contract still works. A body not declared as application/json is
+// rejected before it is read.
 func DecodeJSON[TBody any](r *http.Request) (TBody, error) {
 	var body TBody
+	if media, _, _ := mime.ParseMediaType(r.Header.Get("Content-Type")); media != "application/json" {
+		return body, errors.New("Content-Type must be application/json")
+	}
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		return body, errors.New("request body is not valid JSON: " + err.Error())
 	}

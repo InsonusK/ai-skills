@@ -15,29 +15,29 @@ import (
 )
 
 func registerRequestLogSteps(sc *godog.ScenarioContext, w *World) {
-	sc.Step(`^I POST "([^"]*)" with the body '([^']*)' and the request id "([^"]*)"$`, func(path, body, id string) error {
+	sc.Step(`^I POST "([^"]*)" to the HTTP API with the body '([^']*)' and the request id "([^"]*)"$`, func(path, body, id string) error {
 		w.sendWithHeaders(http.MethodPost, path, body, map[string]string{requestlog.RequestIDHeader: id})
 		return nil
 	})
 	sc.Step(`^one "([^"]*)" record should be logged with:$`, w.oneRecordShouldBeLoggedWith)
-	sc.Step(`^the command is wrapped with logging$`, func() error { w.decorated = true; return nil })
-	sc.Step(`^the records should be, in order, "([^"]*)"$`, w.theRecordsShouldBeInOrder)
+	sc.Step(`^the echo command is wrapped with logging$`, func() error { w.decorated = true; return nil })
+	sc.Step(`^the HTTP records should be, in order, "([^"]*)"$`, w.theRecordsShouldBeInOrder)
 	sc.Step(`^the "([^"]*)" record should hold the query "([^"]*)" = "([^"]*)" and the body '([^']*)'$`, w.theRecordShouldHoldTheRequest)
 	sc.Step(`^the "([^"]*)" record should hold the response body '([^']*)'$`, w.theRecordShouldHoldTheResponse)
 	sc.Step(`^the "([^"]*)" record should hold no request$`, w.theRecordShouldHoldNoRequest)
-	sc.Step(`^the response should carry the request id "([^"]*)"$`, func(want string) error {
+	sc.Step(`^the HTTP response should carry the request id "([^"]*)"$`, func(want string) error {
 		if got := w.response.Header().Get(requestlog.RequestIDHeader); got != want {
 			return fmt.Errorf("response request id: got %q, want %q", got, want)
 		}
 		return nil
 	})
-	sc.Step(`^the response should carry a request id of 16 hex characters$`, func() error {
+	sc.Step(`^the HTTP response should carry a request id of 16 hex characters$`, func() error {
 		if got := w.response.Header().Get(requestlog.RequestIDHeader); !regexp.MustCompile(`^[0-9a-f]{16}$`).MatchString(got) {
 			return fmt.Errorf("response request id: got %q", got)
 		}
 		return nil
 	})
-	sc.Step(`^the context of the command should carry the request id "([^"]*)"$`, func(want string) error {
+	sc.Step(`^the echo command should have run with the request id "([^"]*)"$`, func(want string) error {
 		if w.echoReqID != want {
 			return fmt.Errorf("request id in the command's context: got %q, want %q", w.echoReqID, want)
 		}
