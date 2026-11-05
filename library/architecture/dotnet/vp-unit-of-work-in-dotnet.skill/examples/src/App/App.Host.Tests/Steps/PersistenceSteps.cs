@@ -102,7 +102,8 @@ public sealed class PersistenceSteps(ITestOutputHelper output)
     public void ThenTheLogShouldMention(string text) => Assert.Contains(text, _stderr.ToString());
 
     [Then("the log should have no error record")]
-    public void ThenTheLogShouldHaveNoErrorRecord() => Assert.DoesNotContain("\"level\":\"ERROR\"", _stderr.ToString());
+    public void ThenTheLogShouldHaveNoErrorRecord() =>
+        Assert.False(_stderr.ToString().Contains("\"level\":\"ERROR\""), $"an error record in the log: {_stderr}");
 
     [Then("the log should not mention {string}")]
     public void ThenTheLogShouldNotMention(string text) => Assert.DoesNotContain(text, _stderr.ToString());

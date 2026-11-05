@@ -20,3 +20,5 @@ vp-http-api.skill/conformance/proto-http-lists examples/internal/api/http/endpoi
 vp-http-api.skill/conformance/proto-grpc-items examples/internal/api/grpc/endpoint/features
 vp-http-api.skill/conformance/proto-item-lists examples/internal/command/features
 vp-postgres.skill/conformance/postgres-item-lists-service examples/internal/service/features
+vp-postgres.skill/conformance/postgres-application examples/cmd/todo/features
+vp-postgres.skill/conformance/postgres-migrate-job examples/cmd/migrate/features

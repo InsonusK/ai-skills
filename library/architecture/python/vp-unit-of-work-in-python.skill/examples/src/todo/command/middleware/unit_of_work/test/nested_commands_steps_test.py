@@ -17,7 +17,7 @@ from todo.infrastructure.postgres.tables import ItemRow
 from todo.infrastructure.postgres.unit_of_work import attach
 from todo.service import ItemLists
 
-scenarios("../features/nested_commands.feature")
+scenarios("../features/nested-commands.feature")
 
 T = TypeVar("T")
 

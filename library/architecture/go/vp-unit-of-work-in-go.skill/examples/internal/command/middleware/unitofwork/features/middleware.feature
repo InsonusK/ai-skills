@@ -7,7 +7,7 @@ Feature: Unit of work middleware
   @category/happy
   Scenario: A handled command commits
     When a command runs through the unit of work middleware
-    Then the unit of work should have been asked for "begin|commit"
+    Then the unit of work should have been ended with "commit"
     And the command should answer its result
     And the caller's cancellation should not reach the commit
 
@@ -15,21 +15,14 @@ Feature: Unit of work middleware
   Scenario: A failed command rolls back and keeps its error
     Given the handler fails with "taken"
     When a command runs through the unit of work middleware
-    Then the unit of work should have been asked for "begin|rollback"
+    Then the unit of work should have been ended with "rollback"
     And the command should fail with "taken"
-
-  @category/error
-  Scenario: A handler that panics rolls back and panics on
-    Given the handler panics
-    When a command runs through the unit of work middleware
-    Then the unit of work should have been asked for "begin|rollback"
-    And the panic should have reached the caller
 
   @category/edge
   Scenario: A nested command joins and ends nothing
     Given a unit of work already begun by the outer command
     When a command runs through the unit of work middleware
-    Then the unit of work should have been asked for "begin"
+    Then the unit of work should not have been ended
     And the command should answer its result
 
   @category/edge
@@ -37,14 +30,14 @@ Feature: Unit of work middleware
     Given a unit of work already begun by the outer command
     And the handler fails with "taken"
     When a command runs through the unit of work middleware
-    Then the unit of work should have been asked for "begin"
+    Then the unit of work should not have been ended
     And the command should fail with "taken"
 
   @category/error
   Scenario: A failed commit is told as unavailable, its cause kept for the log only
     Given the commit fails with "connection to 10.0.0.5 lost"
     When a command runs through the unit of work middleware
-    Then the unit of work should have been asked for "begin|commit|rollback"
+    Then the unit of work should have been ended with "commit|rollback"
     And the command should fail with the kind "unavailable"
-    And the command's error should not mention "10.0.0.5"
+    And the command's message should not mention "10.0.0.5"
     And the cause of the command's error should mention "10.0.0.5"

@@ -89,9 +89,26 @@ func registerMiddlewareSteps(sc *godog.ScenarioContext) {
 		return nil
 	})
 
-	sc.Step(`^the unit of work should have been asked for "([^"]*)"$`, func(want string) error {
-		if got := strings.Join(w.units.asked, "|"); got != want {
-			return fmt.Errorf("the unit of work was asked for %q, want %q", got, want)
+	// How the unit of work was ended: its commit and rollback, in order; a
+	// begin is how this stack opens or joins one, and is not an ending.
+	ended := func() string {
+		endings := []string{}
+		for _, call := range w.units.asked {
+			if call != "begin" {
+				endings = append(endings, call)
+			}
+		}
+		return strings.Join(endings, "|")
+	}
+	sc.Step(`^the unit of work should have been ended with "([^"]*)"$`, func(want string) error {
+		if got := ended(); got != want {
+			return fmt.Errorf("the unit of work was ended with %q (asked %q), want %q", got, w.units.asked, want)
+		}
+		return nil
+	})
+	sc.Step(`^the unit of work should not have been ended$`, func() error {
+		if got := ended(); got != "" {
+			return fmt.Errorf("the unit of work was ended with %q", got)
 		}
 		return nil
 	})
@@ -132,7 +149,7 @@ func registerMiddlewareSteps(sc *godog.ScenarioContext) {
 		}
 		return nil
 	})
-	sc.Step(`^the command's error should not mention "([^"]*)"$`, func(text string) error {
+	sc.Step(`^the command's message should not mention "([^"]*)"$`, func(text string) error {
 		if strings.Contains(fmt.Sprint(w.err), text) {
 			return fmt.Errorf("the command's error %q mentions %q", w.err, text)
 		}

@@ -41,6 +41,8 @@ request ─▶ request log ─▶ answer failures ─▶ API middleware ─▶ r
 
 Every `{stack}/vp-*` skill holds `attach.allow`: the base example it attaches to and the base files it may change or delete. `test/check-vp-attach.sh` (run by `test/test.sh`) compares the examples and fails on any other edit.
 
+Every `spec/` skill keeps its scenarios in `conformance/`, one folder per place of the code that runs them. Every stack skill names in `conformance.copy` where its example takes a copy of each folder: its own skill's, and those of the example it attaches to. `make conformance-sync` writes the copies; `test/check-conformance.sh` fails while one is missing or differs. A scenario of a mechanism only one stack has lives beside the copies as `{name}-in-{stack}.feature`.
+
 A project takes one stack with a single `subpath` in `ai-skills.yaml` (`library/architecture/go`);
 the `spec/` skills come along because every stack skill links its spec.
 

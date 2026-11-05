@@ -37,7 +37,7 @@ Feature: The application over its database
     And the application is running
     When I read the list "home" over HTTP
     Then the application should answer 503
-    And the log should not mention "An exception occurred"
+    And the log should have no error record
 
   @category/error
   Scenario: A migration that fails stops the start

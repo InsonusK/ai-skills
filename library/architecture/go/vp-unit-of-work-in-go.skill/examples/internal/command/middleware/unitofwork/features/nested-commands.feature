@@ -21,5 +21,7 @@ Feature: Nested commands in one unit of work
 
   @category/boundary
   Scenario: Every command has a unit of work of its own, however many run
+    Given the pool holds at most 2 connections
     When 30 commands run one after another
     Then the database should hold 30 items
+    And no transaction should be open

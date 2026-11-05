@@ -22,3 +22,8 @@ vp-http-api.skill/conformance/proto-http-lists examples/internal/api/http/endpoi
 vp-http-api.skill/conformance/proto-grpc-items examples/internal/api/grpc/endpoint/features
 vp-http-api.skill/conformance/proto-item-lists examples/internal/command/features
 vp-postgres.skill/conformance/postgres-item-lists-service examples/internal/service/features
+vp-postgres.skill/conformance/postgres-application examples/cmd/todo/features
+vp-postgres.skill/conformance/postgres-migrate-job examples/cmd/migrate/features
+vp-unit-of-work.skill/conformance/unit-of-work-middleware examples/internal/command/middleware/unitofwork/features
+vp-unit-of-work.skill/conformance/nested-commands examples/internal/command/middleware/unitofwork/features
+vp-unit-of-work.skill/conformance/import-items examples/internal/command/features

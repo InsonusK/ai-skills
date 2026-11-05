@@ -9,3 +9,4 @@ base library/architecture/go/vp-postgres-in-go.skill/examples
 change cmd/todo/main.go
 change internal/command/handlers.go
 change README.md
+change internal/command/test/runner_test.go
