@@ -188,7 +188,7 @@ func (r TaskRepository) Rename(ctx context.Context, from, to string) (int64, err
 
 ### Write every migration with its row
 Write `migrations/0000N_{what}.sql` with `-- +goose Up` and `-- +goose Down` for every change of a row, in the same commit, naming the unique keys as the row's tags do; apply with `make migrate` locally and with `cmd/migrate`, built into the image as `/app/migrate`, in a deployment.
-- Violation: a migration edited after it was applied somewhere; `AutoMigrate` in the application; the scenario of [model_changes.feature](./examples/internal/infrastructure/postgres/features/model_changes.feature) removed.
+- Violation: a migration edited after it was applied somewhere; `AutoMigrate` in the application; the scenario of [model-changes-in-go.feature](./examples/internal/infrastructure/postgres/features/model-changes-in-go.feature) removed.
 - Risk: the rows and the schema drift, and the first statement reading a new column fails in production.
 - Fix: a new file for every further change; the scenario compares columns, types, nullability, and unique keys, and a foreign key, a default, or a check is read in review.
 
@@ -202,7 +202,7 @@ Pass `db.Ping` where the health variation point takes a check, `management.Check
 Name the shared scenarios in [conformance.copy](./conformance.copy), run `make conformance-sync` at the repository root, and implement their steps in `internal/infrastructure/postgres/test`, each comparing the fields of the row objects.
 - Violation: a copy edited; a step comparing titles joined into one text.
 - Risk: the contract is proved in another stack and not in this one.
-- Fix: the sample tables, their specifications, and `TaskRepository` are in `test/world_test.go`, created by SQL for the scenario; what only Go has stays in `config_forms.feature`, `model_changes.feature`, and `statements.feature` beside the copies.
+- Fix: the sample tables, their specifications, and `TaskRepository` are in `test/world_test.go`, created by SQL for the scenario; what only Go has stays in `config-forms-in-go.feature`, `model-changes-in-go.feature`, and `statements.feature` beside the copies.
 
 ### Create the database of each scenario
 Create a `postgrestest.Database` in a step or `Before` of each scenario that needs one, open it, migrate it where the scenario needs the schema, and drop it in `After`; give a service's scenario an outcome through `postgrestest.Failing`. Decision recorded in [service-scenarios-on-the-real-engine](./adr/service-scenarios-on-the-real-engine.md).
@@ -216,7 +216,7 @@ Create a `postgrestest.Database` in a step or `Before` of each scenario that nee
 - [ ] A specification embeds `SpecificationOf` or `ProjectionOf` and uses only `Where`, `Joins` by SQL, `Preload`, and `Select`.
 - [ ] A statement past the contract runs in `Run`; no `*gorm.DB` leaves package `postgres` but through `Pick` and `Run`.
 - [ ] No error with a kind carries the repository's failure in its text.
-- [ ] Every change of a row has its migration; the scenario of `model_changes.feature` passes.
+- [ ] Every change of a row has its migration; the scenario of `model-changes-in-go.feature` passes.
 - [ ] `cmd/migrate` is built as `/app/migrate`; `MIGRATE_ON_START` stays `false` beyond one instance.
 - [ ] `make test` passes with `TEST_DATABASE_DSN` set; `bash test/check-vp-attach.sh` in this repository reports no file changed beyond [attach.allow](./attach.allow); `bash test/check-conformance.sh` reports no copy changed.
 

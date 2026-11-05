@@ -190,7 +190,7 @@ public Task<int> RenameAsync(string from, string to, CancellationToken cancellat
 
 - Violation: `ExecuteUpdate`, `ExecuteDelete`, or raw SQL called directly.
 - Risk: the rules of [vp-postgres](library/architecture/spec/vp-postgres.skill/vp-postgres.skill.md#go-past-the-contract-with-a-method-of-its-own) break, and the compiler does not stop it.
-- Fix: register the derived repository `Scoped` in `// [services]` under its own interface; [Statements.feature](./examples/src/Infrastructure/Postgres/Postgres.Tests/features/Statements.feature) shows both calls.
+- Fix: register the derived repository `Scoped` in `// [services]` under its own interface; [statements.feature](./examples/src/Infrastructure/Postgres/Postgres.Tests/features/statements.feature) shows both calls.
 
 ### Generate every migration
 Change the row, run `make migration NAME={What}`, read what it wrote, and commit it with the row; apply with `make migrate` locally and with `App.Migrate` in a deployment, publishing it beside `App.Host` so the image has `/app/migrate`.
@@ -213,7 +213,7 @@ services.AddHealthChecks().AddNpgSql(config.Dsn, name: "database");
 Name the shared scenarios in [conformance.copy](./conformance.copy), run `make conformance-sync`, and implement their steps in `Postgres.Tests/Steps`, each comparing the fields of the row objects.
 - Violation: a copy edited; a step comparing titles joined into one text.
 - Risk: the contract is proved in another stack and not in this one.
-- Fix: the sample tables and their specifications are in `Steps/SampleTables.cs`, created by `EnsureCreated` for the scenario; what only dotnet has stays in `ConfigForms.feature`, `ModelChanges.feature`, and `Statements.feature` beside the copies.
+- Fix: the sample tables and their specifications are in `Steps/SampleTables.cs`, created by `EnsureCreated` for the scenario; what only dotnet has stays in `config-forms-in-dotnet.feature`, `model-changes-in-dotnet.feature`, and `statements.feature` beside the copies.
 
 ### Create the database of each scenario
 Create a `TestDatabase` per scenario, apply `PostgresMigrations.ApplyAsync` where the scenario needs the schema, and dispose it after the scenario.

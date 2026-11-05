@@ -85,5 +85,5 @@ One call of the example, each part with its class and file:
 
 @import "./diagrams/example-flow.mmd" {as="mermaid"}
 
-- [examples/](./examples/README.md) — the base plateau's to-do planner with the health endpoints attached: `make test`; a scenario of `ManagementServe.feature` registers a check as a variation point does.
+- [examples/](./examples/README.md) — the base plateau's to-do planner with the health endpoints attached: `make test`; a scenario of `serve.feature` registers a check as a variation point does.
 - [glossary/](./glossary/README.md) — how the three [health endpoints](./glossary/health-endpoints.md) differ, and how a [readiness check](./glossary/readiness-check.md) works.

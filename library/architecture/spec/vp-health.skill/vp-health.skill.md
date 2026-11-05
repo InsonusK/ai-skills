@@ -69,7 +69,14 @@ Test liveness with a failing check, readiness with passing and failing checks, `
 - Risk: a readiness that ignores a failing check, or a liveness that runs one, reaches production unnoticed.
 - Fix: a check is a function the scenario sets to pass or fail.
 
+### Pass the shared scenarios
+Run every file of this skill's [conformance/](./conformance/) unchanged in each stack's example, through a copy named in the stack skill's `conformance.copy` (`make conformance-sync`), as [conformance-scenarios-copied-into-each-stack](library/architecture/spec/vp-logging.skill/adr/conformance-scenarios-copied-into-each-stack.md) decides.
+- Violation: a stack rewording a shared scenario or keeping its own copy of one; a scenario skipped because the stack fails it.
+- Risk: the stacks drift apart under one name: a check one stack makes and another does not is a defect found in one and left open in the others.
+- Fix: step definitions are the stack's own; a scenario of a mechanism only one stack has goes in a `{name}-in-{stack}.feature` beside the copies; `bash test/check-conformance.sh` fails while a copy is missing or differs.
+
 # Check list
+- [ ] Every file of `conformance/` runs unchanged in each stack's example; `bash test/check-conformance.sh` passes.
 - [ ] `/health/live`, `/health/ready`, and `/health` answer on `MANAGEMENT_LISTEN_PORT` (8081), not on the API port.
 - [ ] Liveness checks nothing; readiness runs every check it receives and names the failed ones with 503.
 - [ ] Every probe and `healthcheck` of the deployment names the management port; the ingress does not route it.

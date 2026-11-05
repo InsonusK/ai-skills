@@ -13,3 +13,6 @@ vp-grpc-api.skill/conformance/rpcstatus examples/internal/api/core/rpcstatus/fea
 vp-http-api.skill/conformance/http-pipeline examples/internal/api/http/pipeline/features
 vp-http-api.skill/conformance/http-contract examples/internal/api/http/endpoint/features
 vp-http-api.skill/conformance/http-items examples/internal/api/http/endpoint/features
+base-plateau-extension.skill/conformance/command-access examples/internal/command/middleware/access/features
+base-plateau-extension.skill/conformance/batch-limit examples/internal/command/middleware/batchlimit/features
+base-plateau-extension.skill/conformance/http-authentication examples/internal/api/http/middleware/authentication/features

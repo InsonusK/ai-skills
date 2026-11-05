@@ -7,7 +7,7 @@ from pytest_bdd import given, parsers, scenarios, then, when
 from todo.command.middleware.batch_limit import BatchLimitMiddleware
 from todo.command.pipeline import HandlerFunc, Kind, KindError, decorate
 
-scenarios("../features/batch_limit.feature")
+scenarios("../features/batch-limit.feature")
 
 
 # The commands of these tests: one marked as a batch, one with no mark, so the

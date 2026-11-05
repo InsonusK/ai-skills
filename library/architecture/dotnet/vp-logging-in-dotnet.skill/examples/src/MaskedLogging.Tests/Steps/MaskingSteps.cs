@@ -97,7 +97,7 @@ public sealed class MaskingSteps(ITestOutputHelper output, MaskingSwitch masking
     [When("the payload is an object {string} whose other properties cannot be read")]
     public void WhenBroken(string name) => Render(new Broken(name));
 
-    // Payload.feature
+    // payload-in-dotnet.feature
 
     [When("the payload is headers with {string} = {string} and {string} = {string}")]
     public void WhenHeaders(string k1, string v1, string k2, string v2) =>

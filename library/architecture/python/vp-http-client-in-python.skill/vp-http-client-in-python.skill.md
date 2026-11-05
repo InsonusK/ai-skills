@@ -79,7 +79,7 @@ except ApiStatusError as error:
 
 - Violation: the `KindError` of an entity built from the answer raised `from error`, which `kind_of` follows.
 - Risk: an item the other service got wrong is answered to this service's client as its own invalid input.
-- Fix: the scenario "Any other answer is a failure with no kind" of the example's `remote_planner.feature`.
+- Fix: the scenario "Any other answer is a failure with no kind" of the example's `remote-planner.feature`.
 
 ### Build the client and the service in main.py
 Build the client middleware of the API in `# [client middleware]` before it - empty until a variation point (`vp-client-retry`) adds one - and pass it to `{api}.new(logger, middlewares)`; the client refuses a call of an operation not in its list, and `retryable` marks one safe to repeat, as [api-client](library/develop/core/api-client.skill/api-client.skill.md) requires. Build the client with `{api}.new(logger, middlewares)` in `# [services]` of `main.py`, stopping the start with "startup failed" on its `ValueError`, build the service over it, pass the service to `build_handlers` as the keyword parameter of the command that uses it, and close the client when `run_all` returns.

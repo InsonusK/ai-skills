@@ -66,7 +66,14 @@ Attach the client by adding its fixed code, the consumed contract and its genera
 - Risk: any other base file changed by the client must be described together with every variation point that touches it.
 - Fix: the stack extension lists the base files it changes; a check compares its example with the base example against that list.
 
+### Pass the shared scenarios
+Run every file of this skill's [conformance/](./conformance/) unchanged in each stack's example, through a copy named in the stack skill's `conformance.copy` (`make conformance-sync`), as [conformance-scenarios-copied-into-each-stack](library/architecture/spec/vp-logging.skill/adr/conformance-scenarios-copied-into-each-stack.md) decides. The client pipeline, the remote planner, and PlanRemoteItems are [vp-http-client](library/architecture/spec/vp-http-client.skill/vp-http-client.skill.md)'s units, run here unchanged.
+- Violation: a stack rewording a shared scenario or keeping its own copy of one; a scenario skipped because the stack fails it.
+- Risk: the stacks drift apart under one name: a check one stack makes and another does not is a defect found in one and left open in the others.
+- Fix: step definitions are the stack's own; a scenario of a mechanism only one stack has goes in a `{name}-in-{stack}.feature` beside the copies; `bash test/check-conformance.sh` fails while a copy is missing or differs.
+
 # Check list
+- [ ] Every file of `conformance/` runs unchanged in each stack's example; `bash test/check-conformance.sh` passes.
 - [ ] The client keeps every rule of api-client; its target comes from the `{API}` group, and it connects at the first call.
 - [ ] The stub is generated from the copied `.proto`, its types the client's; the copy is unchanged.
 - [ ] Each method is one method of the client mapping to its own types; no generated message leaves the client.

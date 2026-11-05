@@ -70,7 +70,7 @@ def the_store_fails(world: World, message: str) -> None:
     world.fail_with(RuntimeError(message))
 
 
-@when(parsers.parse('I add "{title}" to the list "{list_id}"'))
+@when(parsers.parse('I add "{title}" to the list "{list_id}" through the service'))
 def i_add(world: World, title: str, list_id: str) -> None:
     try:
         world.run(lists(world).add(list_id, Item(title)))
@@ -79,7 +79,7 @@ def i_add(world: World, title: str, list_id: str) -> None:
     print(f"when: add {title!r} to {list_id!r} -> error {world.error!r}")
 
 
-@when(parsers.parse('I read the list "{list_id}"'))
+@when(parsers.parse('I read the list "{list_id}" through the service'))
 def i_read(world: World, list_id: str) -> None:
     try:
         world.items = world.run(lists(world).items(list_id))
@@ -88,7 +88,7 @@ def i_read(world: World, list_id: str) -> None:
     print(f"when: read {list_id!r} -> {[item.title for item in world.items]}, error {world.error!r}")
 
 
-@then(parsers.parse('the items should be "{titles}"'))
+@then(parsers.parse('the service should give the items "{titles}"'))
 def the_items_should_be(world: World, titles: str) -> None:
     assert [item.title for item in world.items] == titles.split("|"), world.error
 

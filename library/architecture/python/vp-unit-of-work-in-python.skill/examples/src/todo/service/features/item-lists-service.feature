@@ -6,36 +6,36 @@ Feature: ItemLists service
 
   @category/happy
   Scenario: An added item is stored and read back in order
-    When I add "buy milk" to the list "home"
-    And I add "walk the dog" to the list "home"
-    And I read the list "home"
-    Then the items should be "buy milk|walk the dog"
+    When I add "buy milk" to the list "home" through the service
+    And I add "walk the dog" to the list "home" through the service
+    And I read the list "home" through the service
+    Then the service should give the items "buy milk|walk the dog"
 
   @category/negative
   Scenario: A duplicate key of the store is a conflict
     Given the store answers a duplicate key
-    When I add "buy milk" to the list "home"
+    When I add "buy milk" to the list "home" through the service
     Then the service should fail with the kind "conflict" mentioning "already has an item"
 
   @category/negative
   Scenario: No rows from the store is not found
-    When I read the list "work"
+    When I read the list "work" through the service
     Then the service should fail with the kind "not found" mentioning "no list"
 
   @category/error
   Scenario: A write into a database that does not answer is unavailable
     Given the store answers that the database is unavailable
-    When I add "buy milk" to the list "home"
+    When I add "buy milk" to the list "home" through the service
     Then the service should fail with the kind "unavailable" mentioning "unavailable"
 
   @category/error
   Scenario: A read from a database that does not answer is unavailable
     Given the store answers that the database is unavailable
-    When I read the list "home"
+    When I read the list "home" through the service
     Then the service should fail with the kind "unavailable" mentioning "unavailable"
 
   @category/error
   Scenario: Any other failure of the store keeps no kind
     Given the store fails with "disk full"
-    When I add "buy milk" to the list "home"
+    When I add "buy milk" to the list "home" through the service
     Then the service should fail with no kind

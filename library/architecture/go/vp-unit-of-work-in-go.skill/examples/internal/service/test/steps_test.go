@@ -77,7 +77,7 @@ func registerSteps(sc *godog.ScenarioContext) {
 		failWith(errors.New(message))
 		return nil
 	})
-	sc.Step(`^I add "([^"]*)" to the list "([^"]*)"$`, func(ctx context.Context, title, listID string) error {
+	sc.Step(`^I add "([^"]*)" to the list "([^"]*)" through the service$`, func(ctx context.Context, title, listID string) error {
 		item, err := entity.NewItem(title)
 		if err != nil {
 			return err
@@ -86,12 +86,12 @@ func registerSteps(sc *godog.ScenarioContext) {
 		logf("when: Add(%q, %q) -> err=%v", listID, title, w.err)
 		return nil
 	})
-	sc.Step(`^I read the list "([^"]*)"$`, func(ctx context.Context, listID string) error {
+	sc.Step(`^I read the list "([^"]*)" through the service$`, func(ctx context.Context, listID string) error {
 		w.items, w.err = w.lists.Items(ctx, listID)
 		logf("when: Items(%q) -> %d items err=%v", listID, len(w.items), w.err)
 		return nil
 	})
-	sc.Step(`^the items should be "([^"]*)"$`, func(titles string) error {
+	sc.Step(`^the service should give the items "([^"]*)"$`, func(titles string) error {
 		got := []string{}
 		for _, item := range w.items {
 			got = append(got, item.Title())

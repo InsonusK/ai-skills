@@ -23,7 +23,7 @@ Annotated[bytes, "log:omit"]` - in a dataclass or a pydantic model; a field name
 (`password`, `token`, ...) is masked though nobody marked it. A body the mask cannot read - not
 JSON, or a proto `Any` of an unknown type - is written as `<unparsed body, N bytes>`, and one
 `WARN` record `log payload not parsed` names where it was. The scenarios of
-`src/todo/log/masked/features/` other than `python-payload.feature` are copies of the shared ones
+`src/todo/log/masked/features/` other than `payload-in-python.feature` are copies of the shared ones
 every stack runs; they are changed at their source, not here.
 
 ```bash

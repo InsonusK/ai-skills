@@ -1,6 +1,6 @@
 # The shared scenarios of the logging variation point this example runs:
 # written by `make conformance-sync`, checked by test/check-conformance.sh.
-vp-logging.skill/conformance examples/src/MaskedLogging.Tests/features
+vp-logging.skill/conformance/masked examples/src/MaskedLogging.Tests/features
 base-plateau.skill/conformance/config examples/src/App/App.Host.Tests/features
 base-plateau.skill/conformance/entry examples/src/App/App.Host.Tests/features
 base-plateau.skill/conformance/startup examples/src/App/App.Host.Tests/features

@@ -54,7 +54,14 @@ Attach the retry by adding its middleware and by changing no file of the client'
 - Risk: a retry written into the client's fixed code repeats calls of every application that copies it, attached or not.
 - Fix: the stack extension lists the files it changes; a check compares its example with the client's example against that list.
 
+### Pass the shared scenarios
+Run every file of this skill's [conformance/](./conformance/) unchanged in each stack's example, through a copy named in the stack skill's `conformance.copy` (`make conformance-sync`), as [conformance-scenarios-copied-into-each-stack](library/architecture/spec/vp-logging.skill/adr/conformance-scenarios-copied-into-each-stack.md) decides.
+- Violation: a stack rewording a shared scenario or keeping its own copy of one; a scenario skipped because the stack fails it.
+- Risk: the stacks drift apart under one name: a check one stack makes and another does not is a defect found in one and left open in the others.
+- Fix: step definitions are the stack's own; a scenario of a mechanism only one stack has goes in a `{name}-in-{stack}.feature` beside the copies; `bash test/check-conformance.sh` fails while a copy is missing or differs.
+
 # Check list
+- [ ] Every file of `conformance/` runs unchanged in each stack's example; `bash test/check-conformance.sh` passes.
 - [ ] Only a call of a marked operation that ended unavailable is sent again.
 - [ ] `{API}_RETRY_ATTEMPTS` and `{API}_RETRY_BACKOFF` set the retry of each API; the waits double with jitter.
 - [ ] Each attempt has the whole `{API}_TIMEOUT`; no wait outlives the caller's deadline or cancellation.

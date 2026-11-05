@@ -41,7 +41,7 @@ while len(order) < len(allows):
         if any(ex2 == base for _, ex2, _ in allows) and base not in done: continue
         order.append(item); done.add(ex)
 
-deleted = subprocess.run(["git", "-C", REPO, "diff", "--name-only", "--diff-filter=D", "HEAD"], capture_output=True, text=True).stdout.split()
+deleted = subprocess.run(["git", "-C", REPO, "diff", "--name-only", "--no-renames", "--diff-filter=D", "HEAD"], capture_output=True, text=True).stdout.split()
 deleted += subprocess.run(["git", "-C", REPO, "ls-files", "--deleted"], capture_output=True, text=True).stdout.split()
 changes = 0
 for base, ex, rules in order:

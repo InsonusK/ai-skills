@@ -1,6 +1,6 @@
 # The shared scenarios of the PostgreSQL variation point this example runs:
 # written by `make conformance-sync`, checked by test/check-conformance.sh.
-vp-postgres.skill/conformance examples/src/Infrastructure/Postgres/Postgres.Tests/features
+vp-postgres.skill/conformance/postgres examples/src/Infrastructure/Postgres/Postgres.Tests/features
 base-plateau.skill/conformance/config examples/src/App/App.Host.Tests/features
 base-plateau.skill/conformance/entry examples/src/App/App.Host.Tests/features
 base-plateau.skill/conformance/json-log examples/src/BuildingBlocks.Tests/features
@@ -19,3 +19,4 @@ vp-http-api.skill/conformance/proto-http-items examples/src/App/App.Host.Tests/f
 vp-http-api.skill/conformance/proto-http-lists examples/src/App/App.Host.Tests/features/Http
 vp-http-api.skill/conformance/proto-grpc-items examples/src/App/App.Host.Tests/features/Grpc
 vp-http-api.skill/conformance/proto-item-lists examples/src/Modules/Todo/Todo.Application.Tests/features
+vp-postgres.skill/conformance/postgres-item-lists-service examples/src/Modules/Todo/Todo.Application.Tests/features

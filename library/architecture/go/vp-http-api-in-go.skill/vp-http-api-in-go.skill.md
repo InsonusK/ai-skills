@@ -146,10 +146,10 @@ return requestlog.Middleware(s.logger)(answerfailures.Middleware(s.logger)(answe
 
 - Violation: `requestlog.Middleware` or `answerfailures.Middleware` given in `httpapi.Entry`'s list; a route that writes an error body of its own.
 - Risk: a request the list does not reach — the docs, an unknown path — is answered in plain text and unlogged; a panic cuts the connection with no record.
-- Fix: the copied `server.go`; the scenarios of `middleware.feature` and `answer_failures.feature` hold the order, the panic, and the 404 and 405.
+- Fix: the copied `server.go`; the scenarios of `middleware.feature` and `answer-failures-in-go.feature` hold the order, the panic, and the 404 and 405.
 
 ### Cover the entry point with scenarios
-Copy the example's `internal/api/http/pipeline/features/` and `test/` — of [examples-proto/](./examples-proto/README.md) for a proto contract, which add `proto.feature` for `proto.go` — unchanged but for the module path and the contract's package (`todo`) in their imports: they cover the fixed code — the error mapping through a test command of their own, the middlewares in their order and outside the docs, a route that panics answered INTERNAL, the docs under a prefix and switched off, the settings, and `Run` with its graceful stop. In `internal/api/http/endpoint/` write one feature per resource with its handlers faked (`pipeline.HandlerFunc`), and the contract scenario of api-develop-in-go; tag them `@type/api/http` and `@type/tech-check`.
+Copy the example's `internal/api/http/pipeline/features/` and `test/` — of [examples-proto/](./examples-proto/README.md) for a proto contract, which add `proto-json.feature` for `proto.go` — unchanged but for the module path and the contract's package (`todo`) in their imports: they cover the fixed code — the error mapping through a test command of their own, the middlewares in their order and outside the docs, a route that panics answered INTERNAL, the docs under a prefix and switched off, the settings, and `Run` with its graceful stop. In `internal/api/http/endpoint/` write one feature per resource with its handlers faked (`pipeline.HandlerFunc`), and the contract scenario of api-develop-in-go; tag them `@type/api/http` and `@type/tech-check`.
 - Risk: a variation point without scenarios lets a change in the error mapping or the shutdown reach production unnoticed; a resource feature that repeats the error mapping grows the suite with every resource and tests nothing new.
 - Fix: a resource feature checks only its own decoding and encoding; `make test` passes.
 

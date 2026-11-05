@@ -155,6 +155,12 @@ Add a file two variation points of one base both add identically, except the cod
 - Risk: two variation points that add one path differently conflict when both are attached; a sample glob that covers fixed code hides that conflict.
 - Fix: the attach check compares every file two examples add unless either names it a sample; fixed code lives under a path of its own (`client/core/httpclient`, `client/core/grpcclient`).
 
+### Pass the shared scenarios
+Run every file of this skill's [conformance/](./conformance/) unchanged in each stack's example, through a copy named in the stack skill's `conformance.copy` (`make conformance-sync`), as [conformance-scenarios-copied-into-each-stack](library/architecture/spec/vp-logging.skill/adr/conformance-scenarios-copied-into-each-stack.md) decides.
+- Violation: a stack rewording a shared scenario or keeping its own copy of one; a scenario skipped because the stack fails it.
+- Risk: the stacks drift apart under one name: a check one stack makes and another does not is a defect found in one and left open in the others.
+- Fix: step definitions are the stack's own; a scenario of a mechanism only one stack has goes in a `{name}-in-{stack}.feature` beside the copies; `bash test/check-conformance.sh` fails while a copy is missing or differs.
+
 ## SHOULD
 
 ### Middleware wrap, handlers stay plain
@@ -163,6 +169,7 @@ Add a cross-cutting step (logging, a unit of work, a metric, an access check) as
 - Fix: one middleware per step, in its own directory.
 
 # Check list
+- [ ] Every file of `conformance/` runs unchanged in each stack's example; `bash test/check-conformance.sh` passes.
 - [ ] The variation point's example changes only the base files its `attach.allow` names, and `bash test/check-vp-attach.sh` passes.
 - [ ] The variation point is drawn per vp-diagrams, and `bash test/check-vp-diagrams.sh` passes.
 - [ ] Every handler is built and wrapped in the command registry; the composition root gives it the list of command middleware and the services.
