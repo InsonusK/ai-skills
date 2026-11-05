@@ -8,4 +8,4 @@ The plan by waves; each wave passes `check.sh`, gets a fresh-eyes audit, and is 
 | 2 | vp-http-api (both modes), vp-cli-api, vp-health | done |
 | 3 | vp-http-client, vp-grpc-client, vp-client-retry | done |
 | 4 | base-plateau-extension, vp-logging leftovers, vp-postgres / vp-unit-of-work leftovers | done; the two forks decided by the owner and built |
-| 5 | spec skills state the rule + checklist; stack skills; README; full ground run | rule + checklist in all 12 spec skills; test/test.sh passes |
+| 5 | spec skills state the rule + checklist; stack skills; README; full ground run | done: rule + checklist in all 12 spec skills; check.sh, test/test.sh, and every example (32 without a DB, 6 on PostgreSQL 17) pass |
