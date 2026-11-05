@@ -3,28 +3,34 @@ package test
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/cucumber/godog"
 )
 
 func registerCallLogSteps(sc *godog.ScenarioContext, w *World) {
-	var sentID string
-	sc.Step(`^I call the test method with "([^"]*)" and the request id "([^"]*)"$`, func(text, id string) error {
+	sc.Step(`^I call the gRPC test method with "([^"]*)" and the request id "([^"]*)"$`, func(text, id string) error {
 		conn, err := w.client()
 		if err != nil {
 			return err
 		}
-		w.reply, sentID, w.callErr = callEchoWithID(conn, text, id)
+		w.reply, w.sentID, w.callErr = callEchoWithID(conn, text, id)
 		return nil
 	})
-	sc.Step(`^the server should send back the request id "([^"]*)"$`, func(want string) error {
-		if sentID != want {
-			return fmt.Errorf("request id sent back: got %q, want %q", sentID, want)
+	sc.Step(`^the gRPC server should send back a request id of 16 hex characters$`, func() error {
+		if !regexp.MustCompile(`^[0-9a-f]{16}$`).MatchString(w.sentID) {
+			return fmt.Errorf("request id sent back: got %q, want 16 hex characters", w.sentID)
 		}
 		return nil
 	})
-	sc.Step(`^the context of the command should carry the request id "([^"]*)"$`, func(want string) error {
+	sc.Step(`^the gRPC server should send back the request id "([^"]*)"$`, func(want string) error {
+		if w.sentID != want {
+			return fmt.Errorf("request id sent back: got %q, want %q", w.sentID, want)
+		}
+		return nil
+	})
+	sc.Step(`^the gRPC echo command should have run with the request id "([^"]*)"$`, func(want string) error {
 		if w.echoReqID != want {
 			return fmt.Errorf("request id in the command's context: got %q, want %q", w.echoReqID, want)
 		}
@@ -56,7 +62,7 @@ func registerCallLogSteps(sc *godog.ScenarioContext, w *World) {
 		return m["value"]
 	}
 	// the records of the call, in order; the server's own (listening, stopped) are left out
-	sc.Step(`^the records should be, in order, "([^"]*)"$`, func(msgs string) error {
+	sc.Step(`^the gRPC records should be, in order, "([^"]*)"$`, func(msgs string) error {
 		got := []string{}
 		for _, line := range strings.Split(strings.TrimSpace(w.logs.String()), "\n") {
 			var rec map[string]any

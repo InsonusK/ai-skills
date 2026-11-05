@@ -2,8 +2,10 @@
 
 // Package answerfailures is the fixed gRPC middleware that answers every
 // failure of a call by its status: an error of a kind by the kind's code
-// (StatusOf, which Call uses too), a panic as INTERNAL. The server puts it
-// inside the call log and outside the application's middleware.
+// (StatusOf), a panic as INTERNAL. An error of no kind is answered INTERNAL
+// "internal error" and logged as "grpc call failed" with its text, so the
+// operator reads why. The server puts it inside the call log and outside the
+// application's middleware; Call returns a command's error to it as it is.
 package answerfailures
 
 import (
@@ -15,6 +17,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/example/todo/internal/api/core/rpcstatus"
+	"github.com/example/todo/internal/logging"
 )
 
 // Middleware answers a method that panicked with INTERNAL and logs the panic
@@ -32,10 +35,15 @@ func Middleware(logger *slog.Logger) grpc.UnaryServerInterceptor {
 			}
 		}()
 		resp, err = handler(ctx, req)
-		if _, isStatus := status.FromError(err); !isStatus {
-			return resp, StatusOf(err)
+		if _, isStatus := status.FromError(err); err == nil || isStatus {
+			return resp, err
 		}
-		return resp, err
+		answer := StatusOf(err)
+		if status.Code(answer) == codes.Internal {
+			// The caller gets "internal error"; the operator reads why.
+			logger.LogAttrs(ctx, slog.LevelError, "grpc call failed", slog.String("method", info.FullMethod), logging.Error(err))
+		}
+		return resp, answer
 	}
 }
 

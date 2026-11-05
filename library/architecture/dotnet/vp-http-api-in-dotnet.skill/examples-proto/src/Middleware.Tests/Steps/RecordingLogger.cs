@@ -5,9 +5,9 @@ using Microsoft.Extensions.Logging;
 namespace Middleware.Tests.Steps;
 
 /// <summary>
-/// A logger that keeps every record with all its attributes, the payload too,
-/// so the scenarios see everything a part writes - what the base provider then
-/// drops is the provider's scenarios' concern.
+/// Keeps every record as the JSON line <see cref="JsonLogLine"/> writes it,
+/// payload included, read back into its fields: a text as it is, any other
+/// value as its JSON. The scenarios so compare what every stack writes.
 /// </summary>
 public sealed class RecordingLogger<TCategory> : ILogger<TCategory>
 {
@@ -19,22 +19,12 @@ public sealed class RecordingLogger<TCategory> : ILogger<TCategory>
 
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
-        var record = new Dictionary<string, string> { ["level"] = logLevel.ToString(), ["msg"] = formatter(state, exception) };
-        foreach (var (key, value) in state as IEnumerable<KeyValuePair<string, object?>> ?? [])
+        var written = new StringWriter();
+        new JsonLogLine(written).Write(logLevel, formatter(state, exception), state as IEnumerable<KeyValuePair<string, object?>> ?? [], exception);
+        var record = new Dictionary<string, string>();
+        foreach (var field in JsonDocument.Parse(written.ToString()).RootElement.EnumerateObject())
         {
-            if (key != LogState.OriginalFormatKey)
-            {
-                record[key] = value switch
-                {
-                    string text => text,
-                    bool flag => flag.ToString(),
-                    _ => JsonSerializer.Serialize(value, JsonSerializerOptions.Web),
-                };
-            }
-        }
-        if (exception is not null)
-        {
-            record["error"] = exception.Message;
+            record[field.Name] = field.Value.ValueKind == JsonValueKind.String ? field.Value.GetString()! : field.Value.GetRawText();
         }
         Records.Add(record);
     }

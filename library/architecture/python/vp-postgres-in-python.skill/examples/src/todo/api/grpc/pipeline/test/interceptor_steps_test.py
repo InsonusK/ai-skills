@@ -18,7 +18,7 @@ class World(Protocol):
     def logger(self) -> logging.Logger: ...
 
 
-@given(parsers.parse('the interceptors "{outer}" and "{inner}", each logging a record with its name'))
+@given(parsers.parse('the gRPC interceptors "{outer}" and "{inner}", each logging a record with its name'))
 def the_interceptors_logging(world: World, outer: str, inner: str) -> None:
     # In this order, each writing the record "interceptor {name}" before it
     # passes the call on.
@@ -31,7 +31,7 @@ def the_interceptors_logging(world: World, outer: str, inner: str) -> None:
         world.interceptors.append(log_name)
 
 
-@given(parsers.parse('an interceptor that rejects every call as unauthenticated with "{message}"'))
+@given(parsers.parse('a gRPC interceptor that rejects every call as unauthenticated with "{message}"'))
 def a_rejecting_interceptor(world: World, message: str) -> None:
     # As an authentication interceptor rejects a call without credentials.
     async def reject(call: IncomingCall, call_next: CallNext) -> Message:

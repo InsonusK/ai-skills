@@ -41,12 +41,12 @@ async def _list_services(port: int) -> list[str]:
         return [service.name for service in answer.list_services_response.service]
 
 
-@given("reflection is enabled")
+@given("gRPC reflection is switched on")
 def reflection_is_enabled(world: World) -> None:
     world.config = GrpcConfig(listen_port=0, reflection_enabled=True)
 
 
-@when("I list the services by reflection", target_fixture="listed")
+@when("I list the gRPC services by reflection", target_fixture="listed")
 def i_list_the_services(world: World) -> Listed:
     listed = Listed()
     try:
@@ -57,7 +57,7 @@ def i_list_the_services(world: World) -> Listed:
     return listed
 
 
-@then(parsers.parse('the listed services should include "{service}"'))
+@then(parsers.parse('the listed gRPC services should include "{service}"'))
 def the_listed_services_should_include(listed: Listed, service: str) -> None:
     assert listed.services is not None and service in listed.services, listed.error
 

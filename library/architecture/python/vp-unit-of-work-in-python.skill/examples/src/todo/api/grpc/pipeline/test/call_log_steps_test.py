@@ -6,7 +6,7 @@ from pytest_bdd import parsers, scenarios, then
 
 from todo.log import attributes_of
 
-scenarios("../features/call_log.feature")
+scenarios("../features/call-log.feature")
 
 
 class World(Protocol):
@@ -47,16 +47,16 @@ def _sent_request_id(world: World) -> str:
     return sent
 
 
-@then(parsers.parse('the server should send back the request id "{id}"'))
+@then(parsers.parse('the gRPC server should send back the request id "{id}"'))
 def the_server_should_send_back_the_request_id(world: World, id: str) -> None:
     assert _sent_request_id(world) == id
 
 
-@then("the server should send back a request id of 16 hex characters")
+@then("the gRPC server should send back a request id of 16 hex characters")
 def the_server_should_send_back_a_new_request_id(world: World) -> None:
     assert re.fullmatch("[0-9a-f]{16}", _sent_request_id(world))
 
 
-@then(parsers.parse('the command should have run with the request id "{id}"'))
+@then(parsers.parse('the gRPC echo command should have run with the request id "{id}"'))
 def the_command_should_have_run_with(world: World, id: str) -> None:
     assert world.echo.request_ids == [id]

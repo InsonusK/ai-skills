@@ -6,7 +6,7 @@ from pytest_bdd import given, parsers, scenarios, then, when
 
 from todo.command.pipeline import HandlerFunc, Kind, KindError, Middleware, Next, decorate
 
-scenarios("../features/middleware.feature")
+scenarios("../features/command-pipeline.feature")
 
 
 @dataclass
@@ -65,7 +65,7 @@ def the_calls_should_be(world: World, calls: str) -> None:
     assert ", ".join(world.calls) == calls
 
 
-@then(parsers.parse('the result should be "{result}"'))
+@then(parsers.re(r'the result should be "(?P<result>[^"]*)"'))
 def the_result_should_be(world: World, result: str) -> None:
     assert world.result == result
 

@@ -12,8 +12,8 @@ import (
 )
 
 func registerInterceptorSteps(sc *godog.ScenarioContext, w *World) {
-	sc.Step(`^the interceptors "([^"]*)" and "([^"]*)", each logging a record with its name$`, w.theInterceptorsLogging)
-	sc.Step(`^an interceptor that rejects every call as unauthenticated with "([^"]*)"$`, w.aRejectingInterceptor)
+	sc.Step(`^the gRPC interceptors "([^"]*)" and "([^"]*)", each logging a record with its name$`, w.theInterceptorsLogging)
+	sc.Step(`^a gRPC interceptor that rejects every call as unauthenticated with "([^"]*)"$`, w.aRejectingInterceptor)
 }
 
 // theInterceptorsLogging gives the server two interceptors, in this order,

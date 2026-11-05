@@ -30,7 +30,7 @@ type Config struct {
 func LoadConfig() (Config, error) {
 	cfg := Config{ListenPort: "9090"}
 	if port := os.Getenv("GRPC_LISTEN_PORT"); port != "" {
-		if _, err := strconv.ParseUint(port, 10, 16); err != nil {
+		if n, err := strconv.ParseUint(port, 10, 16); err != nil || n == 0 {
 			return Config{}, fmt.Errorf("grpc config: GRPC_LISTEN_PORT %q is not a port", port)
 		}
 		cfg.ListenPort = port

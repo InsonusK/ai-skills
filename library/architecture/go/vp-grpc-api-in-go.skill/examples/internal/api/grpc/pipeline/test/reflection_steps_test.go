@@ -12,9 +12,9 @@ import (
 )
 
 func registerReflectionSteps(sc *godog.ScenarioContext, w *World) {
-	sc.Step(`^reflection is enabled$`, w.reflectionIsEnabled)
-	sc.Step(`^I list the services by reflection$`, w.iListTheServices)
-	sc.Step(`^the listed services should include "([^"]*)"$`, w.theListedServicesShouldInclude)
+	sc.Step(`^gRPC reflection is switched on$`, w.reflectionIsEnabled)
+	sc.Step(`^I list the gRPC services by reflection$`, w.iListTheServices)
+	sc.Step(`^the listed gRPC services should include "([^"]*)"$`, w.theListedServicesShouldInclude)
 	sc.Step(`^the reflection call should fail with (\w+)$`, w.callShouldFailWith)
 }
 

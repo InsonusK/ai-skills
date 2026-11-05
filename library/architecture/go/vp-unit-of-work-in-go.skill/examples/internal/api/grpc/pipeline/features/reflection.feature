@@ -6,11 +6,11 @@ Feature: Server reflection
 
   @category/happy
   Scenario: With reflection enabled the services are listed
-    Given reflection is enabled
-    When I list the services by reflection
-    Then the listed services should include "test.v1.EchoService"
+    Given gRPC reflection is switched on
+    When I list the gRPC services by reflection
+    Then the listed gRPC services should include "test.v1.EchoService"
 
   @category/boundary
   Scenario: Reflection is off by default
-    When I list the services by reflection
-    Then the reflection call should fail with Unimplemented
+    When I list the gRPC services by reflection
+    Then the reflection call should fail with UNIMPLEMENTED

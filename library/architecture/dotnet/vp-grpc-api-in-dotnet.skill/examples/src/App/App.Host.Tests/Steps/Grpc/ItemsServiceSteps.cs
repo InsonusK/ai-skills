@@ -37,7 +37,7 @@ public sealed class ItemsServiceSteps(GrpcWorld world)
     [Given("PlanItems returns the items {string} over gRPC")]
     public void GivenPlanItemsReturns(string titles)
     {
-        _planItems.Answer = titles.Split('|');
+        _planItems.Answer = titles == "" ? [] : titles.Split('|');
         world.Handlers.AddSingleton<IRequestHandler<PlanItemsCommand, PlanItemsResult>>(_planItems);
         ServeApplicationServices(world);
     }
@@ -49,6 +49,13 @@ public sealed class ItemsServiceSteps(GrpcWorld world)
         request.Titles.AddRange(titles.Split('|'));
         _response = await new ItemsService.ItemsServiceClient(await world.ChannelAsync()).PlanItemsAsync(request);
     }
+
+    [When("I call ItemsService.PlanItems with no titles")]
+    public async Task WhenICallPlanItemsWithNoTitles() =>
+        _response = await new ItemsService.ItemsServiceClient(await world.ChannelAsync()).PlanItemsAsync(new PlanItemsRequest());
+
+    [Then("PlanItems should have received no titles over gRPC")]
+    public void ThenPlanItemsShouldHaveReceivedNoTitles() => Assert.Empty(_planItems.Received!.Titles);
 
     [Then("the gRPC response should hold the items {string}, none done")]
     public void ThenTheGrpcResponseShouldHoldTheItems(string titles)

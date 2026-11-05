@@ -31,7 +31,7 @@ public sealed class CallLogSteps(GrpcWorld world)
         var record = Single(message);
         Assert.Equal(method, record.Attributes["method"]);
         Assert.Equal(code, record.Attributes["code"]);
-        Assert.Equal(failed, record.Attributes["failed"]?.ToString());
+        Assert.Equal(failed, record.Attributes["failed"]?.ToString()?.ToLowerInvariant());
     }
 
     [Then("the {string} record should hold the response {string} and no request")]

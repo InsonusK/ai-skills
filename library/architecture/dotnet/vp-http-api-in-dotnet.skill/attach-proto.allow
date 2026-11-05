@@ -16,7 +16,7 @@ change README.md
 change .gitignore
 change docs/integration/api/todo/todo.proto
 change src/App/App.Host/Api/Grpc/Endpoint/ItemsHandler.cs
-change src/App/App.Host.Tests/features/Grpc/Items.feature
+change src/App/App.Host.Tests/features/Grpc/items.feature
 change src/App/App.Host.Tests/Steps/Grpc/ItemsServiceSteps.cs
 change src/Modules/Todo/Todo.Application/Todo.Application.csproj
 change src/Modules/Todo/Todo.Application/TodoModule.cs

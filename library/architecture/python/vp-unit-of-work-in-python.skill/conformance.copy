@@ -3,3 +3,14 @@
 # PostgreSQL one, so it runs those scenarios too.
 vp-postgres.skill/conformance examples/src/todo/infrastructure/postgres/features
 vp-unit-of-work.skill/conformance examples/src/todo/infrastructure/postgres/unit_of_work/features
+base-plateau.skill/conformance/config examples/src/todo/config/features
+base-plateau.skill/conformance/entry examples/src/todo/api/core/entry/features
+base-plateau.skill/conformance/json-log examples/src/todo/log/features
+base-plateau.skill/conformance/command-pipeline examples/src/todo/command/pipeline/features
+base-plateau.skill/conformance/command-logging examples/src/todo/command/middleware/logging/features
+base-plateau.skill/conformance/plan-items examples/src/todo/command/features
+base-plateau.skill/conformance/item examples/src/todo/domain/entity/features
+base-plateau.skill/conformance/planner examples/src/todo/domain/service/features
+vp-grpc-api.skill/conformance/rpcstatus examples/src/todo/api/core/rpcstatus/features
+vp-grpc-api.skill/conformance/grpc-pipeline examples/src/todo/api/grpc/pipeline/features
+vp-grpc-api.skill/conformance/grpc-contract examples/src/todo/api/grpc/endpoint/features

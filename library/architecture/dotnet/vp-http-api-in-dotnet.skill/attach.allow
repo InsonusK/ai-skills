@@ -9,5 +9,5 @@ change Makefile
 change README.md
 # Base files the variation point removes: the startup entry it replaces, with its scenarios.
 delete src/App/App.Host/Api/Startup/*
-delete src/App/App.Host.Tests/features/Startup.feature
+delete src/App/App.Host.Tests/features/startup.feature
 delete src/App/App.Host.Tests/Steps/StartupSteps.cs

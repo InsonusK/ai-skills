@@ -8,18 +8,21 @@ using Xunit.Abstractions;
 
 namespace BuildingBlocks.Tests.Steps;
 
-/// <summary>A command of the middleware scenarios, answered by <see cref="EchoHandler"/>.</summary>
-public sealed record EchoCommand(string Text) : IRequest<string>;
+/// <summary>The command of the middleware scenarios, named PlanItems, answered by <see cref="PlanItemsHandler"/>.</summary>
+public sealed record PlanItemsCommand(string Text) : IRequest<string>;
 
 /// <summary>What the middleware and the handler of a scenario did, in order.</summary>
 public sealed class CallTrace
 {
     public List<string> Calls { get; } = [];
+
+    /// <summary>The name and the value of the command each middleware saw.</summary>
+    public Dictionary<string, (string Name, object Command)> Seen { get; } = [];
 }
 
-public sealed class EchoHandler(CallTrace trace) : IRequestHandler<EchoCommand, string>
+public sealed class PlanItemsHandler(CallTrace trace) : IRequestHandler<PlanItemsCommand, string>
 {
-    public Task<string> Handle(EchoCommand command, CancellationToken cancellationToken)
+    public Task<string> Handle(PlanItemsCommand command, CancellationToken cancellationToken)
     {
         trace.Calls.Add($"handler {command.Text}");
         return Task.FromResult($"planned {command.Text}");
@@ -31,8 +34,11 @@ public sealed class EchoHandler(CallTrace trace) : IRequestHandler<EchoCommand, 
 public sealed class OuterMiddleware<TCommand, TResult>(CallTrace trace) : IPipelineBehavior<TCommand, TResult>
     where TCommand : notnull
 {
-    public Task<TResult> Handle(TCommand command, RequestHandlerDelegate<TResult> next, CancellationToken cancellationToken) =>
-        Recorded.Around(trace, "outer", next, cancellationToken);
+    public Task<TResult> Handle(TCommand command, RequestHandlerDelegate<TResult> next, CancellationToken cancellationToken)
+    {
+        trace.Seen["outer"] = (Recorded.OperationName(typeof(TCommand)), command);
+        return Recorded.Around(trace, "outer", next, cancellationToken);
+    }
 }
 
 public sealed class InnerMiddleware<TCommand, TResult>(CallTrace trace) : IPipelineBehavior<TCommand, TResult>
@@ -54,6 +60,10 @@ public sealed class GuardMiddleware<TCommand, TResult>(CallTrace trace) : IPipel
 
 internal static class Recorded
 {
+    // PlanItemsCommand -> PlanItems, as the logging middleware names a command.
+    public static string OperationName(Type command) =>
+        command.Name.EndsWith("Command", StringComparison.Ordinal) ? command.Name[..^"Command".Length] : command.Name;
+
     public static async Task<TResult> Around<TResult>(CallTrace trace, string name, RequestHandlerDelegate<TResult> next, CancellationToken cancellationToken)
     {
         trace.Calls.Add($"{name} in");
@@ -87,18 +97,20 @@ public sealed class CommandMiddlewareSteps(ITestOutputHelper output)
     public void GivenAHandlerWrappedBy(DataTable table) =>
         _middlewares = table.Rows.Select(row => Middlewares[$"{row["middleware"]} {row["does"]}"]).ToArray();
 
-    [When("the wrapped handler handles the command {string}")]
-    public async Task WhenTheWrappedHandlerHandles(string text)
+    [When("the wrapped handler handles the command {string} as {string}")]
+    public async Task WhenTheWrappedHandlerHandles(string text, string name)
     {
+        // A command's name is its type's: the scenarios' command is PlanItems.
+        Assert.Equal(name, Recorded.OperationName(typeof(PlanItemsCommand)));
         // As the composition root registers them: the handlers, then the list.
         var services = new ServiceCollection()
             .AddSingleton(_trace)
-            .AddMediatR(mediatr => mediatr.RegisterServicesFromAssemblyContaining<EchoHandler>())
+            .AddMediatR(mediatr => mediatr.RegisterServicesFromAssemblyContaining<PlanItemsHandler>())
             .AddCommandMiddleware(_middlewares)
             .BuildServiceProvider();
         try
         {
-            _result = await services.GetRequiredService<ISender>().Send(new EchoCommand(text));
+            _result = await services.GetRequiredService<ISender>().Send(new PlanItemsCommand(text));
         }
         catch (ErrorKindException error)
         {
@@ -116,6 +128,14 @@ public sealed class CommandMiddlewareSteps(ITestOutputHelper output)
 
     [Then("the calls should be {string}")]
     public void ThenTheCallsShouldBe(string calls) => Assert.Equal(calls, string.Join(", ", _trace.Calls));
+
+    [Then("the middleware {string} should have seen the command {string} named {string}")]
+    public void ThenTheMiddlewareShouldHaveSeen(string middleware, string text, string name)
+    {
+        var (seenName, command) = _trace.Seen[middleware];
+        Assert.Equal(name, seenName);
+        Assert.Equal(text, Assert.IsType<PlanItemsCommand>(command).Text);
+    }
 
     [Then("the result should be {string}")]
     public void ThenTheResultShouldBe(string result) => Assert.Equal(result, _result);

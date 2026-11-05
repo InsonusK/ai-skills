@@ -4,6 +4,8 @@ using Reqnroll;
 using Shared.Errors;
 using Xunit;
 using Xunit.Abstractions;
+using BuildingBlocks.Pipeline;
+using Middleware.Logging;
 
 namespace App.Host.Tests.Steps.Grpc;
 
@@ -29,6 +31,21 @@ public sealed class GrpcCallSteps(GrpcWorld world, ITestOutputHelper output)
     [Given("the gRPC echo command fails with the kind {string} and {string}")]
     public void GivenTheGrpcEchoCommandFailsWithTheKind(string kind, string message) =>
         world.Echo.Failure = new ErrorKindException(Enum.Parse<ErrorKind>(kind.Replace(" ", ""), ignoreCase: true), message);
+
+    [Given("the gRPC echo command fails with the kind {string} and {string}, wrapped in {string}")]
+    public void GivenTheGrpcEchoCommandFailsWrapped(string kind, string message, string outer) =>
+        world.Echo.Failure = new InvalidOperationException(outer, new ErrorKindException(Enum.Parse<ErrorKind>(kind.Replace(" ", ""), ignoreCase: true), message));
+
+    // A bug of the service: what Go calls a panic.
+    [Given("the gRPC echo command crashes")]
+    public void GivenTheGrpcEchoCommandCrashes() => world.Echo.Failure = new NullReferenceException("Object reference not set to an instance of an object.");
+
+    [Given("the gRPC echo command answers {string}, wrapped with logging")]
+    public void GivenTheGrpcEchoCommandAnswersWrappedWithLogging(string answer)
+    {
+        GivenTheGrpcEchoCommandAnswers(answer);
+        world.Handlers.AddCommandMiddleware(typeof(LoggingMiddleware<,>));
+    }
 
     [Given("the gRPC echo command fails with {string}")]
     public void GivenTheGrpcEchoCommandFails(string message) => world.Echo.Failure = new InvalidOperationException(message);
@@ -65,17 +82,10 @@ public sealed class GrpcCallSteps(GrpcWorld world, ITestOutputHelper output)
         Assert.Equal(text, _response!.Text);
     }
 
-    [Then("the gRPC call should fail with {word} and a message containing {string}")]
-    public void ThenTheGrpcCallShouldFailWithAMessageContaining(string code, string text)
-    {
-        Assert.Equal(Enum.Parse<StatusCode>(code), _error?.StatusCode);
-        Assert.Contains(text, _error!.Status.Detail);
-    }
-
     [Then("the gRPC call should fail with {word} and the message {string}")]
     public void ThenTheGrpcCallShouldFailWithTheMessage(string code, string message)
     {
-        Assert.Equal(Enum.Parse<StatusCode>(code), _error?.StatusCode);
+        Assert.Equal(CodeNamed(code), _error?.StatusCode);
         Assert.Equal(message, _error!.Status.Detail);
     }
 
@@ -87,6 +97,12 @@ public sealed class GrpcCallSteps(GrpcWorld world, ITestOutputHelper output)
 
     [Then("the gRPC server should send back the request id {string}")]
     public void ThenTheGrpcServerShouldSendBackTheRequestId(string id) => Assert.Equal(id, _headers?.GetValue("x-request-id"));
+
+    [Then("the gRPC server should send back a request id of 16 hex characters")]
+    public void ThenTheGrpcServerShouldSendBackANewRequestId() => Assert.Matches("^[0-9a-f]{16}$", _headers?.GetValue("x-request-id"));
+
+    /// <summary>A code as the scenarios of every stack name it: its canonical name (INVALID_ARGUMENT).</summary>
+    public static StatusCode CodeNamed(string name) => Enum.Parse<StatusCode>(name.Replace("_", ""), ignoreCase: true);
 
     [Then("the gRPC echo command should have run with the request id {string}")]
     public void ThenTheGrpcEchoCommandShouldHaveRunWithTheRequestId(string id) => Assert.Equal(id, world.Echo.ReceivedRequestId);

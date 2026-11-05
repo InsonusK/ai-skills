@@ -43,16 +43,16 @@ def _loaded(settings: Settings) -> GrpcConfig:
     return settings.loaded
 
 
-@then(parsers.parse('the listen port should be "{port}"'))
+@then(parsers.parse('the gRPC listen port should be {port}'))
 def the_listen_port_should_be(settings: Settings, port: str) -> None:
     assert str(_loaded(settings).listen_port) == port
 
 
-@then(parsers.parse("reflection should be {state}"))
+@then(parsers.parse("gRPC reflection should be {state}"))
 def reflection_should_be(settings: Settings, state: str) -> None:
     assert _loaded(settings).reflection_enabled == (state == "enabled")
 
 
-@then(parsers.parse('loading should fail mentioning "{text}"'))
+@then(parsers.parse('loading the gRPC settings should fail mentioning "{text}"'))
 def loading_should_fail(settings: Settings, text: str) -> None:
     assert settings.error is not None and text in str(settings.error), settings.error
