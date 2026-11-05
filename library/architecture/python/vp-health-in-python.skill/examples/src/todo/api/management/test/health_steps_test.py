@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 import pytest
 from pytest_bdd import given, parsers, scenarios, then, when
 
-from todo.api.management import Check, ManagementConfig, Server
+from todo.api.management import Check, Degraded, ManagementConfig, Server
 from todo.log import attributes_of
 
 from .conftest import request
@@ -57,6 +57,10 @@ def a_readiness_check(world: World, name: str, outcome: str) -> None:
     async def check() -> None:
         if outcome == "fails":
             raise ConnectionError(f"{name} is down")
+        if outcome == "throws":
+            raise TypeError(f"{name}: a bug of the check")
+        if outcome == "is degraded":
+            raise Degraded(f"{name} works with less")
 
     world.checks.append(Check(name, check))
 
@@ -66,27 +70,27 @@ def the_service_version_is(world: World, version: str) -> None:
     world.version = version
 
 
-@when(parsers.parse('I GET "{path}"'))
+@when(parsers.parse('I GET "{path}" from the management port'))
 def i_get(world: World, path: str) -> None:
     world.send("GET", path)
 
 
-@when(parsers.parse('I send "{method}" "{path}"'))
+@when(parsers.parse('I send "{method}" "{path}" to the management port'))
 def i_send(world: World, method: str, path: str) -> None:
     world.send(method, path)
 
 
-@then(parsers.parse("the response status should be {status:d}"))
+@then(parsers.parse("the management status should be {status:d}"))
 def the_response_status_should_be(world: World, status: int) -> None:
     assert world.status == status
 
 
-@then(parsers.re(r"the response body should be '(?P<body>[^']*)'"))
+@then(parsers.re(r"the management response body should be '(?P<body>[^']*)'"))
 def the_response_body_should_be(world: World, body: str) -> None:
     assert json.loads(world.body) == json.loads(body)
 
 
-@then(parsers.parse('the log should hold the warning "{message}" for the check "{name}"'))
-def the_log_should_hold_the_warning(world: World, message: str, name: str) -> None:
-    warnings = [record for record in world.recorder.records if record.levelno == logging.WARNING and record.getMessage() == message]
+@then(parsers.parse('the failed readiness check "{name}" should be logged'))
+def the_failed_check_should_be_logged(world: World, name: str) -> None:
+    warnings = [record for record in world.recorder.records if record.levelno == logging.WARNING and record.getMessage() == "readiness check failed"]
     assert [attributes_of(record)["check"] for record in warnings] == [name]

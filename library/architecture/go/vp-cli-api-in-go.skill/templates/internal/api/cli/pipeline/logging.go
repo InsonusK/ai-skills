@@ -22,13 +22,13 @@ func logReceived(cmd *cobra.Command, logger *slog.Logger) {
 
 // logCall writes the last record of a run - "cli call answered" with the
 // action run, the duration, failed, and as the payload the output as printed;
-// a failed run repeats the flags given, so they are in the log even when only
+// a failed run repeats the arguments as given, so they are in the log even when only
 // failed records keep their payload, and even when the arguments could not be
 // parsed and no "cli call received" was written.
-func logCall(ctx context.Context, logger *slog.Logger, ran *cobra.Command, start time.Time, err error, output string) {
+func logCall(ctx context.Context, logger *slog.Logger, ran *cobra.Command, args []string, start time.Time, err error, output string) {
 	sent := map[string]any{"output": output}
 	if err != nil {
-		sent["flags"] = givenFlags(ran)
+		sent["args"] = args // as given: they may not have parsed
 	}
 	logger.LogAttrs(ctx, slog.LevelInfo, "cli call answered",
 		slog.String("action", ran.CommandPath()), slog.Duration("duration", time.Since(start)),

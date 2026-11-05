@@ -10,3 +10,4 @@ base-plateau.skill/conformance/command-logging examples/internal/command/middlew
 base-plateau.skill/conformance/plan-items examples/internal/command/features
 base-plateau.skill/conformance/item examples/internal/domain/entity/features
 base-plateau.skill/conformance/planner examples/internal/domain/service/features
+vp-health.skill/conformance/management examples/internal/api/management/features

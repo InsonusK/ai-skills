@@ -45,3 +45,13 @@ Feature: Health endpoints
     When I GET "/health" from the management port
     Then the management status should be 200
     And the management response body should be '{"status":"ok","version":"1.2.3"}'
+
+  @category/negative
+  Scenario Outline: Anything but a GET of a health endpoint is refused
+    When I send "<method>" "<path>" to the management port
+    Then the management status should be <status>
+
+    Examples:
+      | method | path          | status |
+      | GET    | /nothing      | 404    |
+      | POST   | /health/ready | 405    |

@@ -9,3 +9,5 @@ base-plateau.skill/conformance/command-logging examples/src/todo/command/middlew
 base-plateau.skill/conformance/plan-items examples/src/todo/command/features
 base-plateau.skill/conformance/item examples/src/todo/domain/entity/features
 base-plateau.skill/conformance/planner examples/src/todo/domain/service/features
+vp-cli-api.skill/conformance/cli-pipeline examples/src/todo/api/cli/pipeline/features
+vp-cli-api.skill/conformance/cli-items examples/src/todo/api/cli/endpoint/features

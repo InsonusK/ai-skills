@@ -17,16 +17,16 @@ import (
 func registerConfigServeSteps(sc *godog.ScenarioContext, w *World) {
 	sc.Step(`^the environment variable "([^"]*)" is "([^"]*)"$`, w.theEnvironmentVariableIs)
 	sc.Step(`^the management settings are loaded$`, w.theManagementSettingsAreLoaded)
-	sc.Step(`^the listen port should be "([^"]*)"$`, w.theListenPortShouldBe)
-	sc.Step(`^loading should fail mentioning "([^"]*)"$`, w.loadingShouldFailMentioning)
-	sc.Step(`^the server is serving on a free port$`, w.theServerIsServing)
-	sc.Step(`^the process is told to terminate$`, w.theProcessIsToldToTerminate)
-	sc.Step(`^the server should stop without an error$`, w.theServerShouldStopWithoutAnError)
-	sc.Step(`^the port the server wants is already taken$`, w.thePortIsTaken)
-	sc.Step(`^the server starts$`, w.theServerStarts)
-	sc.Step(`^the server should stop with an error$`, w.theServerShouldStopWithAnError)
-	sc.Step(`^the server starts with the port "([^"]*)"$`, w.theServerStartsWithThePort)
-	sc.Step(`^the server should stop with an error mentioning "([^"]*)"$`, w.theServerShouldStopWithAnErrorMentioning)
+	sc.Step(`^the management listen port should be (\d+)$`, w.theListenPortShouldBe)
+	sc.Step(`^loading the management settings should fail mentioning "([^"]*)"$`, w.loadingShouldFailMentioning)
+	sc.Step(`^the management server is serving on a free port$`, w.theServerIsServing)
+	sc.Step(`^the management server is told to stop$`, w.theProcessIsToldToTerminate)
+	sc.Step(`^the management server should stop without an error$`, w.theServerShouldStopWithoutAnError)
+	sc.Step(`^the port the management server wants is already taken$`, w.thePortIsTaken)
+	sc.Step(`^the management server starts$`, w.theServerStarts)
+	sc.Step(`^the management server should stop with an error$`, w.theServerShouldStopWithAnError)
+	sc.Step(`^the management server starts with the port "([^"]*)"$`, w.theServerStartsWithThePort)
+	sc.Step(`^the management server should stop with an error mentioning "([^"]*)"$`, w.theServerShouldStopWithAnErrorMentioning)
 }
 
 func (w *World) theEnvironmentVariableIs(ctx context.Context, name, value string) error {

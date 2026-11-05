@@ -20,14 +20,3 @@ Feature: Management server lifecycle
   Scenario: An unusable setting stops the server before it listens
     When the management server starts with the port "mgmt"
     Then the management server should stop with an error mentioning "MANAGEMENT_LISTEN_PORT"
-
-  @category/happy
-  Scenario: The entry point of the composition root answers ready with no check registered
-    When the management entry point of the composition root serves
-    Then readiness on its port should answer 200 with '{"status":"ok"}'
-
-  @category/error
-  Scenario: A check a variation point registered holds readiness back
-    Given a variation point registered a readiness check "database" that fails
-    When the management entry point of the composition root serves
-    Then readiness on its port should answer 503 with '{"status":"unavailable","failed":["database"]}'

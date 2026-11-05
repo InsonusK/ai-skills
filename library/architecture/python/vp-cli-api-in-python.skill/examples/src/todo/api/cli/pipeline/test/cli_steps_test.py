@@ -112,9 +112,19 @@ def the_command_answers(world: World, answer: str) -> None:
     world.echo.answer = answer
 
 
-@given(parsers.parse('the command is rejected with the kind "{kind}" and "{message}"'))
+@given(parsers.re(r'the command is rejected with the kind "(?P<kind>[^"]+)" and "(?P<message>[^"]+)"$'))
 def the_command_is_rejected(world: World, kind: str, message: str) -> None:
     world.echo.error = KindError(Kind(kind), message)
+
+
+@given(parsers.parse('the command is rejected with the kind "{kind}" and "{message}", caused by "{cause}", wrapped in "{outer}"'))
+def the_command_is_rejected_wrapped(world: World, kind: str, message: str, cause: str, outer: str) -> None:
+    # The rejection, with its technical cause, wrapped by a caller on its way up.
+    rejection = KindError(Kind(kind), message)
+    rejection.__cause__ = ConnectionError(cause)
+    wrapper = RuntimeError(outer)
+    wrapper.__cause__ = rejection
+    world.echo.error = wrapper
 
 
 @given(parsers.parse('the command fails with "{message}"'))
@@ -122,7 +132,7 @@ def the_command_fails(world: World, message: str) -> None:
     world.echo.error = ConnectionError(message)
 
 
-@given("the output of the action crashes")
+@given("the CLI action crashes")
 def the_output_crashes(world: World) -> None:
     # A bug of the action itself - its encode raises - not an error of the command.
     world.crash = True
@@ -151,6 +161,11 @@ def stdout_should_be_empty(world: World) -> None:
 @then(parsers.parse('stdout should mention "{text}"'))
 def stdout_should_mention(world: World, text: str) -> None:
     assert text in world.stdout
+
+
+@then(parsers.parse('stderr should be the line "{line}"'))
+def stderr_should_be_the_line(world: World, line: str) -> None:
+    assert world.stderr == line + "\n", world.stderr
 
 
 @then(parsers.parse('stderr should mention "{text}"'))

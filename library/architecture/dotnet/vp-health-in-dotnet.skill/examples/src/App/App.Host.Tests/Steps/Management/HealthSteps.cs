@@ -46,13 +46,16 @@ public sealed class HealthSteps(ITestOutputHelper output) : IDisposable
     public void GivenTheServiceVersionIs(string version) => _version = version;
 
     [When("I GET {string} from the management port")]
-    public async Task WhenIGetFromTheManagementPort(string path)
+    public Task WhenIGetFromTheManagementPort(string path) => WhenISendToTheManagementPort("GET", path);
+
+    [When("I send {string} {string} to the management port")]
+    public async Task WhenISendToTheManagementPort(string method, string path)
     {
         _app = ManagementServer.Build(new ManagementConfig(8081), _version, _logs.Factory, host => host.UseTestServer(), [.. _checks]);
         await _app.StartAsync();
-        _response = await _app.GetTestClient().GetAsync(path);
+        _response = await _app.GetTestClient().SendAsync(new HttpRequestMessage(new HttpMethod(method), path));
         _body = await _response.Content.ReadAsStringAsync();
-        output.WriteLine($"when: GET {path} -> {(int)_response.StatusCode} {_body}");
+        output.WriteLine($"when: {method} {path} -> {(int)_response.StatusCode} {_body}");
     }
 
     [Then("the management status should be {int}")]

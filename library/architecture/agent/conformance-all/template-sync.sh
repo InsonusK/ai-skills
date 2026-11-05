@@ -5,7 +5,7 @@
 cd "$(git rev-parse --show-toplevel)" || exit 1
 bash test/check-templates.sh 2>&1 | sed -n 's/^ERROR \(.*\) differs from \(.*\) once filled$/\1 \2/p' | while read -r template example; do
     if git diff --quiet HEAD -- "$example"; then echo "SKIP $template: its example has no change"; continue; fi
-    if git diff HEAD -- "$example" | sed "s#github.com/example/todo#{module-path}#g" | patch --quiet --no-backup-if-mismatch "$template"; then
+    if git diff HEAD -- "$example" | sed -e "s#github.com/example/todo#{module-path}#g" -e "s#from todo\\.#from {package}.#g" | patch --quiet --no-backup-if-mismatch "$template"; then
         echo "patched $template"
     else
         echo "FAILED $template"

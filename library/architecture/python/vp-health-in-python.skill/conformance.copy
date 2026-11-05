@@ -10,3 +10,4 @@ base-plateau.skill/conformance/command-logging examples/src/todo/command/middlew
 base-plateau.skill/conformance/plan-items examples/src/todo/command/features
 base-plateau.skill/conformance/item examples/src/todo/domain/entity/features
 base-plateau.skill/conformance/planner examples/src/todo/domain/service/features
+vp-health.skill/conformance/management examples/src/todo/api/management/features

@@ -27,3 +27,9 @@ One line per choice; ⚠️ marks a fork with real trade-offs, decided by the ow
 - 2026-11-05, agent: Python's proto-JSON scenarios had no test module (`proto.feature` never ran); `proto_json_steps_test.py` runs them now.
 - 2026-11-05, agent: Go's panic scenario stays Go's own (`answer-failures-in-go.feature`: the "http request panicked" record); the shared crash scenario checks the answer, the failed record, and that the server keeps serving.
 - 2026-11-05, agent: vp-postgres changes the item lists service's scenarios; its file is named `item-lists-service.feature` like the shared one, and joins vp-postgres's conformance in wave 4.
+- 2026-11-05, agent: the CLI's parse errors are checked by the argument they name (`bogus`, `--nope`), not by the framework's sentence (cobra's "unknown command", click's "No such command"): the words are the framework's, the argument named is the contract.
+- 2026-11-05, agent: a crash of a CLI action is logged as `cli action crashed` in every stack; Go wrote `cli action panicked`.
+- 2026-11-05, agent: a failed CLI run's answered record holds the arguments as given (`args`) in every stack, as Python did; Go held the flags parsed, which an unparsable run does not have.
+- 2026-11-05, agent: Python's CLI prints the message of the error with a kind inside a wrapper (`Error: the name is taken`), as Go did; it printed the wrapper's text.
+- 2026-11-05, agent: readiness has three outcomes in every stack, as dotnet had: a check that fails or panics/throws holds readiness back; a degraded one (Go `management.ErrDegraded`, Python `Degraded`) still takes traffic. Go recovers a check's panic.
+- 2026-11-05, agent: dotnet's "the entry point of the composition root" scenarios stay dotnet's own (`serve-in-dotnet.feature`): they test the framework registry through which a VP registers its check; Go and Python add a check by a line in the composition root, with nothing to test beyond the server's own scenarios.

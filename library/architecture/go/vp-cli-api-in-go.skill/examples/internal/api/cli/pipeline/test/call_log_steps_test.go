@@ -70,6 +70,16 @@ func registerCallLogSteps(sc *godog.ScenarioContext, w *World) {
 		}
 		return nil
 	})
+	sc.Step(`^the "([^"]*)" record should hold the arguments "([^"]*)"$`, func(msg, want string) error {
+		p, err := payload(msg)
+		if err != nil {
+			return err
+		}
+		if got := fmt.Sprint(p["args"]); got != fmt.Sprint(strings.Fields(want)) {
+			return fmt.Errorf("payload %v, want the arguments %q", p, want)
+		}
+		return nil
+	})
 	sc.Step(`^the "([^"]*)" record should hold the output "([^"]*)"$`, func(msg, want string) error {
 		p, err := payload(msg)
 		if err != nil {

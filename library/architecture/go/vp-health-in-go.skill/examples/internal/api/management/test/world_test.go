@@ -1,6 +1,7 @@
 package test
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io"
@@ -30,6 +31,7 @@ type World struct {
 	checks  []management.Check
 
 	response *httptest.ResponseRecorder
+	logs     bytes.Buffer // what the server logged
 
 	loadedCfg management.Config
 	loadErr   error
@@ -67,7 +69,7 @@ func registerWorldHooks(sc *godog.ScenarioContext, w *World) {
 func discard() *slog.Logger { return slog.New(slog.NewTextHandler(io.Discard, nil)) }
 
 func (w *World) send(method, path string) {
-	server := management.NewServer(management.Config{}, w.version, discard(), w.checks...)
+	server := management.NewServer(management.Config{}, w.version, slog.New(slog.NewJSONHandler(&w.logs, nil)), w.checks...)
 	req := httptest.NewRequest(method, path, strings.NewReader(""))
 	w.response = httptest.NewRecorder()
 	server.Handler().ServeHTTP(w.response, req)
