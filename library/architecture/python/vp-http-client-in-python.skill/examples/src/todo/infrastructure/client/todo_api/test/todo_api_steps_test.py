@@ -14,7 +14,7 @@ from pytest_bdd import given, parsers, scenarios, then, when
 from todo.infrastructure.client.core.httpclient import MOCK, HttpConfig, Operation
 from todo.infrastructure.client.todo_api import OPERATIONS, Item, TodoApi
 
-scenarios("../features/plan_items.feature", "../features/contract.feature")
+scenarios("../features/plan-items.feature", "../features/contract.feature")
 
 # The copied contract, from this file's folder up to the example's root.
 CONTRACT = Path(__file__).parents[6] / "docs" / "integration" / "client" / "todo" / "openapi.json"

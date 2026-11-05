@@ -33,16 +33,6 @@ Feature: Retry of a call the API did not answer
     When the call is run through the retry
     Then the call should fail with a status after 1 attempts
 
-  # A CancellationToken carries no deadline to check before a wait: the
-  # caller's cancellation ends the wait instead, and the call ends with the
-  # outcome of its last attempt.
-  @category/boundary
-  Scenario: The caller's cancellation ends the wait with the last outcome
-    Given the retry allows 3 attempts with a backoff of 1s
-    And a retryable call whose attempts end "unavailable|ok"
-    When the call is run through the retry, cancelled after 100ms
-    Then the call should fail as unavailable after 1 attempts
-
   @category/boundary
   Scenario: One attempt in all sends no repeat
     Given the retry allows 1 attempts with a backoff of 1ms

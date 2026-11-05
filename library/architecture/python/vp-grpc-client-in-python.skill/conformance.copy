@@ -10,3 +10,8 @@ base-plateau.skill/conformance/command-logging examples/src/todo/command/middlew
 base-plateau.skill/conformance/plan-items examples/src/todo/command/features
 base-plateau.skill/conformance/item examples/src/todo/domain/entity/features
 base-plateau.skill/conformance/planner examples/src/todo/domain/service/features
+vp-grpc-client.skill/conformance/grpc-client-core examples/src/todo/infrastructure/client/core/grpcclient/features
+vp-http-client.skill/conformance/client-pipeline examples/src/todo/infrastructure/client/core/pipeline/features
+vp-grpc-client.skill/conformance/grpc-todo-api examples/src/todo/infrastructure/client/todo_api/features
+vp-http-client.skill/conformance/remote-planner examples/src/todo/service/features
+vp-http-client.skill/conformance/plan-remote-items examples/src/todo/command/features

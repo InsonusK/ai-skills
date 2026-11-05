@@ -32,9 +32,10 @@ public sealed class RemotePlannerSteps(ITestOutputHelper output)
     [Given("the todo API is unavailable")]
     public void GivenTheTodoApiIsUnavailable() => _api.Error = new ApiUnavailableException("todo-api", "connection refused");
 
-    [Given("the todo API answers {int} with the code {int} and the message {string}")]
-    public void GivenTheTodoApiAnswers(int status, int code, string message) =>
-        _api.Error = new ApiStatusException("todo-api", (ApiStatusCode)code, message, status);
+    // The status by its canonical name: the service reads the code, whatever transport answered it.
+    [Given("the todo API answers {word} with the message {string}")]
+    public void GivenTheTodoApiAnswers(string code, string message) =>
+        _api.Error = new ApiStatusException("todo-api", Enum.Parse<ApiStatusCode>(code.Replace("_", ""), ignoreCase: true), message);
 
     [When("I plan {string} remotely")]
     public async Task WhenIPlanRemotely(string titles)

@@ -10,3 +10,8 @@ base-plateau.skill/conformance/command-logging examples/internal/command/middlew
 base-plateau.skill/conformance/plan-items examples/internal/command/features
 base-plateau.skill/conformance/item examples/internal/domain/entity/features
 base-plateau.skill/conformance/planner examples/internal/domain/service/features
+vp-grpc-client.skill/conformance/grpc-client-core examples/internal/infrastructure/client/core/grpcclient/features
+vp-http-client.skill/conformance/client-pipeline examples/internal/infrastructure/client/core/pipeline/features
+vp-grpc-client.skill/conformance/grpc-todo-api examples/internal/infrastructure/client/todoapi/features
+vp-http-client.skill/conformance/remote-planner examples/internal/service/features
+vp-http-client.skill/conformance/plan-remote-items examples/internal/command/features

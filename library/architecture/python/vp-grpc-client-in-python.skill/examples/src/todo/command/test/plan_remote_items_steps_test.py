@@ -8,7 +8,7 @@ from todo.command import PlanRemoteItemsCommand, PlanRemoteItemsHandler, PlanRem
 from todo.command.pipeline import Kind, KindError, kind_of
 from todo.domain.entity import Item
 
-scenarios("../features/plan_remote_items.feature")
+scenarios("../features/plan-remote-items.feature")
 
 
 @dataclass
