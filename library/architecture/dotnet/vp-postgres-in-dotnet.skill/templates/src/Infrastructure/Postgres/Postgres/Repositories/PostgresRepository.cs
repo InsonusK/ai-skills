@@ -66,12 +66,13 @@ public class PostgresRepository<TRoot>(DbContext context) : RepositoryBase<TRoot
     /// Runs a statement past SaveChanges: ExecuteUpdate, ExecuteDelete, raw SQL,
     /// a bulk copy. The save with nothing to send comes first because the unit
     /// of work variation point opens its transaction on a save, and this class
-    /// must not know that variation point. Inside a transaction the savepoint
-    /// keeps a failure from breaking it, as EF Core does for a save.
+    /// must not know that variation point; it is this class's save, so a failure
+    /// of it clears the tracker too. Inside a transaction the savepoint keeps a
+    /// failure of the statement from breaking it, as EF Core does for a save.
     /// </summary>
     protected async Task<int> WriteAsync(Func<Task<int>> statement, CancellationToken cancellationToken)
     {
-        await Context.SaveChangesAsync(cancellationToken);
+        await SaveChangesAsync(cancellationToken);
         var transaction = Context.Database.CurrentTransaction;
         if (transaction is null)
         {
@@ -84,11 +85,28 @@ public class PostgresRepository<TRoot>(DbContext context) : RepositoryBase<TRoot
             await transaction.ReleaseSavepointAsync(Savepoint, cancellationToken);
             return written;
         }
-        catch (Exception failure) when (!PostgresFailures.IsUnavailable(failure))
+        catch
         {
-            // A connection that failed has no savepoint left to return to.
-            await transaction.RollbackToSavepointAsync(Savepoint, cancellationToken);
+            await ReturnToSavepointAsync(transaction);
             throw;
+        }
+    }
+
+    /// <summary>
+    /// Returns the transaction to the state before the statement, so a duplicate
+    /// key, a deadlock, or a serialization failure leaves it usable. A connection
+    /// that is gone has no savepoint left: the failure of the statement is the
+    /// one to report, so the failure of the rollback is dropped.
+    /// </summary>
+    private static async Task ReturnToSavepointAsync(IDbContextTransaction transaction)
+    {
+        try
+        {
+            await transaction.RollbackToSavepointAsync(Savepoint, CancellationToken.None);
+        }
+        catch (Exception rollback) when (PostgresFailures.IsUnavailable(rollback) || rollback is InvalidOperationException)
+        {
+            // the connection is gone, and the server dropped the transaction with it
         }
     }
 }

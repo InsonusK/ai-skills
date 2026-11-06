@@ -26,6 +26,12 @@ Feature: Aggregates in memory
     Then 2 notes should be left
 
   @category/negative
+  Scenario: A root with a key kept already is a conflict, and the first stays
+    When I add the list "home" twice
+    Then the second add should fail with the kind "conflict"
+    And 1 list "home" should be kept
+
+  @category/negative
   Scenario Outline: A count, an existence check, or a delete refuses a page
     When I <call> through a specification with a page
     Then the call should be refused

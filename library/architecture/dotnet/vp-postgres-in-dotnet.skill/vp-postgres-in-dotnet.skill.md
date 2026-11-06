@@ -131,7 +131,7 @@ list.Navigation(root => root.Items).HasField("_items");
 
 - Violation: a `[Table]` attribute or any EF Core type in `{Module}.Domain`; a repository for a child; a child mapped as an entity of its own with a `DbSet`; a rule of uniqueness checked in the handler with no index behind it.
 - Risk: the domain depends on EF Core; a child saved alone skips the rules of its root; two concurrent commands both pass a check that has no index behind it.
-- Fix: the root guards its rule (`ItemList.Add`), the index holds it under a race, and the middleware answers the race; an entity keeps a constructor whose parameters name its properties and a private setter for its key; a table of no entity of the domain (a cache, an outbox) maps a class of the infrastructure in the same context.
+- Fix: the root guards its rule (`ItemList.Add`), the index holds it under a race, and the middleware answers the race; an entity keeps a constructor whose parameters name its properties, and a key EF Core can set (a private setter, or a get-only property the constructor sets); a table of no entity of the domain (a cache, an outbox) maps a class of the infrastructure in the same context.
 
 ### Write a specification per set of roots
 Derive from `Specification<TRoot>` in `{Module}.Domain/Specifications/`, adding `ISingleResultSpecification<TRoot>` for a key, with its order and page when a list needs them.

@@ -3,9 +3,9 @@
 # written by `make conformance-sync` and never edited.
 @type/infrastructure/db/postgres
 Feature: The repository writes one row
-  As the service over the database
-  I want one contract for every table
-  So that a new table needs a row and its mapping, and nothing else
+  As the code over the repository
+  I want one generic repository for every table
+  So that a new table needs its mapping, and nothing else
 
   Background:
     Given a database with the sample tables

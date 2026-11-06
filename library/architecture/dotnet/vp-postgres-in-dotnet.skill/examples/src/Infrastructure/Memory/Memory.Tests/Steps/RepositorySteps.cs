@@ -1,5 +1,6 @@
 using Ardalis.Specification;
 using Reqnroll;
+using Shared.Errors;
 using Shared.Persistence;
 using Xunit;
 using Xunit.Abstractions;
@@ -24,9 +25,22 @@ public sealed class NotesByTitle : Specification<Note>
     public NotesByTitle(int page, int size) => Query.OrderBy(note => note.Title).Skip((page - 1) * size).Take(size);
 }
 
+/// <summary>A root of these scenarios with a key the caller sets, as a list has its name.</summary>
+public sealed class Shelf(string id) : IAggregateRoot
+{
+    public string Id { get; } = id;
+}
+
+public sealed class ShelfById : Specification<Shelf>
+{
+    public ShelfById(string id) => Query.Where(shelf => shelf.Id == id);
+}
+
 [Binding]
 public sealed class RepositorySteps(ITestOutputHelper output)
 {
+    private readonly MemoryRepository<Shelf> _shelves = new(new MemoryStore());
+
     private readonly MemoryRepository<Note> _notes = new(new MemoryStore());
     private Exception? _error;
 
@@ -81,6 +95,27 @@ public sealed class RepositorySteps(ITestOutputHelper output)
 
     [Then("{int} notes should be left")]
     public async Task ThenNotesShouldBeLeft(int count) => Assert.Equal(count, await _notes.CountAsync());
+
+    [When("I add the list {string} twice")]
+    public async Task WhenIAddTwice(string id)
+    {
+        await _shelves.AddAsync(new Shelf(id));
+        try
+        {
+            await _shelves.AddAsync(new Shelf(id));
+        }
+        catch (ErrorKindException error)
+        {
+            _error = error;
+        }
+    }
+
+    [Then("the second add should fail with the kind {string}")]
+    public void ThenTheSecondAddShouldFail(string kind) =>
+        Assert.Equal(Enum.Parse<ErrorKind>(kind, ignoreCase: true), ErrorKindException.KindOf(_error));
+
+    [Then("{int} list {string} should be kept")]
+    public async Task ThenListsShouldBeKept(int count, string id) => Assert.Equal(count, await _shelves.CountAsync(new ShelfById(id)));
 
     [Then("the call should be refused")]
     public void ThenTheCallShouldBeRefused() => Assert.IsType<ArgumentException>(_error);

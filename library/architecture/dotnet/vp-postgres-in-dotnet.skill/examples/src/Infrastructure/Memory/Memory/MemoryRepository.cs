@@ -1,4 +1,5 @@
 using Ardalis.Specification;
+using Shared.Errors;
 using Shared.Persistence;
 
 namespace Memory;
@@ -7,9 +8,13 @@ namespace Memory;
 /// The repository's contract over <see cref="MemoryStore"/>: a specification is
 /// evaluated over the kept roots by Ardalis's in-memory evaluator. It keeps the
 /// root objects themselves, so a root a handler changed is stored as changed;
-/// <see cref="UpdateAsync"/> has nothing left to write. It enforces no unique
-/// key: the rules of an aggregate are the root's. The DB variation point
-/// replaces it with a repository over the database; no handler changes.
+/// <see cref="UpdateAsync"/> has nothing left to write. A root whose <c>Id</c>
+/// is kept already is a conflict, as the database's primary key answers it;
+/// every other rule is the root's. Two commands that change one root at once
+/// are not kept apart, nor is a change undone when its command fails later:
+/// it is the store of an example and of the handlers' scenarios, not of a
+/// deployment. The DB variation point replaces it with a repository over the
+/// database; no handler changes.
 /// </summary>
 public class MemoryRepository<TRoot>(MemoryStore store) : IRepository<TRoot>, IReadRepository<TRoot> where TRoot : class, IAggregateRoot
 {
@@ -17,14 +22,14 @@ public class MemoryRepository<TRoot>(MemoryStore store) : IRepository<TRoot>, IR
 
     public virtual Task<TRoot> AddAsync(TRoot entity, CancellationToken cancellationToken = default)
     {
-        Write(roots => roots.Add(entity));
+        Write(roots => Keep(roots, [entity]));
         return Task.FromResult(entity);
     }
 
     public virtual Task<IEnumerable<TRoot>> AddRangeAsync(IEnumerable<TRoot> entities, CancellationToken cancellationToken = default)
     {
         var added = entities.ToList();
-        Write(roots => roots.AddRange(added));
+        Write(roots => Keep(roots, added));
         return Task.FromResult<IEnumerable<TRoot>>(added);
     }
 
@@ -58,7 +63,7 @@ public class MemoryRepository<TRoot>(MemoryStore store) : IRepository<TRoot>, IR
     public virtual Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) => Task.FromResult(0);
 
     public virtual Task<TRoot?> GetByIdAsync<TId>(TId id, CancellationToken cancellationToken = default) where TId : notnull =>
-        Task.FromResult(Read(roots => roots.FirstOrDefault(root => Equals(typeof(TRoot).GetProperty("Id")?.GetValue(root), id))));
+        Task.FromResult(Read(roots => roots.FirstOrDefault(root => Equals(IdOf(root), id))));
 
     public virtual Task<TRoot?> FirstOrDefaultAsync(ISpecification<TRoot> specification, CancellationToken cancellationToken = default) =>
         Task.FromResult(Read(roots => Evaluator.Evaluate(roots, specification).FirstOrDefault()));
@@ -105,6 +110,24 @@ public class MemoryRepository<TRoot>(MemoryStore store) : IRepository<TRoot>, IR
         {
             yield return root;
         }
+    }
+
+    /// <summary>The key of a root, its <c>Id</c> property; null for a root with none, or with a key the store sets (0).</summary>
+    private static object? IdOf(object root) =>
+        typeof(TRoot).GetProperty("Id")?.GetValue(root) is { } id && !Equals(id, 0L) && !Equals(id, 0) ? id : null;
+
+    /// <summary>Adds the roots, all or none; a key already kept, or given twice, is a conflict.</summary>
+    private static void Keep(List<object> roots, IReadOnlyList<TRoot> added)
+    {
+        var kept = roots.Select(IdOf).Where(id => id is not null).ToHashSet();
+        foreach (var root in added)
+        {
+            if (IdOf(root) is { } id && !kept.Add(id))
+            {
+                throw new ErrorKindException(ErrorKind.Conflict, $"{typeof(TRoot).Name} {id} already exists");
+            }
+        }
+        roots.AddRange(added);
     }
 
     private TResult Read<TResult>(Func<List<TRoot>, TResult> read)

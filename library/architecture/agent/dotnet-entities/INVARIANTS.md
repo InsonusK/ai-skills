@@ -41,12 +41,12 @@ The anchor document for mapping the domain's entities in dotnet with EF Core and
 
 ## 4. Failures
 
-One command middleware, `StoreFailuresMiddleware<,>` of the `Postgres` project, listed after logging and before the unit of work, turns a failure of the database into a kind:
+One command middleware, `StoreFailuresMiddleware<,>` of `Middleware/StoreFailures`, listed after logging and before the unit of work, asks `IStoreFailures` of `Shared/Persistence`, which `PostgresFailures` of the `Postgres` project implements, and turns a failure of the database into a kind:
 
 | Failure | Kind | Message |
 |---|---|---|
 | unique violation (`23505`) | `Conflict` | `{entity} already exists` |
-| foreign key violation (`23503`) | `NotFound` | `{entity} refers to nothing` |
+| foreign key violation (`23503`) | `NotFound` | `{entity} refers to something that is not there` |
 | `DbUpdateConcurrencyException` | `ConcurrentChange` | `{entity} was changed meanwhile` |
 | `NpgsqlException { IsTransient: true }` | `Unavailable` | `the database is unavailable` |
 | anything else | no kind | — |

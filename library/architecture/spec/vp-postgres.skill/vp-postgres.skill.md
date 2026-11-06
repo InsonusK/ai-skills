@@ -30,6 +30,8 @@ adr:
 - **Which rows, then what to do** - A specification says which rows; in the rows form a selector says what to do with them, and in what order.
 - **One application, one database** - One schema, one migration history; another service reaches this data through this service's API, never its tables.
 
+The diagram shows the rows form; in the entities form the command takes the repository itself, and the store failures middleware stands where the service turns the outcomes.
+
 @import "./diagrams/concept.mmd" {as="mermaid"}
 
 # Scope
@@ -102,7 +104,7 @@ In the rows form, implement this contract for every table, under these names in 
 Describe which rows a call wants as a specification class named in the business's terms, holding the conditions, the joins along the relations of the rows, and a projection, with no statement of its own.
 - Violation: a specification that opens a connection; a condition inlined in a service; a specification named `TasksQuery2`.
 - Risk: the same condition is written twice and the copies drift; a query the service cannot name cannot be reused for a count and an update.
-- Fix: `UnclosedTasks(owner)`, handed to `SelectBy`; the repository runs it.
+- Fix: `UnclosedTasks(owner)`, handed to `SelectBy` (rows form) or to the library's list, count, or delete (entities form); the repository runs it.
 
 ### Order and page only on the selector
 In the rows form, refuse a specification that holds an order or a page, and ask for them of the selector; in the entities form, refuse a specification with a page for a count, an existence check, or a delete. Decision recorded in [order-and-page-on-the-selector](./adr/order-and-page-on-the-selector.md).
@@ -117,20 +119,20 @@ In the rows form, keep a selector inside the service that made it, and give it n
 - Fix: the service answers entities or values; a new condition is a new specification.
 
 ### Take the outcome of a write from the write
-Treat every call of a selector as a new question to the database, and take the number of rows a write touched from that write's answer. Decision recorded in [a-selector-is-no-snapshot](./adr/a-selector-is-no-snapshot.md).
+In the rows form, treat every call of a selector as a new question to the database; in both forms, take the number of rows a write touched from that write's answer. Decision recorded in [a-selector-is-no-snapshot](./adr/a-selector-is-no-snapshot.md).
 - Violation: `Count()`, then `Update(change)`, then a report of the count as the number closed.
 - Risk: a row arriving between the calls makes the two numbers differ, also inside a unit of work; after `Update`, a selector over `UnclosedTasks` counts 0.
-- Fix: report the answer of `Update`; no lock is taken for a selector.
+- Fix: report the answer of `Update` (rows form) or of the library's write (entities form: Ardalis's `UpdateRangeAsync`, `DeleteRangeAsync`); no lock is taken for a read.
 
 ### Report a repository's outcomes in its own terms
-Make a repository report the outcomes its caller must tell apart, and turn each into its kind, every other failure passing with no kind: in the rows form the repository reports outcomes of its own and the service turns them; in the entities form one command middleware turns the store's failures for every command.
+Tell the outcomes a caller must tell apart, each as its kind, and let every other failure pass with no kind: in the rows form the repository reports outcomes of its own and the service turns them; in the entities form the repository reports nothing of its own and one command middleware turns the store's failures for every command.
 
-| Outcome of the repository | Kind the service answers |
+| Outcome | Kind the caller is answered |
 |---|---|
 | Duplicate key | `Conflict` |
 | Missing reference: a foreign key broken | `NotFound`, or what the business says |
 | Row changed: gone, or changed meanwhile (`vp-row-version`) | `ConcurrentChange` |
-| No rows (`Single`, `First`: none; `All`, `Take`, `Page`: empty) | `NotFound`, when the service needs the rows |
+| No rows (rows form: `Single`, `First` none, `All`, `Take`, `Page` empty; entities form: no root) | `NotFound`, when the service or the handler needs them |
 | Unavailable: no answer, or a failure a retry may cure | `Unavailable` |
 
 - Violation: a service or a handler reading a PostgreSQL error code; a service catching every failure of the repository as conflict; a failed write left in the session, so the next save sends it again.
