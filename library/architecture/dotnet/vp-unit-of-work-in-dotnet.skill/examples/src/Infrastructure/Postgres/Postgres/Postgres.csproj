@@ -5,6 +5,7 @@
        composition roots (App.Host, App.Migrate) reference it. -->
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\Shared.csproj" />
+    <ProjectReference Include="..\..\..\Shared.Persistence\Shared.Persistence.csproj" />
     <ProjectReference Include="..\..\..\Modules\Todo\Todo.Domain\Todo.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>

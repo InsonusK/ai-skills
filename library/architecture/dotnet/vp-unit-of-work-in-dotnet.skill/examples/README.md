@@ -46,7 +46,8 @@ TEST_DATABASE_DSN='Host=localhost;Username=postgres' make test   # every scenari
 | `src/Infrastructure/Postgres/Postgres` | `AppDbContext`, `Configurations/`, `Repositories/`, `PostgresFailures`, `UnitOfWork/`, `Migrations/`, settings |
 | `src/Infrastructure/Postgres/Postgres.Testing` | the database of one scenario, and `InMemoryRepository<T>` for the handlers' scenarios |
 | `src/Middleware` | the command middleware: `Logging/`, `StoreFailures/`, `UnitOfWork/` |
-| `src/Shared` | the error kinds, `Persistence/` (the repository's contract), `UnitOfWork/` |
+| `src/Shared` | the error kinds, `UnitOfWork/` — fixed code, no packages |
+| `src/Shared.Persistence` | the repository's contract (`IRepository<T>`, `IAggregateRoot`, `IStoreFailures`), with Ardalis.Specification |
 | `src/BuildingBlocks` | fixed code |
 | `third_party/proto` | the googleapis and openapiv2 annotations the proto file imports |
 

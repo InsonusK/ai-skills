@@ -1,8 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- The error kinds and the repository's contract: the lowest project, so the
-       domain can reference it. Its one package, Ardalis.Specification, knows no
-       EF Core: the domain stays free of every framework of storage. -->
-  <ItemGroup>
-    <PackageReference Include="Ardalis.Specification" />
-  </ItemGroup>
+  <!-- The error kinds: the lowest project, with no package, so the domain can
+       reference it and stay free of every framework. -->
 </Project>

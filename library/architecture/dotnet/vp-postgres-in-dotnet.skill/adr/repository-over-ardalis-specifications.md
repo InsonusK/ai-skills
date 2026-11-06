@@ -25,7 +25,7 @@ EF Core maps the domain's entities ([entities-mapped-by-ef-core](./entities-mapp
 **Selected.**
 
 ### Description
-`IRepository<T> : IRepositoryBase<T>` and `IReadRepository<T> : IReadRepositoryBase<T>` in `Shared/Persistence`, `T : class, IAggregateRoot`, as in Ardalis's Clean Architecture template. `PostgresRepository<T> : RepositoryBase<T>` implements both, registered open generic. Specifications derive from `Specification<T>` in `{Module}.Domain/Specifications`, with their order and page.
+`IRepository<T> : IRepositoryBase<T>` and `IReadRepository<T> : IReadRepositoryBase<T>` in the project `Shared.Persistence`, `T : class, IAggregateRoot`, as in Ardalis's Clean Architecture template. `PostgresRepository<T> : RepositoryBase<T>` implements both, registered open generic. Specifications derive from `Specification<T>` in `{Module}.Domain/Specifications`, with their order and page.
 
 ### Benefits
 - No contract of ours to keep: about 250 lines of repository, selectors, and statements go.

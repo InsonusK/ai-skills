@@ -19,7 +19,7 @@ The anchor document for mapping the domain's entities in dotnet with EF Core and
 
 | What | Where |
 |---|---|
-| `IAggregateRoot`, `IRepository<T>`, `IReadRepository<T>` (Ardalis's bases, `T : class, IAggregateRoot`) | `src/Shared/Persistence/`, `Shared` referencing `Ardalis.Specification` (no EF Core) |
+| `IAggregateRoot`, `IRepository<T>`, `IReadRepository<T>` (Ardalis's bases, `T : class, IAggregateRoot`) | `src/Shared.Persistence`, a project beside `Shared` referencing `Ardalis.Specification` (no EF Core); `Shared` keeps no package |
 | Entity, aggregate root | `{Module}.Domain/Entities`; a root implements `IAggregateRoot` |
 | Specification | `{Module}.Domain/Specifications`, `Specification<TEntity>` |
 | Mapping | `src/Infrastructure/Postgres/Postgres/Configurations/{Module}/{Entity}Configuration.cs`; `Postgres` references `{Module}.Domain` |
@@ -41,7 +41,7 @@ The anchor document for mapping the domain's entities in dotnet with EF Core and
 
 ## 4. Failures
 
-One command middleware, `StoreFailuresMiddleware<,>` of `Middleware/StoreFailures`, listed after logging and before the unit of work, asks `IStoreFailures` of `Shared/Persistence`, which `PostgresFailures` of the `Postgres` project implements, and turns a failure of the database into a kind:
+One command middleware, `StoreFailuresMiddleware<,>` of `Middleware/StoreFailures`, listed after logging and before the unit of work, asks `IStoreFailures` of `Shared.Persistence`, which `PostgresFailures` of the `Postgres` project implements, and turns a failure of the database into a kind:
 
 | Failure | Kind | Message |
 |---|---|---|

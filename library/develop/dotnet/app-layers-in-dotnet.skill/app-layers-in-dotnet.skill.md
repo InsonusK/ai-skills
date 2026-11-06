@@ -1,6 +1,6 @@
 ---
 name: app-layers-in-dotnet
-description: The application layers in dotnet — one project per layer of each module (Domain, Commands, Application) plus Shared, BuildingBlocks, App.Host, and the repository's contract in Shared for the service's own store, an Abstractions and an implementation project per other infrastructure, project references that let the compiler hold the direction of the calls, entry points and other modules that see only a module's Commands, service interfaces declared beside their consumer, and entities that guard their state
+description: The application layers in dotnet — one project per layer of each module (Domain, Commands, Application) plus Shared, BuildingBlocks, App.Host, and the repository's contract in Shared.Persistence for the service's own store, an Abstractions and an implementation project per other infrastructure, project references that let the compiler hold the direction of the calls, entry points and other modules that see only a module's Commands, service interfaces declared beside their consumer, and entities that guard their state
 whenToUse: when you design a dotnet application or feature, when you add or change a dotnet entry point, command, handler, entity, or domain service, or when you review such a change
 updated: 20261031
 tags:
@@ -40,10 +40,10 @@ Place each layer of [app-layers](library/develop/core/app-layers.skill/app-layer
 | command factory | `src/Modules/{Module}/{Module}.Application/Factories` |
 | command pipeline (behaviors), logging | `src/BuildingBlocks/Pipeline`, `src/BuildingBlocks/Logging` |
 | error kinds | `src/Shared/Errors`, per [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md) |
-| the repository's contract — `IAggregateRoot`, `IRepository<T>`, `IReadRepository<T>` | `src/Shared/Persistence`, per [vp-postgres-in-dotnet](library/architecture/dotnet/vp-postgres-in-dotnet.skill/vp-postgres-in-dotnet.skill.md) |
+| the repository's contract — `IAggregateRoot`, `IRepository<T>`, `IReadRepository<T>` | `src/Shared.Persistence`, a project beside `Shared`, per [vp-postgres-in-dotnet](library/architecture/dotnet/vp-postgres-in-dotnet.skill/vp-postgres-in-dotnet.skill.md) |
 | service — its interface, declared by its consumer | `src/Modules/{Module}/{Module}.Application/Services/I{Service}.cs` (a handler's); `{Module}.Domain/Services/I{Service}.cs` (a domain service's) |
 | service — its implementation | `src/Modules/{Module}/{Module}.Application/Services/{Service}Service.cs` |
-| infrastructure — the store of the service's own data (`Memory`, `Postgres`) | `src/Infrastructure/{Store}/{Store}`: the repository over the contract of `Shared/Persistence`, and the mapping of each module's entities (`Postgres/Configurations/{Module}`) |
+| infrastructure — the store of the service's own data (`Memory`, `Postgres`) | `src/Infrastructure/{Store}/{Store}`: the repository over the contract of `Shared.Persistence`, and the mapping of each module's entities (`Postgres/Configurations/{Module}`) |
 | infrastructure — any other: its interface | `src/Infrastructure/{Infra}/{Infra}.Abstractions` |
 | infrastructure — any other: its implementation | `src/Infrastructure/{Infra}/{Infra}` |
 | infrastructure — a client of another service's API | `src/Infrastructure/Client/{Api}/{Api}.Abstractions` and `{Api}`, per [api-client](library/develop/core/api-client.skill/api-client.skill.md); the fixed code of every client in `src/Infrastructure/Client/Core/` (`Client.Abstractions`, `Client.Pipeline`, `Client.Http`, `Client.Grpc`), each client middleware in `src/Infrastructure/Client/Middleware/{Name}` (`Retry`) |
@@ -62,13 +62,14 @@ Give each project only these references, so a call against [app-layers](library/
 
 | Project | References |
 |---|---|
-| `Shared` | no project; the package `Ardalis.Specification` only, which knows no EF Core |
-| `{Module}.Domain` | `Shared` |
+| `Shared` | nothing — no project, no package |
+| `Shared.Persistence` | `Shared`; the package `Ardalis.Specification`, which knows no EF Core |
+| `{Module}.Domain` | `Shared`; `Shared.Persistence` when the module keeps data |
 | `{Module}.Commands` | the package `MediatR.Contracts`; `Shared` for the log marks (`[LogMask]`, `[LogOmit]`) of a command's fields |
 | `{Module}.Application` | `{Module}.Commands`, `{Module}.Domain`, `MediatR`; the `{Other}.Commands` of a module it calls; the `{Infra}.Abstractions` its services use, never a store's project |
 | `{Infra}.Abstractions` | `Shared` at most — no package of the technique; an `{Api}.Abstractions` also `Client.Abstractions`, the outcomes every client reports |
 | `{Infra}` | `{Infra}.Abstractions`, the packages of the technique (a client SDK) |
-| `{Store}` | `Shared`, every `{Module}.Domain` whose entities it maps, the packages of the technique (Npgsql, EF Core) |
+| `{Store}` | `Shared`, `Shared.Persistence`, every `{Module}.Domain` whose entities it maps, the packages of the technique (Npgsql, EF Core) |
 | `BuildingBlocks` | `Shared`, `MediatR`, `Microsoft.Extensions.Logging.Abstractions` |
 | `App.Host` | every project above |
 | `{Project}.Tests`, beside `{Project}` | the project it tests (and what that project references) |
@@ -90,7 +91,7 @@ Call another module by sending its command through `ISender` from a handler, wit
 - Fix: add the command the caller needs to `{Other}.Commands`.
 
 ### Reach the service's own store through the repository
-Give a handler `IRepository<TRoot>` of `Shared/Persistence` (or `IReadRepository<TRoot>` when it only reads) for the aggregates of its module, and let it load a root by a specification of `{Module}.Domain/Specifications`, call the root's methods, and save it; register the store's repository in `// [services]` of `Program.cs`.
+Give a handler `IRepository<TRoot>` of `Shared.Persistence` (or `IReadRepository<TRoot>` when it only reads) for the aggregates of its module, and let it load a root by a specification of `{Module}.Domain/Specifications`, call the root's methods, and save it; register the store's repository in `// [services]` of `Program.cs`.
 
 ```
 Todo.Domain/Entities/ItemList.cs                 the root: Add(item) guards one title per list
