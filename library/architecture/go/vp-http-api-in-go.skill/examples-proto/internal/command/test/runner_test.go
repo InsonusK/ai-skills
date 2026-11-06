@@ -24,6 +24,7 @@ func TestFeatures(t *testing.T) {
 			registerWorldHooks(sc, w)
 			registerPlanItemsSteps(sc, w)
 			registerItemListsSteps(sc)
+			registerKeptListsSteps(sc)
 		},
 		Options: &godog.Options{
 			Format:   format,

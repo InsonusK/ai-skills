@@ -1,17 +1,20 @@
 # The PostgreSQL variation point attaches to the proto example of the HTTP
-# variation point, the one that keeps its lists in memory: it deletes that
-# store and adds internal/infrastructure/postgres (the fixed code, the
-# application's tables and migrations) and the migration job cmd/migrate. The
-# base files it changes are the composition root, the service over the store
-# with its scenarios (the repository, and the unavailable answer), and the
-# module's build files.
+# variation point, whose lists live in the process (command.KeptLists): it
+# deletes those lists with their scenarios and adds the service over the
+# repository (internal/service, its scenarios shared as
+# postgres-item-lists-service), internal/infrastructure/postgres (the fixed
+# code, the application's tables and migrations), and the migration job
+# cmd/migrate. No handler changes: they take what they need of the item lists
+# as an interface, which the service has. The base files it changes are the
+# composition root, the command scenarios' runner, and the module's build
+# files.
 base library/architecture/go/vp-http-api-in-go.skill/examples-proto
 change cmd/todo/main.go
-change internal/service/item_lists.go
-change internal/service/features/item-lists-service.feature
-change internal/service/test/steps_test.go
+change internal/command/test/runner_test.go
+delete internal/command/kept_lists.go
+delete internal/command/features/kept-lists-in-go.feature
+delete internal/command/test/kept_lists_steps_test.go
 change go.mod
 change go.sum
 change Makefile
 change README.md
-delete internal/infrastructure/memory/*

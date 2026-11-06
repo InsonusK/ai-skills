@@ -15,7 +15,7 @@ adr:
 
 # Goal
 - **The PostgreSQL variation point in Python** - A Python application that keeps every property of [vp-postgres](library/architecture/spec/vp-postgres.skill/vp-postgres.skill.md); this skill details its implementation for Python and restates none of its rules.
-- **Attached by the listed changes only** - Attaching it replaces the in-memory store of [vp-http-api-in-python](library/architecture/python/vp-http-api-in-python.skill/vp-http-api-in-python.skill.md)'s proto example and changes only the files [attach.allow](./attach.allow) names, which the repository's attach check verifies.
+- **Attached by the listed changes only** - Attaching it to [vp-http-api-in-python](library/architecture/python/vp-http-api-in-python.skill/vp-http-api-in-python.skill.md)'s proto example, whose lists live in the process, puts a service over the database where those lists were, so no handler changes, and changes only the files [attach.allow](./attach.allow) names, which the repository's attach check verifies.
 
 # Core Principle
 - **SQLAlchemy behind one generic repository** - SQLAlchemy maps the rows and builds the statements; `Repository[TRow]`, the selectors, and the translation of failures are ours. Decision recorded in [repository-over-sqlalchemy](./adr/repository-over-sqlalchemy.md).
