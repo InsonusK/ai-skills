@@ -1,8 +1,8 @@
 @type/tech-check
-Feature: Aggregates in memory
+Feature: The repository in memory, for the handlers' scenarios
   As a handler over the repository's contract
   I want roots kept, picked by a specification, and changed in place, with no database
-  So that the handlers run in this example and in their scenarios as they will over a database
+  So that the handlers' scenarios run with no database over the contract they have over one
 
   Background:
     Given the notes "b|a|c" are added

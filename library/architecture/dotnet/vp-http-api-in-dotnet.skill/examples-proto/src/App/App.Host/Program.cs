@@ -13,8 +13,6 @@ using BuildingBlocks.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Middleware.Logging;
-using Memory;
-using Shared.Persistence;
 using Todo.Application;
 
 namespace App.Host;
@@ -55,12 +53,8 @@ public static class Program
         // out every payload; the logging variation point replaces this line.
         services.AddLogging(logging => logging.SetMinimumLevel(config.LogLevel).AddProvider(new JsonLogProvider(stderr)));
 
-        // [services] - infrastructure and the services over it. The aggregates
-        // live in memory in this example, one store for the process; the DB
-        // variation point replaces these lines.
-        services.AddSingleton<MemoryStore>();
-        services.AddSingleton(typeof(IRepository<>), typeof(MemoryRepository<>));
-        services.AddSingleton(typeof(IReadRepository<>), typeof(MemoryRepository<>));
+        // [services] - infrastructure and the services over it. This example
+        // has none: the lists live in the process (the module's KeptLists).
 
         // [handlers] - the handler of every command of each module, and the
         // command middleware wrapped around every one of them, the first the

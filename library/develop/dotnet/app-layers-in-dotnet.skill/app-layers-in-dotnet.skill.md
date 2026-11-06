@@ -96,13 +96,13 @@ Give a handler `IRepository<TRoot>` of `Shared/Persistence` (or `IReadRepository
 Todo.Domain/Entities/ItemList.cs                 the root: Add(item) guards one title per list
 Todo.Domain/Specifications/ListById.cs           which root a call picks
 Todo.Application/Commands/AddItemHandler.cs      over IRepository<ItemList>: load, Add, save
-Infrastructure/Memory/Memory                     MemoryRepository<T> : IRepository<T>, in memory
 Infrastructure/Postgres/Postgres                 PostgresRepository<T> : IRepository<T>, EF Core
+Infrastructure/Postgres/Postgres.Testing         InMemoryRepository<T> : IRepository<T>, for the handlers' scenarios
 ```
 
 - Violation: a service between a handler and the service's own store; a handler taking `AppDbContext`; a repository of a child entity.
 - Risk: a layer that only forwards; a handler that cannot run over the in-memory store of its scenarios; a child saved past the rules of its root.
-- Fix: the composition root swaps the store (memory → a database) with no handler changed; the store's failures become kinds in a command middleware ([vp-postgres-in-dotnet](library/architecture/dotnet/vp-postgres-in-dotnet.skill/vp-postgres-in-dotnet.skill.md)).
+- Fix: the handler takes the contract, never the store, so its scenarios run over the repository in memory; the store's failures become kinds in a command middleware ([vp-postgres-in-dotnet](library/architecture/dotnet/vp-postgres-in-dotnet.skill/vp-postgres-in-dotnet.skill.md)).
 
 ### Declare a service's interface beside its consumer
 Declare the interface a handler uses to reach a service — another system's API, a computation with I/O — in `{Module}.Application/Services/`, beside its implementation, listing only the methods the module's handlers call; declare the interface a service uses to reach its infrastructure in `{Infra}.Abstractions`, in the technique's terms; build both implementations in `// [services]` of `Program.cs`.
@@ -147,7 +147,7 @@ Give an entity a constructor that throws its rule error for an invalid entity, p
 ## SHOULD
 
 ### Fake the layer below by hand
-Write the fake of the layer below as a small class in the test project implementing the handler's interface, recording calls and returning what the scenario sets, rather than a mocking library; for the repository, run the handler over `MemoryRepository<T>`, subclassed for a failure.
+Write the fake of the layer below as a small class in the test project implementing the handler's interface, recording calls and returning what the scenario sets, rather than a mocking library; for the repository, run the handler over `InMemoryRepository<T>` of `Postgres.Testing`.
 - Risk: a mock configured per scenario repeats the interface's behaviour in setup code that no compiler checks.
 - Fix: `sealed class FakeUsers : IUsers { public List<string> Added { get; } = []; ... }`.
 

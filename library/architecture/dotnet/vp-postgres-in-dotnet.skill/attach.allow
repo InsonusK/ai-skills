@@ -1,15 +1,29 @@
 # The PostgreSQL variation point attaches to the proto example of the HTTP
-# variation point, whose handlers already take the repository's contract over
-# the list aggregate, kept in memory: it adds src/Infrastructure/Postgres (the
-# mapping of the aggregate, the repository, the translation of failures), the
-# migration job src/App/App.Migrate, the command scope in BuildingBlocks, and the
-# store failures middleware. The base files it changes are the composition root
-# and the build files only: no handler, entity, or scenario of the module. The
-# in-memory store stays, for the handlers' scenarios.
+# variation point, whose handlers keep the lists in the process (KeptLists): it
+# adds src/Infrastructure/Postgres (the mapping of the aggregate, the
+# repository, the translation of failures, the repository in memory for the
+# handlers' scenarios), the repository's contract of Shared/Persistence with
+# its package, the migration job src/App/App.Migrate, the command scope in
+# BuildingBlocks, and the store failures middleware. Beside the composition
+# root and the build files it changes the example's own business code: the list
+# becomes an aggregate root (ItemList.cs) whose items get the store's key
+# (Item.cs), the handlers take IRepository<ItemList> in place of KeptLists, and
+# their scenarios run over the repository in memory.
 base library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples-proto
 change src/App/App.Host/Program.cs
 change src/App/App.Host/App.Host.csproj
 change src/App/App.Host.Tests/App.Host.Tests.csproj
+change src/Shared/Shared.csproj
+change src/Modules/Todo/Todo.Domain/Todo.Domain.csproj
+change src/Modules/Todo/Todo.Domain/Entities/Item.cs
+change src/Modules/Todo/Todo.Domain/Entities/ItemList.cs
+change src/Modules/Todo/Todo.Application/Todo.Application.csproj
+change src/Modules/Todo/Todo.Application/TodoModule.cs
+change src/Modules/Todo/Todo.Application/Commands/AddItemHandler.cs
+change src/Modules/Todo/Todo.Application/Commands/ListItemsHandler.cs
+change src/Modules/Todo/Todo.Application.Tests/Todo.Application.Tests.csproj
+change src/Modules/Todo/Todo.Application.Tests/Steps/ItemListsSteps.cs
+delete src/Modules/Todo/Todo.Application/Commands/KeptLists.cs
 change Directory.Packages.props
 change Todo.slnx
 change Makefile

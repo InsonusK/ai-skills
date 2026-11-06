@@ -1,11 +1,12 @@
 using Ardalis.Specification;
+using Postgres.Testing;
 using Reqnroll;
 using Shared.Errors;
 using Shared.Persistence;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Memory.Tests.Steps;
+namespace Postgres.Tests.Steps;
 
 /// <summary>A root of these scenarios only.</summary>
 public sealed class Note(string title) : IAggregateRoot
@@ -36,12 +37,14 @@ public sealed class ShelfById : Specification<Shelf>
     public ShelfById(string id) => Query.Where(shelf => shelf.Id == id);
 }
 
+/// <summary>Scoped to its feature: its steps win over the same words of the database's repository steps.</summary>
 [Binding]
-public sealed class RepositorySteps(ITestOutputHelper output)
+[Scope(Feature = "The repository in memory, for the handlers' scenarios")]
+public sealed class InMemoryRepositorySteps(ITestOutputHelper output)
 {
-    private readonly MemoryRepository<Shelf> _shelves = new(new MemoryStore());
+    private readonly InMemoryRepository<Shelf> _shelves = new();
 
-    private readonly MemoryRepository<Note> _notes = new(new MemoryStore());
+    private readonly InMemoryRepository<Note> _notes = new();
     private Exception? _error;
 
     [Given("the notes {string} are added")]

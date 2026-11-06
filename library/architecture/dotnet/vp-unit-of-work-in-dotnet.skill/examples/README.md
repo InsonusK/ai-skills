@@ -44,8 +44,7 @@ TEST_DATABASE_DSN='Host=localhost;Username=postgres' make test   # every scenari
 | `src/Modules/Todo/Todo.Application` | the command handlers, each over `IRepository<ItemList>`; `ImportItems` over nested `AddItem` commands |
 | `src/Modules/Todo/Todo.Domain` | entities (the aggregate `ItemList` and its items), specifications, domain services, the rule errors |
 | `src/Infrastructure/Postgres/Postgres` | `AppDbContext`, `Configurations/`, `Repositories/`, `PostgresFailures`, `UnitOfWork/`, `Migrations/`, settings |
-| `src/Infrastructure/Postgres/Postgres.Testing` | the database of one scenario |
-| `src/Infrastructure/Memory/Memory` | `MemoryRepository<T>`: the same contract in memory, for the handlers' scenarios |
+| `src/Infrastructure/Postgres/Postgres.Testing` | the database of one scenario, and `InMemoryRepository<T>` for the handlers' scenarios |
 | `src/Middleware` | the command middleware: `Logging/`, `StoreFailures/`, `UnitOfWork/` |
 | `src/Shared` | the error kinds, `Persistence/` (the repository's contract), `UnitOfWork/` |
 | `src/BuildingBlocks` | fixed code |

@@ -1,24 +1,28 @@
+// Source: skill vp-postgres-in-dotnet
+
 using Ardalis.Specification;
 using Shared.Errors;
 using Shared.Persistence;
 
-namespace Memory;
+namespace Postgres.Testing;
 
 /// <summary>
-/// The repository's contract over <see cref="MemoryStore"/>: a specification is
-/// evaluated over the kept roots by Ardalis's in-memory evaluator. It keeps the
+/// The repository's contract in memory, for the scenarios of the handlers, which
+/// run with no database: a specification is evaluated over the kept roots by
+/// Ardalis's in-memory evaluator. It keeps the
 /// root objects themselves, so a root a handler changed is stored as changed;
 /// <see cref="UpdateAsync"/> has nothing left to write. A root whose <c>Id</c>
 /// is kept already is a conflict, as the database's primary key answers it;
 /// every other rule is the root's. Two commands that change one root at once
 /// are not kept apart, nor is a change undone when its command fails later:
-/// it is the store of an example and of the handlers' scenarios, not of a
-/// deployment. The DB variation point replaces it with a repository over the
-/// database; no handler changes.
+/// it serves one scenario. The database's behaviour is proved by Postgres.Tests.
 /// </summary>
-public class MemoryRepository<TRoot>(MemoryStore store) : IRepository<TRoot>, IReadRepository<TRoot> where TRoot : class, IAggregateRoot
+public class InMemoryRepository<TRoot> : IRepository<TRoot>, IReadRepository<TRoot> where TRoot : class, IAggregateRoot
 {
     private static readonly InMemorySpecificationEvaluator Evaluator = InMemorySpecificationEvaluator.Default;
+
+    private readonly List<object> _roots = [];
+    private readonly Lock _writing = new();
 
     public virtual Task<TRoot> AddAsync(TRoot entity, CancellationToken cancellationToken = default)
     {
@@ -132,17 +136,17 @@ public class MemoryRepository<TRoot>(MemoryStore store) : IRepository<TRoot>, IR
 
     private TResult Read<TResult>(Func<List<TRoot>, TResult> read)
     {
-        lock (store.Writing)
+        lock (_writing)
         {
-            return read(store.Of<TRoot>().Cast<TRoot>().ToList());
+            return read(_roots.Cast<TRoot>().ToList());
         }
     }
 
     private TResult Write<TResult>(Func<List<object>, TResult> write)
     {
-        lock (store.Writing)
+        lock (_writing)
         {
-            return write(store.Of<TRoot>());
+            return write(_roots);
         }
     }
 

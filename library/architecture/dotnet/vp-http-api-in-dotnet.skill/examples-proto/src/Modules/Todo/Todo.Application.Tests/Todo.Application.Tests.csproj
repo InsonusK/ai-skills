@@ -10,7 +10,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Todo.Application\Todo.Application.csproj" />
-    <!-- The in-memory store stands in for the database: the handlers run over the real contract. -->
-    <ProjectReference Include="..\..\..\Infrastructure\Memory\Memory\Memory.csproj" />
   </ItemGroup>
 </Project>

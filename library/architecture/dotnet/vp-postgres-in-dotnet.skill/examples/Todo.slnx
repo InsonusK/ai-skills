@@ -7,10 +7,6 @@
     <Project Path="src/Middleware/Middleware.csproj" />
     <Project Path="src/Middleware.Tests/Middleware.Tests.csproj" />
   </Folder>
-  <Folder Name="/src/Infrastructure/Memory/">
-    <Project Path="src/Infrastructure/Memory/Memory/Memory.csproj" />
-    <Project Path="src/Infrastructure/Memory/Memory.Tests/Memory.Tests.csproj" />
-  </Folder>
   <Folder Name="/src/Infrastructure/Postgres/">
     <Project Path="src/Infrastructure/Postgres/Postgres/Postgres.csproj" />
     <Project Path="src/Infrastructure/Postgres/Postgres.Testing/Postgres.Testing.csproj" />

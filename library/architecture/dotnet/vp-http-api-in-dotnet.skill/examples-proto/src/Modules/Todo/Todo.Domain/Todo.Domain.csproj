@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- The domain of the module: entities, specifications, domain services, the
-       rule errors. It references only Shared (the error kinds and the
-       repository's contract) and through it Ardalis.Specification, which knows
-       no EF Core, so its rules are tested by their scenarios alone. -->
+  <!-- The domain of the module: entities, domain services, the rule errors.
+       It references only Shared (the error kinds) and no package, so its rules
+       are tested by their scenarios alone. -->
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\Shared.csproj" />
   </ItemGroup>

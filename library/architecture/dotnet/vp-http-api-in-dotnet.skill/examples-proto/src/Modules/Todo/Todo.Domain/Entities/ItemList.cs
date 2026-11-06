@@ -1,15 +1,13 @@
-using Shared.Persistence;
 using Todo.Domain.Errors;
 
 namespace Todo.Domain.Entities;
 
 /// <summary>
-/// A to-do list: the root of an aggregate whose children are its items. A
-/// title is unique in its list, a rule over every item, so the list guards it,
-/// and the items are added only through it. The caller names the list; it
-/// exists from its first item on.
+/// A to-do list and its items. A title is unique in its list, a rule over every
+/// item, so the list guards it, and the items are added only through it. The
+/// caller names the list; it exists from its first item on.
 /// </summary>
-public sealed class ItemList : IAggregateRoot
+public sealed class ItemList
 {
     private readonly List<Item> _items = [];
 

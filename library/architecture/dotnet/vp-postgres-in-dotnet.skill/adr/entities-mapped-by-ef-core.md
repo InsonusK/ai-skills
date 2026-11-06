@@ -28,7 +28,7 @@ The rows form of `vp-postgres` puts a row class per table below a service that b
 
 ### Benefits
 - One model of the domain; EF Core writes what changed in a loaded aggregate, a removed child included.
-- Attaching the database changes no handler: the in-memory base and the database implement one contract.
+- A handler written over `IRepository<T>` changes for no store; its scenarios run over the repository in memory.
 
 ### Costs
 - `app-layers-in-dotnet` lets `Postgres` reference the domains it maps.

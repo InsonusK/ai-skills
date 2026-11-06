@@ -18,7 +18,7 @@ adr:
 
 # Goal
 - **Data outlives the process** - What a command stored is there after a restart and for every replica.
-- **Commands do not change** - The database replaces an in-memory store behind the same contract (the service in the rows form, the repository in the entities form): no command, entity, or domain service changes, as [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md) promises for infrastructure.
+- **Commands do not change** - In the rows form the database replaces an in-memory store behind the service: no command, entity, or domain service changes, as [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md) promises for infrastructure. In the entities form a handler is written over the repository's contract, which no store changes; a sample of the base that kept its data in the process takes the repository when the database attaches.
 - **One query, one name** - A set of rows is described once, by a specification with a name of the business, and every read, count, update, or delete of that set uses it.
 - **The schema travels with the code** - Every change of a table is a migration in the repository, applied before the code that needs it starts.
 - **Failures are told apart** - A taken key is a conflict, a row changed meanwhile is a concurrent change, a database that does not answer is unavailable, anything else is a defect of the service.
@@ -175,7 +175,7 @@ Run this skill's [conformance/](./conformance/) scenarios in every stack, those 
 - Fix: step definitions are the stack's own, and one that compares rows reads each field the scenario's table names from the row object, never from a joined text; the scenarios of `repository`, `selector`, `specification`, and `outcomes` run on the tables `owners` and `tasks` of the test project, which the application never ships; what only one stack has goes in files of its own beside the copies.
 
 ### Attach without editing commands
-Attach the variation point by changing no command, entity, or domain service; only the composition root, the service over the repository (rows form), and the build files.
+Attach the variation point by changing no command, entity, or domain service; only the composition root, the service over the repository (rows form), the build files, and, in the entities form, the base's samples that kept their data in the process.
 - Risk: a repository that reaches into commands cannot be replaced by another, or removed.
 - Fix: the stack extension lists the files it changes; a check compares its example with the base against that list.
 

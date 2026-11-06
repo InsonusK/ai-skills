@@ -29,7 +29,7 @@ EF Core maps the domain's entities ([entities-mapped-by-ef-core](./entities-mapp
 
 ### Benefits
 - No contract of ours to keep: about 250 lines of repository, selectors, and statements go.
-- The form an agent and a dotnet developer know; the in-memory repository of the base plateau implements the same interfaces with Ardalis's in-memory evaluator.
+- The form an agent and a dotnet developer know; the repository in memory of the handlers' scenarios (`Postgres.Testing`) implements the same interfaces with Ardalis's in-memory evaluator.
 - `IAggregateRoot` keeps a repository to a root: a child is saved with its root.
 
 ### Costs
@@ -69,4 +69,4 @@ A handler takes `AppDbContext` and queries `Set<T>()`.
 - No package and no layer.
 
 ### Costs
-- Every handler depends on EF Core, the in-memory base cannot stand in for the database, and a query is not an object to name and reuse.
+- Every handler depends on EF Core, no repository in memory can stand in for the database in its scenarios, and a query is not an object to name and reuse.

@@ -20,7 +20,7 @@ adr:
 
 # Goal
 - **The PostgreSQL variation point in dotnet** - A dotnet application that keeps every property of [vp-postgres](library/architecture/spec/vp-postgres.skill/vp-postgres.skill.md) in its entities form; this skill details its implementation for dotnet and restates none of its rules.
-- **Attached by the listed changes only** - Attaching it replaces the in-memory repository of [vp-http-api-in-dotnet](library/architecture/dotnet/vp-http-api-in-dotnet.skill/vp-http-api-in-dotnet.skill.md)'s proto example in the composition root and changes only the files [attach.allow](./attach.allow) names, no handler among them, which the repository's attach check verifies.
+- **Attached by the listed changes only** - Attaching it to [vp-http-api-in-dotnet](library/architecture/dotnet/vp-http-api-in-dotnet.skill/vp-http-api-in-dotnet.skill.md)'s proto example, whose sample handlers keep the lists in the process, changes only the files [attach.allow](./attach.allow) names: the composition root, the build files, and that sample code, which takes the repository. The repository's attach check verifies it.
 
 # Core Principle
 - **EF Core maps the domain** - An aggregate's root and its children are mapped as they are, the children owned by the root; no row stands between the domain and its tables. Decision recorded in [entities-mapped-by-ef-core](./adr/entities-mapped-by-ef-core.md).
@@ -47,7 +47,7 @@ src/
     │   ├── Repositories/PostgresRepository.cs  copied
     │   ├── Configurations/{Module}/{Root}Configuration.cs   per aggregate: the mapping
     │   └── Migrations/                         generated: make migration NAME=...
-    ├── Postgres.Testing/                       copied: TestDatabase
+    ├── Postgres.Testing/                       copied: TestDatabase, InMemoryRepository
     └── Postgres.Tests/                         features/ holds the copies of the shared scenarios
 ```
 
@@ -58,11 +58,11 @@ src/
 ### Copy the fixed code from templates
 Copy [templates/src](./templates/src/), with `dotnet-tools.json` of the example to `.config/`, add the projects to the solution, the package versions of the example's `Directory.Packages.props` (`Microsoft.Extensions.*` raised to EF Core's version, EF Core pinned), and the Makefile targets `migrate` and `migration`; write `Postgres.csproj` as the example's, with a `ProjectReference` to each `{Module}.Domain` it maps.
 - Violation: a second `DbContext` per module; a `DbSet` property edited into `AppDbContext`; `App.Host` referencing `Postgres` from anything but `Program.cs`; a handler referencing `Postgres`.
-- Risk: two contexts mean two migration histories over one database; a handler over `AppDbContext` cannot run over the in-memory repository of its scenarios.
+- Risk: two contexts mean two migration histories over one database; a handler over `AppDbContext` cannot run over the repository in memory of its scenarios.
 - Fix: an aggregate adds its entities, its configuration, its specifications, and its migration; no fixed file changes.
 
 ### Register the database, the command scope, and the failures middleware
-Load `PostgresConfig.Load()` in the `try` of `AppConfig.Load()`, call `AddPostgres` in `// [services]` in place of the in-memory repository, which registers `IRepository<>` and `IReadRepository<>` for every root, call `AddCommandScope()` after every `Add{Module}Module()`, list `StoreFailuresMiddleware<,>` right after `LoggingMiddleware<,>`, and turn `ValidateScopes` on.
+Load `PostgresConfig.Load()` in the `try` of `AppConfig.Load()`, call `AddPostgres` in `// [services]`, which registers `IRepository<>` and `IReadRepository<>` for every root, call `AddCommandScope()` after every `Add{Module}Module()`, list `StoreFailuresMiddleware<,>` right after `LoggingMiddleware<,>`, and turn `ValidateScopes` on.
 
 ```csharp
 // src/App/App.Host/Program.cs, RunAsync
@@ -81,7 +81,7 @@ catch (FormatException configError)
 }
 
 // [services]
-services.AddPostgres(postgres);   // replaces MemoryStore and MemoryRepository<>
+services.AddPostgres(postgres);   // IRepository<> and IReadRepository<> of every aggregate root
 
 // [handlers]
 services.AddTodoModule();
@@ -144,8 +144,8 @@ public sealed class ListById : Specification<ItemList>, ISingleResultSpecificati
 ```
 
 - Violation: a specification with `Skip` or `Take` given to `CountAsync`, `AnyAsync`, or `DeleteRangeAsync`; a condition inlined in a handler; a specification in the Postgres project.
-- Risk: a count or a delete applies the conditions and ignores the page, so it works on other roots than the list beside it; the in-memory repository cannot evaluate a query it never sees.
-- Fix: `PostgresRepository` and `MemoryRepository` refuse a page there (`SpecificationPage`); a page is one specification, the count of the same roots another.
+- Risk: a count or a delete applies the conditions and ignores the page, so it works on other roots than the list beside it; the repository in memory cannot evaluate a query it never sees.
+- Fix: `PostgresRepository` and `InMemoryRepository` refuse a page there (`SpecificationPage`); a page is one specification, the count of the same roots another.
 
 ### Load, change, and save in the handler
 Take `IRepository<TRoot>` in a handler that writes and `IReadRepository<TRoot>` in one that only reads, load the root by a specification, call its methods, and save it with `AddAsync` or `UpdateAsync`.
@@ -169,7 +169,7 @@ else
 
 - Violation: a handler catching `DbUpdateException` or reading a `PostgresException`; a service between a handler and its own database; a field changed on a child loaded by a specification of its own.
 - Risk: the engine's codes leak into the application; a child saved past its root breaks the root's rule.
-- Fix: the handler states its rules before the write; the middleware tells the failures; a service stays for another system's API. The handler's scenarios run over `MemoryRepository<T>` of `src/Infrastructure/Memory`, which the example keeps for them.
+- Fix: the handler states its rules before the write; the middleware tells the failures; a service stays for another system's API. The handler's scenarios run over `InMemoryRepository<T>` of `Postgres.Testing`, with no database.
 
 ### Pass a statement of its own through the base class
 Derive `{Root}Repository : PostgresRepository<TRoot>` with an interface extending `IRepository<TRoot>`, and run a statement past SaveChanges in `WriteAsync`.
@@ -206,7 +206,7 @@ services.AddHealthChecks().AddNpgSql(config.Dsn, name: "database");
 Name the shared scenarios of `vp-postgres`'s `conformance/` in [conformance.copy](./conformance.copy), run `make conformance-sync`, and implement their steps in `Postgres.Tests/Steps` over `PostgresRepository<T>`, an outcome being what `PostgresFailures` tells of the failure.
 - Violation: a copy edited; `conformance/postgres-selector/` copied, whose selector this form does not have.
 - Risk: the contract is proved in another stack and not in this one.
-- Fix: the sample aggregates and their specifications are in `Steps/SampleTables.cs`, created by `EnsureCreated` for the scenario; what only dotnet has stays beside the copies, named `{name}-in-dotnet.feature`: `config-forms-in-dotnet`, `model-changes-in-dotnet`, `pages-in-dotnet`, and `list-aggregate-in-dotnet` (the example's aggregate saved and loaded).
+- Fix: the sample aggregates and their specifications are in `Steps/SampleTables.cs`, created by `EnsureCreated` for the scenario; what only dotnet has stays beside the copies, named `{name}-in-dotnet.feature`: `config-forms-in-dotnet`, `model-changes-in-dotnet`, `pages-in-dotnet`, `list-aggregate-in-dotnet` (the example's aggregate saved and loaded), and `in-memory-repository-in-dotnet` (the repository of the handlers' scenarios).
 
 ### Create the database of each scenario
 Create a `TestDatabase` per scenario, apply `PostgresMigrations.ApplyAsync` where the scenario needs the schema, and dispose it after the scenario.
@@ -216,7 +216,7 @@ Create a `TestDatabase` per scenario, apply `PostgresMigrations.ApplyAsync` wher
 
 # Check list
 - [ ] The fixed files are unchanged copies of the templates; one `AppDbContext`, one migration history.
-- [ ] `AddPostgres` replaces the in-memory repository; no handler changed when the database was attached.
+- [ ] `AddPostgres` registers the repositories; every handler over the database's data takes `IRepository<T>` or `IReadRepository<T>`.
 - [ ] `StoreFailuresMiddleware` follows `LoggingMiddleware`; no handler reads a failure of EF Core or Npgsql.
 - [ ] Every aggregate has one configuration; its children are owned; no EF Core type is in a Domain project.
 - [ ] Repositories and the types over them are scoped; `AddCommandScope()` follows every module; `ValidateScopes` is on.

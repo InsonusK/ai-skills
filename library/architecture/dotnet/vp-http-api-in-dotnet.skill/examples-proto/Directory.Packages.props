@@ -31,11 +31,6 @@
     <PackageVersion Include="Grpc.Tools" Version="2.84.0" />
   </ItemGroup>
 
-  <!-- The repository's contract and the specifications, with no EF Core -->
-  <ItemGroup>
-    <PackageVersion Include="Ardalis.Specification" Version="9.3.1" />
-  </ItemGroup>
-
   <!-- Scenarios -->
   <ItemGroup>
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />

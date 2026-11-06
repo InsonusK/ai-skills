@@ -24,10 +24,10 @@ The anchor document for mapping the domain's entities in dotnet with EF Core and
 | Specification | `{Module}.Domain/Specifications`, `Specification<TEntity>` |
 | Mapping | `src/Infrastructure/Postgres/Postgres/Configurations/{Module}/{Entity}Configuration.cs`; `Postgres` references `{Module}.Domain` |
 | Repository | `PostgresRepository<T> : RepositoryBase<T>`, one for every root, registered open generic |
-| Store in memory (base plateau, before the database) | `src/Infrastructure/Memory/Memory/MemoryRepository<T>`, the same interfaces |
+| Repository in memory, for the handlers' scenarios | `Postgres.Testing/InMemoryRepository<T>`, the same interfaces |
 
 - A handler takes `IRepository<T>` (or `IReadRepository<T>` when it only reads), loads, calls the entity's methods, and saves. No service stands between a handler and its own database; a service stays for another system's API (`Client`).
-- Attaching the database changes the registration and the mapping, never a handler.
+- The HTTP variation point adds a way to call the application, not a store: its proto example keeps the lists in the process (`KeptLists`), with no repository and no Ardalis. Attaching the database turns those sample handlers into handlers over `IRepository<ItemList>`; a handler written over the repository changes for no store.
 - A repository exists only for a root (`IAggregateRoot`): a child is saved with its root.
 - `Postgres.Abstractions`, the rows, and `IItemLists` go away.
 
@@ -58,7 +58,7 @@ One command middleware, `StoreFailuresMiddleware<,>` of `Middleware/StoreFailure
 
 | Wave | What |
 |---|---|
-| 1a | the in-memory base (`vp-http-api-in-dotnet` `examples-proto`): the list aggregate `ItemList` with its items, `IRepository<T>` in `Shared`, `MemoryRepository<T>` |
+| 1a | the HTTP proto example (`vp-http-api-in-dotnet` `examples-proto`): `ItemList` with its rule, the lists in the process (`KeptLists`), no store |
 | 1b | `vp-postgres-in-dotnet` (example, templates, skill, ADRs), the spec's two forms and `conformance/postgres-selector/`, `app-layers-in-dotnet` |
 | 2 | `vp-unit-of-work-in-dotnet` and `vp-row-version-in-dotnet` over the new base |
 
