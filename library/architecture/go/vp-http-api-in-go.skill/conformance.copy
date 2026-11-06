@@ -31,5 +31,3 @@ vp-http-api.skill/conformance/proto-http-items examples-proto/internal/api/http/
 vp-http-api.skill/conformance/proto-http-lists examples-proto/internal/api/http/endpoint/features
 vp-http-api.skill/conformance/proto-grpc-items examples-proto/internal/api/grpc/endpoint/features
 vp-http-api.skill/conformance/proto-item-lists examples-proto/internal/command/features
-vp-http-api.skill/conformance/proto-item-lists-service examples-proto/internal/service/features
-vp-http-api.skill/conformance/proto-memory-lists examples-proto/internal/infrastructure/memory/features
