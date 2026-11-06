@@ -30,7 +30,7 @@ The variation point must attach with no change to a repository, and a transactio
 - No repository changes; removing the variation point removes one registration and one list entry.
 
 ### Costs
-- `ExecuteUpdate`, `ExecuteDelete`, and raw SQL pass no `SaveChanges`, so they run in `PostgresStatements.WriteAsync`, whose empty save opens the transaction; a statement called directly stays outside it.
+- `ExecuteUpdate`, `ExecuteDelete`, and raw SQL pass no `SaveChanges`, so they run in `PostgresRepository.WriteAsync`, whose empty save opens the transaction; a statement called directly stays outside it.
 
 ## A call in every repository
 

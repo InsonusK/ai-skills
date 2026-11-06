@@ -13,6 +13,7 @@ using BuildingBlocks.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Middleware.Logging;
+using Middleware.StoreFailures;
 using Middleware.UnitOfWork;
 using Postgres;
 using Postgres.UnitOfWork;
@@ -59,7 +60,7 @@ public static class Program
         services.AddLogging(logging => logging.SetMinimumLevel(config.LogLevel).AddProvider(new JsonLogProvider(stderr)));
 
         // [services] - infrastructure and the services over it. One context per
-        // command scope, and every repository over it scoped with it.
+        // command scope, and the repository of every aggregate root scoped with it.
         services.AddPostgres(postgres);
         services.AddPostgresUnitOfWork();
 
@@ -71,6 +72,7 @@ public static class Program
         services.AddCommandScope();
         services.AddCommandMiddleware(
             typeof(LoggingMiddleware<,>),
+            typeof(StoreFailuresMiddleware<,>),   // after the logging: it logs the kind, and the store's failure as the cause
             typeof(UnitOfWorkMiddleware<,>));
 
         // [entries] - every entry point, registered as an Entry and run

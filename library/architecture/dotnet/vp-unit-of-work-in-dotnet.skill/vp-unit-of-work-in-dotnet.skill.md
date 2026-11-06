@@ -33,13 +33,13 @@ src/
 ## MUST
 
 ### Copy the fixed code from templates
-Copy [templates/src](./templates/src/) over the application, and let `Postgres.Abstractions` reference `Shared`.
+Copy [templates/src](./templates/src/) over the application.
 - Violation: the transaction opened in a handler or a service; `IUnitOfWork` given to a handler.
 - Risk: a commit inside a nested command ends the transaction of its parent; a service that commits breaks the unit.
 - Fix: only `UnitOfWorkMiddleware` calls `IUnitOfWork`.
 
 ### Register it and list its middleware last
-Call `AddPostgresUnitOfWork()` after `AddPostgres` in `// [services]`, and add `typeof(UnitOfWorkMiddleware<,>)` as the last of the command middleware.
+Call `AddPostgresUnitOfWork()` after `AddPostgres` in `// [services]`, and add `typeof(UnitOfWorkMiddleware<,>)` as the last of the command middleware, after the store failures middleware.
 
 ```csharp
 // [services]
@@ -49,29 +49,30 @@ services.AddPostgresUnitOfWork();
 // [handlers]
 services.AddCommandMiddleware(
     typeof(LoggingMiddleware<,>),
+    typeof(StoreFailuresMiddleware<,>),
     typeof(UnitOfWorkMiddleware<,>));
 ```
 
-- Violation: `UnitOfWorkMiddleware` before the logging or an access check.
-- Risk: a failed commit is missing from the command's log record; a rejected command opens a unit.
-- Fix: last in the list; a commit that fails then reaches the logging as the command's failure.
+- Violation: `UnitOfWorkMiddleware` before the logging, the store failures middleware, or an access check.
+- Risk: a failed commit is missing from the command's log record, or reaches the caller untold (a deferred constraint fails at the commit); a rejected command opens a unit.
+- Fix: last in the list; a commit that fails then passes the store failures middleware and reaches the logging as the command's failure.
 
 ### Run nested commands through ISender, one at a time
 Let a handler run its nested commands by `await sender.Send(...)`, one after another, and let it keep going after a failure only by catching the `ErrorKindException` of the nested command.
 - Violation: `Task.WhenAll` over nested commands; a handler that builds `AddItemHandler`.
 - Risk: a context serves one call at a time; a handler built by hand joins nothing.
-- Fix: EF Core wraps each save in a savepoint, so a duplicate key the handler catches leaves the transaction usable.
+- Fix: EF Core wraps each save in a savepoint, so a duplicate key the handler catches leaves the transaction usable; the failed save cleared the tracker, so the handler loads again what it goes on with.
 
 ### Write past SaveChanges only through WriteAsync
-Run `ExecuteUpdate`, `ExecuteDelete`, raw SQL, and a bulk copy in `PostgresStatements.WriteAsync`, as [vp-postgres-in-dotnet](library/architecture/dotnet/vp-postgres-in-dotnet.skill/vp-postgres-in-dotnet.skill.md) requires of every statement past the contract.
+Run `ExecuteUpdate`, `ExecuteDelete`, raw SQL, and a bulk copy in `PostgresRepository.WriteAsync`, as [vp-postgres-in-dotnet](library/architecture/dotnet/vp-postgres-in-dotnet.skill/vp-postgres-in-dotnet.skill.md) requires of every statement past SaveChanges.
 - Violation: `ExecuteDeleteAsync` called directly in a repository.
 - Risk: the statement runs outside the transaction when it comes first, so a rollback does not undo it, and the compiler does not stop it.
-- Fix: the empty save of `WriteAsync` opens the transaction, and its savepoint keeps a reported failure from breaking it; `Delete` of a selector already runs there.
+- Fix: the empty save of `WriteAsync` opens the transaction, and its savepoint keeps a failure from breaking it; Ardalis's `DeleteRangeAsync` saves through SaveChanges and needs none.
 
 ### Run the shared scenarios
 Name both `conformance/` folders in [conformance.copy](./conformance.copy): the example is a full copy of the PostgreSQL one, so it runs those scenarios too.
 - Risk: a change of the repository breaks the unit of work, and only a run of the two together shows it.
-- Fix: `make conformance-sync` writes the copies; the steps of `unit-of-work.feature` are in `Postgres.Tests/Steps/UnitOfWorkSteps.cs`.
+- Fix: `make conformance-sync` writes the copies; the steps of `unit-of-work.feature` are in `Postgres.Tests/Steps/UnitOfWorkSteps.cs`, on the sample table of tasks, whose unique index no rule of an aggregate stands in front of, so a duplicate key reaches the database inside the transaction.
 
 # Check list
 - [ ] `src/Shared/UnitOfWork`, `src/Middleware/UnitOfWork`, and `Postgres/UnitOfWork` are unchanged copies of the templates.

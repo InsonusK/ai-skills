@@ -20,7 +20,6 @@ vp-http-api.skill/conformance/proto-http-items examples/src/App/App.Host.Tests/f
 vp-http-api.skill/conformance/proto-http-lists examples/src/App/App.Host.Tests/features/Http
 vp-http-api.skill/conformance/proto-grpc-items examples/src/App/App.Host.Tests/features/Grpc
 vp-http-api.skill/conformance/proto-item-lists examples/src/Modules/Todo/Todo.Application.Tests/features
-vp-postgres.skill/conformance/postgres-item-lists-service examples/src/Modules/Todo/Todo.Application.Tests/features
 vp-postgres.skill/conformance/postgres-application examples/src/App/App.Host.Tests/features
 vp-postgres.skill/conformance/postgres-migrate-job examples/src/App/App.Migrate.Tests/features
 vp-unit-of-work.skill/conformance/unit-of-work-middleware examples/src/Middleware.Tests/features

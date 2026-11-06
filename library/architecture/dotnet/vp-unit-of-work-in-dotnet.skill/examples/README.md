@@ -25,7 +25,7 @@ export DATABASE_DSN='Host=localhost;Database=todo;Username=todo;Password=todo'
 make init                          # once: the packages and dotnet ef
 make migrate                       # bring the database up to the latest migration
 make run                           # serve gRPC on :9090 and HTTP on :8080 (Swagger UI at /swagger/)
-make migration NAME=AddItemDueDate # a migration from the changed rows; needs no database
+make migration NAME=AddItemDueDate # a migration from the changed mapping; needs no database
 make proto-gen                     # regenerate todo.swagger.json after editing the proto file
 TEST_DATABASE_DSN='Host=localhost;Username=postgres' make test   # every scenario, each on a database of its own
 ```
@@ -41,12 +41,14 @@ TEST_DATABASE_DSN='Host=localhost;Username=postgres' make test   # every scenari
 | `src/App/App.Host` | composition root (`Program.cs`), the entry points (`Api/Grpc`, `Api/Http`), base settings |
 | `src/App/App.Migrate` | the migration job, `/app/migrate` of the image |
 | `src/Modules/Todo/Todo.Commands` | the commands and their results — all an entry point sees |
-| `src/Modules/Todo/Todo.Application` | the command handlers, and `Services/` — the item lists over the repository |
-| `src/Modules/Todo/Todo.Domain` | entities, domain services, the rule errors |
-| `src/Infrastructure/Postgres/Postgres.Abstractions` | the repository's contract and outcomes, the rows, and the specifications |
-| `src/Infrastructure/Postgres/Postgres` | `AppDbContext`, `Repositories/`, `Rows/`, `UnitOfWork/`, `Migrations/`, settings |
+| `src/Modules/Todo/Todo.Application` | the command handlers, each over `IRepository<ItemList>`; `ImportItems` over nested `AddItem` commands |
+| `src/Modules/Todo/Todo.Domain` | entities (the aggregate `ItemList` and its items), specifications, domain services, the rule errors |
+| `src/Infrastructure/Postgres/Postgres` | `AppDbContext`, `Configurations/`, `Repositories/`, `PostgresFailures`, `UnitOfWork/`, `Migrations/`, settings |
 | `src/Infrastructure/Postgres/Postgres.Testing` | the database of one scenario |
-| `src/BuildingBlocks`, `src/Shared` | fixed code |
+| `src/Infrastructure/Memory/Memory` | `MemoryRepository<T>`: the same contract in memory, for the handlers' scenarios |
+| `src/Middleware` | the command middleware: `Logging/`, `StoreFailures/`, `UnitOfWork/` |
+| `src/Shared` | the error kinds, `Persistence/` (the repository's contract), `UnitOfWork/` |
+| `src/BuildingBlocks` | fixed code |
 | `third_party/proto` | the googleapis and openapiv2 annotations the proto file imports |
 
 Every `{Project}.Tests` sits beside the project it tests.

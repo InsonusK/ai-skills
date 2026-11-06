@@ -26,13 +26,10 @@ public static class TodoErrors
     public static ErrorKindException DuplicateTitle() =>
         new(ErrorKind.Invalid, "item titles repeat");
 
-    // Raised by the service over the repository, from its technical outcome.
-    public static ErrorKindException ItemAlreadyInList(string listId, string title, Exception? storeError = null) =>
-        new(ErrorKind.Conflict, $"list \"{listId}\" already has an item \"{title}\"", storeError);
+    // A rule of the list: a title is unique in it.
+    public static ErrorKindException ItemAlreadyInList(string listId, string title) =>
+        new(ErrorKind.Conflict, $"list \"{listId}\" already has an item \"{title}\"");
 
     public static ErrorKindException NoList(string listId) =>
         new(ErrorKind.NotFound, $"no list \"{listId}\"");
-
-    public static ErrorKindException ListsUnavailable(Exception storeError) =>
-        new(ErrorKind.Unavailable, "the item lists are unavailable", storeError);
 }

@@ -4,6 +4,7 @@ using Npgsql;
 using Postgres.Repositories;
 using Postgres.Testing;
 using Reqnroll;
+using Shared.Persistence;
 
 namespace Postgres.Tests.Steps;
 
@@ -66,7 +67,15 @@ public sealed class PostgresWorld
 
     public TaskRepository Tasks() => new(Session());
 
-    public PostgresRepository<TRow> Repository<TRow>() where TRow : class => new(Session());
+    /// <summary>The repository of the application's lists, over a context of its own, as a command gets it.</summary>
+    public PostgresRepository<Todo.Domain.Entities.ItemList> Lists()
+    {
+        var scope = _provider!.CreateAsyncScope();
+        _scopes.Add(scope);
+        return new(scope.ServiceProvider.GetRequiredService<AppDbContext>());
+    }
+
+    public PostgresRepository<TRoot> Repository<TRoot>() where TRoot : class, IAggregateRoot => new(Session());
 
     /// <summary>Runs a statement on a connection of its own, past every repository.</summary>
     public async Task ExecuteAsync(string statement)
