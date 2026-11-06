@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The in-memory store: the infrastructure of this example, so it runs with
+       no database. App.Host builds it in [services]; the handlers' scenarios
+       take it in place of a fake. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\Shared.csproj" />
+  </ItemGroup>
+</Project>

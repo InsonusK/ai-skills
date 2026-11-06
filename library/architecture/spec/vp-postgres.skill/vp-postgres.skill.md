@@ -1,8 +1,8 @@
 ---
 name: vp-postgres
-description: The PostgreSQL variation point — one database behind a repository with one contract in every stack (insert, update, delete, SelectBy), named specifications that pick rows, a selector that reads, updates, and deletes the picked rows, every table classified by who sets its identity and whether its rows change, a service that turns the repository's outcomes (duplicate key, missing reference, row changed, unavailable) into error kinds, DATABASE_DSN that no log prints, migrations applied by a one-shot job or behind MIGRATE_ON_START, a readiness check, and shared scenarios on the real engine at TEST_DATABASE_DSN
+description: The PostgreSQL variation point — one database behind a repository in one of two forms (rows under a service with one contract of insert, update, delete, SelectBy and a selector, in Go and Python; the domain's entities mapped and reached by the handler through Ardalis's repository, in dotnet), named specifications, every table classified by who sets its identity and whether its rows change, the outcomes (duplicate key, missing reference, row changed, unavailable) told as error kinds, DATABASE_DSN that no log prints, migrations applied by a one-shot job or behind MIGRATE_ON_START, a readiness check, and shared scenarios on the real engine at TEST_DATABASE_DSN
 whenToUse: when an application built on the base plateau must keep its data between runs in PostgreSQL, when you add a table, a specification, a repository method, or a migration, when you replace an in-memory store with a database, or when you review database code
-updated: 20261104
+updated: 20261106
 tags:
   - stack
   - concern/architecture
@@ -13,20 +13,21 @@ adr:
   - adr/repository-selector-and-specification.md
   - adr/order-and-page-on-the-selector.md
   - adr/a-selector-is-no-snapshot.md
+  - adr/two-forms-rows-and-entities.md
 ---
 
 # Goal
 - **Data outlives the process** - What a command stored is there after a restart and for every replica.
-- **Commands do not change** - The database replaces an in-memory store behind the service: no command, entity, or domain service changes, as [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md) promises for infrastructure.
+- **Commands do not change** - The database replaces an in-memory store behind the same contract (the service in the rows form, the repository in the entities form): no command, entity, or domain service changes, as [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md) promises for infrastructure.
 - **One query, one name** - A set of rows is described once, by a specification with a name of the business, and every read, count, update, or delete of that set uses it.
 - **The schema travels with the code** - Every change of a table is a migration in the repository, applied before the code that needs it starts.
 - **Failures are told apart** - A taken key is a conflict, a row changed meanwhile is a concurrent change, a database that does not answer is unavailable, anything else is a defect of the service.
-- **Every stack behaves the same** - The scenarios of this skill's `conformance/` folder pass in every stack.
+- **Every stack behaves the same** - The scenarios of this skill's `conformance/` folder pass in every stack, but those of `postgres-selector/` and `postgres-item-lists-service/`, which only the rows form has, pass in every stack of that form.
 
 # Core Principle
-- **A repository saves at once** - Each write finishes before it returns, so the service sees the database's outcome and turns it into a kind. A command that must keep several writes together takes the unit of work variation point (`vp-unit-of-work`), which puts a transaction around them with no change to a repository.
-- **Rows below, entities above** - A repository speaks rows; the service over it builds entities from rows, so the entity's rules guard what is read too.
-- **Which rows, then what to do** - A specification says which rows; a selector says what to do with them, and in what order.
+- **A repository saves at once** - Each write finishes before it returns, so its caller sees the database's outcome, told as a kind. A command that must keep several writes together takes the unit of work variation point (`vp-unit-of-work`), which puts a transaction around them with no change to a repository.
+- **Two forms, one behaviour** - In the rows form a repository speaks rows and the service over it builds entities from them; in the entities form the domain's aggregates are mapped and the handler takes the repository. The outcomes, migrations, settings, and readiness are the same in both. Decision recorded in [two-forms-rows-and-entities](./adr/two-forms-rows-and-entities.md).
+- **Which rows, then what to do** - A specification says which rows; in the rows form a selector says what to do with them, and in what order.
 - **One application, one database** - One schema, one migration history; another service reaches this data through this service's API, never its tables.
 
 @import "./diagrams/concept.mmd" {as="mermaid"}
@@ -53,14 +54,30 @@ Decide for every table who sets the identity of its rows and whether they change
 - Risk: with no version both saves succeed and the first edit is lost with no failure; an idle version on a table that never changes promises a check nothing needs.
 - Fix: each variation point attaches on its own, in any number, table by table, per [vp-row-version](library/architecture/spec/vp-row-version.skill/vp-row-version.skill.md) and [vp-external-id](library/architecture/spec/vp-external-id.skill/vp-external-id.skill.md); `vp-edit-timestamp` is a separate choice, for a table users create or edit, whatever its row of this table.
 
+### Take the form of the stack
+Build the variation point in the form its stack extension names, and apply the rules marked for a form only in that form.
+
+| | Rows form | Entities form |
+|---|---|---|
+| Stacks | Go, Python | dotnet |
+| What is mapped | a row per table, below the service | the domain's entities; an aggregate's root with its children |
+| Caller of the repository | a service per table, which builds entities from rows | the handler, which loads a root, calls its methods, and saves it |
+| Contract | [the one contract](#give-every-repository-the-one-contract) and its selector | the stack's library (dotnet: Ardalis's `IRepositoryBase<T>`), kept to aggregate roots |
+| Outcomes become kinds | in the service | in one command middleware |
+| Shared scenarios | every folder of `conformance/` | `conformance/` but `postgres-selector/` and `postgres-item-lists-service/` |
+
+- Violation: a stack mixing the forms per module; a service over the repository in the entities form; a handler calling the repository in the rows form.
+- Risk: two ways to reach one table in one application, and scenarios that prove neither.
+- Fix: the stack extension states its form once; an aggregate in the rows form is mapped by hand in its service.
+
 ### Reach the database only through a repository
-Put every statement in a repository of the infrastructure layer, behind an interface, with a service as its only caller per [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md).
+Put every statement in a repository of the infrastructure layer, behind an interface, with a service as its only caller in the rows form and a handler in the entities form, per [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md).
 - Violation: a command running a query; a service holding the driver's connection; a repository method named `AddItemToList` that takes an entity.
 - Risk: the technique spreads upward, so changing a query or the engine edits commands.
-- Fix: the service's `Add(listId, item)` builds a row and calls the repository's `Insert(row)`.
+- Fix: in the rows form the service's `Add(listId, item)` builds a row and calls the repository's `Insert(row)`; in the entities form the handler loads the list, calls `list.Add(item)`, and saves the list.
 
 ### Give every repository the one contract
-Implement this contract for every table, under these names in the stack's spelling. Decision recorded in [repository-selector-and-specification](./adr/repository-selector-and-specification.md).
+In the rows form, implement this contract for every table, under these names in the stack's spelling. Decision recorded in [repository-selector-and-specification](./adr/repository-selector-and-specification.md).
 
 | Object | Method | Answers |
 |---|---|---|
@@ -88,13 +105,13 @@ Describe which rows a call wants as a specification class named in the business'
 - Fix: `UnclosedTasks(owner)`, handed to `SelectBy`; the repository runs it.
 
 ### Order and page only on the selector
-Refuse a specification that holds an order or a page, and ask for them of the selector. Decision recorded in [order-and-page-on-the-selector](./adr/order-and-page-on-the-selector.md).
+In the rows form, refuse a specification that holds an order or a page, and ask for them of the selector; in the entities form, refuse a specification with a page for a count, an existence check, or a delete. Decision recorded in [order-and-page-on-the-selector](./adr/order-and-page-on-the-selector.md).
 - Violation: a specification with `Take(20)`, then `Delete()` on its selector; `First` on an unordered selector.
 - Risk: a count, an update, or a delete that honours the page and another that ignores it work on different rows; a delete of one page removed every row of the specification in a prototype; `First` with no order answers a row chosen by the engine.
 - Fix: `SelectBy` fails on such a specification; `First`, `Take`, and `Page` exist only on the ordered selector, where the language allows that check; `Single` takes the case of a unique key, where no order is needed.
 
 ### Stop a selector at the service
-Keep a selector inside the service that made it, and give it no way to add a condition.
+In the rows form, keep a selector inside the service that made it, and give it no way to add a condition.
 - Violation: a service method returning a selector; `selector.Where(...)`.
 - Risk: the technique reaches commands, conditions leave the specifications, and a selector outlives the connection scope it reads through.
 - Fix: the service answers entities or values; a new condition is a new specification.
@@ -106,7 +123,7 @@ Treat every call of a selector as a new question to the database, and take the n
 - Fix: report the answer of `Update`; no lock is taken for a selector.
 
 ### Report a repository's outcomes in its own terms
-Make a repository report the outcomes a service must tell apart as outcomes of its own, and let the service turn each into its kind and every other failure pass with no kind.
+Make a repository report the outcomes its caller must tell apart, and turn each into its kind, every other failure passing with no kind: in the rows form the repository reports outcomes of its own and the service turns them; in the entities form one command middleware turns the store's failures for every command.
 
 | Outcome of the repository | Kind the service answers |
 |---|---|
@@ -116,7 +133,7 @@ Make a repository report the outcomes a service must tell apart as outcomes of i
 | No rows (`Single`, `First`: none; `All`, `Take`, `Page`: empty) | `NotFound`, when the service needs the rows |
 | Unavailable: no answer, or a failure a retry may cure | `Unavailable` |
 
-- Violation: a service reading a PostgreSQL error code; a service catching every failure of the repository as conflict; a failed write left in the session, so the next save sends it again.
+- Violation: a service or a handler reading a PostgreSQL error code; a service catching every failure of the repository as conflict; a failed write left in the session, so the next save sends it again.
 - Risk: the engine's codes leak above the repository, a broken statement is answered as the caller's mistake, or one handled failure fails every later save of the command.
 - Fix: one translation under every write and read, statements past the repository included; a broken statement stays `INTERNAL` and shows in the log; a failed write leaves nothing pending. A deadlock and a serialization failure are unavailable: the retry is the same.
 
@@ -150,25 +167,26 @@ Run the scenarios of the repository and of migrations on a real PostgreSQL the p
 - Fix: the helper of the example creates the database; the DSN needs the right to create databases.
 
 ### Pass the shared scenarios
-Run this skill's [conformance/](./conformance/) scenarios in every stack, unedited, through a copy named in the stack skill's `conformance.copy`, as [conformance-scenarios-copied-into-each-stack](library/architecture/spec/vp-logging.skill/adr/conformance-scenarios-copied-into-each-stack.md) decides.
+Run this skill's [conformance/](./conformance/) scenarios in every stack, those of [postgres-selector/](./conformance/postgres-selector/) and [postgres-item-lists-service/](./conformance/postgres-item-lists-service/) only in a stack of the rows form, unedited, through a copy named in the stack skill's `conformance.copy`, as [conformance-scenarios-copied-into-each-stack](library/architecture/spec/vp-logging.skill/adr/conformance-scenarios-copied-into-each-stack.md) decides.
 - Violation: a stack rewriting a scenario to fit its code; a stack skill with no `conformance.copy`.
 - Risk: a stack answers a different contract under the same names, and a gap found in one stack stays open in the others.
 - Fix: step definitions are the stack's own, and one that compares rows reads each field the scenario's table names from the row object, never from a joined text; the scenarios of `repository`, `selector`, `specification`, and `outcomes` run on the tables `owners` and `tasks` of the test project, which the application never ships; what only one stack has goes in files of its own beside the copies.
 
 ### Attach without editing commands
-Attach the variation point by changing no command, entity, or domain service; only the composition root, the service over the repository, and the build files.
+Attach the variation point by changing no command, entity, or domain service; only the composition root, the service over the repository (rows form), and the build files.
 - Risk: a repository that reaches into commands cannot be replaced by another, or removed.
 - Fix: the stack extension lists the files it changes; a check compares its example with the base against that list.
 
 # Check list
 - [ ] Every table is classified, and takes the variation points its row of the table asks for.
-- [ ] Every statement is in a repository; a service is the only caller of a repository, and it builds entities from rows.
-- [ ] Every table gets the [contract](#give-every-repository-the-one-contract) from one generic repository; a method of its own only for what the contract cannot express.
-- [ ] A specification holds no order, no page, and no statement; `First`, `Take`, and `Page` need an order.
-- [ ] No selector leaves its service; the number of rows written comes from the write.
-- [ ] Every outcome of the [table](#report-a-repositorys-outcomes-in-its-own-terms) is reported by the repository and turned into a kind by the service.
+- [ ] The stack is in one [form](#take-the-form-of-the-stack), for every module.
+- [ ] Every statement is in a repository; its caller is a service (rows form) or a handler (entities form).
+- [ ] Rows form: every table gets the [contract](#give-every-repository-the-one-contract) from one generic repository; a specification holds no order, no page, and no statement; no selector leaves its service.
+- [ ] Entities form: a specification with a page serves a list only; a repository exists for an aggregate root only.
+- [ ] The number of rows written comes from the write.
+- [ ] Every outcome of the [table](#report-a-repositorys-outcomes-in-its-own-terms) is turned into its kind: by the service (rows form) or by one command middleware (entities form).
 - [ ] `DATABASE_DSN` is required; no failure and no log repeats its value.
 - [ ] Migrations run in exactly one mode; the job exits 0 on an up-to-date database.
 - [ ] The database brings its named readiness check with no type of the health variation point.
 - [ ] Scenarios run on a real PostgreSQL, each on its own database, and fail without one.
-- [ ] The stack skill's `conformance.copy` names this skill's `conformance/` folder, and every copy is unedited.
+- [ ] The stack skill's `conformance.copy` names every folder of this skill's `conformance/` its form runs; every copy is unedited.

@@ -2,6 +2,7 @@
 # checked by test/check-conformance.sh. The example is a full copy of the
 # PostgreSQL one, so it runs those scenarios too.
 vp-postgres.skill/conformance/postgres examples/src/todo/infrastructure/postgres/features
+vp-postgres.skill/conformance/postgres-selector examples/src/todo/infrastructure/postgres/features
 vp-unit-of-work.skill/conformance/unit-of-work examples/src/todo/infrastructure/postgres/unit_of_work/features
 base-plateau.skill/conformance/config examples/src/todo/config/features
 base-plateau.skill/conformance/entry examples/src/todo/api/core/entry/features

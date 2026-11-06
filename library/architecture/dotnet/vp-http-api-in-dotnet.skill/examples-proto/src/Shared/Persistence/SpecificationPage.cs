@@ -1,3 +1,5 @@
+// Source: skill vp-postgres-in-dotnet
+
 using Ardalis.Specification;
 
 namespace Shared.Persistence;

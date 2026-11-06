@@ -13,6 +13,7 @@ using BuildingBlocks.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Middleware.Logging;
+using Middleware.StoreFailures;
 using Postgres;
 using Todo.Application;
 
@@ -57,7 +58,7 @@ public static class Program
         services.AddLogging(logging => logging.SetMinimumLevel(config.LogLevel).AddProvider(new JsonLogProvider(stderr)));
 
         // [services] - infrastructure and the services over it. One context per
-        // command scope, and every repository over it scoped with it.
+        // command scope, and the repository of every aggregate root scoped with it.
         services.AddPostgres(postgres);
 
         // [handlers] - the handler of every command of each module, and the
@@ -67,7 +68,8 @@ public static class Program
         services.AddTodoModule();
         services.AddCommandScope();
         services.AddCommandMiddleware(
-            typeof(LoggingMiddleware<,>));
+            typeof(LoggingMiddleware<,>),
+            typeof(StoreFailuresMiddleware<,>));   // after the logging: it logs the kind, and the store's failure as the cause
 
         // [entries] - every entry point, registered as an Entry and run
         // together by EntryRunner until the first one ends. The gRPC variation

@@ -10,10 +10,10 @@ The anchor document for mapping the domain's entities in dotnet with EF Core and
 | Who calls the repository | the service, which builds entities from rows | the handler |
 | Contract | ours: `Insert`, `Update`, `Delete`, `SelectBy` and a selector | Ardalis's `IRepositoryBase<T>`, order and page in the specification |
 | Where the database's failures become kinds | the service, from the repository's outcomes | one command middleware |
-| Shared scenarios | `conformance/` and `conformance-selector/` | `conformance/` |
+| Shared scenarios | `conformance/` and `conformance/postgres-selector/` | `conformance/` |
 
 - Go and Python do not change. The spec `vp-postgres` names both forms; the rules of one contract, of the selector, and of the service over the repository hold for the rows form only.
-- `conformance/` keeps what any form must do (repository, outcomes, migrations, readiness, settings); `conformance-selector/` holds the scenarios of our selector and its specifications (selector, specification).
+- `conformance/` keeps what any form must do (repository, outcomes, migrations, readiness, settings); `conformance/postgres-selector/` holds the scenarios of our selector and its specifications (selector, specification).
 
 ## 2. Layers in dotnet
 
@@ -59,7 +59,7 @@ One command middleware, `StoreFailuresMiddleware<,>` of the `Postgres` project, 
 | Wave | What |
 |---|---|
 | 1a | the in-memory base (`vp-http-api-in-dotnet` `examples-proto`): the list aggregate `ItemList` with its items, `IRepository<T>` in `Shared`, `MemoryRepository<T>` |
-| 1b | `vp-postgres-in-dotnet` (example, templates, skill, ADRs), the spec's two forms and `conformance-selector/`, `app-layers-in-dotnet` |
+| 1b | `vp-postgres-in-dotnet` (example, templates, skill, ADRs), the spec's two forms and `conformance/postgres-selector/`, `app-layers-in-dotnet` |
 | 2 | `vp-unit-of-work-in-dotnet` and `vp-row-version-in-dotnet` over the new base |
 
 - The aggregate with children is the example's list from wave 1a on, so no wave of its own.

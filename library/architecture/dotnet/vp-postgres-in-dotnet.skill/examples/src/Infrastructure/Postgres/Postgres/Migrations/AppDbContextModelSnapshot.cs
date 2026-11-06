@@ -21,36 +21,55 @@ namespace Postgres.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Postgres.Abstractions.Rows.ItemRow", b =>
+            modelBuilder.Entity("Todo.Domain.Entities.ItemList", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
+                    b.Property<string>("Id")
+                        .HasColumnType("text")
                         .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<bool>("Done")
-                        .HasColumnType("boolean")
-                        .HasColumnName("done");
-
-                    b.Property<string>("ListId")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("list_id");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("title");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ListId", "Title")
-                        .IsUnique()
-                        .HasDatabaseName("list_items_list_id_title_key");
+                    b.ToTable("lists", (string)null);
+                });
 
-                    b.ToTable("list_items", (string)null);
+            modelBuilder.Entity("Todo.Domain.Entities.ItemList", b =>
+                {
+                    b.OwnsMany("Todo.Domain.Entities.Item", "Items", b1 =>
+                        {
+                            b1.Property<long>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("bigint")
+                                .HasColumnName("id");
+
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<long>("Id"));
+
+                            b1.Property<bool>("Done")
+                                .HasColumnType("boolean")
+                                .HasColumnName("done");
+
+                            b1.Property<string>("ListId")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("list_id");
+
+                            b1.Property<string>("Title")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("title");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("ListId", "Title")
+                                .IsUnique()
+                                .HasDatabaseName("list_items_list_id_title_key");
+
+                            b1.ToTable("list_items", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("ListId");
+                        });
+
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

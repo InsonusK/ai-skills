@@ -1,8 +1,8 @@
 ---
 name: repository over Ardalis specifications
-description: How the repository contract of vp-postgres is built in dotnet - our repository and selectors over Ardalis specifications, Ardalis's RepositoryBase, a specification class of our own, or plain EF Core with no specification
-problem: The contract of vp-postgres needs a selector, translated failures, and writes that join a unit of work, and the owner wants specifications as classes. What comes from a library, and what is ours?
-decision: Specifications are Ardalis.Specification's, evaluated by its SpecificationEvaluator; PostgresRepository, the selectors, and PostgresStatements are ours, over EF Core. Replaces the hand-written store per table of 2026-10-31.
+description: How a dotnet handler reaches its aggregates in PostgreSQL - Ardalis's RepositoryBase over the domain's aggregate roots, our repository and selector over rows, our repository over entities, or plain EF Core
+problem: The handler loads an aggregate, calls its methods, and saves it, and the owner wants specifications as classes. What comes from a library, and what is ours?
+decision: Ardalis.Specification's IRepositoryBase, kept to aggregate roots (IRepository<T> of Shared), implemented by PostgresRepository<T> : RepositoryBase<T>; the specifications are Ardalis's, in the module's Domain. Replaces our repository and selector over rows of 2026-11-02.
 tags:
   - stack/dotnet
   - concern/architecture
@@ -11,72 +11,62 @@ tags:
 ---
 
 # Problem
-`{Infra}` may not reference `{Module}.Domain` (app-layers-in-dotnet), so a repository works on rows of its own. The first form, a hand-written store per table, was chosen by the agent with no owner's decision and compared Ardalis only in the old catalog's form, handlers over `IRepository<Entity>`; that form breaks the layers, but Ardalis behind the service does not. The prototypes of 2026-11-01 showed that a class translating failures is needed with Ardalis and without it.
+EF Core maps the domain's entities ([entities-mapped-by-ef-core](./entities-mapped-by-ef-core.md)) and a handler takes the repository with no service between them. The repository must load and save a whole aggregate, take a specification as a class, and leave the translation of failures to [failures-told-by-a-command-middleware](./failures-told-by-a-command-middleware.md). A repository of our own existed for rows, with a selector shared with Go and Python.
 
 # Selected variant
-[[#Our repository over Ardalis specifications]]
-- Chosen by the owner (2026-11-02): specifications as classes, as in Ardalis, a repository with CRUD, and a selector. Ardalis stays for now; whether a dotnet class of about ten lines replaces it is reviewed after `vp-postgres` exists in Go and Python, when the shape of the contract is proved there.
+[[#Ardalis's RepositoryBase over aggregate roots]]
+- Chosen by the owner (2026-11-06): once entities are mapped and handlers take the repository, the library's contract as it is.
+- Before: [[#Our repository and selector over rows]], chosen by the owner on 2026-11-02, when a service stood between the handler and rows.
 
 # Searched variants
 
-## Our repository over Ardalis specifications
+## Ardalis's RepositoryBase over aggregate roots
 
 **Selected.**
 
 ### Description
-`Specification<TRow>` from `Ardalis.Specification` in `Postgres.Abstractions`, a package with no EF Core. `PostgresRepository<TRow>` turns one into a query with `SpecificationEvaluator` and runs it through `PostgresStatements`.
+`IRepository<T> : IRepositoryBase<T>` and `IReadRepository<T> : IReadRepositoryBase<T>` in `Shared/Persistence`, `T : class, IAggregateRoot`, as in Ardalis's Clean Architecture template. `PostgresRepository<T> : RepositoryBase<T>` implements both, registered open generic. Specifications derive from `Specification<T>` in `{Module}.Domain/Specifications`, with their order and page.
 
 ### Benefits
-- The specification classes the owner knows, an in-memory evaluation for a service's scenarios, and no evaluator to write.
-- One place translates every failure, so a read needs no override.
-- The contract is the same as in the stacks with no such library.
+- No contract of ours to keep: about 250 lines of repository, selectors, and statements go.
+- The form an agent and a dotnet developer know; the in-memory repository of the base plateau implements the same interfaces with Ardalis's in-memory evaluator.
+- `IAggregateRoot` keeps a repository to a root: a child is saved with its root.
 
 ### Costs
-- A package that targets net8 and net9, with no net10 build: it works on EF Core 10, proved by the scenarios of this example.
-- Only `Where`, `Include`, and `Select` of its builder are used: [order-and-page-on-the-selector](library/architecture/spec/vp-postgres.skill/adr/order-and-page-on-the-selector.md).
-- About 130 lines of selectors and repository are ours to keep.
+- dotnet leaves the selector's shared scenarios (`conformance/postgres-selector/` of `vp-postgres`); the scenarios of the repository and its outcomes stay shared.
+- An order and a page live in the specification again, so a count or a delete over one with a page works on other roots than its list: `PostgresRepository` refuses that (`SpecificationPage`).
+- The package targets net8 and net9, with no net10 build: it works on EF Core 10, proved by this example's scenarios.
 
-## Ardalis's RepositoryBase
+## Our repository and selector over rows
 
 ### Description
-`PostgresRepository<TRow> : RepositoryBase<TRow>`, the service on `IRepositoryBase<TRow>`.
+`PostgresRepository<TRow>` with `InsertAsync`, `UpdateAsync`, `DeleteAsync`, `SelectBy`, and a selector that orders and pages, over Ardalis's specifications, under a service per table.
 
 ### Benefits
-- The least code; the form known from the old catalog.
+- The same contract and scenarios as Go and Python.
 
 ### Costs
-- It translates no failure: every read must be overridden for that, and the same class of catches is written anyway.
-- No update by a specification, no selector, and `CountAsync(spec)` beside the contract of the other stacks.
+- A row per table and a service that turns rows into entities, so the aggregate is mapped by hand twice.
+- A selector stops at the service; with no service its reason is gone.
 
-## A specification class of our own
+## Our repository over entities
 
 ### Description
-`abstract class Specification<TRow> { abstract IQueryable<TRow> Apply(IQueryable<TRow> rows); }`, in about ten lines.
+The contract of the rows form, `IRepository<TEntity>` with the selector, over mapped entities.
 
 ### Benefits
-- No package, and no build for an older framework.
+- The shared scenarios of the selector keep running in dotnet.
 
 ### Costs
-- The evaluation in memory and the `Include` handling are ours; the owner asked for what Ardalis offers, and the same work would be repeated.
+- Our contract to keep beside a library that already has one, for no gain a handler sees.
 
-## Plain EF Core with no specification
+## Plain EF Core with no repository
 
 ### Description
-A store per table derives from a base class that translates failures; reusable conditions are extension methods on `IQueryable`.
+A handler takes `AppDbContext` and queries `Set<T>()`.
 
 ### Benefits
-- No package; the plainest EF Core.
+- No package and no layer.
 
 ### Costs
-- A query is not an object to pass, so a count and an update of the same rows stay two methods of a store.
-
-## A generic repository for handlers over entities
-
-### Description
-`IRepository<T>` over entities in `Shared`, used by handlers, as in the old catalog.
-
-### Benefits
-- No service over the repository.
-
-### Costs
-- Handlers reach infrastructure past the services, against app-layers, and `Postgres` would see the domain.
+- Every handler depends on EF Core, the in-memory base cannot stand in for the database, and a query is not an object to name and reuse.

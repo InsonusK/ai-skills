@@ -11,7 +11,7 @@ tags:
 ---
 
 # Problem
-The service over a repository turns its outcomes into kinds, and a duplicate key is one of them. A repository that only stages a row gets no outcome: the database answers later, in the middleware at the end of the command, past the service that knows what the key means. And a unit of work must stay optional: an application without one still needs its writes saved.
+A handler saves an aggregate and goes on: it may send a nested command, or answer from what it saved. A repository that only stages a change gets no outcome: the database answers later, at the end of the command, after the handler has answered as if it were saved. And a unit of work must stay optional: an application without one still needs its writes saved.
 
 # Selected variant
 [[#Each repository write saves]]
@@ -24,15 +24,15 @@ The service over a repository turns its outcomes into kinds, and a duplicate key
 **Selected.**
 
 ### Description
-`PostgresRepository.InsertAsync` calls `SaveChangesAsync`. Without a unit of work each save is its own transaction; with one, all the saves of a command run in its transaction, which EF Core protects with a savepoint per save.
+Every write of Ardalis's `RepositoryBase` (`AddAsync`, `UpdateAsync`, `DeleteAsync`, and their ranges) calls `SaveChangesAsync`, which `PostgresRepository` keeps. Without a unit of work each save is its own transaction; with one, all the saves of a command run in its transaction, which EF Core protects with a savepoint per save.
 
 ### Benefits
-- The service catches `DuplicateKeyException` in both cases; attaching the unit of work changes no repository.
+- A failure reaches the handler at the write that caused it, and the store failures middleware tells it, with a unit of work or without; attaching the unit of work changes no repository.
 - A command reads its own writes. Go and Python behave the same.
 
 ### Costs
 - With a unit of work the transaction stays open from the first write to the end of the command, so calls of another service belong before the first write.
-- `ExecuteUpdate`, `ExecuteDelete`, and raw SQL do not pass through `SaveChanges`, so they run in `PostgresStatements.WriteAsync`.
+- `ExecuteUpdate`, `ExecuteDelete`, and raw SQL do not pass through `SaveChanges`, so they run in `PostgresRepository.WriteAsync`.
 
 ## The unit of work saves at the end
 
@@ -43,6 +43,6 @@ A repository adds to the change tracker; `UnitOfWorkMiddleware` calls `SaveChang
 - The shortest transaction; the usual form of EF Core.
 
 ### Costs
-- A service must ask the database first and the middleware must answer the race with a text of its own.
+- A handler answers before the database has, and a failure arrives past it.
 - A command does not see its own writes.
 - A repository works only with the middleware attached, so the unit of work stops being optional.

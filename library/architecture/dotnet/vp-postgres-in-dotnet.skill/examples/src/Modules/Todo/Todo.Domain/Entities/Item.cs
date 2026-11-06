@@ -5,7 +5,8 @@ namespace Todo.Domain.Entities;
 
 /// <summary>
 /// One to-do item. Its state changes only through its methods, which guard the
-/// item's own rules.
+/// item's own rules. A stored item is a child of its <see cref="ItemList"/>,
+/// which adds it.
 /// </summary>
 public sealed class Item
 {
@@ -27,6 +28,9 @@ public sealed class Item
         }
         Title = title;
     }
+
+    /// <summary>The store's key of the item, 0 until its list is saved.</summary>
+    public long Id { get; private set; }
 
     public string Title { get; }
 

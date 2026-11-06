@@ -37,6 +37,7 @@ Todo.Application  handlers, Services/IItemLists + ItemListsService ──► Tod
 
 ### Costs
 - A service in `Application` can technically send a command or use a handler of its module; only the rule forbids it.
+- The store of the service's own data left this form on 2026-11-06: handlers take `IRepository<T>` of `Shared` with no service ([entities-mapped-by-ef-core](library/architecture/dotnet/vp-postgres-in-dotnet.skill/adr/entities-mapped-by-ef-core.md)); a service and two projects stay for another system's API.
 - Two projects per infrastructure.
 - B1–B3's examples renamed `Todo.Interfaces` to `Todo.Commands`.
 

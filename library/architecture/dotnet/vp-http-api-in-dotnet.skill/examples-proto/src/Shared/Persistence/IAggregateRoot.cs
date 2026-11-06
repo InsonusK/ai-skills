@@ -1,3 +1,5 @@
+// Source: skill vp-postgres-in-dotnet
+
 namespace Shared.Persistence;
 
 /// <summary>

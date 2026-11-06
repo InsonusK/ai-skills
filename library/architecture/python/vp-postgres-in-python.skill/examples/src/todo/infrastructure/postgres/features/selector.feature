@@ -1,5 +1,5 @@
-# Shared by every stack's PostgreSQL variation point. The source is
-# library/architecture/spec/vp-postgres.skill/conformance/; a stack's copy is
+# Shared by every stack whose PostgreSQL variation point has the rows form (Go, Python). The source is
+# library/architecture/spec/vp-postgres.skill/conformance/postgres-selector/; a stack's copy is
 # written by `make conformance-sync` and never edited.
 #
 # An answer of rows is a list of row objects, never text. A table of the form
