@@ -3,7 +3,8 @@
 The base plateau in Go with the gRPC API and its HTTP form attached: one proto contract
 (`docs/integration/api/todo/todo.proto`) served over gRPC on :9090 and over HTTP on :8080, the
 OpenAPI spec generated from the proto's `google.api.http` annotations. The example keeps lists
-of items in memory, so it shows every case of the HTTP form:
+of items in the process while it runs (no store: this variation point adds a way to call the
+application), so it shows every case of the HTTP form:
 
 | rpc | HTTP | Shows |
 |---|---|---|
