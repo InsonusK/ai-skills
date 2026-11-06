@@ -16,7 +16,7 @@ from todo.infrastructure.client.core.outcomes import ApiStatusError, ApiUnavaila
 from todo.infrastructure.client.core.pipeline import Attempt, Call, Middleware
 from todo.log import FAILED_KEY, PAYLOAD_KEY, attributes_of, request_id_scope
 
-scenarios("../features/call.feature", "../features/call_log.feature", "../features/mock.feature")
+scenarios("../features/call.feature", "../features/call-log.feature", "../features/mock.feature")
 
 
 # The test API's operations the client may call.

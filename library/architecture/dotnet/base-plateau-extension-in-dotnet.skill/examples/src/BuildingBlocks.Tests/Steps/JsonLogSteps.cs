@@ -17,7 +17,17 @@ public sealed partial class JsonLogSteps(ITestOutputHelper output)
     private string? _requestId;
 
     [Given("the level is {string}")]
-    public void GivenTheLevelIs(string level) => _level = Enum.Parse<LogLevel>(level);
+    public void GivenTheLevelIs(string level) => _level = level switch
+    {
+        // The JSON line's names, as the scenarios of every stack spell them.
+        "DEBUG" => LogLevel.Debug,
+        "INFO" => LogLevel.Information,
+        "WARN" => LogLevel.Warning,
+        _ => LogLevel.Error,
+    };
+
+    // A kind as the scenarios name it ("not found") to its value.
+    private static ErrorKind KindNamed(string name) => Enum.Parse<ErrorKind>(name.Replace(" ", ""), ignoreCase: true);
 
     // Logs through the provider as the composition root builds it.
     private void Log(Action<ILogger> write)
@@ -42,12 +52,12 @@ public sealed partial class JsonLogSteps(ITestOutputHelper output)
 
     [When("a record {string} is logged with an error {string} of the kind {string}")]
     public void WhenARecordIsLoggedWithAnErrorOfTheKind(string message, string error, string kind) =>
-        Log(logger => logger.Write(LogLevel.Warning, message, Thrown(new ErrorKindException(Enum.Parse<ErrorKind>(kind), error))));
+        Log(logger => logger.Write(LogLevel.Warning, message, Thrown(new ErrorKindException(KindNamed(kind), error))));
 
     [When("a record {string} is logged with an error {string} of the kind {string} caused by {string}")]
     public void WhenARecordIsLoggedWithAnErrorWithACause(string message, string error, string kind, string cause) =>
         Log(logger => logger.Write(LogLevel.Warning, message, Thrown(
-            new ErrorKindException(Enum.Parse<ErrorKind>(kind), error, new IOException(cause)))));
+            new ErrorKindException(KindNamed(kind), error, new IOException(cause)))));
 
     // An exception as a handler raises it, with a stack.
     private static Exception Thrown(Exception error)

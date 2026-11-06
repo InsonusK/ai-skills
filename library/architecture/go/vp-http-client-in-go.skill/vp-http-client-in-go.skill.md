@@ -89,7 +89,7 @@ case err != nil:
 
 - Violation: an entity built from the API's answer whose error is wrapped with `%w`; the client's error formatted into the message (`"the todo service: " + err.Error()`).
 - Risk: an item the other service got wrong is answered to this service's client as its own invalid input, 400 instead of 500; the transport's text, with its hosts and addresses, reaches the client.
-- Fix: the scenarios "Any other answer is a failure with no kind" and "An API that does not answer is unavailable, its failure kept as the cause" of the example's `remote_planner.feature`.
+- Fix: the scenarios "Any other answer is a failure with no kind" and "An API that does not answer is unavailable, its failure kept as the cause" of the example's `remote-planner.feature`.
 
 ### Build the client and the service in main.go
 Build the client with `{api}.New(logger, middlewares)` and the service over it in `// [services]` of `cmd/{app}/main.go`, stopping the start with its error, and pass the service to `command.NewHandlers`. Build the client middleware of the API in `// [client middleware]` before it - empty until a variation point (`vp-client-retry`) adds one - and pass it to `{api}.New(logger, middlewares)`, which hands the client's `Operations` and the list to `httpclient.New`; the client refuses a call of an operation not in `Operations`, and `Retryable` on a `httpclient.Operation` marks one safe to repeat, as [api-client](library/develop/core/api-client.skill/api-client.skill.md) requires.

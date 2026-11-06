@@ -43,21 +43,21 @@ def _loaded(settings: Settings) -> HttpConfig:
     return settings.loaded
 
 
-@then(parsers.parse('the listen port should be "{port}"'))
-def the_listen_port_should_be(settings: Settings, port: str) -> None:
-    assert str(_loaded(settings).listen_port) == port
+@then(parsers.parse("the HTTP listen port should be {port:d}"))
+def the_listen_port_should_be(settings: Settings, port: int) -> None:
+    assert _loaded(settings).listen_port == port
 
 
-@then(parsers.re(r'the base path should be "(?P<path>[^"]*)"'))
+@then(parsers.re(r'the HTTP base path should be "(?P<path>[^"]*)"'))
 def the_base_path_should_be(settings: Settings, path: str) -> None:
     assert _loaded(settings).base_path == path
 
 
-@then(parsers.parse("the docs should be {state}"))
+@then(parsers.parse("the HTTP docs should be {state}"))
 def the_docs_should_be(settings: Settings, state: str) -> None:
     assert _loaded(settings).docs_enabled == (state == "enabled")
 
 
-@then(parsers.parse('loading should fail mentioning "{text}"'))
+@then(parsers.parse('loading the HTTP settings should fail mentioning "{text}"'))
 def loading_should_fail(settings: Settings, text: str) -> None:
     assert settings.error is not None and text in str(settings.error), settings.error

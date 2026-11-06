@@ -54,9 +54,25 @@ func Middleware(logger *slog.Logger) grpc.UnaryServerInterceptor {
 			sent["request"] = req
 		}
 		logger.LogAttrs(ctx, slog.LevelInfo, "grpc call answered",
-			slog.String("method", info.FullMethod), slog.String("code", code.String()),
+			slog.String("method", info.FullMethod), slog.String("code", CodeName(code)),
 			slog.Duration("duration", time.Since(start)), logging.Failed(code != codes.OK),
 			logging.Payload(sent))
 		return resp, err
 	}
+}
+
+// CodeName is the canonical name of a gRPC code (INVALID_ARGUMENT), as every
+// stack writes it to the log, not grpc-go's own spelling (InvalidArgument).
+func CodeName(code codes.Code) string {
+	if int(code) < len(codeNames) {
+		return codeNames[code]
+	}
+	return code.String()
+}
+
+var codeNames = [...]string{
+	"OK", "CANCELLED", "UNKNOWN", "INVALID_ARGUMENT", "DEADLINE_EXCEEDED", "NOT_FOUND",
+	"ALREADY_EXISTS", "PERMISSION_DENIED", "RESOURCE_EXHAUSTED", "FAILED_PRECONDITION",
+	"ABORTED", "OUT_OF_RANGE", "UNIMPLEMENTED", "INTERNAL", "UNAVAILABLE", "DATA_LOSS",
+	"UNAUTHENTICATED",
 }

@@ -19,6 +19,7 @@ from {package}.api.cli.pipeline.command import HandlerError, RunState
 from {package}.api.cli.pipeline.run_log import log_answered
 from {package}.command.pipeline import Kind, KindError
 from {package}.log import request_id_scope
+from {package}.shared.errors import error_of
 
 INTERNAL_MESSAGE = "internal error"
 """All a person learns of an action that crashed; the crash goes to the log."""
@@ -98,7 +99,9 @@ async def run(
         stdout.write(output)
         log_answered(logger, state.action, started, error is not None, output, list(args))
     if error is not None:
-        print(f"Error: {error}", file=stderr)
+        # The message of the error with a kind, not the text of a wrapper around
+        # it, as the HTTP and gRPC entry points answer.
+        print(f"Error: {error_of(error) or error}", file=stderr)
         raise error
 
 

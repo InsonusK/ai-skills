@@ -10,11 +10,13 @@
 package answerfailures
 
 import (
+	"context"
 	"encoding/json"
 	"log/slog"
 	"net/http"
 
 	"github.com/example/todo/internal/api/core/rpcstatus"
+	"github.com/example/todo/internal/logging"
 )
 
 // Middleware answers a request whose handler panicked with 500 INTERNAL
@@ -37,7 +39,7 @@ func Middleware(logger *slog.Logger) func(next http.Handler) http.Handler {
 					slog.String("method", r.Method), slog.String("path", r.URL.Path), slog.Any("panic", p))
 				WriteStatus(w, rpcstatus.Internal, rpcstatus.InternalMessage)
 			}()
-			next.ServeHTTP(w, r)
+			next.ServeHTTP(w, r.WithContext(context.WithValue(r.Context(), loggerKey{}, logger)))
 		})
 	}
 }
@@ -91,6 +93,23 @@ func WriteError(w http.ResponseWriter, err error) {
 }
 
 // WriteStatus answers code with message as google.rpc.Status, with the HTTP
+
+type loggerKey struct{}
+
+// WriteFailure answers err as WriteError does and, for an error of no kind -
+// answered INTERNAL "internal error" - logs it as "http request failed" with
+// its text, so the operator reads why. The logger is the one Middleware put
+// into the request's context; Endpoint answers every command error with it.
+func WriteFailure(w http.ResponseWriter, r *http.Request, err error) {
+	if code, _ := rpcstatus.Of(err); code == rpcstatus.Internal {
+		if logger, ok := r.Context().Value(loggerKey{}).(*slog.Logger); ok {
+			logger.LogAttrs(r.Context(), slog.LevelError, "http request failed",
+				slog.String("method", r.Method), slog.String("path", r.URL.Path), logging.Error(err))
+		}
+	}
+	WriteError(w, err)
+}
+
 // status of the code.
 func WriteStatus(w http.ResponseWriter, code rpcstatus.Code, message string) {
 	writeStatus(w, code.HTTPStatus(), code, message)

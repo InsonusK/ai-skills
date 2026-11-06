@@ -19,7 +19,7 @@ LOG_PAYLOAD=errors make run      # payloads of failed calls only
 
 A body the mask cannot read - not JSON, or a proto `Any` of an unknown type - is written as
 `<unparsed body, N bytes>`, and one `WARN` record `log payload not parsed` names where it was.
-The scenarios of `internal/logging/masked/features/` other than `go-payload.feature` are copies
+The scenarios of `internal/logging/masked/features/` other than `payload-in-go.feature` are copies
 of the shared ones every stack runs; they are changed at their source, not here.
 
 ```bash

@@ -6,13 +6,13 @@ Feature: ItemsService
 
   @category/happy
   Scenario: PlanItems becomes the PlanItems command and its result comes back as the response
-    Given PlanItems returns the items "buy milk|walk the dog"
+    Given PlanItems returns the items "buy milk|walk the dog" over gRPC
     When I call ItemsService.PlanItems with the titles "buy milk|walk the dog"
-    Then the response should hold the items "buy milk|walk the dog", none done
-    And PlanItems should have received the titles "buy milk|walk the dog"
+    Then the gRPC response should hold the items "buy milk|walk the dog", none done
+    And PlanItems should have received the titles "buy milk|walk the dog" over gRPC
 
   @category/boundary
   Scenario: A request without titles is PlanItems with no titles
-    Given PlanItems returns the items ""
+    Given PlanItems returns the items "" over gRPC
     When I call ItemsService.PlanItems with no titles
-    Then PlanItems should have received no titles
+    Then PlanItems should have received no titles over gRPC

@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/cucumber/godog"
@@ -15,18 +14,20 @@ import (
 )
 
 func registerCallSteps(sc *godog.ScenarioContext, w *World) {
-	sc.Step(`^the command answers "([^"]*)"$`, w.commandAnswers)
-	sc.Step(`^the command is rejected with "([^"]*)"$`, w.commandRejected)
-	sc.Step(`^the command fails with "([^"]*)"$`, w.commandFails)
-	sc.Step(`^the command fails with the kind conflict and "([^"]*)"$`, w.commandConflicts)
-	sc.Step(`^the command panics$`, w.commandPanics)
-	sc.Step(`^the command takes (\d+) milliseconds and answers "([^"]*)"$`, w.commandTakes)
-	sc.Step(`^I call the test method with "([^"]*)"$`, w.iCall)
-	sc.Step(`^the call should succeed with "([^"]*)"$`, w.callShouldSucceed)
-	sc.Step(`^the call should fail with (\w+) and a message containing "([^"]*)"$`, w.callShouldFailContaining)
-	sc.Step(`^the call should fail with (\w+) and the message "([^"]*)"$`, w.callShouldFailExactly)
-	sc.Step(`^the command should have received "([^"]*)"$`, w.commandShouldHaveReceived)
-	sc.Step(`^the command should not have been called$`, w.commandShouldNotHaveBeenCalled)
+	sc.Step(`^the gRPC echo command answers "([^"]*)"$`, w.commandAnswers)
+	sc.Step(`^the gRPC echo command answers "([^"]*)", wrapped with logging$`, w.commandAnswersWithLogging)
+	sc.Step(`^the gRPC echo command is rejected with "([^"]*)"$`, w.commandRejected)
+	sc.Step(`^the gRPC echo command fails with "([^"]*)"$`, w.commandFails)
+	sc.Step(`^the gRPC echo command fails with the kind "([^"]*)" and "([^"]*)"$`, w.commandFailsWithKind)
+	sc.Step(`^the gRPC echo command fails with the kind "([^"]*)" and "([^"]*)", wrapped in "([^"]*)"$`, w.commandFailsWrapped)
+	sc.Step(`^the gRPC echo command crashes$`, w.commandPanics)
+	sc.Step(`^the gRPC echo command takes (\d+) milliseconds and answers "([^"]*)"$`, w.commandTakes)
+	sc.Step(`^I call the gRPC test method with "([^"]*)"$`, w.iCall)
+	sc.Step(`^the gRPC call should succeed with "([^"]*)"$`, w.callShouldSucceed)
+	sc.Step(`^the gRPC call should fail with (\w+) and the message "([^"]*)"$`, w.callShouldFailExactly)
+	sc.Step(`^the gRPC echo command should have received "([^"]*)"$`, w.commandShouldHaveReceived)
+	sc.Step(`^the gRPC echo command should not have been called$`, w.commandShouldNotHaveBeenCalled)
+	sc.Step(`^the gRPC log should hold the error "([^"]*)" of "([^"]*)"$`, w.theLogShouldHoldTheError)
 }
 
 func (w *World) commandAnswers(ctx context.Context, text string) error {
@@ -44,9 +45,42 @@ func (w *World) commandFails(ctx context.Context, message string) error {
 	return nil
 }
 
-func (w *World) commandConflicts(ctx context.Context, message string) error {
-	w.echoErr = errorkind.New(errorkind.ErrConflict, message)
+// kindNamed is the kind the scenarios name by its text ("not found").
+func kindNamed(name string) (error, error) {
+	for _, kind := range errorkind.Kinds {
+		if kind.Error() == name {
+			return kind, nil
+		}
+	}
+	return nil, fmt.Errorf("no kind %q", name)
+}
+
+func (w *World) commandFailsWithKind(ctx context.Context, name, message string) error {
+	kind, err := kindNamed(name)
+	w.echoErr = errorkind.New(kind, message)
+	return err
+}
+
+func (w *World) commandFailsWrapped(ctx context.Context, name, message, context string) error {
+	kind, err := kindNamed(name)
+	w.echoErr = fmt.Errorf("%s: %w", context, errorkind.New(kind, message))
+	return err
+}
+
+// commandAnswersWithLogging answers text from inside the command logging
+// middleware, as the composition root wraps every handler.
+func (w *World) commandAnswersWithLogging(ctx context.Context, text string) error {
+	w.echoAnswer, w.echoLogged = text, true
 	return nil
+}
+
+func (w *World) theLogShouldHoldTheError(ctx context.Context, text, msg string) error {
+	for _, rec := range w.records(msg) {
+		if rec["error"] == text {
+			return nil
+		}
+	}
+	return fmt.Errorf("no %q record with the error %q in %s", msg, text, w.logs.String())
 }
 
 func (w *World) commandPanics(ctx context.Context) error {
@@ -65,7 +99,7 @@ func (w *World) iCall(ctx context.Context, text string) error {
 	if err != nil {
 		return err
 	}
-	w.reply, w.callErr = callEcho(conn, text)
+	w.reply, w.sentID, w.callErr = callEchoWithID(conn, text, "")
 	logf("when: Echo(%q) -> %q err=%v", text, w.reply, w.callErr)
 	return nil
 }
@@ -77,35 +111,11 @@ func (w *World) callShouldSucceed(ctx context.Context, want string) error {
 	return nil
 }
 
-// codeNamed reads a code by its Go name (InvalidArgument, Internal, ...).
+// codeNamed is the code the scenarios name by its canonical name (INVALID_ARGUMENT).
 func codeNamed(name string) (codes.Code, error) {
 	var code codes.Code
-	err := code.UnmarshalJSON([]byte(`"` + strings.ToUpper(snake(name)) + `"`))
+	err := code.UnmarshalJSON([]byte(`"` + name + `"`))
 	return code, err
-}
-
-// snake turns InvalidArgument into INVALID_ARGUMENT's lower form invalid_argument.
-func snake(name string) string {
-	var b strings.Builder
-	for i, r := range name {
-		if i > 0 && r >= 'A' && r <= 'Z' {
-			b.WriteByte('_')
-		}
-		b.WriteRune(r)
-	}
-	return b.String()
-}
-
-func (w *World) callShouldFailContaining(ctx context.Context, codeName, text string) error {
-	want, err := codeNamed(codeName)
-	if err != nil {
-		return err
-	}
-	got := status.Convert(w.callErr)
-	if w.callErr == nil || got.Code() != want || !strings.Contains(got.Message(), text) {
-		return fmt.Errorf("call error: got %v, want %s with %q", w.callErr, want, text)
-	}
-	return nil
 }
 
 func (w *World) callShouldFailExactly(ctx context.Context, codeName, message string) error {

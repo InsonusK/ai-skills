@@ -78,7 +78,7 @@ func Run(ctx context.Context, logger *slog.Logger, name, version string, args []
 	root.SetErr(stderr)
 
 	ran, err := execute(ctx, logger, root, args)
-	defer func() { logCall(ctx, logger, ran, start, err, output.String()) }()
+	defer func() { logCall(ctx, logger, ran, args, start, err, output.String()) }()
 	var handled handlerError
 	switch {
 	case err == nil:
@@ -108,7 +108,7 @@ func Run(ctx context.Context, logger *slog.Logger, name, version string, args []
 func execute(ctx context.Context, logger *slog.Logger, root *cobra.Command, args []string) (ran *cobra.Command, err error) {
 	defer func() {
 		if p := recover(); p != nil {
-			logger.ErrorContext(ctx, "cli action panicked", slog.Any("panic", p))
+			logger.ErrorContext(ctx, "cli action crashed", slog.Any("panic", p))
 			if ran, _, _ = root.Find(args); ran == nil {
 				ran = root
 			}

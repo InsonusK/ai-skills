@@ -11,7 +11,7 @@ using Xunit.Abstractions;
 namespace MaskedLogging.Tests.Steps;
 
 /// <summary>
-/// The steps of payload-policy.feature and Payload.feature: records logged
+/// The steps of payload-policy.feature and payload-in-dotnet.feature: records logged
 /// through <see cref="MaskedLogProvider"/> as the composition root builds it,
 /// and the lines it wrote.
 /// </summary>
@@ -113,7 +113,7 @@ public sealed class PayloadPolicySteps(ITestOutputHelper output, MaskingSwitch m
     public void WhenARecordWithABody(string message, string body) =>
         LogRecord(message, false, new Dictionary<string, object?> { ["body"] = Encoding.UTF8.GetBytes(body) });
 
-    // Payload.feature: the ways only Microsoft.Extensions.Logging has
+    // payload-in-dotnet.feature: the ways only Microsoft.Extensions.Logging has
 
     [When("a record is logged with the template {string} and the payload password {string} and title {string}")]
     public void WhenATemplate(string template, string password, string title) =>

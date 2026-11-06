@@ -90,7 +90,14 @@ Give the base plateau's example and every variation point's example the scenario
 - Risk: a change of the testing skills must be repeated in every example of the catalog, and the examples drift from them.
 - Fix: the project's testing contract comes from the stack's conformance-testing skill; the stack extension names it.
 
+### Pass the shared scenarios
+Run every file of this skill's [conformance/](./conformance/) unchanged in each stack's example, through a copy named in the stack skill's `conformance.copy` (`make conformance-sync`), as [conformance-scenarios-copied-into-each-stack](library/architecture/spec/vp-logging.skill/adr/conformance-scenarios-copied-into-each-stack.md) decides. Every VP example runs these too, since it holds the base's code; an API variation point leaves out `startup`, whose code it deletes.
+- Violation: a stack rewording a shared scenario or keeping its own copy of one; a scenario skipped because the stack fails it.
+- Risk: the stacks drift apart under one name: a check one stack makes and another does not is a defect found in one and left open in the others.
+- Fix: step definitions are the stack's own; a scenario of a mechanism only one stack has goes in a `{name}-in-{stack}.feature` beside the copies; `bash test/check-conformance.sh` fails while a copy is missing or differs.
+
 # Check list
+- [ ] Every file of `conformance/` runs unchanged in each stack's example; `bash test/check-conformance.sh` passes.
 - [ ] The application starts, runs its one startup command, writes the result as one line to standard output, logs to standard error, and exits `0`, `2`, or `1`.
 - [ ] The api, command, and domain layers exist and follow [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md)'s check list.
 - [ ] Every command has one handler; every handler satisfies the one handler contract.

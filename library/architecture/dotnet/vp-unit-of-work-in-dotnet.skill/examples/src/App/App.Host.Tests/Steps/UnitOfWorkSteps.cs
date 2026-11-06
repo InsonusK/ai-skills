@@ -1,3 +1,4 @@
+using Npgsql;
 using BuildingBlocks.Pipeline;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,9 +33,16 @@ public sealed class UnitOfWorkSteps
     {
         _database = await TestDatabase.CreateAsync();
         await PostgresMigrations.ApplyAsync(_database.Config, CancellationToken.None);
+        Build(_database.Config);
+    }
+
+    // The commands as the composition root wires them, over the database of config.
+    private void Build(PostgresConfig config)
+    {
+        _provider?.Dispose();
         var services = new ServiceCollection();
         services.AddLogging();
-        services.AddPostgres(_database.Config);
+        services.AddPostgres(config);
         services.AddPostgresUnitOfWork();
         services.AddTodoModule();
         services.AddCommandScope();
@@ -68,6 +76,22 @@ public sealed class UnitOfWorkSteps
 
     [Then("the import should have failed as a conflict")]
     public void ThenTheImportShouldHaveFailedAsAConflict() => Assert.Equal(ErrorKind.Conflict, ErrorKindException.KindOf(_error));
+
+    [Given("the pool holds at most {int} connections")]
+    public void GivenThePoolHoldsAtMost(int limit) =>
+        Build(new PostgresConfig { Dsn = $"{_database!.Dsn};Maximum Pool Size={limit}", MigrateOnStart = false });
+
+    [Then("no transaction should be open")]
+    public async Task ThenNoTransactionShouldBeOpen()
+    {
+        var database = new NpgsqlConnectionStringBuilder(_database!.Dsn).Database;
+        await using var connection = new NpgsqlConnection(_database.Dsn);
+        await connection.OpenAsync();
+        await using var query = new NpgsqlCommand(
+            "SELECT count(*) FROM pg_stat_activity WHERE datname = @database AND state LIKE 'idle in transaction%'", connection);
+        query.Parameters.AddWithValue("database", database!);
+        Assert.Equal(0L, (long)(await query.ExecuteScalarAsync())!);
+    }
 
     [Then("the database should hold {int} items")]
     public async Task ThenTheDatabaseShouldHold(int count) => Assert.Equal(count, await _database!.CountAsync("list_items"));

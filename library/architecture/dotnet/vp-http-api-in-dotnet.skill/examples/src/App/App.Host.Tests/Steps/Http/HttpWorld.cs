@@ -1,3 +1,4 @@
+using Shared.Errors;
 using App.Host.Api.Http.Pipeline;
 using BuildingBlocks.Pipeline;
 using MediatR;
@@ -62,7 +63,9 @@ public sealed class HttpWorld : IDisposable
     // POST /v1/echo: Echo, answered 201.
     private static void MapEcho(IEndpointRouteBuilder routes, ISender sender) =>
         routes.MapPost("/v1/echo", async (EchoBody body, CancellationToken cancellationToken) =>
-            TypedResults.Created((string?)null, new EchoBody(await sender.Send(new Echo(body.Text ?? ""), cancellationToken))));
+            TypedResults.Created((string?)null, new EchoBody(await sender.Send(
+                // The route needs the field, as a route of the contract does.
+                new Echo(body.Text ?? throw new ErrorKindException(ErrorKind.Invalid, "body.text is required")), cancellationToken))));
 
     /// <summary>The sender to the fake handlers, through the logging middleware when asked.</summary>
     public ISender Sender()

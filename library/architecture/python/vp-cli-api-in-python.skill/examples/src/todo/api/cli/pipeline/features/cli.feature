@@ -32,6 +32,13 @@ Feature: Command line
     And stderr should mention "Error: the name is taken"
     And stdout should be empty
 
+  @category/negative
+  Scenario: A rejection wrapped on its way up prints its own message, not the wrapper's nor its cause
+    Given the command is rejected with the kind "conflict" and "the name is taken", caused by "duplicate key", wrapped in "echo"
+    When I run "test echo --text hi"
+    Then running should fail with the kind "conflict"
+    And stderr should be the line "Error: the name is taken"
+
   @category/error
   Scenario: A failure of the handler keeps no kind
     Given the command fails with "connection refused"
@@ -42,7 +49,7 @@ Feature: Command line
   @category/error
   Scenario: An action that crashes is answered as a failure with no kind and logged
     Given the command answers "hello"
-    And the output of the action crashes
+    And the CLI action crashes
     When I run "test echo --text hi"
     Then running should fail with no kind
     And stderr should mention "Error: internal error"
@@ -58,9 +65,9 @@ Feature: Command line
 
     Examples:
       | args                           | message                       |
-      | bogus                          | No such command 'bogus'       |
+      | bogus                          | bogus                         |
       | test bogus                     | see todo test --help          |
-      | test echo --nope               | No such option '--nope'       |
+      | test echo --nope               | --nope                        |
       | test echo --text hi --output x | --output must be json or text |
       | test echo                      | --text is required            |
 

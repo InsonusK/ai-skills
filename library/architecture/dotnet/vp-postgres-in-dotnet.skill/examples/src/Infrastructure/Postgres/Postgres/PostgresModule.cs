@@ -37,5 +37,5 @@ public static class PostgresModule
     internal static void Configure(DbContextOptionsBuilder options, PostgresConfig config) =>
         options
             .UseNpgsql(config.Dsn)
-            .ConfigureWarnings(warnings => warnings.Ignore(CoreEventId.SaveChangesFailed, CoreEventId.QueryIterationFailed, RelationalEventId.CommandError));
+            .ConfigureWarnings(warnings => warnings.Ignore(CoreEventId.SaveChangesFailed, CoreEventId.QueryIterationFailed, RelationalEventId.CommandError, RelationalEventId.ConnectionError));
 }

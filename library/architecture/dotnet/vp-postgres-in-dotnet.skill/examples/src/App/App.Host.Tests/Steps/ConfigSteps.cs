@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using App.Host.Config;
 using Reqnroll;
 using Xunit;
@@ -26,7 +27,17 @@ public sealed class ConfigSteps(ITestOutputHelper output)
     }
 
     [Then("the log level should be {string}")]
-    public void ThenTheLogLevelShouldBe(string level) => Assert.Equal(level, _config?.LogLevel.ToString());
+    public void ThenTheLogLevelShouldBe(string level) => Assert.Equal(level, SlogName(_config?.LogLevel));
+
+    // The level as the scenarios of every stack spell it: the JSON line's name.
+    private static string? SlogName(LogLevel? level) => level switch
+    {
+        LogLevel.Trace or LogLevel.Debug => "DEBUG",
+        LogLevel.Information => "INFO",
+        LogLevel.Warning => "WARN",
+        null => null,
+        _ => "ERROR",
+    };
 
     [Then("loading should fail mentioning {string}")]
     public void ThenLoadingShouldFailMentioning(string text) => Assert.Contains(text, _error?.Message);

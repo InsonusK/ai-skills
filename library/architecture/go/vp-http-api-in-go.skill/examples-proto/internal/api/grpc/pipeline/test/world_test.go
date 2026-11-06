@@ -21,6 +21,7 @@ import (
 
 	"github.com/example/todo/internal/api/grpc/middleware/calllog"
 	grpcpipeline "github.com/example/todo/internal/api/grpc/pipeline"
+	commandlogging "github.com/example/todo/internal/command/middleware/logging"
 	"github.com/example/todo/internal/command/pipeline"
 	"github.com/example/todo/internal/logging"
 )
@@ -46,6 +47,7 @@ type World struct {
 	echoGot     echoCommand
 	echoStarted chan struct{}
 	echoReqID   string // the request id in the command's context
+	echoLogged  bool   // the command runs inside the command logging middleware
 
 	logs syncBuffer // what the in-memory server logged, every attribute kept
 
@@ -57,6 +59,7 @@ type World struct {
 	conn         *grpc.ClientConn
 
 	reply   string
+	sentID  string // the request id the server sent back
 	listed  []string
 	callErr error
 
@@ -113,6 +116,15 @@ type echoResult struct{ Text string }
 
 // echoHandler is the fake handler: it records the command and answers what the scenario set.
 func (w *World) echoHandler() pipeline.Handler[echoCommand, echoResult] {
+	handler := w.echo()
+	if w.echoLogged {
+		logger := slog.New(slog.NewJSONHandler(&w.logs, nil))
+		return pipeline.Decorate[echoCommand, echoResult]("Echo", handler, []pipeline.Middleware{commandlogging.Middleware(logger)})
+	}
+	return handler
+}
+
+func (w *World) echo() pipeline.Handler[echoCommand, echoResult] {
 	return pipeline.HandlerFunc[echoCommand, echoResult](
 		func(ctx context.Context, cmd echoCommand) (echoResult, error) {
 			w.echoCalled = true

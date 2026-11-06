@@ -35,12 +35,12 @@ def the_management_settings_are_loaded(settings: Settings) -> None:
     print(f"when: load_config -> {settings.loaded}, error {settings.error}")
 
 
-@then(parsers.parse('the listen port should be "{port}"'))
+@then(parsers.parse('the management listen port should be {port}'))
 def the_listen_port_should_be(settings: Settings, port: str) -> None:
     assert settings.loaded is not None, settings.error
     assert str(settings.loaded.listen_port) == port
 
 
-@then(parsers.parse('loading should fail mentioning "{text}"'))
+@then(parsers.parse('loading the management settings should fail mentioning "{text}"'))
 def loading_should_fail(settings: Settings, text: str) -> None:
     assert settings.error is not None and text in str(settings.error), settings.error

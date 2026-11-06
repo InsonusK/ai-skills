@@ -7,21 +7,22 @@ Feature: Management settings
   @category/boundary
   Scenario: Nothing set means port 8081
     When the management settings are loaded
-    Then the listen port should be "8081"
+    Then the management listen port should be 8081
 
   @category/happy
   Scenario: The port is read
     Given the environment variable "MANAGEMENT_LISTEN_PORT" is "9091"
     When the management settings are loaded
-    Then the listen port should be "9091"
+    Then the management listen port should be 9091
 
   @category/negative
   Scenario Outline: An unusable port is rejected, naming its variable
     Given the environment variable "MANAGEMENT_LISTEN_PORT" is "<value>"
     When the management settings are loaded
-    Then loading should fail mentioning "MANAGEMENT_LISTEN_PORT"
+    Then loading the management settings should fail mentioning "MANAGEMENT_LISTEN_PORT"
 
     Examples:
       | value |
-      | http  |
+      | mgmt  |
       | 70000 |
+      | 0     |

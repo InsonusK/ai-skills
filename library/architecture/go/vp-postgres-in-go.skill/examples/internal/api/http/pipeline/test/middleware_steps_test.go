@@ -10,8 +10,8 @@ import (
 )
 
 func registerMiddlewareSteps(sc *godog.ScenarioContext, w *World) {
-	sc.Step(`^the middlewares "([^"]*)" and "([^"]*)", each logging a record with its name$`, w.theMiddlewaresLogging)
-	sc.Step(`^a middleware that rejects every request as unauthenticated with "([^"]*)"$`, w.aRejectingMiddleware)
+	sc.Step(`^the HTTP middlewares "([^"]*)" and "([^"]*)", each logging a record with its name$`, w.theMiddlewaresLogging)
+	sc.Step(`^an HTTP middleware that rejects every request as unauthenticated with "([^"]*)"$`, w.aRejectingMiddleware)
 }
 
 // theMiddlewaresLogging gives the server two middlewares, in this order, each

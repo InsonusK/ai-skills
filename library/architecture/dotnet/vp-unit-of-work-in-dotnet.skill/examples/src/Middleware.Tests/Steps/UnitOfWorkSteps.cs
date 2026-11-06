@@ -1,6 +1,7 @@
 using MediatR;
 using Middleware.UnitOfWork;
 using Reqnroll;
+using Shared.Errors;
 using Shared.UnitOfWork;
 using Xunit;
 
@@ -10,7 +11,7 @@ namespace Middleware.Tests.Steps;
 public sealed class FakeUnitOfWork : IUnitOfWork
 {
     public bool AlreadyBegun { get; set; }
-    public bool CommitFails { get; set; }
+    public string? CommitFailure { get; set; }
     public List<string> Calls { get; } = [];
     public bool CommitCouldBeCancelled { get; private set; }
 
@@ -20,7 +21,7 @@ public sealed class FakeUnitOfWork : IUnitOfWork
     {
         Calls.Add("commit");
         CommitCouldBeCancelled = cancellationToken.CanBeCanceled;
-        return CommitFails ? throw new InvalidOperationException("commit failed") : Task.CompletedTask;
+        return CommitFailure is not null ? throw new IOException(CommitFailure) : Task.CompletedTask;
     }
 
     public Task RollbackAsync(CancellationToken cancellationToken)
@@ -45,8 +46,8 @@ public sealed class UnitOfWorkSteps
     [Given("the handler fails with {string}")]
     public void GivenTheHandlerFails(string message) => _handler = _ => throw new InvalidOperationException(message);
 
-    [Given("the commit fails")]
-    public void GivenTheCommitFails() => _unitOfWork.CommitFails = true;
+    [Given("the commit fails with {string}")]
+    public void GivenTheCommitFails(string message) => _unitOfWork.CommitFailure = message;
 
     [When("a command runs through the unit of work middleware")]
     public async Task WhenACommandRuns()
@@ -62,12 +63,23 @@ public sealed class UnitOfWorkSteps
         }
     }
 
-    [Then("the unit of work should have been asked for {string}")]
-    public void ThenTheUnitOfWorkShouldHaveBeenAskedFor(string calls) =>
+    // How the unit of work was ended: its commit and rollback, in order.
+    [Then("the unit of work should have been ended with {string}")]
+    public void ThenTheUnitOfWorkShouldHaveBeenEndedWith(string calls) =>
         Assert.Equal(calls.Split('|'), _unitOfWork.Calls);
 
-    [Then("the unit of work should have been asked for nothing")]
-    public void ThenTheUnitOfWorkShouldHaveBeenAskedForNothing() => Assert.Empty(_unitOfWork.Calls);
+    [Then("the unit of work should not have been ended")]
+    public void ThenTheUnitOfWorkShouldNotHaveBeenEnded() => Assert.Empty(_unitOfWork.Calls);
+
+    [Then("the command should fail with the kind {string}")]
+    public void ThenTheCommandShouldFailWithTheKind(string kind) =>
+        Assert.Equal(Enum.Parse<ErrorKind>(kind.Replace(" ", ""), ignoreCase: true), ErrorKindException.KindOf(_error!));
+
+    [Then("the command's message should not mention {string}")]
+    public void ThenTheCommandsMessageShouldNotMention(string text) => Assert.DoesNotContain(text, _error!.Message);
+
+    [Then("the cause of the command's error should mention {string}")]
+    public void ThenTheCauseShouldMention(string text) => Assert.Contains(text, ErrorKindException.CauseOf(_error!));
 
     [Then("the command should answer its result")]
     public void ThenTheCommandShouldAnswerItsResult() => Assert.Equal("done", _result);

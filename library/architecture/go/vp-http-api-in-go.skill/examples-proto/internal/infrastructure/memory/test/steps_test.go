@@ -43,7 +43,7 @@ func registerSteps(sc *godog.ScenarioContext) {
 		}
 		return nil
 	})
-	sc.Step(`^selecting the list "([^"]*)" should fail with no rows$`, func(ctx context.Context, listID string) error {
+	sc.Step(`^selecting the list "([^"]*)" should give no rows$`, func(ctx context.Context, listID string) error {
 		if _, selectErr := lists.Select(ctx, listID); !errors.Is(selectErr, memory.ErrNoRows) {
 			return fmt.Errorf("select error %v, want no rows", selectErr)
 		}

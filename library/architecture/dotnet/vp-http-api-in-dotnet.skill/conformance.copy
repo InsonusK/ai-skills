@@ -1,0 +1,35 @@
+# The shared scenarios this example runs: written by `make conformance-sync`,
+# checked by test/check-conformance.sh. One line per unit:
+# <spec folder> <folder of this skill it is copied into>.
+base-plateau.skill/conformance/config examples/src/App/App.Host.Tests/features
+base-plateau.skill/conformance/entry examples/src/App/App.Host.Tests/features
+base-plateau.skill/conformance/json-log examples/src/BuildingBlocks.Tests/features
+base-plateau.skill/conformance/command-pipeline examples/src/BuildingBlocks.Tests/features
+base-plateau.skill/conformance/command-logging examples/src/Middleware.Tests/features
+base-plateau.skill/conformance/plan-items examples/src/Modules/Todo/Todo.Application.Tests/features
+base-plateau.skill/conformance/item examples/src/Modules/Todo/Todo.Domain.Tests/features
+base-plateau.skill/conformance/planner examples/src/Modules/Todo/Todo.Domain.Tests/features
+base-plateau.skill/conformance/config examples-proto/src/App/App.Host.Tests/features
+base-plateau.skill/conformance/entry examples-proto/src/App/App.Host.Tests/features
+base-plateau.skill/conformance/json-log examples-proto/src/BuildingBlocks.Tests/features
+base-plateau.skill/conformance/command-pipeline examples-proto/src/BuildingBlocks.Tests/features
+base-plateau.skill/conformance/command-logging examples-proto/src/Middleware.Tests/features
+base-plateau.skill/conformance/plan-items examples-proto/src/Modules/Todo/Todo.Application.Tests/features
+base-plateau.skill/conformance/item examples-proto/src/Modules/Todo/Todo.Domain.Tests/features
+base-plateau.skill/conformance/planner examples-proto/src/Modules/Todo/Todo.Domain.Tests/features
+vp-grpc-api.skill/conformance/rpcstatus examples-proto/src/App/App.Host.Tests/features
+vp-grpc-api.skill/conformance/grpc-pipeline examples-proto/src/App/App.Host.Tests/features/Grpc
+vp-grpc-api.skill/conformance/grpc-contract examples-proto/src/App/App.Host.Tests/features/Grpc
+vp-grpc-api.skill/conformance/rpcstatus examples/src/App/App.Host.Tests/features
+vp-http-api.skill/conformance/http-pipeline examples/src/App/App.Host.Tests/features/Http
+vp-http-api.skill/conformance/http-contract examples/src/App/App.Host.Tests/features/Http
+vp-http-api.skill/conformance/http-items examples/src/App/App.Host.Tests/features/Http
+vp-http-api.skill/conformance/http-pipeline examples-proto/src/App/App.Host.Tests/features/Http
+vp-http-api.skill/conformance/proto-http-pipeline examples-proto/src/App/App.Host.Tests/features/Http
+vp-http-api.skill/conformance/proto-http-contract examples-proto/src/App/App.Host.Tests/features/Http
+vp-http-api.skill/conformance/proto-http-items examples-proto/src/App/App.Host.Tests/features/Http
+vp-http-api.skill/conformance/proto-http-lists examples-proto/src/App/App.Host.Tests/features/Http
+vp-http-api.skill/conformance/proto-grpc-items examples-proto/src/App/App.Host.Tests/features/Grpc
+vp-http-api.skill/conformance/proto-item-lists examples-proto/src/Modules/Todo/Todo.Application.Tests/features
+vp-http-api.skill/conformance/proto-item-lists-service examples-proto/src/Modules/Todo/Todo.Application.Tests/features
+vp-http-api.skill/conformance/proto-memory-lists examples-proto/src/Infrastructure/Memory/Memory.Tests/features

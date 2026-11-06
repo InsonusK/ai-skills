@@ -183,7 +183,7 @@ async def rename(self, title: str, to: str) -> None:
 
 ### Write every migration with its row
 Run `make migration NAME={what}` for every change of a row, read the file it writes, and commit both together; apply with `make migrate` locally and with `todo-migrate`, the image's `/app/migrate`, in a deployment.
-- Violation: a migration edited after it was applied somewhere; `Row.metadata.create_all` in the application; the scenarios of [model_changes.feature](./examples/src/todo/infrastructure/postgres/features/model_changes.feature) removed.
+- Violation: a migration edited after it was applied somewhere; `Row.metadata.create_all` in the application; the scenarios of [model-changes-in-python.feature](./examples/src/todo/infrastructure/postgres/features/model-changes-in-python.feature) removed.
 - Risk: the rows and the schema drift, and the first statement reading a new column fails in production; a rename written as a drop and an add loses the column's data.
 - Fix: a new file for every further change; `alembic check` compares columns, types, nullability, keys, and indexes.
 
@@ -197,7 +197,7 @@ Pass `database.ping` where the health variation point takes a check, `management
 Name the shared scenarios in [conformance.copy](./conformance.copy), run `make conformance-sync` at the repository root, and implement their steps in `infrastructure/postgres/test/conftest.py`, each comparing the fields of the row objects.
 - Violation: a copy edited; a step comparing titles joined into one text.
 - Risk: the contract is proved in another stack and not in this one.
-- Fix: the sample tables, their specifications, and `TaskRepository` are in `test/sample.py`, of a declarative base of their own, created by SQL for the scenario. What only Python has stays beside the copies, in `config_forms.feature`, `model_changes.feature`, `repository_in_python.feature`, and `statements.feature`.
+- Fix: the sample tables, their specifications, and `TaskRepository` are in `test/sample.py`, of a declarative base of their own, created by SQL for the scenario. What only Python has stays beside the copies, in `config-forms-in-python.feature`, `model-changes-in-python.feature`, `repository-in-python.feature`, and `statements.feature`.
 
 ### Create the database of each scenario
 Create a database with `postgrestest.create()` in a step or fixture of each scenario that needs one, run every step of the scenario on one event loop, and drop it at the end; give a service's scenario an outcome through `postgrestest.Failing`.
@@ -211,7 +211,7 @@ Create a database with `postgrestest.create()` in a step or fixture of each scen
 - [ ] A specification applies only `where` and `join`, a projection also `with_only_columns`.
 - [ ] A statement past the contract runs in `run`; no session leaves package `postgres` but through `pick` and `run`.
 - [ ] No `KindError` carries the repository's failure in its message.
-- [ ] Every change of a row has its migration; the scenarios of `model_changes.feature` pass.
+- [ ] Every change of a row has its migration; the scenarios of `model-changes-in-python.feature` pass.
 - [ ] `todo-migrate` is the image's `/app/migrate`; `MIGRATE_ON_START` stays `false` beyond one instance.
 - [ ] `make test` and `make lint` pass with `TEST_DATABASE_DSN` set; `bash test/check-vp-attach.sh` in this repository reports no file changed beyond [attach.allow](./attach.allow); `bash test/check-conformance.sh` reports no copy changed.
 

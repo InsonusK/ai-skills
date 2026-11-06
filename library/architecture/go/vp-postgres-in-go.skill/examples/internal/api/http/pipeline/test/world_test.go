@@ -3,6 +3,7 @@ package test
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"net"
@@ -46,6 +47,7 @@ type World struct {
 	middlewares []httppipeline.Middleware
 
 	response *httptest.ResponseRecorder
+	lastPath string // the path of the last request, as the client asked for it
 
 	loadedCfg httppipeline.Config
 	loadErr   error
@@ -72,6 +74,9 @@ func (w *World) reset() error {
 }
 
 func registerWorldHooks(sc *godog.ScenarioContext, w *World) {
+	if moreSteps != nil {
+		moreSteps(sc, w)
+	}
 	sc.Before(func(ctx context.Context, _ *godog.Scenario) (context.Context, error) {
 		return ctx, w.reset()
 	})
@@ -114,6 +119,10 @@ func (w *World) routes() []httppipeline.Route {
 	}
 	decode := func(r *http.Request) (echoCommand, error) {
 		b, err := httppipeline.DecodeJSON[body](r)
+		if err == nil && b.Text == "" {
+			// The route needs the field, as a route of the contract does.
+			err = errors.New("body.text is required")
+		}
 		return echoCommand{Text: b.Text}, err
 	}
 	encode := func(result echoResult) any { return body{Text: result.Text} }
@@ -128,6 +137,10 @@ func (w *World) routes() []httppipeline.Route {
 // contract is a proto file, proto_steps_test.go sets it to the routes over
 // proto.go. Nil otherwise.
 var moreRoutes func(w *World) []httppipeline.Route
+
+// moreSteps registers the steps of a feature that serves moreRoutes (the
+// proto-JSON form), when one is in the package.
+var moreSteps func(sc *godog.ScenarioContext, w *World)
 
 // server logs through a plain JSON handler, which keeps the payload, so the
 // scenarios see every attribute the server writes.
@@ -144,7 +157,11 @@ func (w *World) send(method, path, body string) {
 }
 
 func (w *World) sendWithHeaders(method, path, body string, headers map[string]string) {
+	w.lastPath = path
 	req := httptest.NewRequest(method, path, strings.NewReader(body))
+	if body != "" {
+		req.Header.Set("Content-Type", "application/json") // a scenario may name another below
+	}
 	for name, value := range headers {
 		req.Header.Set(name, value)
 	}

@@ -38,5 +38,5 @@ public sealed class ReflectionSteps(GrpcWorld world)
     public void ThenTheListedGrpcServicesShouldInclude(string service) => Assert.Contains(service, _services);
 
     [Then("the reflection call should fail with {word}")]
-    public void ThenTheReflectionCallShouldFailWith(string code) => Assert.Equal(Enum.Parse<StatusCode>(code), _error?.StatusCode);
+    public void ThenTheReflectionCallShouldFailWith(string code) => Assert.Equal(GrpcCallSteps.CodeNamed(code), _error?.StatusCode);
 }

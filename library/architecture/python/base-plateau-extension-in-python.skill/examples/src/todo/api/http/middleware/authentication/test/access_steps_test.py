@@ -15,7 +15,7 @@ from todo.command.middleware.access import AccessMiddleware, load_config
 from todo.command.middleware.batch_limit import BatchLimitMiddleware
 from todo.command.middleware.logging import LoggingMiddleware
 
-scenarios("../features/access.feature")
+scenarios("../features/authentication.feature")
 
 
 class Recorder(logging.Handler):

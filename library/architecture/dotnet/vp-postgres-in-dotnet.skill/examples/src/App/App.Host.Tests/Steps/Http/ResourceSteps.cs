@@ -35,7 +35,7 @@ public sealed class ResourceSteps(HttpWorld world)
     public static void MapApplicationRoutes(HttpWorld world) =>
         world.Routes = (routes, sender) => new HttpEndpoints(Items: new ItemsHandler(sender), Lists: new ListsHandler(sender)).Map(routes);
 
-    private static List<ItemView> Views(string titles) => titles.Split('|').Select(title => new ItemView(title, false)).ToList();
+    private static List<ItemView> Views(string titles) => titles == "" ? [] : titles.Split('|').Select(title => new ItemView(title, false)).ToList();
 
     private void Serve<TCommand, TResult>(FakeHandler<TCommand, TResult> handler) where TCommand : IRequest<TResult>
     {
@@ -73,6 +73,9 @@ public sealed class ResourceSteps(HttpWorld world)
         _listItems.Answer = _ => new ListItemsResult(Views(titles));
         Serve(_listItems);
     }
+
+    [Then("PlanItems should have received no titles")]
+    public void ThenPlanItemsShouldHaveReceivedNoTitles() => Assert.Empty(_planItems.Received!.Titles);
 
     [Then("PlanItems should have received the titles {string}")]
     public void ThenPlanItemsShouldHaveReceived(string titles) => Assert.Equal(titles.Split('|'), _planItems.Received?.Titles);

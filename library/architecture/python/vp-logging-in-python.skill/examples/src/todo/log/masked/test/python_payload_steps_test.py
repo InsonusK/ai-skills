@@ -17,7 +17,7 @@ from todo.log.masked import MASK, OMIT, MaskedConfig, Unparsed, mask, new_masked
 
 from .support import encode, nested, nested_nodes, parsed_message, proto_message, same_json
 
-scenarios("../features/python-payload.feature")
+scenarios("../features/payload-in-python.feature")
 
 _LEVELS = {"DEBUG": logging.DEBUG, "INFO": logging.INFO, "WARN": logging.WARNING, "ERROR": logging.ERROR}
 

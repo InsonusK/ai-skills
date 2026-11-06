@@ -7,7 +7,7 @@ from pytest_bdd import parsers, scenarios, then, when
 from todo.command import PlanItemsCommand, PlanItemsHandler, PlanItemsResult
 from todo.command.pipeline import Kind, kind_of
 
-scenarios("../features/plan_items.feature")
+scenarios("../features/plan-items.feature")
 
 
 @dataclass

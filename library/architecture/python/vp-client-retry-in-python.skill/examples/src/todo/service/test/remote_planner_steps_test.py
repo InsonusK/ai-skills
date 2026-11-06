@@ -10,7 +10,7 @@ from todo.infrastructure.client.todo_api import Item as AnsweredItem
 from todo.service import RemotePlanner
 from todo.shared.errors import Kind, cause_of, kind_of
 
-scenarios("../features/remote_planner.feature")
+scenarios("../features/remote-planner.feature")
 
 
 @dataclass
@@ -53,9 +53,10 @@ def the_todo_api_is_unavailable(world: World) -> None:
     world.api.error = ApiUnavailableError("todo-api", "connection refused")
 
 
-@given(parsers.parse('the todo API answers {status:d} with the code {code:d} and the message "{message}"'))
-def the_todo_api_answers(world: World, status: int, code: int, message: str) -> None:
-    world.api.error = ApiStatusError("todo-api", StatusCode(code), message, status)
+@given(parsers.re(r'the todo API answers (?P<code>[A-Z_]+) with the message "(?P<message>[^"]*)"$'))
+def the_todo_api_answers(world: World, code: str, message: str) -> None:
+    # The status by its canonical name: the service reads the code, whatever transport answered it.
+    world.api.error = ApiStatusError("todo-api", StatusCode[code], message)
 
 
 @when(parsers.parse('I plan "{titles}" remotely'))

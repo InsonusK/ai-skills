@@ -1,4 +1,5 @@
 using MediatR;
+using Shared.Errors;
 using Middleware.Logging;
 using Reqnroll;
 using Xunit;
@@ -21,6 +22,10 @@ public sealed class LoggingSteps(ITestOutputHelper output)
 
     [Given("a handler of PlanItems that fails with {string}, wrapped with logging")]
     public void GivenAHandlerThatFails(string message) => _handler = _ => throw new InvalidOperationException(message);
+
+    [Given("a handler of PlanItems that fails as unavailable with {string} caused by {string}, wrapped with logging")]
+    public void GivenAHandlerThatFailsWithACause(string message, string cause) =>
+        _handler = _ => throw new ErrorKindException(ErrorKind.Unavailable, message, new IOException(cause));
 
     [When("the wrapped handler handles PlanItems for {string}")]
     public async Task WhenTheWrappedHandlerHandles(string title)

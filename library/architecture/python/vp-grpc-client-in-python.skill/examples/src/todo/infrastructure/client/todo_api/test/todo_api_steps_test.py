@@ -17,7 +17,7 @@ from todo.gen.client.todo import todo_pb2, todo_pb2_grpc
 from todo.infrastructure.client.core.grpcclient import MOCK, GrpcConfig, Method
 from todo.infrastructure.client.todo_api import METHODS, Item, open_api
 
-scenarios("../features/plan_items.feature", "../features/contract.feature")
+scenarios("../features/plan-items.feature", "../features/contract.feature", "../features/contract-in-python.feature")
 
 # The folder of the copied contract, from this file's folder up to the example's root.
 CONTRACT = Path(__file__).parents[6] / "docs" / "integration" / "client" / "todo"

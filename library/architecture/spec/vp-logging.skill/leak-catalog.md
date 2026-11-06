@@ -1,12 +1,12 @@
 # Leak catalog of the logging variation point
 
-Every way a defect of the logging variation point can put a secret into the log, or stop the log, and the shared scenario that proves an implementation has not got it. The scenarios are in [conformance/](./conformance/); every stack's implementation runs them unchanged (see [vp-logging](./vp-logging.skill.md)). A new form of payload, or a defect found in any stack, is added here first, then as a scenario, and so reaches every stack at once.
+Every way a defect of the logging variation point can put a secret into the log, or stop the log, and the shared scenario that proves an implementation has not got it. The scenarios are in [conformance/](./conformance/masked/); every stack's implementation runs them unchanged (see [vp-logging](./vp-logging.skill.md)). A new form of payload, or a defect found in any stack, is added here first, then as a scenario, and so reaches every stack at once.
 
 How the catalog is proven:
 - **Every class has a scenario** — a reviewer reads this table against the scenarios; a class without one is a gap.
 - **Every scenario can fail** — a mutation run over the stack's masking code kills every mutant, or the survivor is listed under its stack below with the reason it cannot leak.
 
-## Masking a payload — [masking.feature](./conformance/masking.feature)
+## Masking a payload — [masking.feature](./conformance/masked/masking.feature)
 
 | Id | Defect that would leak | The mask's answer |
 |---|---|---|
@@ -26,7 +26,7 @@ How the catalog is proven:
 | L14 | A `google.protobuf.Any` is written as the raw bytes of its message, secrets included | Unpacked and masked like its message when its type is known (written with `@type`, as proto JSON does); unparsed otherwise |
 | L15 | A header list (`Authorization: [Bearer …]`) is masked value by value, or not at all | The header is `***` with all its values, whatever type of dictionary holds the headers |
 
-## Writing a record — [payload-policy.feature](./conformance/payload-policy.feature)
+## Writing a record — [payload-policy.feature](./conformance/masked/payload-policy.feature)
 
 | Id | Defect | The handler's answer |
 |---|---|---|
@@ -35,7 +35,7 @@ How the catalog is proven:
 | H03 | `LOG_PAYLOAD` keeps a payload it should drop | `always`, `errors`, `off` per record outcome |
 | H04 | The payload is cut before it is masked, so a secret near its start is written, or a body cut in the middle is no longer JSON and is written as text | Masked first, then cut, as JSON, at `LOG_PAYLOAD_MAX_BYTES`, saying how long the whole was |
 | H05 | An unparsed body goes unnoticed, or floods the log, or raises its record's level | The record keeps its level; one WARN record `log payload not parsed` (record, field, bytes, request id — never the body) the first time a record of one message has one at one path, and none when the log is written from a level above WARN |
-| H06 | A stack has another way to hand the handler a payload that skips the mask | Each stack lists its own ways and proves each in a scenario of its own: Go `logger.With` (`go-payload.feature`); dotnet a message template, whose text is written as the template, and a scope, which is never written (`Payload.feature`); Python a message given arguments, written as written without them, and a `LoggerAdapter`'s payload (`python-payload.feature`) |
+| H06 | A stack has another way to hand the handler a payload that skips the mask | Each stack lists its own ways and proves each in a scenario of its own: Go `logger.With` (`payload-in-go.feature`); dotnet a message template, whose text is written as the template, and a scope, which is never written (`payload-in-dotnet.feature`); Python a message given arguments, written as written without them, and a `LoggerAdapter`'s payload (`payload-in-python.feature`) |
 
 ## Failing safely
 
@@ -43,7 +43,7 @@ How the catalog is proven:
 |---|---|---|
 | F01 | A payload that refers to itself (an object graph with a cycle) or is nested without bound overflows the stack and stops the process | A value more than 32 levels below the payload is written `<too deep>`, for maps, lists, objects, and proto messages alike |
 
-## Masking switched off — [payload-policy.feature](./conformance/payload-policy.feature), [masking.feature](./conformance/masking.feature)
+## Masking switched off — [payload-policy.feature](./conformance/masked/payload-policy.feature), [masking.feature](./conformance/masked/masking.feature)
 
 `LOG_PAYLOAD_UNMASKED=true` writes payloads as they are, to debug a service; it is a leak on purpose, so its defects are the ways it could be on without anyone knowing or wanting it.
 
@@ -52,7 +52,7 @@ How the catalog is proven:
 | U01 | The switch is left on in a deployment, or read at a level where nobody debugs | Off by default; refused at start unless `LOG_LEVEL=debug`, naming both variables; a WARN `log payload unmasked` at start, before the first record with a payload of each request, and before every such record outside a request |
 | U02 | Unmasked writes more than the data of the call, or less | Marks, secret names, `debug_redact` ignored; a body that is not JSON written as its text; a field marked not to log or left out of its JSON form stays out; depth limit and cut hold |
 
-## Settings — [settings.feature](./conformance/settings.feature)
+## Settings — [settings.feature](./conformance/masked/settings.feature)
 
 | Id | Defect | The answer |
 |---|---|---|

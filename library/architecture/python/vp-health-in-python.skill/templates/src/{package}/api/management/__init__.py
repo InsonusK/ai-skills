@@ -9,6 +9,6 @@ so attaching it adds no dependency. Settings in config.py, the server in
 server.py; copied from templates and never edited."""
 
 from {package}.api.management.config import ManagementConfig, load_config
-from {package}.api.management.server import Check, Server, entry, run
+from {package}.api.management.server import Check, Degraded, Server, entry, run
 
-__all__ = ["Check", "ManagementConfig", "Server", "entry", "load_config", "run"]
+__all__ = ["Check", "Degraded", "ManagementConfig", "Server", "entry", "load_config", "run"]

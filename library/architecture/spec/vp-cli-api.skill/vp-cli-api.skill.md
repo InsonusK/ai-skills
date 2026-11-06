@@ -79,7 +79,14 @@ Test the fixed code once through a test resource of its own — a success, the t
 - Risk: a test through the real command tests the domain again; an untested usage error exits `1`, and a script retries it forever.
 - Fix: one fake handler per command; a resource's scenarios check only its own flags and output.
 
+### Pass the shared scenarios
+Run every file of this skill's [conformance/](./conformance/) unchanged in each stack's example, through a copy named in the stack skill's `conformance.copy` (`make conformance-sync`), as [conformance-scenarios-copied-into-each-stack](library/architecture/spec/vp-logging.skill/adr/conformance-scenarios-copied-into-each-stack.md) decides. The skill has no dotnet stack: Go and Python run them.
+- Violation: a stack rewording a shared scenario or keeping its own copy of one; a scenario skipped because the stack fails it.
+- Risk: the stacks drift apart under one name: a check one stack makes and another does not is a defect found in one and left open in the others.
+- Fix: step definitions are the stack's own; a scenario of a mechanism only one stack has goes in a `{name}-in-{stack}.feature` beside the copies; `bash test/check-conformance.sh` fails while a copy is missing or differs.
+
 # Check list
+- [ ] Every file of `conformance/` runs unchanged in each stack's example; `bash test/check-conformance.sh` passes.
 - [ ] Every offered command is one action `{app} {resource} {action}`, grouped by resource.
 - [ ] Flags and the JSON output of each action belong to the CLI entry point; `--output text` prints the action's text form.
 - [ ] Standard output holds only the result and the help; errors and logs go to standard error.

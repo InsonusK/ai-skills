@@ -11,7 +11,7 @@ from todo.infrastructure.client.core.pipeline import Call, run
 from todo.infrastructure.client.middleware.retry import RetryConfig, RetryMiddleware
 from todo.log import attributes_of
 
-scenarios("../features/retry.feature")
+scenarios("../features/retry.feature", "../features/retry-in-python.feature")
 
 
 class Recorder(logging.Handler):

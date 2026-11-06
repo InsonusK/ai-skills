@@ -1,0 +1,35 @@
+# The shared scenarios this example runs: written by `make conformance-sync`,
+# checked by test/check-conformance.sh. One line per unit:
+# <spec folder> <folder of this skill it is copied into>.
+base-plateau.skill/conformance/config examples/src/todo/config/features
+base-plateau.skill/conformance/entry examples/src/todo/api/core/entry/features
+base-plateau.skill/conformance/json-log examples/src/todo/log/features
+base-plateau.skill/conformance/command-pipeline examples/src/todo/command/pipeline/features
+base-plateau.skill/conformance/command-logging examples/src/todo/command/middleware/logging/features
+base-plateau.skill/conformance/plan-items examples/src/todo/command/features
+base-plateau.skill/conformance/item examples/src/todo/domain/entity/features
+base-plateau.skill/conformance/planner examples/src/todo/domain/service/features
+base-plateau.skill/conformance/config examples-proto/src/todo/config/features
+base-plateau.skill/conformance/entry examples-proto/src/todo/api/core/entry/features
+base-plateau.skill/conformance/json-log examples-proto/src/todo/log/features
+base-plateau.skill/conformance/command-pipeline examples-proto/src/todo/command/pipeline/features
+base-plateau.skill/conformance/command-logging examples-proto/src/todo/command/middleware/logging/features
+base-plateau.skill/conformance/plan-items examples-proto/src/todo/command/features
+base-plateau.skill/conformance/item examples-proto/src/todo/domain/entity/features
+base-plateau.skill/conformance/planner examples-proto/src/todo/domain/service/features
+vp-grpc-api.skill/conformance/rpcstatus examples/src/todo/api/core/rpcstatus/features
+vp-grpc-api.skill/conformance/rpcstatus examples-proto/src/todo/api/core/rpcstatus/features
+vp-grpc-api.skill/conformance/grpc-pipeline examples-proto/src/todo/api/grpc/pipeline/features
+vp-grpc-api.skill/conformance/grpc-contract examples-proto/src/todo/api/grpc/endpoint/features
+vp-http-api.skill/conformance/http-pipeline examples/src/todo/api/http/pipeline/features
+vp-http-api.skill/conformance/http-contract examples/src/todo/api/http/endpoint/features
+vp-http-api.skill/conformance/http-items examples/src/todo/api/http/endpoint/features
+vp-http-api.skill/conformance/http-pipeline examples-proto/src/todo/api/http/pipeline/features
+vp-http-api.skill/conformance/proto-http-pipeline examples-proto/src/todo/api/http/pipeline/features
+vp-http-api.skill/conformance/proto-http-contract examples-proto/src/todo/api/http/endpoint/features
+vp-http-api.skill/conformance/proto-http-items examples-proto/src/todo/api/http/endpoint/features
+vp-http-api.skill/conformance/proto-http-lists examples-proto/src/todo/api/http/endpoint/features
+vp-http-api.skill/conformance/proto-grpc-items examples-proto/src/todo/api/grpc/endpoint/features
+vp-http-api.skill/conformance/proto-item-lists examples-proto/src/todo/command/features
+vp-http-api.skill/conformance/proto-item-lists-service examples-proto/src/todo/service/features
+vp-http-api.skill/conformance/proto-memory-lists examples-proto/src/todo/infrastructure/memory/features

@@ -30,7 +30,7 @@ src/
 │   ├── PayloadMask.cs                 marks, [JsonIgnore], debug_redact, secret names, JSON, Any, unparsed
 │   └── ProtoTypes.cs                  the proto messages of the process, for an Any
 └── MaskedLogging.Tests/
-    ├── features/                      the shared scenarios (conformance.copy) + Payload.feature
+    ├── features/                      the shared scenarios (conformance.copy) + payload-in-dotnet.feature
     └── Steps/                         the dotnet step definitions
 ```
 
@@ -85,7 +85,7 @@ Write the data of a call only as `LogAttr.Payload(v)` through `logger.Write`; a 
 - Fix: fixed text, every value an attribute ([base-plateau-in-dotnet](library/architecture/dotnet/base-plateau-in-dotnet.skill/base-plateau-in-dotnet.skill.md)).
 
 ### Run the shared scenarios as copied
-Keep the shared files of `src/MaskedLogging.Tests/features/` byte for byte as `make conformance-sync` writes them from [vp-logging](library/architecture/spec/vp-logging.skill/vp-logging.skill.md)'s `conformance/`; the test project compiles their `masking.proto`; put a scenario only dotnet needs in `Payload.feature`.
+Keep the shared files of `src/MaskedLogging.Tests/features/` byte for byte as `make conformance-sync` writes them from [vp-logging](library/architecture/spec/vp-logging.skill/vp-logging.skill.md)'s `conformance/`; the test project compiles their `masking.proto`; put a scenario only dotnet needs in `payload-in-dotnet.feature`.
 - Violation: a shared scenario reworded to suit a dotnet step; a step that passes by testing something else than its text says.
 - Risk: dotnet stops proving a guarantee every other stack proves, and the leak it guards ships in dotnet only.
 - Fix: change the source in the spec skill, run `make conformance-sync` at the repository root, and fix the dotnet code until the copy passes.

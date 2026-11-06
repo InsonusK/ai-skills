@@ -18,7 +18,7 @@ from todo.log import FAILED_KEY, PAYLOAD_KEY, attributes_of, request_id_scope
 
 from .echo_api import ECHO_METHOD, EchoBehavior, serve
 
-scenarios("../features/call.feature", "../features/call_log.feature", "../features/mock.feature")
+scenarios("../features/call.feature", "../features/call-log.feature", "../features/mock.feature")
 
 
 # The test API's methods the client may call.

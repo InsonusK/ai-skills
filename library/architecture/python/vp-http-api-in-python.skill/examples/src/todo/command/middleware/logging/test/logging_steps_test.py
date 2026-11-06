@@ -2,6 +2,7 @@ import asyncio
 import json
 import logging
 from dataclasses import dataclass, field
+from typing import Any
 
 import pytest
 from pytest_bdd import given, parsers, scenarios, then, when
@@ -11,7 +12,7 @@ from todo.command.pipeline import Handler, HandlerFunc, decorate
 from todo.log import FAILED_KEY, PAYLOAD_KEY, JsonFormatter, attributes_of, level_name
 from todo.shared.errors import Kind, KindError
 
-scenarios("../features/logging.feature")
+scenarios("../features/command-logging.feature")
 
 
 class Recorder(logging.Handler):
@@ -27,10 +28,17 @@ class Recorder(logging.Handler):
         self.records.append(record)
 
 
+@dataclass(frozen=True)
+class PlanItems:
+    """The command of the scenarios: one title, logged as {"title": ...}."""
+
+    title: str
+
+
 @dataclass
 class World:
     recorder: Recorder = field(default_factory=Recorder)
-    wrapped: Handler[str, str] | None = None
+    wrapped: Handler[PlanItems, str] | None = None
     error: Exception | None = None
 
     def logger(self) -> logging.Logger:
@@ -44,49 +52,54 @@ def world() -> World:
     return World()
 
 
-@given(parsers.parse('a handler that succeeds, wrapped with logging as "{name}"'))
-def a_succeeding_handler(world: World, name: str) -> None:
-    async def succeed(command: str) -> str:
-        return "ok"
+@given(parsers.re(r'a handler of PlanItems that returns "(?P<result>[^"]*)", wrapped with logging'))
+def a_succeeding_handler(world: World, result: str) -> None:
+    async def succeed(command: PlanItems) -> str:
+        return result
 
-    world.wrapped = decorate(name, HandlerFunc(succeed), [LoggingMiddleware(world.logger())])
+    world.wrapped = decorate("PlanItems", HandlerFunc(succeed), [LoggingMiddleware(world.logger())])
 
 
-@given(parsers.parse('a handler that fails with "{message}", wrapped with logging as "{name}"'))
-def a_failing_handler(world: World, message: str, name: str) -> None:
-    async def fail(command: str) -> str:
+@given(parsers.re(r'a handler of PlanItems that fails with "(?P<message>[^"]*)", wrapped with logging'))
+def a_failing_handler(world: World, message: str) -> None:
+    async def fail(command: PlanItems) -> str:
         raise RuntimeError(message)
 
-    world.wrapped = decorate(name, HandlerFunc(fail), [LoggingMiddleware(world.logger())])
+    world.wrapped = decorate("PlanItems", HandlerFunc(fail), [LoggingMiddleware(world.logger())])
 
 
-@given(parsers.parse('a handler that fails as unavailable with "{message}" caused by "{cause}", wrapped with logging as "{name}"'))
-def a_handler_failing_with_a_cause(world: World, message: str, cause: str, name: str) -> None:
-    async def fail(command: str) -> str:
+@given(parsers.re(r'a handler of PlanItems that fails as unavailable with "(?P<message>[^"]*)" caused by "(?P<cause>[^"]*)", wrapped with logging'))
+def a_handler_failing_with_a_cause(world: World, message: str, cause: str) -> None:
+    async def fail(command: PlanItems) -> str:
         raise KindError(Kind.UNAVAILABLE, message) from ConnectionRefusedError(cause)
 
-    world.wrapped = decorate(name, HandlerFunc(fail), [LoggingMiddleware(world.logger())])
+    world.wrapped = decorate("PlanItems", HandlerFunc(fail), [LoggingMiddleware(world.logger())])
 
 
-@when(parsers.parse('the wrapped handler handles the command "{command}"'))
-def the_wrapped_handler_handles(world: World, command: str) -> None:
+@when(parsers.parse('the wrapped handler handles PlanItems for "{title}"'))
+def the_wrapped_handler_handles(world: World, title: str) -> None:
     assert world.wrapped is not None
     try:
-        asyncio.run(world.wrapped.handle(command))
+        asyncio.run(world.wrapped.handle(PlanItems(title)))
     except Exception as error:
         world.error = error
-    print(f"when: handle {command!r} -> error {world.error!r}, {len(world.recorder.records)} records")
+    print(f"when: handle {title!r} -> error {world.error!r}, {len(world.recorder.records)} records")
 
 
-@then(parsers.parse('the wrapped handler should return the error "{message}"'))
-def the_wrapped_handler_should_return(world: World, message: str) -> None:
+@then(parsers.parse('the wrapped handler should fail with "{message}"'))
+def the_wrapped_handler_should_fail_with(world: World, message: str) -> None:
     assert str(world.error) == message
 
 
-def _cell(value: object) -> str:
+def _cell(value: Any) -> str:
+    """A value as the table writes it: a bool lower-case, a command as its JSON."""
     if value is None:
         return ""
-    return str(value).lower() if isinstance(value, bool) else str(value)
+    if isinstance(value, bool):
+        return str(value).lower()
+    if isinstance(value, PlanItems):
+        return json.dumps({"title": value.title}, separators=(",", ":"))
+    return str(value)
 
 
 @then("the records should be:")

@@ -1,3 +1,24 @@
 # The shared scenarios of the PostgreSQL variation point this example runs:
 # written by `make conformance-sync`, checked by test/check-conformance.sh.
-vp-postgres.skill/conformance examples/internal/infrastructure/postgres/features
+vp-postgres.skill/conformance/postgres examples/internal/infrastructure/postgres/features
+base-plateau.skill/conformance/config examples/internal/config/features
+base-plateau.skill/conformance/entry examples/internal/api/core/entry/features
+base-plateau.skill/conformance/json-log examples/internal/logging/features
+base-plateau.skill/conformance/command-pipeline examples/internal/command/pipeline/features
+base-plateau.skill/conformance/command-logging examples/internal/command/middleware/logging/features
+base-plateau.skill/conformance/plan-items examples/internal/command/features
+base-plateau.skill/conformance/item examples/internal/domain/entity/features
+base-plateau.skill/conformance/planner examples/internal/domain/service/features
+vp-grpc-api.skill/conformance/rpcstatus examples/internal/api/core/rpcstatus/features
+vp-grpc-api.skill/conformance/grpc-pipeline examples/internal/api/grpc/pipeline/features
+vp-grpc-api.skill/conformance/grpc-contract examples/internal/api/grpc/endpoint/features
+vp-http-api.skill/conformance/http-pipeline examples/internal/api/http/pipeline/features
+vp-http-api.skill/conformance/proto-http-pipeline examples/internal/api/http/pipeline/features
+vp-http-api.skill/conformance/proto-http-contract examples/internal/api/http/endpoint/features
+vp-http-api.skill/conformance/proto-http-items examples/internal/api/http/endpoint/features
+vp-http-api.skill/conformance/proto-http-lists examples/internal/api/http/endpoint/features
+vp-http-api.skill/conformance/proto-grpc-items examples/internal/api/grpc/endpoint/features
+vp-http-api.skill/conformance/proto-item-lists examples/internal/command/features
+vp-postgres.skill/conformance/postgres-item-lists-service examples/internal/service/features
+vp-postgres.skill/conformance/postgres-application examples/cmd/todo/features
+vp-postgres.skill/conformance/postgres-migrate-job examples/cmd/migrate/features

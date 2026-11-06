@@ -26,7 +26,7 @@ def load_config() -> GrpcConfig:
     """Reads the settings; an unusable value raises ValueError naming its variable."""
     port = 9090
     if raw := os.environ.get("GRPC_LISTEN_PORT", ""):
-        if not raw.isdigit() or int(raw) > 65535:
+        if not raw.isdigit() or not 0 < int(raw) <= 65535:
             raise ValueError(f"grpc config: GRPC_LISTEN_PORT {raw!r} is not a port")
         port = int(raw)
     reflection = False

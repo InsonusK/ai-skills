@@ -20,7 +20,7 @@ func logf(format string, args ...any) {
 type World struct {
 	err     error
 	logs    bytes.Buffer
-	wrapped pipeline.Handler[string, string]
+	wrapped pipeline.Handler[PlanItems, string]
 }
 
 func (w *World) reset() { *w = World{} }

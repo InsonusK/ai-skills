@@ -29,7 +29,7 @@ public sealed class ItemsServiceSteps(GrpcWorld world)
     public static void ServeApplicationServices(GrpcWorld world) =>
         world.Services = sender => new GrpcEndpoints(Items: new ItemsHandler(sender)).Services;
 
-    private static List<ItemView> Views(string titles) => titles.Split('|').Select(title => new ItemView(title, false)).ToList();
+    private static List<ItemView> Views(string titles) => titles == "" ? [] : titles.Split('|').Select(title => new ItemView(title, false)).ToList();
 
     private void Serve<TCommand, TResult>(FakeHandler<TCommand, TResult> handler) where TCommand : IRequest<TResult>
     {
@@ -116,16 +116,26 @@ public sealed class ItemsServiceSteps(GrpcWorld world)
         Assert.All(_items, item => Assert.False(item.Done));
     }
 
+    [When("I call ItemsService.PlanItems with no titles")]
+    public async Task WhenICallPlanItemsWithNoTitles()
+    {
+        var response = await new ItemsService.ItemsServiceClient(await world.ChannelAsync()).PlanItemsAsync(new Contracts.Todo.V1.PlanItemsRequest());
+        _items = response.Items.ToList();
+    }
+
+    [Then("PlanItems should have received no titles over gRPC")]
+    public void ThenPlanItemsShouldHaveReceivedNoTitles() => Assert.Empty(_planItems.Received!.Titles);
+
     [Then("the gRPC response should hold the item {string}")]
     public void ThenTheGrpcResponseShouldHoldTheItem(string title) => Assert.Equal(title, Assert.Single(_items).Title);
 
     [Then("the gRPC call of ItemsService should fail with {word}")]
-    public void ThenTheGrpcCallShouldFailWith(string code) => Assert.Equal(Enum.Parse<StatusCode>(code), _error?.StatusCode);
+    public void ThenTheGrpcCallShouldFailWith(string code) => Assert.Equal(GrpcCallSteps.CodeNamed(code), _error?.StatusCode);
 
     [Then("the gRPC call of ItemsService should fail with {word} and the message {string}")]
     public void ThenTheGrpcCallShouldFailWithTheMessage(string code, string message)
     {
-        Assert.Equal(Enum.Parse<StatusCode>(code), _error?.StatusCode);
+        Assert.Equal(GrpcCallSteps.CodeNamed(code), _error?.StatusCode);
         Assert.Equal(message, _error!.Status.Detail);
     }
 

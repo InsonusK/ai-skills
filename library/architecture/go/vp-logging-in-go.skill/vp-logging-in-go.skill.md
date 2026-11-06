@@ -23,7 +23,7 @@ internal/logging/masked/      copied from templates, never edited
 ├── config.go                 LOG_PAYLOAD, LOG_PAYLOAD_MAX_BYTES, LOG_PAYLOAD_UNMASKED
 ├── handler.go                Handler: payload kept, masked, cut; request_id added
 ├── mask.go                   Mask: tags, debug_redact, secret names, JSON, Any, unparsed
-├── features/                 the shared scenarios (conformance.copy) + go-payload.feature
+├── features/                 the shared scenarios (conformance.copy) + payload-in-go.feature
 └── test/                     the Go step definitions
 ```
 
@@ -75,7 +75,7 @@ message LoginRequest {
 - Fix: mark every secret field when the type is written; the names are a second line, not the first.
 
 ### Run the shared scenarios as copied
-Keep the shared files of `features/` byte for byte as `make conformance-sync` writes them from [vp-logging](library/architecture/spec/vp-logging.skill/vp-logging.skill.md)'s `conformance/`, and put a scenario only Go needs in `go-payload.feature`.
+Keep the shared files of `features/` byte for byte as `make conformance-sync` writes them from [vp-logging](library/architecture/spec/vp-logging.skill/vp-logging.skill.md)'s `conformance/`, and put a scenario only Go needs in `payload-in-go.feature`.
 - Violation: a shared scenario reworded to suit a Go step; a Go step that passes by testing something else than its text says.
 - Risk: Go stops proving a guarantee every other stack proves, and the leak it guards ships in Go only.
 - Fix: change the source in the spec skill, run `make conformance-sync` at the repository root, and fix the Go code until the copy passes.

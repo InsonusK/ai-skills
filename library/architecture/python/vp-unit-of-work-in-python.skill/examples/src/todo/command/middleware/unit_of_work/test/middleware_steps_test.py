@@ -8,7 +8,7 @@ from todo.command.middleware.unit_of_work import UnitOfWorkMiddleware
 from todo.command.pipeline import Kind, kind_of
 from todo.shared.errors import cause_of
 
-scenarios("../features/middleware.feature")
+scenarios("../features/middleware.feature", "../features/middleware-in-python.feature")
 
 
 @dataclass
@@ -67,6 +67,50 @@ def a_unit_already_begun(world: World) -> None:
     world.units.begun = True
 
 
+@dataclass
+class SlowUnit:
+    """A unit whose commit takes a while, so a caller can be cancelled during it."""
+
+    done: list[str] = field(default_factory=list)
+
+    async def commit(self) -> None:
+        await asyncio.sleep(0.05)
+        self.done.append("commit")
+
+    async def rollback(self) -> None:
+        self.done.append("rollback")
+
+
+@dataclass
+class SlowUnits:
+    unit: SlowUnit = field(default_factory=SlowUnit)
+
+    def begin(self) -> SlowUnit:
+        return self.unit
+
+
+@then("the caller's cancellation should not reach the commit")
+def cancellation_does_not_reach_the_commit(world: World) -> None:
+    # The caller is cancelled while the commit runs: the commit still ends.
+    units = SlowUnits()
+
+    async def scenario() -> None:
+        async def handler(command: object) -> object:
+            return "the result"
+
+        call = asyncio.create_task(UnitOfWorkMiddleware(units)("Import", "the command", handler))
+        await asyncio.sleep(0.01)
+        call.cancel()
+        try:
+            await call
+        except asyncio.CancelledError:
+            pass
+        await asyncio.sleep(0.1)
+
+    asyncio.run(scenario())
+    assert units.unit.done == ["commit"], units.unit.done
+
+
 @given(parsers.parse('the commit fails with "{message}"'))
 def the_commit_fails(world: World, message: str) -> None:
     world.units.commit_error = OSError(message)
@@ -86,9 +130,20 @@ def a_command_runs(world: World) -> None:
     print(f"when: the middleware -> {world.result!r}, {world.error!r}, asked {world.units.asked}")
 
 
-@then(parsers.parse('the unit of work should have been asked for "{asked}"'))
-def asked_for(world: World, asked: str) -> None:
-    assert "|".join(world.units.asked) == asked
+def _ended(world: World) -> str:
+    # How the unit of work was ended: its commit and rollback, in order; a
+    # begin is how this stack opens or joins one, and is not an ending.
+    return "|".join(call for call in world.units.asked if call != "begin")
+
+
+@then(parsers.parse('the unit of work should have been ended with "{endings}"'))
+def ended_with(world: World, endings: str) -> None:
+    assert _ended(world) == endings, world.units.asked
+
+
+@then("the unit of work should not have been ended")
+def not_ended(world: World) -> None:
+    assert _ended(world) == "", world.units.asked
 
 
 @then("the command should answer its result")

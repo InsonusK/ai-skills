@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"log/slog"
 	"net"
 	"net/http"
@@ -21,9 +22,15 @@ import (
 type Check struct {
 	// Name is how a failed check is reported, e.g. "database".
 	Name string
-	// Check returns nil while the dependency can be used.
+	// Check returns nil while the dependency can be used, an error wrapping
+	// ErrDegraded while it can be used with less (still taking traffic), and
+	// any other error - or a panic - when it cannot.
 	Check func(ctx context.Context) error
 }
+
+// ErrDegraded is what a check wraps when its dependency works with less (a
+// cache missing, a replica behind): readiness still answers 200.
+var ErrDegraded = errors.New("degraded")
 
 // Server answers the health endpoints.
 type Server struct {
@@ -110,7 +117,7 @@ func (s *Server) handleLive(w http.ResponseWriter, _ *http.Request) {
 func (s *Server) handleReady(w http.ResponseWriter, r *http.Request) {
 	failed := []string{}
 	for _, check := range s.checks {
-		if err := check.Check(r.Context()); err != nil {
+		if err := run(r.Context(), check); err != nil && !errors.Is(err, ErrDegraded) {
 			s.logger.WarnContext(r.Context(), "readiness check failed", "check", check.Name, "error", err)
 			failed = append(failed, check.Name)
 		}
@@ -120,6 +127,17 @@ func (s *Server) handleReady(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
+}
+
+// run calls a check; a check that panics counts as failed, not as a crash of
+// the probe.
+func run(ctx context.Context, check Check) (err error) {
+	defer func() {
+		if p := recover(); p != nil {
+			err = fmt.Errorf("check panicked: %v", p)
+		}
+	}()
+	return check.Check(ctx)
 }
 
 // handleHealth is for people and clients, never for a probe: the status and

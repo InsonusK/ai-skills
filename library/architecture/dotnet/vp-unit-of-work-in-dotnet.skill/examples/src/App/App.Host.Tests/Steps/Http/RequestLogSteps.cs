@@ -33,7 +33,9 @@ public sealed partial class RequestLogSteps(HttpWorld world, ITestOutputHelper o
     [Then("the {string} record should hold the query {string} = {string} and the body {string}")]
     public void ThenTheRecordShouldHoldTheQueryAndTheBody(string message, string name, string value, string body)
     {
-        var received = Payload(message);
+        // The received record holds the request; the sent one repeats it under "request".
+        var payload = Payload(message);
+        var received = payload.ContainsKey("request") ? Part(payload["request"]) : payload;
         var query = Assert.IsAssignableFrom<IDictionary<string, string>>(received["query"]);
         Assert.Equal(value, query.TryGetValue(name, out var got) ? got : "");
         Assert.Equal(body, received["body"]);
@@ -45,7 +47,7 @@ public sealed partial class RequestLogSteps(HttpWorld world, ITestOutputHelper o
         var record = Single(message);
         foreach (var header in table.Header)
         {
-            Assert.Equal(table.Rows[0][header], record.Attributes[header]?.ToString());
+            Assert.Equal(table.Rows[0][header], record.Attributes[header] is bool flag ? (flag ? "true" : "false") : record.Attributes[header]?.ToString());
         }
     }
 

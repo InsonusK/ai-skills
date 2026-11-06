@@ -29,7 +29,7 @@ Feature: Command line
     Given the command is rejected with the kind "conflict" and "the name is taken"
     When I run "test echo --text hi"
     Then running should fail with the kind "conflict"
-    And stderr should mention "the name is taken"
+    And stderr should mention "Error: the name is taken"
     And stdout should be empty
 
   @category/negative
@@ -44,15 +44,16 @@ Feature: Command line
     Given the command fails with "connection refused"
     When I run "test echo --text hi"
     Then running should fail with no kind
-    And stderr should mention "connection refused"
+    And stderr should mention "Error: connection refused"
 
   @category/error
   Scenario: An action that crashes is answered as a failure with no kind and logged
-    Given the command panics
+    Given the command answers "hello"
+    And the CLI action crashes
     When I run "test echo --text hi"
     Then running should fail with no kind
     And stderr should mention "Error: internal error"
-    And the records should be, in order, "cli call received|cli action panicked|cli call answered"
+    And the records should be, in order, "cli call received|cli action crashed|cli call answered"
     And one "cli call answered" record should be logged for the action "todo test echo", failed "true"
 
   @category/negative
@@ -63,12 +64,12 @@ Feature: Command line
     And the command should not have been called
 
     Examples:
-      | args                           | message                        |
-      | bogus                          | unknown command               |
+      | args                           | message                       |
+      | bogus                          | bogus                         |
       | test bogus                     | see todo test --help          |
-      | test echo --nope               | unknown flag: --nope           |
-      | test echo --text hi --output x | --output must be json or text  |
-      | test echo                      | --text is required             |
+      | test echo --nope               | --nope                        |
+      | test echo --text hi --output x | --output must be json or text |
+      | test echo                      | --text is required            |
 
   @category/happy
   Scenario Outline: Help lists what can be run, without running anything
@@ -78,14 +79,14 @@ Feature: Command line
     And the command should not have been called
 
     Examples:
-      | args             | shows                      |
-      | --help           | test                       |
-      | test             | echo                       |
-      | test echo --help | --text                     |
-      |                  | Available Commands         |
+      | args             | shows    |
+      | --help           | test     |
+      | test             | echo     |
+      | test echo --help | --text   |
+      |                  | Commands |
 
   @category/happy
-  Scenario: --version prints the version of the binary
+  Scenario: --version prints the version of the application
     When I run "--version"
     Then stdout should mention "todo version 1.2.3"
 
@@ -99,7 +100,8 @@ Feature: Command line
     And the "cli call answered" record should hold the output "echo: hello"
 
   @category/negative
-  Scenario: A run that fails is logged as failed with the flags given, even when they could not be parsed
+  Scenario: A run that fails is logged as failed with the arguments given, even when they could not be parsed
     When I run "test echo --nope"
-    Then one "cli call answered" record should be logged for the action "todo test echo", failed "true"
-    And the records should be, in order, "cli call answered"
+    Then the records should be, in order, "cli call answered"
+    And one "cli call answered" record should be logged for the action "todo test echo", failed "true"
+    And the "cli call answered" record should hold the arguments "test echo --nope"

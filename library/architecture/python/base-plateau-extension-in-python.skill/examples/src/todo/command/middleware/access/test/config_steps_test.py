@@ -6,7 +6,7 @@ from pytest_bdd import given, parsers, scenarios, then, when
 
 from todo.command.middleware.access import AccessConfig, load_config
 
-scenarios("../features/config.feature")
+scenarios("../features/access-config.feature")
 
 
 @dataclass

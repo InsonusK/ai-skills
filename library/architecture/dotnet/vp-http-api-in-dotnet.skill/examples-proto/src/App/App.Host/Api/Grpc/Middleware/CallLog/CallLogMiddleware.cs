@@ -61,8 +61,15 @@ public sealed class CallLogMiddleware(ILogger logger) : Interceptor
                 answered["request"] = request;
             }
             logger.Write(LogLevel.Information, "grpc call answered",
-                LogAttr.Of("method", context.Method), LogAttr.Of("code", code.ToString()),
+                LogAttr.Of("method", context.Method), LogAttr.Of("code", CodeName(code)),
                 LogAttr.Of("duration", Stopwatch.GetElapsedTime(started)), LogAttr.Failed(failed), LogAttr.Payload(answered));
         }
     }
+
+    /// <summary>
+    /// The canonical name of a code (INVALID_ARGUMENT), as every stack writes
+    /// it to the log, not the enum's own spelling (InvalidArgument).
+    /// </summary>
+    public static string CodeName(StatusCode code) =>
+        string.Concat(code.ToString().Select((c, i) => i > 0 && char.IsUpper(c) && char.IsLower(code.ToString()[i - 1]) ? "_" + c : c.ToString())).ToUpperInvariant();
 }

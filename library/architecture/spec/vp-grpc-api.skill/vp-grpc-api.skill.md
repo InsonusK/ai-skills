@@ -100,7 +100,14 @@ Test the fixed code once through a test service of its own — a success, a reje
 - Risk: a test through the real command tests the domain again and breaks on every business change; a service left out of the served list answers every call `UNIMPLEMENTED` while all other scenarios pass.
 - Fix: one fake handler per command; a service's scenarios check only its own mappings.
 
+### Pass the shared scenarios
+Run every file of this skill's [conformance/](./conformance/) unchanged in each stack's example, through a copy named in the stack skill's `conformance.copy` (`make conformance-sync`), as [conformance-scenarios-copied-into-each-stack](library/architecture/spec/vp-logging.skill/adr/conformance-scenarios-copied-into-each-stack.md) decides. `rpcstatus/` is this skill's and vp-http-api's examples run it too; the proto mode of vp-http-api extends ItemsService, so it runs `grpc-contract/` and keeps its own `items.feature`.
+- Violation: a stack rewording a shared scenario or keeping its own copy of one; a scenario skipped because the stack fails it.
+- Risk: the stacks drift apart under one name: a check one stack makes and another does not is a defect found in one and left open in the others.
+- Fix: step definitions are the stack's own; a scenario of a mechanism only one stack has goes in a `{name}-in-{stack}.feature` beside the copies; `bash test/check-conformance.sh` fails while a copy is missing or differs.
+
 # Check list
+- [ ] Every file of `conformance/` runs unchanged in each stack's example; `bash test/check-conformance.sh` passes.
 - [ ] The proto contract carries its major in the package and its full version in the first-line comment, under `docs/integration/api/{contract-name}/`.
 - [ ] Every exposed command is one method; its messages are generated and mapped to and from the command in the entry point.
 - [ ] An undecodable request is `INVALID_ARGUMENT`; every error of a command is answered by error-kinds' table; an error with no kind and a panic are `INTERNAL` without the internal message.

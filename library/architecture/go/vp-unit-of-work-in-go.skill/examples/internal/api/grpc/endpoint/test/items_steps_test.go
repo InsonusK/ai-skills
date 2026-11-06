@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/cucumber/godog"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
 	"github.com/example/todo/gen/api/todo"
@@ -15,23 +16,30 @@ import (
 )
 
 func registerItemsSteps(sc *godog.ScenarioContext, w *World) {
-	sc.Step(`^PlanItems returns the items "([^"]*)"$`, w.planReturns)
+	sc.Step(`^PlanItems returns the items "([^"]*)" over gRPC$`, w.planReturns)
+	sc.Step(`^AddItem returns the item "([^"]*)" over gRPC$`, w.addReturns)
+	sc.Step(`^AddItem fails with the kind "([^"]*)" over gRPC$`, w.addFailsWithKind)
+	sc.Step(`^ListItems returns the items "([^"]*)" over gRPC$`, w.listHolds)
 	sc.Step(`^I call ItemsService.PlanItems with the titles "([^"]*)"$`, w.iCallPlanItems)
-	sc.Step(`^the response should hold the items "([^"]*)", none done$`, w.theResponseShouldHold)
-	sc.Step(`^PlanItems should have received the titles "([^"]*)"$`, w.planShouldHaveReceived)
-	sc.Step(`^AddItem fails with the kind conflict$`, w.addConflicts)
-	sc.Step(`^ListItems holds "([^"]*)"$`, w.listHolds)
+	sc.Step(`^I call ItemsService.PlanItems with no titles$`, w.iCallPlanItemsWithNoTitles)
 	sc.Step(`^I call ItemsService.AddItem with the list "([^"]*)" and the title "([^"]*)"$`, w.iCallAddItem)
 	sc.Step(`^I call ItemsService.ListItems with the list "([^"]*)"$`, w.iCallListItems)
 	sc.Step(`^I call ItemsService.ClearList with the list "([^"]*)"$`, w.iCallClearList)
-	sc.Step(`^AddItem should have received the list "([^"]*)" and the title "([^"]*)"$`, w.addShouldHaveReceived)
-	sc.Step(`^the added item should be "([^"]*)"$`, w.theAddedItemShouldBe)
-	sc.Step(`^the listed items should be "([^"]*)" for the list "([^"]*)"$`, w.theListedItemsShouldBe)
-	sc.Step(`^the call should fail with (\w+) and the message "([^"]*)"$`, w.theCallShouldFailWith)
+	sc.Step(`^the gRPC response should hold the items "([^"]*)", none done$`, w.theResponseShouldHold)
+	sc.Step(`^the gRPC response should hold the item "([^"]*)"$`, w.theAddedItemShouldBe)
+	sc.Step(`^PlanItems should have received the titles "([^"]*)" over gRPC$`, w.planShouldHaveReceived)
+	sc.Step(`^PlanItems should have received no titles over gRPC$`, w.planShouldHaveReceivedNoTitles)
+	sc.Step(`^AddItem should have received the list "([^"]*)" and the title "([^"]*)" over gRPC$`, w.addShouldHaveReceived)
+	sc.Step(`^ListItems should have received the list "([^"]*)" over gRPC$`, w.listShouldHaveReceived)
+	sc.Step(`^the gRPC call of ItemsService should fail with ([A-Z_]+)$`, w.theCallShouldFailWithTheCode)
+	sc.Step(`^the gRPC call of ItemsService should fail with ([A-Z_]+) and the message "([^"]*)"$`, w.theCallShouldFailWith)
 }
 
 func (w *World) planReturns(ctx context.Context, titles string) error {
 	w.planResult = command.PlanItemsResult{}
+	if titles == "" {
+		return nil
+	}
 	for _, title := range strings.Split(titles, "|") {
 		w.planResult.Items = append(w.planResult.Items, command.ItemView{Title: title})
 	}
@@ -52,7 +60,11 @@ func (w *World) iCallPlanItems(ctx context.Context, titles string) error {
 
 func (w *World) theResponseShouldHold(ctx context.Context, titles string) error {
 	got := []string{}
-	for _, item := range w.planResponse.GetItems() {
+	items := w.planResponse.GetItems()
+	if w.listResponse != nil {
+		items = w.listResponse.GetItems()
+	}
+	for _, item := range items {
 		if item.GetDone() {
 			return fmt.Errorf("item %q is done", item.GetTitle())
 		}
@@ -71,8 +83,61 @@ func (w *World) planShouldHaveReceived(ctx context.Context, titles string) error
 	return nil
 }
 
-func (w *World) addConflicts(ctx context.Context) error {
-	w.addErr = errorkind.New(errorkind.ErrConflict, "the title is taken")
+// addReturns: the fake AddItem answers the title it received.
+func (w *World) addReturns(ctx context.Context, title string) error {
+	w.addErr = nil
+	return nil
+}
+
+func (w *World) addFailsWithKind(ctx context.Context, name string) error {
+	for _, kind := range errorkind.Kinds {
+		if kind.Error() == name {
+			w.addErr = errorkind.New(kind, "the title is taken")
+			return nil
+		}
+	}
+	return fmt.Errorf("no kind %q", name)
+}
+
+func (w *World) iCallPlanItemsWithNoTitles(ctx context.Context) error {
+	client, ctx, cancel, err := w.items()
+	if err != nil {
+		return err
+	}
+	defer cancel()
+	w.planResponse, err = client.PlanItems(ctx, &todo.PlanItemsRequest{})
+	return err
+}
+
+func (w *World) planShouldHaveReceivedNoTitles(ctx context.Context) error {
+	if !w.planCalled || len(w.planGot.Titles) != 0 {
+		return fmt.Errorf("handler received %q (called=%v), want no titles", w.planGot.Titles, w.planCalled)
+	}
+	return nil
+}
+
+func (w *World) listShouldHaveReceived(ctx context.Context, listID string) error {
+	if w.listGot.ListID != listID {
+		return fmt.Errorf("ListItems received %+v, want list %q", w.listGot, listID)
+	}
+	return nil
+}
+
+// codeNamed is the code the scenarios name by its canonical name (INVALID_ARGUMENT).
+func codeNamed(name string) (codes.Code, error) {
+	var code codes.Code
+	err := code.UnmarshalJSON([]byte(`"` + name + `"`))
+	return code, err
+}
+
+func (w *World) theCallShouldFailWithTheCode(ctx context.Context, codeName string) error {
+	want, err := codeNamed(codeName)
+	if err != nil {
+		return err
+	}
+	if got := status.Code(w.callErr); w.callErr == nil || got != want {
+		return fmt.Errorf("call error %v, want %s", w.callErr, codeName)
+	}
 	return nil
 }
 
@@ -137,20 +202,13 @@ func (w *World) theAddedItemShouldBe(ctx context.Context, title string) error {
 	return nil
 }
 
-func (w *World) theListedItemsShouldBe(ctx context.Context, titles, listID string) error {
-	got := []string{}
-	for _, item := range w.listResponse.GetItems() {
-		got = append(got, item.GetTitle())
-	}
-	if w.callErr != nil || strings.Join(got, "|") != titles || w.listGot.ListID != listID {
-		return fmt.Errorf("listed %q for %q err=%v, want %q for %q", got, w.listGot.ListID, w.callErr, titles, listID)
-	}
-	return nil
-}
-
 func (w *World) theCallShouldFailWith(ctx context.Context, codeName, message string) error {
+	want, err := codeNamed(codeName)
+	if err != nil {
+		return err
+	}
 	got := status.Convert(w.callErr)
-	if w.callErr == nil || got.Code().String() != codeName || got.Message() != message {
+	if w.callErr == nil || got.Code() != want || got.Message() != message {
 		return fmt.Errorf("call error %v, want %s %q", w.callErr, codeName, message)
 	}
 	return nil

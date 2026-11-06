@@ -81,7 +81,7 @@ catch (ApiStatusException rejected) when (rejected.Code == ApiStatusCode.Invalid
 
 - Violation: the `ErrorKindException` of an entity built from the answer passed as an inner exception, which `ErrorKindException.KindOf` finds.
 - Risk: an item the other service got wrong is answered to this service's client as its own invalid input.
-- Fix: the scenario "Any other answer is a failure with no kind" of the example's `RemotePlanner.feature`.
+- Fix: the scenario "Any other answer is a failure with no kind" of the example's `remote-planner.feature`.
 
 ### Build the client and the service in Program.cs
 Load the settings with `HttpApiConfig.Load({Api}Client.Prefix)` in `// [services]` of `Program.cs`, stopping the start with "startup failed" on a `FormatException`, and register the client as a singleton of `I{Api}` built with a logger of the logger factory, and the service as a singleton of its interface. Give every client the client middleware of its API, per [api-client](library/develop/core/api-client.skill/api-client.skill.md): build the list in `// [client middleware]` inside the client's registration - empty until a variation point (`vp-client-retry`) adds one - and pass it to the client's constructor.

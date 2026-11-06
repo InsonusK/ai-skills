@@ -23,7 +23,7 @@ src/{package}/log/masked/     copied from templates, never edited
 ├── config.py                 LOG_PAYLOAD, LOG_PAYLOAD_MAX_BYTES, LOG_PAYLOAD_UNMASKED
 ├── formatter.py              MaskedFormatter, new_masked_logger: payload kept, masked, cut; request_id
 ├── mask.py                   mask, unmask: marks, pydantic JSON form, debug_redact, secret names, JSON, Any, unparsed
-├── features/                 the shared scenarios (conformance.copy) + python-payload.feature
+├── features/                 the shared scenarios (conformance.copy) + payload-in-python.feature
 └── test/                     the Python step definitions
 ```
 
@@ -74,7 +74,7 @@ Give a part's data to a record only as its payload, and the message as fixed tex
 - Fix: `payload={"request": request}`; the gRPC call log of [vp-grpc-api-in-python](library/architecture/python/vp-grpc-api-in-python.skill/vp-grpc-api-in-python.skill.md) does so.
 
 ### Run the shared scenarios as copied
-Keep the shared files of `features/` byte for byte as `make conformance-sync` writes them from [vp-logging](library/architecture/spec/vp-logging.skill/vp-logging.skill.md)'s `conformance/`, and put a scenario only Python needs in `python-payload.feature`.
+Keep the shared files of `features/` byte for byte as `make conformance-sync` writes them from [vp-logging](library/architecture/spec/vp-logging.skill/vp-logging.skill.md)'s `conformance/`, and put a scenario only Python needs in `payload-in-python.feature`.
 - Violation: a shared scenario reworded to suit a Python step; a Python step that passes by testing something else than its text says.
 - Risk: Python stops proving a guarantee every other stack proves, and the leak it guards ships in Python only.
 - Fix: change the source in the spec skill, run `make conformance-sync` at the repository root, and fix the Python code until the copy passes.

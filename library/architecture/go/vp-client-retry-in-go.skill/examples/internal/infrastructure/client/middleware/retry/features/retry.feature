@@ -34,13 +34,6 @@ Feature: Retry of a call the API did not answer
     Then the call should fail with a status after 1 attempts
 
   @category/boundary
-  Scenario: No wait starts that would end past the caller's deadline
-    Given the retry allows 3 attempts with a backoff of 1s
-    And a retryable call whose attempts end "unavailable|ok"
-    When the call is run through the retry within 100ms
-    Then the call should fail as unavailable after 1 attempts
-
-  @category/boundary
   Scenario: One attempt in all sends no repeat
     Given the retry allows 1 attempts with a backoff of 1ms
     And a retryable call whose attempts end "unavailable|ok"

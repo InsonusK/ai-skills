@@ -25,8 +25,11 @@ public sealed class FakeListStore : IListStore
         return Task.CompletedTask;
     }
 
+    /// <summary>The store answers no rows, whatever the list: what it answers for a list it does not have.</summary>
+    public bool NoRows { get; set; }
+
     public Task<IReadOnlyList<ListRow>?> SelectAsync(string listId, CancellationToken cancellationToken) =>
-        Task.FromResult<IReadOnlyList<ListRow>?>(_rows.TryGetValue(listId, out var rows) ? rows : null);
+        Task.FromResult<IReadOnlyList<ListRow>?>(!NoRows && _rows.TryGetValue(listId, out var rows) ? rows : null);
 }
 
 [Binding]
@@ -40,6 +43,9 @@ public sealed class ItemListsServiceSteps(ITestOutputHelper output)
 
     [Given("the store answers a duplicate key")]
     public void GivenTheStoreAnswersADuplicateKey() => _store.Failure = new DuplicateKeyException("duplicate key");
+
+    [Given("the store answers no rows")]
+    public void GivenTheStoreAnswersNoRows() => _store.NoRows = true;
 
     [Given("the store fails with {string}")]
     public void GivenTheStoreFailsWith(string message) => _store.Failure = new IOException(message);

@@ -5,6 +5,7 @@ package pipeline
 import (
 	"encoding/json"
 	"errors"
+	"mime"
 	"net/http"
 
 	"google.golang.org/protobuf/encoding/protojson"
@@ -25,8 +26,12 @@ var decodeOptions = protojson.UnmarshalOptions{DiscardUnknown: true}
 
 // DecodeProto reads the request body as proto-JSON into msg, the method's
 // generated request message. Path parameters are not in the body: the route's
-// decode sets them from r.PathValue after this call.
+// decode sets them from r.PathValue after this call. A body not declared as
+// application/json is rejected before it is read.
 func DecodeProto(r *http.Request, msg proto.Message) error {
+	if media, _, _ := mime.ParseMediaType(r.Header.Get("Content-Type")); media != "application/json" {
+		return errors.New("Content-Type must be application/json")
+	}
 	var body json.RawMessage
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		return errors.New("request body is not valid JSON: " + err.Error())

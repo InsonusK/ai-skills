@@ -37,8 +37,14 @@ class Check:
     """How a failed check is reported, e.g. "database"."""
 
     check: Callable[[], Awaitable[None]]
-    """Returns while the dependency can be used, raises when it cannot -
-    e.g. the database's ping."""
+    """Returns while the dependency can be used, raises Degraded while it can
+    be used with less (still taking traffic), raises anything else when it
+    cannot - e.g. the database's ping."""
+
+
+class Degraded(Exception):
+    """What a check raises when its dependency works with less (a cache
+    missing, a replica behind): readiness still answers 200."""
 
 
 type _Answer = tuple[HTTPStatus, dict[str, Any]]
@@ -104,6 +110,8 @@ class Server:
         for check in self._checks:
             try:
                 await check.check()
+            except Degraded:
+                pass
             except Exception as error:
                 self._logger.warning("readiness check failed", exc_info=error, extra=attrs(check=check.name))
                 failed.append(check.name)

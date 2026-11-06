@@ -3,6 +3,7 @@
 outermost command begins the unit of work and ends it, a commit when its
 handler returned and a rollback when it raised; a nested command only joins."""
 
+import asyncio
 from typing import Protocol
 
 from todo.command.pipeline import Kind, KindError, Next
@@ -59,7 +60,9 @@ class UnitOfWorkMiddleware:
             await unit.rollback()
             raise
         try:
-            await unit.commit()
+            # Shielded: a caller cancelled now does not stop a commit that may
+            # already have reached the database.
+            await asyncio.shield(unit.commit())
         except Exception as error:
             await unit.rollback()
             raise ChangesNotCommittedError() from error

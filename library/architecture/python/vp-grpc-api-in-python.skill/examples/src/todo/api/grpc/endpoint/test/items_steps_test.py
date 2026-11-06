@@ -54,7 +54,7 @@ def _call_plan_items(world: World, titles: list[str]) -> None:
     print(f"when: PlanItems({titles}) -> {[(item.title, item.done) for item in world.response.items]}")
 
 
-@given(parsers.re(r'PlanItems returns the items "(?P<titles>[^"]*)"'))
+@given(parsers.re(r'PlanItems returns the items "(?P<titles>[^"]*)" over gRPC'))
 def plan_items_returns(world: World, titles: str) -> None:
     world.plan_items.titles = titles.split("|") if titles else []
 
@@ -69,17 +69,17 @@ def i_call_plan_items_with_no_titles(world: World) -> None:
     _call_plan_items(world, [])
 
 
-@then(parsers.parse('the response should hold the items "{titles}", none done'))
+@then(parsers.parse('the gRPC response should hold the items "{titles}", none done'))
 def the_response_should_hold(world: World, titles: str) -> None:
     assert world.response is not None
     assert [(item.title, item.done) for item in world.response.items] == [(title, False) for title in titles.split("|")]
 
 
-@then(parsers.parse('PlanItems should have received the titles "{titles}"'))
+@then(parsers.parse('PlanItems should have received the titles "{titles}" over gRPC'))
 def plan_items_should_have_received(world: World, titles: str) -> None:
     assert world.plan_items.received == [PlanItemsCommand(titles=titles.split("|"))]
 
 
-@then("PlanItems should have received no titles")
+@then("PlanItems should have received no titles over gRPC")
 def plan_items_should_have_received_no_titles(world: World) -> None:
     assert world.plan_items.received == [PlanItemsCommand(titles=[])]

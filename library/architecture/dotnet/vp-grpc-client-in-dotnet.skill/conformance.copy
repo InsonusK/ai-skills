@@ -1,0 +1,17 @@
+# The shared scenarios this example runs: written by `make conformance-sync`,
+# checked by test/check-conformance.sh. One line per unit:
+# <spec folder> <folder of this skill it is copied into>.
+base-plateau.skill/conformance/config examples/src/App/App.Host.Tests/features
+base-plateau.skill/conformance/entry examples/src/App/App.Host.Tests/features
+base-plateau.skill/conformance/startup examples/src/App/App.Host.Tests/features
+base-plateau.skill/conformance/json-log examples/src/BuildingBlocks.Tests/features
+base-plateau.skill/conformance/command-pipeline examples/src/BuildingBlocks.Tests/features
+base-plateau.skill/conformance/command-logging examples/src/Middleware.Tests/features
+base-plateau.skill/conformance/plan-items examples/src/Modules/Todo/Todo.Application.Tests/features
+base-plateau.skill/conformance/item examples/src/Modules/Todo/Todo.Domain.Tests/features
+base-plateau.skill/conformance/planner examples/src/Modules/Todo/Todo.Domain.Tests/features
+vp-grpc-client.skill/conformance/grpc-client-core examples/src/Infrastructure/Client/Core/Client.Grpc.Tests/features
+vp-http-client.skill/conformance/client-pipeline examples/src/Infrastructure/Client/Core/Client.Pipeline.Tests/features
+vp-grpc-client.skill/conformance/grpc-todo-api examples/src/Infrastructure/Client/TodoApi/TodoApi.Tests/features
+vp-http-client.skill/conformance/remote-planner examples/src/Modules/Todo/Todo.Application.Tests/features
+vp-http-client.skill/conformance/plan-remote-items examples/src/Modules/Todo/Todo.Application.Tests/features
