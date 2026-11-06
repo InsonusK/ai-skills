@@ -1,10 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- The command handlers of the module, one file per command. -->
+  <!-- The command handlers of the module, one file per command. They reach the
+       store through the repository's contract of Shared, never a store itself. -->
   <ItemGroup>
     <ProjectReference Include="..\Todo.Commands\Todo.Commands.csproj" />
     <ProjectReference Include="..\Todo.Domain\Todo.Domain.csproj" />
-    <!-- The interface of the store its service uses; never the store itself. -->
-    <ProjectReference Include="..\..\..\Infrastructure\Memory\Memory.Abstractions\Memory.Abstractions.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MediatR" />

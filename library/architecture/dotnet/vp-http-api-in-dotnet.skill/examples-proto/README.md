@@ -30,11 +30,11 @@ make test       # every scenario
 |---|---|
 | `src/App/App.Host` | composition root (`Program.cs`), the entry points (`Api/Grpc`, `Api/Http`), base settings |
 | `src/Modules/Todo/Todo.Commands` | the commands and their results — all an entry point sees |
-| `src/Modules/Todo/Todo.Application` | the command handlers, and `Services/` — the item lists over the store |
-| `src/Modules/Todo/Todo.Domain` | entities, domain services, the rule errors |
-| `src/Infrastructure/Memory/Memory.Abstractions` | the store's interface, in its own terms |
-| `src/Infrastructure/Memory/Memory` | the in-memory store; the DB variation point replaces it |
-| `src/BuildingBlocks`, `src/Shared` | fixed code |
+| `src/Modules/Todo/Todo.Application` | the command handlers, each over `IRepository<ItemList>` |
+| `src/Modules/Todo/Todo.Domain` | entities (the aggregate `ItemList` and its items), specifications, domain services, the rule errors |
+| `src/Infrastructure/Memory/Memory` | `MemoryRepository<T>`: the repository's contract in memory; the DB variation point replaces its registration |
+| `src/Shared` | the error kinds, and `Persistence/` — the repository's contract (`IRepository<T>`, `IAggregateRoot`) |
+| `src/BuildingBlocks` | fixed code |
 | `third_party/proto` | the googleapis and openapiv2 annotations the proto file imports |
 
 Every `{Project}.Tests` sits beside the project it tests.

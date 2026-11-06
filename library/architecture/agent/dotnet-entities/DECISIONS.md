@@ -1,0 +1,18 @@
+# dotnet entities — decisions
+
+One line per choice; ⚠️ marks a fork with real trade-offs, decided by the owner.
+
+- ⚠️ 2026-11-05, owner: dotnet maps the domain's entities with EF Core; the database is the service's own store, not an external system, so no row layer stands between them. Go and Python keep rows.
+- ⚠️ 2026-11-05, owner: one mechanism for simple and composite tables; a technical table (outbox, inbox, a cache of another system's data) maps a class of the infrastructure in the same context.
+- ⚠️ 2026-11-05, owner: specifications live beside the entity, in `{Module}.Domain`.
+- ⚠️ 2026-11-05, owner: the database's failures become kinds in one command middleware.
+- ⚠️ 2026-11-05, owner: the locks of an aggregate are the consumer's choice; a pessimistic lock is a variation point of its own (`vp-row-lock`, later).
+- ⚠️ 2026-11-06, owner: Ardalis's repository and specifications as they are, in place of our repository and selector, in dotnet.
+- ⚠️ 2026-11-06, owner: a handler takes `IRepository<T>`; the in-memory base of `vp-http-api-in-dotnet` moves to the same interface, so attaching the database changes no handler.
+- ⚠️ 2026-11-06, agent, for review: no `EntityFramework.Exceptions`. Its processor covers `SaveChanges` only, not a query, `ExecuteUpdate`, or raw SQL, so the translation by SQLSTATE over the chain of causes (`StoreFailures`) is still needed and already covers every path; the package would add a dependency and a second way to read the same failure.
+- 2026-11-06, agent: `IAggregateRoot`, `IRepository<T>`, `IReadRepository<T>` in `Shared/Persistence`, as in Ardalis's Clean Architecture template; a child gets no repository.
+- 2026-11-06, agent: a failed save clears the change tracker, so the shared scenario "A failed write leaves nothing pending" holds; a successful one keeps the tracked entities for the rest of the command.
+- 2026-11-06, agent: `CountAsync`, `AnyAsync`, `DeleteRangeAsync` of `PostgresRepository` refuse a specification with a page (the risk of ADR `order-and-page-on-the-selector`).
+- 2026-11-06, agent: the example's aggregate is the list: `ItemList` (the caller's id, `IAggregateRoot`) owns its `Item`s and guards the rule "a title is unique in its list" in `Add`, with the rule's message; the unique index answers a race through the middleware. So wave 2 (an aggregate with children) joins wave 1; `PlanItems` keeps `Item`s that belong to no list.
+- 2026-11-06, agent: `MemoryRepository<T>` keeps the root objects in one `MemoryStore` singleton (one store behind `IRepository<>` and `IReadRepository<>`); a count, an existence check, and a delete apply the conditions only (`IsSatisfiedBy`) and refuse a page, as the database's repository does (`Shared.Persistence.SpecificationPage`).
+- 2026-11-06, agent: the handlers' scenarios run over `MemoryRepository<T>` (a subclass adds a failure and "asked"), not a hand fake of Ardalis's 22 methods; the Memory project stays in the database's example for them.

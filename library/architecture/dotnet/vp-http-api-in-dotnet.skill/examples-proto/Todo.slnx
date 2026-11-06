@@ -8,7 +8,6 @@
     <Project Path="src/Middleware.Tests/Middleware.Tests.csproj" />
   </Folder>
   <Folder Name="/src/Infrastructure/Memory/">
-    <Project Path="src/Infrastructure/Memory/Memory.Abstractions/Memory.Abstractions.csproj" />
     <Project Path="src/Infrastructure/Memory/Memory/Memory.csproj" />
     <Project Path="src/Infrastructure/Memory/Memory.Tests/Memory.Tests.csproj" />
   </Folder>
