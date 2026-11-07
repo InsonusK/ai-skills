@@ -2,13 +2,13 @@
   <!-- Every test project sits beside the project it tests (skill cucumber-testing-in-dotnet). -->
   <Folder Name="/src/">
     <Project Path="src/Shared/Shared.csproj" />
+    <Project Path="src/Shared.Persistence/Shared.Persistence.csproj" />
     <Project Path="src/BuildingBlocks/BuildingBlocks.csproj" />
     <Project Path="src/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj" />
     <Project Path="src/Middleware/Middleware.csproj" />
     <Project Path="src/Middleware.Tests/Middleware.Tests.csproj" />
   </Folder>
   <Folder Name="/src/Infrastructure/Postgres/">
-    <Project Path="src/Infrastructure/Postgres/Postgres.Abstractions/Postgres.Abstractions.csproj" />
     <Project Path="src/Infrastructure/Postgres/Postgres/Postgres.csproj" />
     <Project Path="src/Infrastructure/Postgres/Postgres.Testing/Postgres.Testing.csproj" />
     <Project Path="src/Infrastructure/Postgres/Postgres.Tests/Postgres.Tests.csproj" />

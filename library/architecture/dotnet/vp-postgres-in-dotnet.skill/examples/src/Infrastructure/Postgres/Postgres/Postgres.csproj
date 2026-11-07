@@ -1,9 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- The application's PostgreSQL: the one AppDbContext, the mapping of the rows, the repository,
-       and the migrations. Only the composition roots (App.Host, App.Migrate)
-       reference this project; a service sees Postgres.Abstractions. -->
+  <!-- The application's PostgreSQL: the one AppDbContext, the mapping of every
+       module's entities, the repository, the translation of failures, and the
+       migrations. It sees the modules' domains, which it maps; only the
+       composition roots (App.Host, App.Migrate) reference it. -->
   <ItemGroup>
-    <ProjectReference Include="..\Postgres.Abstractions\Postgres.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Shared.csproj" />
+    <ProjectReference Include="..\..\..\Shared.Persistence\Shared.Persistence.csproj" />
+    <ProjectReference Include="..\..\..\Modules\Todo\Todo.Domain\Todo.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />

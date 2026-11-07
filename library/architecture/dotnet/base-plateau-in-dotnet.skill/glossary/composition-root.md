@@ -23,7 +23,7 @@ RunAsync
 
 | Section | A variation point adds |
 |---|---|
-| `[services]` | its infrastructure: `services.AddSingleton<IListStore, MemoryListStore>()` |
+| `[services]` | its infrastructure: `services.AddPostgres(postgres)`, which registers `IRepository<>` |
 | `[handlers]` | one element of the `AddCommandMiddleware` list: `typeof(UnitOfWorkMiddleware<,>)`; a module adds its `Add{Module}Module()` |
 | `[entries]` | `services.AddHttpApi(middlewares: [])` replacing `AddStartupEntry`; `services.AddManagement()` beside it; an element of an API's list of middlewares |
 

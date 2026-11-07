@@ -30,10 +30,8 @@ make test       # every scenario
 |---|---|
 | `src/App/App.Host` | composition root (`Program.cs`), the entry points (`Api/Grpc`, `Api/Http`), base settings |
 | `src/Modules/Todo/Todo.Commands` | the commands and their results — all an entry point sees |
-| `src/Modules/Todo/Todo.Application` | the command handlers, and `Services/` — the item lists over the store |
+| `src/Modules/Todo/Todo.Application` | the command handlers, and `KeptLists` — the lists kept by the process while it runs, lost when it stops |
 | `src/Modules/Todo/Todo.Domain` | entities, domain services, the rule errors |
-| `src/Infrastructure/Memory/Memory.Abstractions` | the store's interface, in its own terms |
-| `src/Infrastructure/Memory/Memory` | the in-memory store; the DB variation point replaces it |
 | `src/BuildingBlocks`, `src/Shared` | fixed code |
 | `third_party/proto` | the googleapis and openapiv2 annotations the proto file imports |
 

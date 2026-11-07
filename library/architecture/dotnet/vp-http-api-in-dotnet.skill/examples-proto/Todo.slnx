@@ -7,11 +7,6 @@
     <Project Path="src/Middleware/Middleware.csproj" />
     <Project Path="src/Middleware.Tests/Middleware.Tests.csproj" />
   </Folder>
-  <Folder Name="/src/Infrastructure/Memory/">
-    <Project Path="src/Infrastructure/Memory/Memory.Abstractions/Memory.Abstractions.csproj" />
-    <Project Path="src/Infrastructure/Memory/Memory/Memory.csproj" />
-    <Project Path="src/Infrastructure/Memory/Memory.Tests/Memory.Tests.csproj" />
-  </Folder>
   <Folder Name="/src/App/">
     <Project Path="src/App/App.Host/App.Host.csproj" />
     <Project Path="src/App/App.Host.Tests/App.Host.Tests.csproj" />

@@ -16,7 +16,7 @@ build:
 migrate:
 	dotnet run --project src/App/App.Migrate
 
-# Generates a migration from the rows' configurations; it needs no database.
+# Generates a migration from the configurations of the aggregates; it needs no database.
 # make migration NAME=AddItemDueDate. Commit what this writes.
 migration:
 	dotnet ef migrations add $(NAME) --project src/Infrastructure/Postgres/Postgres --output-dir Migrations
