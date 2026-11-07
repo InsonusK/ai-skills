@@ -1,34 +1,28 @@
 using MediatR;
 using Shared.Persistence;
+using Todo.Application.Specifications;
 using Todo.Commands;
 using Todo.Domain.Entities;
-using Todo.Domain.Specifications;
+using Todo.Domain.Errors;
 
 namespace Todo.Application.Commands;
 
 /// <summary>
-/// Handles <see cref="AddItemCommand"/>: loads the list, or starts it on its
-/// first item, lets the list add the item, and saves the list with its items.
-/// An invalid title is the entity's invalid error, a title already in the list
-/// the list's conflict.
+/// Handles <see cref="AddItemCommand"/>: an invalid title is the entity's invalid
+/// error, a title already in the list a conflict. The check before the write
+/// gives the rule's message; under a race the unique index refuses the second
+/// write, and the store failures middleware answers it as a conflict.
 /// </summary>
-public sealed class AddItemHandler(IRepository<ItemList> lists) : IRequestHandler<AddItemCommand, AddItemResult>
+public sealed class AddItemHandler(IRepository<Item> items) : IRequestHandler<AddItemCommand, AddItemResult>
 {
     public async Task<AddItemResult> Handle(AddItemCommand command, CancellationToken cancellationToken)
     {
-        var item = new Item(command.Title);
-        var list = await lists.SingleOrDefaultAsync(new ListById(command.ListId), cancellationToken);
-        if (list is null)
+        var item = Item.InList(command.ListId, command.Title);
+        if (await items.AnyAsync(new ItemOfListTitled(command.ListId, item.Title), cancellationToken))
         {
-            list = new ItemList(command.ListId);
-            list.Add(item);
-            await lists.AddAsync(list, cancellationToken);
+            throw TodoErrors.ItemAlreadyInList(command.ListId, item.Title);
         }
-        else
-        {
-            list.Add(item);
-            await lists.UpdateAsync(list, cancellationToken);
-        }
+        await items.AddAsync(item, cancellationToken);
         return new AddItemResult(new ItemView(item.Title, item.Done));
     }
 }

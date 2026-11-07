@@ -4,9 +4,9 @@ using Todo.Domain.Errors;
 namespace Todo.Domain.Entities;
 
 /// <summary>
-/// One to-do item. Its state changes only through its methods, which guard the
-/// item's own rules. A stored item is a child of its <see cref="ItemList"/>,
-/// which adds it.
+/// One to-do item, a row of the table list_items (Configurations/ItemConfiguration).
+/// Its state changes only through its methods, which guard the item's own rules.
+/// A title is unique in its list: the table's unique index holds it.
 /// </summary>
 public sealed class Item
 {
@@ -29,8 +29,14 @@ public sealed class Item
         Title = title;
     }
 
-    /// <summary>The store's key of the item, 0 until its list is saved.</summary>
+    /// <summary>An item of the list <paramref name="listId"/>, as AddItem keeps it.</summary>
+    public static Item InList(string listId, string title) => new(title) { ListId = listId };
+
+    /// <summary>The store's key of the item, 0 until it is saved.</summary>
     public long Id { get; private set; }
+
+    /// <summary>The list the item belongs to; empty for an item of no list (a planned one).</summary>
+    public string ListId { get; private set; } = "";
 
     public string Title { get; }
 

@@ -11,11 +11,26 @@ tags:
 ---
 
 # Problem
-A handler saves an aggregate and goes on: it may send a nested command, or answer from what it saved. A repository that only stages a change gets no outcome: the database answers later, at the end of the command, after the handler has answered as if it were saved. And a unit of work must stay optional: an application without one still needs its writes saved.
+A handler saves an entity and goes on: it may send a nested command, or answer from what it saved. A repository that only stages a change gets no outcome: the database answers later, at the end of the command, after the handler has answered as if it were saved. And a unit of work must stay optional: an application without one still needs its writes saved.
 
 # Selected variant
 [[#Each repository write saves]]
-- Chosen by the owner (2026-10-31).
+- Chosen by the owner (2026-10-31), confirmed on 2026-11-07 after comparing it with the form of `plateau-offline-sync-service` (one SaveChanges at the end): [[#Comparison of the two]].
+
+# Comparison of the two
+Both commit once, at the end of the outermost command. They differ in when the SQL reaches the database and how long the transaction lives.
+
+| | Each write saves (selected) | The unit of work saves at the end |
+|---|---|---|
+| `AddAsync` / `UpdateAsync` | calls `SaveChanges`: the `INSERT` or `UPDATE` is sent at once, inside the transaction the first save opened | marks the change in EF Core's tracker; no SQL is sent |
+| The transaction | opened by the first write, open until the end of the command | opened by the one `SaveChanges` at the end, closed by it |
+| The commit | at the end of the command, by `UnitOfWorkMiddleware` | at the end of the command, by that `SaveChanges` |
+| What the handler sees of a write | at once: the generated id, a duplicate key | nothing until the command ends: the id is 0, a failure arrives past the handler |
+| A nested command that reads | sees the writes of its parent | does not see them: they are still in the tracker |
+| With no unit of work attached | every write saves on its own | nothing is saved: the unit of work is mandatory |
+| A statement past `SaveChanges` (`ExecuteUpdate`, raw SQL) | runs in the open transaction through `WriteAsync` | runs at once, before the tracked changes, outside their transaction |
+| Locks and connection | the transaction holds its row locks and its connection from the first write: a call of another API belongs before the first write | the shortest transaction; the connection is taken only at the end |
+| Ardalis's `RepositoryBase` | as it is: it calls `SaveChangesAsync` in every write | must override every write so it does not save (the plateau's example claims so, but its `Repository<T>` overrides nothing and saves at once) |
 
 # Searched variants
 

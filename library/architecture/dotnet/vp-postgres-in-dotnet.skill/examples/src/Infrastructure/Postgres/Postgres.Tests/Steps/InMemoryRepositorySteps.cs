@@ -9,7 +9,7 @@ using Xunit.Abstractions;
 namespace Postgres.Tests.Steps;
 
 /// <summary>A root of these scenarios only.</summary>
-public sealed class Note(string title) : IAggregateRoot
+public sealed class Note(string title)
 {
     public string Title { get; private set; } = title;
 
@@ -27,7 +27,7 @@ public sealed class NotesByTitle : Specification<Note>
 }
 
 /// <summary>A root of these scenarios with a key the caller sets, as a list has its name.</summary>
-public sealed class Shelf(string id) : IAggregateRoot
+public sealed class Shelf(string id)
 {
     public string Id { get; } = id;
 }

@@ -25,7 +25,7 @@ A failure reaches a handler from a query (a lost connection inside an `InvalidOp
 **Selected.**
 
 ### Description
-`StoreFailuresMiddleware<,>` in `Middleware/StoreFailures` catches what a command threw and asks `IStoreFailures.KindOf`; `PostgresFailures` of the Postgres project answers `Conflict` (23505), `NotFound` (23503), `ConcurrentChange` (`DbUpdateConcurrencyException`), `Unavailable` (`NpgsqlException.IsTransient`), or nothing. A handler that must tell a rule apart says it before the write (`ItemList.Add`); the index stays the guard under a race.
+`StoreFailuresMiddleware<,>` in `Middleware/StoreFailures` catches what a command threw and asks `IStoreFailures.KindOf`; `PostgresFailures` of the Postgres project answers `Conflict` (23505), `NotFound` (23503), `ConcurrentChange` (`DbUpdateConcurrencyException`), `Unavailable` (`NpgsqlException.IsTransient`), or nothing. A handler that must tell a rule apart says it before the write (`AddItemHandler` asks `AnyAsync` first); the index stays the guard under a race.
 
 ### Benefits
 - Every path of every command passes it, a nested command's and a failed commit's too.

@@ -22,7 +22,7 @@ public static class PostgresModule
     /// Its readiness check goes to the framework's registry, which belongs to no
     /// variation point: the health entry point reads it when the application
     /// has one, and nothing runs the check when it has none. The repository is
-    /// registered once for every aggregate root, so a new aggregate edits no
+    /// registered once for every entity, so a new entity edits no
     /// fixed file; the meaning of a failure for the store failures middleware.
     /// </summary>
     public static IServiceCollection AddPostgres(this IServiceCollection services, PostgresConfig config)

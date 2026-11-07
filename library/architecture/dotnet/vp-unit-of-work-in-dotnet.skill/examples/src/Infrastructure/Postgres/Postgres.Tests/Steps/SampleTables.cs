@@ -5,17 +5,17 @@ using Shared.Persistence;
 
 namespace Postgres.Tests.Steps;
 
-// The tables of the shared scenarios: two aggregates with a relation, a task
+// The tables of the shared scenarios: two entities with a relation, a task
 // referring to its owner. They exist only in this project: the application
 // never ships them.
 
-public sealed class Owner : IAggregateRoot
+public sealed class Owner
 {
     public long Id { get; set; }
     public required string Name { get; set; }
 }
 
-public sealed class OwnerTask : IAggregateRoot
+public sealed class OwnerTask
 {
     public long Id { get; set; }
     public long OwnerId { get; set; }
@@ -62,7 +62,7 @@ public sealed class FirstOfUnclosedTasks : Specification<OwnerTask>
     public FirstOfUnclosedTasks(string owner) => Query.Where(task => task.Owner!.Name == owner && !task.Done).OrderBy(task => task.Title).Take(1);
 }
 
-/// <summary>An aggregate with statements of its own, past SaveChanges, as one of an application would have them.</summary>
+/// <summary>An entity with statements of its own, past SaveChanges, as one of an application would have them.</summary>
 public sealed class TaskRepository(DbContext context) : PostgresRepository<OwnerTask>(context)
 {
     public Task<int> InsertUnlessThereAsync(long ownerId, string title, CancellationToken cancellationToken) =>

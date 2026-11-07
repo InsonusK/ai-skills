@@ -14,7 +14,6 @@ public sealed class MigrationSteps(PostgresWorld world)
     public async Task GivenAMigratedDatabaseWithRows(int rows, string table)
     {
         await world.CreateMigratedDatabaseAsync();
-        await world.ExecuteAsync("INSERT INTO lists (id) VALUES ('home')");
         await world.ExecuteAsync($"INSERT INTO {table} (list_id, title, done) SELECT 'home', 'item ' || n, false FROM generate_series(1, {rows}) AS n");
     }
 

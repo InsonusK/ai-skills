@@ -26,7 +26,7 @@ adr:
 
 # Core Principle
 - **A repository saves at once** - Each write finishes before it returns, so its caller sees the database's outcome, told as a kind. A command that must keep several writes together takes the unit of work variation point (`vp-unit-of-work`), which puts a transaction around them with no change to a repository.
-- **Two forms, one behaviour** - In the rows form a repository speaks rows and the service over it builds entities from them; in the entities form the domain's aggregates are mapped and the handler takes the repository. The outcomes, migrations, settings, and readiness are the same in both. Decision recorded in [two-forms-rows-and-entities](./adr/two-forms-rows-and-entities.md).
+- **Two forms, one behaviour** - In the rows form a repository speaks rows and the service over it builds entities from them; in the entities form the domain's entities are mapped, one per table, and the handler takes the repository. The outcomes, migrations, settings, and readiness are the same in both. Decision recorded in [two-forms-rows-and-entities](./adr/two-forms-rows-and-entities.md).
 - **Which rows, then what to do** - A specification says which rows; in the rows form a selector says what to do with them, and in what order.
 - **One application, one database** - One schema, one migration history; another service reaches this data through this service's API, never its tables.
 
@@ -62,21 +62,21 @@ Build the variation point in the form its stack extension names, and apply the r
 | | Rows form | Entities form |
 |---|---|---|
 | Stacks | Go, Python | dotnet |
-| What is mapped | a row per table, below the service | the domain's entities; an aggregate's root with its children |
+| What is mapped | a row per table, below the service | the domain's entities, one per table, configured in their module |
 | Caller of the repository | a service per table, which builds entities from rows | the handler, which loads a root, calls its methods, and saves it |
-| Contract | [the one contract](#give-every-repository-the-one-contract) and its selector | the stack's library (dotnet: Ardalis's `IRepositoryBase<T>`), kept to aggregate roots |
+| Contract | [the one contract](#give-every-repository-the-one-contract) and its selector | the stack's library (dotnet: Ardalis's `IRepositoryBase<T>`) |
 | Outcomes become kinds | in the service | in one command middleware |
 | Shared scenarios | every folder of `conformance/` | `conformance/` but `postgres-selector/` and `postgres-item-lists-service/` |
 
 - Violation: a stack mixing the forms per module; a service over the repository in the entities form; a handler calling the repository in the rows form.
 - Risk: two ways to reach one table in one application, and scenarios that prove neither.
-- Fix: the stack extension states its form once; an aggregate in the rows form is mapped by hand in its service.
+- Fix: the stack extension states its form once.
 
 ### Reach the database only through a repository
 Put every statement in a repository of the infrastructure layer, behind an interface, with a service as its only caller in the rows form and a handler in the entities form, per [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md).
 - Violation: a command running a query; a service holding the driver's connection; a repository method named `AddItemToList` that takes an entity.
 - Risk: the technique spreads upward, so changing a query or the engine edits commands.
-- Fix: in the rows form the service's `Add(listId, item)` builds a row and calls the repository's `Insert(row)`; in the entities form the handler loads the list, calls `list.Add(item)`, and saves the list.
+- Fix: in the rows form the service's `Add(listId, item)` builds a row and calls the repository's `Insert(row)`; in the entities form the handler checks the title, builds the item, and adds it through `IRepository<Item>`.
 
 ### Give every repository the one contract
 In the rows form, implement this contract for every table, under these names in the stack's spelling. Decision recorded in [repository-selector-and-specification](./adr/repository-selector-and-specification.md).
@@ -184,7 +184,7 @@ Attach the variation point by changing no command, entity, or domain service; on
 - [ ] The stack is in one [form](#take-the-form-of-the-stack), for every module.
 - [ ] Every statement is in a repository; its caller is a service (rows form) or a handler (entities form).
 - [ ] Rows form: every table gets the [contract](#give-every-repository-the-one-contract) from one generic repository; a specification holds no order, no page, and no statement; no selector leaves its service.
-- [ ] Entities form: a specification with a page serves a list only; a repository exists for an aggregate root only.
+- [ ] Entities form: a specification with a page serves a list only; each module configures its own tables.
 - [ ] The number of rows written comes from the write.
 - [ ] Every outcome of the [table](#report-a-repositorys-outcomes-in-its-own-terms) is turned into its kind: by the service (rows form) or by one command middleware (entities form).
 - [ ] `DATABASE_DSN` is required; no failure and no log repeats its value.

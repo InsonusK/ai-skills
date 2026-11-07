@@ -1,8 +1,8 @@
 ---
 name: entities mapped by EF Core
-description: What EF Core maps in dotnet - the domain's entities and aggregates, or rows of the infrastructure below a service
-problem: The database is the service's own store, not another system's API. Rows below a service add a model per table between the domain and its tables, and an aggregate with children is mapped by hand in both directions.
-decision: EF Core maps the domain's entities; an aggregate's root with its children, the children owned by the root. The mapping lives in the Postgres project, which references each module's Domain; a handler takes the repository with no service between. Go and Python keep rows.
+description: What EF Core maps in dotnet and where the mapping lives - the domain's entities, one per table, configured in their module's Domain; aggregates with owned children; or rows of the infrastructure below a service
+problem: The database is the service's own store, not another system's API. Rows below a service add a model per table between the domain and its tables. Where does the mapping live, so that a module adds a table without editing the store's project?
+decision: EF Core maps the domain's entities, one per table; each module configures its tables in {Module}.Domain/Configurations (EF Core's relational model API, no provider), and AppDbContext applies each module's configurations, one line per module. A handler takes the repository with no service between. Go and Python keep rows.
 tags:
   - stack/dotnet
   - concern/architecture
@@ -11,29 +11,41 @@ tags:
 ---
 
 # Problem
-The rows form of `vp-postgres` puts a row class per table below a service that builds entities from rows. In dotnet the master systems live, with aggregates whose children change in one command; mapping them by hand costs more than EF Core's change tracking, and three models (the API's, the domain's, the row) describe one thing. A cache of another system's data or an outbox has no entity of the domain at all.
+The rows form of `vp-postgres` puts a row class per table below a service that builds entities from rows: three models (the API's, the domain's, the row) for one thing, and a hand mapping per table. A first form of the entities (2026-11-06) mapped an aggregate root with owned children and kept every configuration in the Postgres project, because `app-layers-in-dotnet` forbade EF Core in the domain: the example invented a list aggregate whose table held only its id, and every module that added a table edited the store's project.
 
 # Selected variant
-[[#The domain's entities mapped]]
-- Chosen by the owner (2026-11-05): the database is the service's own infrastructure; API and Client stay boundaries with models of their own.
+[[#Entities, one per table, configured in their module]]
+- Chosen by the owner (2026-11-05: the domain's entities mapped; 2026-11-07: one entity per table, the configuration in the module's Domain, after the form of `plateau-offline-sync-service`).
 
 # Searched variants
 
-## The domain's entities mapped
+## Entities, one per table, configured in their module
 
 **Selected.**
 
 ### Description
-`IEntityTypeConfiguration<TEntity>` per aggregate in `Postgres/Configurations/{Module}/`, the children of a root mapped `OwnsMany`, private fields by `HasField`. `Postgres` references every `{Module}.Domain`; the domain references no package of EF Core. A technical table (a cache, an outbox) maps a class of the infrastructure in the same `AppDbContext`.
+An entity of `{Module}.Domain/Entities` is a row of its table; its `IEntityTypeConfiguration<TEntity>` lives in `{Module}.Domain/Configurations`. `{Module}.Domain` references `Microsoft.EntityFrameworkCore.Relational` (the model API: tables, columns, indexes), no provider. `AppDbContext` in the Postgres project applies its own configurations (a table of no module) and those of each module's assembly, one line per module. A rule over several rows (a title unique in its list) is a unique index, checked by the handler before the write for its message.
 
 ### Benefits
-- One model of the domain; EF Core writes what changed in a loaded aggregate, a removed child included.
-- A handler written over `IRepository<T>` changes for no store; its scenarios run over the repository in memory.
+- A module owns its tables: a new table edits only the module.
+- One model of the domain, as the dotnet teams know it.
 
 ### Costs
-- `app-layers-in-dotnet` lets `Postgres` reference the domains it maps.
-- An entity keeps what EF Core needs to build it: a constructor whose parameters name properties, a private setter for a key.
+- The domain references EF Core's model API; the rule "the domain references no EF Core" of `app-layers-in-dotnet` becomes "no provider and no I/O".
+- `AppDbContext` is written per application: a line per module.
 - dotnet and the other stacks differ in form; only the behaviour scenarios stay shared.
+
+## An aggregate root with owned children, mapped in the Postgres project
+
+### Description
+`ItemList` with its `Item`s mapped `OwnsMany`, private fields by `HasField`, every configuration in `Postgres/Configurations/{Module}/`; a repository only for an `IAggregateRoot`.
+
+### Benefits
+- A rule over the children lives in the root's method; EF Core saves a changed child with its root.
+
+### Costs
+- An entity with no table of its own was invented for the example, and its mapping read as no table the team would write.
+- The store's project references every module and holds their mappings.
 
 ## Rows below a service
 
@@ -44,5 +56,4 @@ A row class and its configuration per table in `Postgres.Abstractions`, a servic
 - The same form as Go and Python; the infrastructure sees no domain.
 
 ### Costs
-- A hand mapping per table in both directions, and a second one for each child collection.
-- A service between every handler and its own store.
+- A hand mapping per table in both directions, and a service between every handler and its own store.

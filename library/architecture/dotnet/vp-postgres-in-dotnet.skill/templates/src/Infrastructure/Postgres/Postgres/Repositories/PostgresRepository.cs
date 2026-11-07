@@ -9,7 +9,7 @@ using Shared.Persistence;
 namespace Postgres.Repositories;
 
 /// <summary>
-/// The repository of every aggregate root: Ardalis's <see cref="RepositoryBase{T}"/>
+/// The repository of every entity: Ardalis's <see cref="RepositoryBase{T}"/>
 /// over the one context of the command. A write saves before it returns, so
 /// inside the unit of work's transaction too. Reads track, so a root loaded,
 /// changed, and saved in one command writes what changed, a removed child
@@ -17,8 +17,8 @@ namespace Postgres.Repositories;
 /// (<see cref="PostgresFailures"/>), not here. A root with statements past
 /// SaveChanges derives from this class and runs them through <see cref="WriteAsync"/>.
 /// </summary>
-public class PostgresRepository<TRoot>(DbContext context) : RepositoryBase<TRoot>(context), IRepository<TRoot>, IReadRepository<TRoot>
-    where TRoot : class, IAggregateRoot
+public class PostgresRepository<TEntity>(DbContext context) : RepositoryBase<TEntity>(context), IRepository<TEntity>, IReadRepository<TEntity>
+    where TEntity : class
 {
     private const string Savepoint = "repository_write";
 
@@ -44,19 +44,19 @@ public class PostgresRepository<TRoot>(DbContext context) : RepositoryBase<TRoot
 
     // A count, an existence check, and a delete apply a specification's
     // conditions only, so each refuses one with a page (SpecificationPage).
-    public override Task<int> CountAsync(ISpecification<TRoot> specification, CancellationToken cancellationToken = default)
+    public override Task<int> CountAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
     {
         SpecificationPage.Refuse(specification);
         return base.CountAsync(specification, cancellationToken);
     }
 
-    public override Task<bool> AnyAsync(ISpecification<TRoot> specification, CancellationToken cancellationToken = default)
+    public override Task<bool> AnyAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
     {
         SpecificationPage.Refuse(specification);
         return base.AnyAsync(specification, cancellationToken);
     }
 
-    public override Task<int> DeleteRangeAsync(ISpecification<TRoot> specification, CancellationToken cancellationToken = default)
+    public override Task<int> DeleteRangeAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
     {
         SpecificationPage.Refuse(specification);
         return base.DeleteRangeAsync(specification, cancellationToken);

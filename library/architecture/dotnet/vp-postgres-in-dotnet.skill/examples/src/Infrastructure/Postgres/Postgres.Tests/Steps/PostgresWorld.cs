@@ -67,15 +67,15 @@ public sealed class PostgresWorld
 
     public TaskRepository Tasks() => new(Session());
 
-    /// <summary>The repository of the application's lists, over a context of its own, as a command gets it.</summary>
-    public PostgresRepository<Todo.Domain.Entities.ItemList> Lists()
+    /// <summary>The repository of the application's items, over a context of its own, as a command gets it.</summary>
+    public PostgresRepository<Todo.Domain.Entities.Item> Items()
     {
         var scope = _provider!.CreateAsyncScope();
         _scopes.Add(scope);
         return new(scope.ServiceProvider.GetRequiredService<AppDbContext>());
     }
 
-    public PostgresRepository<TRoot> Repository<TRoot>() where TRoot : class, IAggregateRoot => new(Session());
+    public PostgresRepository<TRoot> Repository<TRoot>() where TRoot : class => new(Session());
 
     /// <summary>Runs a statement on a connection of its own, past every repository.</summary>
     public async Task ExecuteAsync(string statement)

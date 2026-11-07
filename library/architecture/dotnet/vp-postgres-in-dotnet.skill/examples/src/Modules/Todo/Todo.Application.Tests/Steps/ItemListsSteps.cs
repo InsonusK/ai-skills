@@ -10,13 +10,13 @@ using Xunit.Abstractions;
 namespace Todo.Application.Tests.Steps;
 
 /// <summary>
-/// The handlers over the repository of the lists, kept in memory for one
+/// The handlers over the repository of the items, kept in memory for one
 /// scenario (Postgres.Testing); the lists are read back through ListItems.
 /// </summary>
 [Binding]
 public sealed class ItemListsSteps(ITestOutputHelper output)
 {
-    private readonly InMemoryRepository<ItemList> _lists = new();
+    private readonly InMemoryRepository<Item> _lists = new();
     private AddItemResult? _added;
     private Exception? _error;
 

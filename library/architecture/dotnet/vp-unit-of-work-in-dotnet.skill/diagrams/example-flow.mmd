@@ -4,7 +4,7 @@ sequenceDiagram
     participant Middleware as UnitOfWorkMiddleware<br/>src/Middleware/UnitOfWork/UnitOfWorkMiddleware.cs
     participant Import as ImportItemsHandler<br/>src/Modules/Todo/Todo.Application/Commands/ImportItemsHandler.cs
     participant Add as AddItemHandler<br/>src/Modules/Todo/Todo.Application/Commands/AddItemHandler.cs
-    participant Repository as PostgresRepository of ItemList<br/>src/Infrastructure/Postgres/Postgres/Repositories/PostgresRepository.cs
+    participant Repository as PostgresRepository of Item<br/>src/Infrastructure/Postgres/Postgres/Repositories/PostgresRepository.cs
     participant Unit as PostgresUnitOfWork<br/>src/Infrastructure/Postgres/Postgres/UnitOfWork/PostgresUnitOfWork.cs
     participant DB as PostgreSQL
 
@@ -13,7 +13,7 @@ sequenceDiagram
     Middleware->>+Import: next
     loop one nested AddItemCommand per title, through ScopedSender and the same scope
         Import->>+Add: Send: the middleware calls TryBegin, false, and passes on
-        Add->>+Repository: AddAsync or UpdateAsync of the list, its new item added
+        Add->>+Repository: AddAsync of the item, its title checked first
         Repository->>+Unit: SaveChangesAsync: the context shows the save
         Note over Unit,DB: the first save opens the transaction, each save has a savepoint
         Unit-->>-Repository: go on

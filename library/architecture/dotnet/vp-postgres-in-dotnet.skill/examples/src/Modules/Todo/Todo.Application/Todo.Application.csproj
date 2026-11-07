@@ -1,9 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- The command handlers of the module, one file per command. They reach the
-       store through the repository's contract of Shared, never a store itself. -->
+  <!-- The command handlers of the module, one file per command, and the
+       specifications they pick rows with. They reach the store through the
+       repository's contract (Shared.Persistence), never a store itself. -->
   <ItemGroup>
     <ProjectReference Include="..\Todo.Commands\Todo.Commands.csproj" />
     <ProjectReference Include="..\Todo.Domain\Todo.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Shared.Persistence\Shared.Persistence.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MediatR" />

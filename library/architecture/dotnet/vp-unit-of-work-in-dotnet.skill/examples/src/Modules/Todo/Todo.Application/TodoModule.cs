@@ -12,7 +12,7 @@ public static class TodoModule
 {
     /// <summary>
     /// Registers the module's handlers. The repositories they take
-    /// (<c>IRepository&lt;ItemList&gt;</c>) are the infrastructure's, registered in the
+    /// (<c>IRepository&lt;Item&gt;</c>) are the infrastructure's, registered in the
     /// composition root's "// [services]".
     /// </summary>
     public static IServiceCollection AddTodoModule(this IServiceCollection services) =>

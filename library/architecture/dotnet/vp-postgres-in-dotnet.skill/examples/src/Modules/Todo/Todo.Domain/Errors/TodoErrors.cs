@@ -26,7 +26,7 @@ public static class TodoErrors
     public static ErrorKindException DuplicateTitle() =>
         new(ErrorKind.Invalid, "item titles repeat");
 
-    // A rule of the list: a title is unique in it.
+    // A title is unique in its list.
     public static ErrorKindException ItemAlreadyInList(string listId, string title) =>
         new(ErrorKind.Conflict, $"list \"{listId}\" already has an item \"{title}\"");
 

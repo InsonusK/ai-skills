@@ -24,7 +24,7 @@ adr:
 - **Each layer tested alone** - A layer's tests replace only the layer directly below it, so a change below never breaks a test above.
 
 # Core Principle
-- **Calls go down only** - api → command factory → command → domain service → service → infrastructure; an entity is called by commands and domain services; nothing calls up. Where the stack's ORM maps the domain's aggregates (the entities form of `vp-postgres`: dotnet), the application's own store is reached through the repository's contract in place of a service.
+- **Calls go down only** - api → command factory → command → domain service → service → infrastructure; an entity is called by commands and domain services; nothing calls up. Where the stack's ORM maps the domain's entities (the entities form of `vp-postgres`: dotnet), the application's own store is reached through the repository's contract in place of a service.
 - **Parse at the edge, decide in the middle** - The input's format is known only to api; which command runs is decided by the factory when the input alone cannot decide; the work is the command's.
 - **Services speak the application's language** - A service method names what the application wants (`AddUser`, `SaveQuizAnswer`) and hides how it is done: the calls, the requests, the transaction.
 - **Interfaces where I/O starts** - A caller reaches a service, and a service reaches its infrastructure, through an interface; code with no I/O behind it is called directly.
@@ -47,12 +47,12 @@ Place every part of the application in one of these layers and let it call only 
 | domain service | business logic reused by several commands | entities, services, the repositories of its own store (entities form) | infrastructure, commands |
 | entity | the rules of one object of the domain | other entities | anything with I/O |
 | service | methods in the application's language over one infrastructure, hiding its technique | its own infrastructure | other services, domain services, commands |
-| repository (entities form) | the aggregates of the application's own store, behind a contract the domain owns: load a root by a specification, save it | its store | every layer above |
+| repository (entities form) | the entities of the application's own store, behind a contract of the application's side: pick them by a specification, save them | its store | every layer above |
 | infrastructure | technical access: queries, HTTP/gRPC calls, parsing a response, contract errors | external systems | every layer above |
 
 - Violation: a command that runs an SQL query, or a service that calls another service to finish its method.
 - Risk: a call skipping a layer spreads the knowledge of that layer's technique upward, so replacing it means editing every caller.
-- Fix: route the call through the layer in between; when two services must cooperate, a domain service or the command calls both. In the entities form a command takes the repository's contract of an aggregate root, which no store changes, the store's failures become error kinds in one command middleware, and a service stays for another system's API. Decision recorded in [service-wraps-one-infrastructure](./adr/service-wraps-one-infrastructure.md).
+- Fix: route the call through the layer in between; when two services must cooperate, a domain service or the command calls both. In the entities form a command takes the repository's contract of an entity, which no store changes, the store's failures become error kinds in one command middleware, and a service stays for another system's API. Decision recorded in [service-wraps-one-infrastructure](./adr/service-wraps-one-infrastructure.md).
 
 ### Run a nested command through the command pipeline
 Let a command run another command only through that command's handler as the command pipeline built it — wrapped by every command middleware — never by building its handler, calling its logic, or sharing a function with it.

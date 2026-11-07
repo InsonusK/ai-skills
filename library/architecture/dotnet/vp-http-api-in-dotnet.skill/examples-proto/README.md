@@ -31,7 +31,7 @@ make test       # every scenario
 | `src/App/App.Host` | composition root (`Program.cs`), the entry points (`Api/Grpc`, `Api/Http`), base settings |
 | `src/Modules/Todo/Todo.Commands` | the commands and their results — all an entry point sees |
 | `src/Modules/Todo/Todo.Application` | the command handlers, and `KeptLists` — the lists kept by the process while it runs, lost when it stops |
-| `src/Modules/Todo/Todo.Domain` | entities (`ItemList` and its items), domain services, the rule errors |
+| `src/Modules/Todo/Todo.Domain` | entities, domain services, the rule errors |
 | `src/BuildingBlocks`, `src/Shared` | fixed code |
 | `third_party/proto` | the googleapis and openapiv2 annotations the proto file imports |
 

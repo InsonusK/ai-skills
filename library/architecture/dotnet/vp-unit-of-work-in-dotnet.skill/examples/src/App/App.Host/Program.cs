@@ -60,7 +60,7 @@ public static class Program
         services.AddLogging(logging => logging.SetMinimumLevel(config.LogLevel).AddProvider(new JsonLogProvider(stderr)));
 
         // [services] - infrastructure and the services over it. One context per
-        // command scope, and the repository of every aggregate root scoped with it.
+        // command scope, and the repository of every entity scoped with it.
         services.AddPostgres(postgres);
         services.AddPostgresUnitOfWork();
 

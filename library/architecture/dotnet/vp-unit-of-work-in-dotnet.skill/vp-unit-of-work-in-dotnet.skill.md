@@ -72,7 +72,7 @@ Run `ExecuteUpdate`, `ExecuteDelete`, raw SQL, and a bulk copy in `PostgresRepos
 ### Run the shared scenarios
 Name both `conformance/` folders in [conformance.copy](./conformance.copy): the example is a full copy of the PostgreSQL one, so it runs those scenarios too.
 - Risk: a change of the repository breaks the unit of work, and only a run of the two together shows it.
-- Fix: `make conformance-sync` writes the copies; the steps of `unit-of-work.feature` are in `Postgres.Tests/Steps/UnitOfWorkSteps.cs`, on the sample table of tasks, whose unique index no rule of an aggregate stands in front of, so a duplicate key reaches the database inside the transaction.
+- Fix: `make conformance-sync` writes the copies; the steps of `unit-of-work.feature` are in `Postgres.Tests/Steps/UnitOfWorkSteps.cs`, on the sample table of tasks, written with no check before its unique index, so a duplicate key reaches the database inside the transaction.
 
 # Check list
 - [ ] `src/Shared/UnitOfWork`, `src/Middleware/UnitOfWork`, and `Postgres/UnitOfWork` are unchanged copies of the templates.

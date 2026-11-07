@@ -4,23 +4,20 @@ sequenceDiagram
     participant Sender as ScopedSender<br/>src/BuildingBlocks/Pipeline/ScopedSender.cs
     participant Failures as StoreFailuresMiddleware<br/>src/Middleware/StoreFailures/StoreFailuresMiddleware.cs
     participant Handler as AddItemHandler<br/>src/Modules/Todo/Todo.Application/Commands/AddItemHandler.cs
-    participant List as ItemList<br/>src/Modules/Todo/Todo.Domain/Entities/ItemList.cs
-    participant Repository as PostgresRepository of ItemList<br/>src/Infrastructure/Postgres/Postgres/Repositories/PostgresRepository.cs
+    participant Repository as PostgresRepository of Item<br/>src/Infrastructure/Postgres/Postgres/Repositories/PostgresRepository.cs
     participant DB as PostgreSQL
 
     Api->>+Sender: Send(AddItemCommand)
     Note over Sender: opens the command's scope: one AppDbContext
     Sender->>+Failures: Handle, after the logging middleware
     Failures->>+Handler: Handle
-    Handler->>+Repository: SingleOrDefaultAsync(ListById)
-    Repository->>DB: SELECT lists JOIN list_items
-    Repository-->>-Handler: the list with its items, tracked
-    Handler->>+List: Add(item)
+    Handler->>+Repository: AnyAsync(ItemOfListTitled)
+    Repository->>DB: SELECT EXISTS FROM list_items
+    Repository-->>-Handler: true or false
     alt the title is in the list
-        List-->>Handler: conflict, ItemAlreadyInList
+        Note over Handler: conflict, ItemAlreadyInList, with the rule's message
     else a new title
-        List-->>-Handler: added
-        Handler->>+Repository: UpdateAsync(list)
+        Handler->>+Repository: AddAsync(Item.InList)
         Repository->>+DB: SaveChangesAsync: INSERT INTO list_items
         alt the row is stored
             DB-->>Repository: the id of the item
@@ -31,7 +28,7 @@ sequenceDiagram
         end
     end
     Handler-->>-Failures: AddItemResult, or the failure
-    Note over Failures: 23505 becomes conflict, the failure its cause, and a conflict of the list passes as it is
+    Note over Failures: 23505 becomes conflict, the failure its cause, and a conflict of the handler passes as it is
     Failures-->>-Sender: the result, or the error with its kind
     Note over Sender: disposes the scope and its context
     Sender-->>-Api: the result, or the error

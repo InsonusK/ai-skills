@@ -21,9 +21,9 @@ public sealed class TasksOfOwner : Specification<OwnerTask>
 /// <summary>
 /// One command scope over a real database: the repository and the unit of work
 /// as a command has them, with the table read past both. The scenarios run on
-/// the sample table of tasks, the "list" of their text: it has no rule of an
-/// aggregate in front of its unique index, so a duplicate key reaches the
-/// database and the savepoint of the save is proved. The unit of work watches
+/// the sample table of tasks, the "list" of their text: the repository writes
+/// it with no check in front of its unique index, so a duplicate key reaches
+/// the database and the savepoint of the save is proved. The unit of work watches
 /// the saves of that context as AddPostgresUnitOfWork has it watch AppDbContext.
 /// </summary>
 [Binding]
