@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using Todo.Application.Commands;
 using Todo.Application.Services;
 
 namespace Todo.Application;
@@ -18,6 +17,6 @@ public static class TodoModule
     /// </summary>
     public static IServiceCollection AddTodoModule(this IServiceCollection services) =>
         services
-            .AddMediatR(mediatr => mediatr.RegisterServicesFromAssemblyContaining<PlanItemsHandler>())
+            .AddMediatR(mediatr => mediatr.RegisterServicesFromAssembly(typeof(TodoModule).Assembly))
             .AddSingleton<IItemLists, ItemListsService>();
 }

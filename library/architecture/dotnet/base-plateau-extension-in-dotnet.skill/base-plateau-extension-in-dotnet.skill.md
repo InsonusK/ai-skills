@@ -59,7 +59,7 @@ Give every module an `Add{Module}Module()` extension method in `{Module}.Applica
 // Todo.Application/TodoModule.cs
 public static IServiceCollection AddTodoModule(this IServiceCollection services) =>
     services
-        .AddMediatR(mediatr => mediatr.RegisterServicesFromAssemblyContaining<PlanItemsHandler>())
+        .AddMediatR(mediatr => mediatr.RegisterServicesFromAssembly(typeof(TodoModule).Assembly))
         .AddSingleton<IItemLists, ItemListsService>();
 ```
 
