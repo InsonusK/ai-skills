@@ -24,7 +24,7 @@ change src/Modules/Todo/Todo.Application/TodoModule.cs
 change src/Modules/Todo/Todo.Application/Commands/AddItemHandler.cs
 change src/Modules/Todo/Todo.Application/Commands/ListItemsHandler.cs
 change src/Modules/Todo/Todo.Application.Tests/Todo.Application.Tests.csproj
-change src/Modules/Todo/Todo.Application.Tests/Steps/ItemListsSteps.cs
+change src/Modules/Todo/Todo.Application.Tests/Commands/Steps/ItemListsSteps.cs
 delete src/Modules/Todo/Todo.Application/Commands/KeptLists.cs
 change Directory.Packages.props
 change Todo.slnx

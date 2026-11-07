@@ -5,7 +5,7 @@ using Todo.Commands;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Todo.Application.Tests.Steps;
+namespace Todo.Application.Tests.Commands.Steps;
 
 [Binding]
 public sealed class PlanItemsSteps(ITestOutputHelper output)

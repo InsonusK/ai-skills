@@ -5,7 +5,7 @@ using Todo.Application.Commands;
 using Todo.Commands;
 using Xunit;
 
-namespace Todo.Application.Tests.Steps;
+namespace Todo.Application.Tests.Commands.Steps;
 
 /// <summary>The nested commands faked by hand: records each AddItem, and rejects the title the scenario set.</summary>
 public sealed class FakeSender : ISender

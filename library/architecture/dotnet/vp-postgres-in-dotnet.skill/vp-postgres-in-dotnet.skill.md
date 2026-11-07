@@ -144,7 +144,7 @@ public sealed class ItemsOfList : Specification<Item>
 
 - Violation: a specification with `Skip` or `Take` given to `CountAsync`, `AnyAsync`, or `DeleteRangeAsync`; a condition inlined in a handler; a specification in the Domain or the Postgres project.
 - Risk: a count or a delete applies the conditions and ignores the page, so it works on other rows than the list beside it; the domain, which holds the entities and their rules, takes a package of queries.
-- Fix: `PostgresRepository` and `InMemoryRepository` refuse a page there (`SpecificationPage`); a page is one specification, the count of the same rows another.
+- Fix: `PostgresRepository` and `InMemoryRepository` refuse a page there (`SpecificationPage`); a page is one specification, the count of the same rows another. Each specification has its scenarios in `{Module}.Application.Tests/Specifications`, beside those of the commands in `Commands/`.
 
 ### Pick, change, and save in the handler
 Take `IRepository<TEntity>` in a handler that writes and `IReadRepository<TEntity>` in one that only reads, pick the entities by a specification, call their methods, and save them with `AddAsync` or `UpdateAsync`.
