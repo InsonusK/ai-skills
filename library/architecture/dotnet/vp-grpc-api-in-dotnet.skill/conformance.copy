@@ -6,7 +6,7 @@ base-plateau.skill/conformance/entry examples/src/App/App.Host.Tests/features
 base-plateau.skill/conformance/json-log examples/src/BuildingBlocks.Tests/features
 base-plateau.skill/conformance/command-pipeline examples/src/BuildingBlocks.Tests/features
 base-plateau.skill/conformance/command-logging examples/src/Middleware.Tests/features
-base-plateau.skill/conformance/plan-items examples/src/Modules/Todo/Todo.Application.Tests/features
+base-plateau.skill/conformance/plan-items examples/src/Modules/Todo/Todo.Application.Tests/Commands/features
 base-plateau.skill/conformance/item examples/src/Modules/Todo/Todo.Domain.Tests/features
 base-plateau.skill/conformance/planner examples/src/Modules/Todo/Todo.Domain.Tests/features
 vp-grpc-api.skill/conformance/rpcstatus examples/src/App/App.Host.Tests/features
