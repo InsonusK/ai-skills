@@ -12,6 +12,6 @@ public static class TodoModule
 {
     public static IServiceCollection AddTodoModule(this IServiceCollection services) =>
         services
-            .AddMediatR(mediatr => mediatr.RegisterServicesFromAssemblyContaining<PlanItemsHandler>())
+            .AddMediatR(mediatr => mediatr.RegisterServicesFromAssembly(typeof(TodoModule).Assembly))
             .AddSingleton<KeptLists>();   // the lists of the process; the DB variation point replaces it
 }
