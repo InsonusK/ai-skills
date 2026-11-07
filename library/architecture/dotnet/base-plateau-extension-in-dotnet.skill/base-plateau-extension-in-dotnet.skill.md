@@ -58,7 +58,7 @@ Give every module an `Add{Module}Module()` extension method in `{Module}.Applica
 ```csharp
 // Todo.Application/TodoModule.cs
 public static IServiceCollection AddTodoModule(this IServiceCollection services) =>
-    services.AddMediatR(mediatr => mediatr.RegisterServicesFromAssemblyContaining<PlanItemsHandler>());
+    services.AddMediatR(mediatr => mediatr.RegisterServicesFromAssembly(typeof(TodoModule).Assembly));
     // and, when a handler needs one, .AddScoped<IRemotePlanner, RemotePlannerService>()
 ```
 

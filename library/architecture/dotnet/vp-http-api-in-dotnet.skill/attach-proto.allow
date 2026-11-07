@@ -22,8 +22,3 @@ change src/App/App.Host.Tests/Steps/Grpc/ItemsServiceSteps.cs
 change src/Modules/Todo/Todo.Application/Todo.Application.csproj
 change src/Modules/Todo/Todo.Application/TodoModule.cs
 change src/Modules/Todo/Todo.Domain/Errors/TodoErrors.cs
-# The handlers' scenarios sit in Commands/ (features/ and Steps/ per folder of
-# the project they test); until its base takes the same layout, the old place
-# of the scenario of PlanItems is moved, not edited.
-delete src/Modules/Todo/Todo.Application.Tests/Steps/PlanItemsSteps.cs
-delete src/Modules/Todo/Todo.Application.Tests/features/plan-items.feature
