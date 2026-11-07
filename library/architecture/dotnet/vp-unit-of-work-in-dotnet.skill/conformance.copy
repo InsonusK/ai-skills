@@ -7,7 +7,7 @@ base-plateau.skill/conformance/entry examples/src/App/App.Host.Tests/features
 base-plateau.skill/conformance/json-log examples/src/BuildingBlocks.Tests/features
 base-plateau.skill/conformance/command-pipeline examples/src/BuildingBlocks.Tests/features
 base-plateau.skill/conformance/command-logging examples/src/Middleware.Tests/features
-base-plateau.skill/conformance/plan-items examples/src/Modules/Todo/Todo.Application.Tests/features
+base-plateau.skill/conformance/plan-items examples/src/Modules/Todo/Todo.Application.Tests/Commands/features
 base-plateau.skill/conformance/item examples/src/Modules/Todo/Todo.Domain.Tests/features
 base-plateau.skill/conformance/planner examples/src/Modules/Todo/Todo.Domain.Tests/features
 vp-grpc-api.skill/conformance/rpcstatus examples/src/App/App.Host.Tests/features
@@ -19,10 +19,10 @@ vp-http-api.skill/conformance/proto-http-contract examples/src/App/App.Host.Test
 vp-http-api.skill/conformance/proto-http-items examples/src/App/App.Host.Tests/features/Http
 vp-http-api.skill/conformance/proto-http-lists examples/src/App/App.Host.Tests/features/Http
 vp-http-api.skill/conformance/proto-grpc-items examples/src/App/App.Host.Tests/features/Grpc
-vp-http-api.skill/conformance/proto-item-lists examples/src/Modules/Todo/Todo.Application.Tests/features
-vp-postgres.skill/conformance/postgres-item-lists-service examples/src/Modules/Todo/Todo.Application.Tests/features
+vp-http-api.skill/conformance/proto-item-lists examples/src/Modules/Todo/Todo.Application.Tests/Commands/features
+vp-postgres.skill/conformance/postgres-item-lists-service examples/src/Modules/Todo/Todo.Application.Tests/Services/features
 vp-postgres.skill/conformance/postgres-application examples/src/App/App.Host.Tests/features
 vp-postgres.skill/conformance/postgres-migrate-job examples/src/App/App.Migrate.Tests/features
 vp-unit-of-work.skill/conformance/unit-of-work-middleware examples/src/Middleware.Tests/features
 vp-unit-of-work.skill/conformance/nested-commands examples/src/App/App.Host.Tests/features
-vp-unit-of-work.skill/conformance/import-items examples/src/Modules/Todo/Todo.Application.Tests/features
+vp-unit-of-work.skill/conformance/import-items examples/src/Modules/Todo/Todo.Application.Tests/Commands/features
