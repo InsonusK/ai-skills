@@ -1,0 +1,7 @@
+# The client retry variation point attaches to the HTTP client example: it
+# adds the retry middleware (internal/infrastructure/client/middleware/retry)
+# and changes only these files: the composition root, which lists it in the
+# client middleware of the API, and the readme.
+base library/architecture/go/vp-http-client-in-go.skill/examples
+change cmd/todo/main.go
+change README.md

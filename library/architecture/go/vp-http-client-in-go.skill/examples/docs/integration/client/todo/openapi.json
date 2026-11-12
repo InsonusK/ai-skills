@@ -1,0 +1,81 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Todo",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/v1/items/plan": {
+      "post": {
+        "operationId": "planItems",
+        "summary": "Plan one open to-do item per title",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PlanItemsRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The planned items, in the order of the titles",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PlanItemsResponse" }
+              }
+            }
+          },
+          "400": {
+            "description": "The body is not valid JSON, or a title breaks a rule (INVALID_ARGUMENT)",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Status" }
+              }
+            }
+          },
+          "500": {
+            "description": "An internal failure (INTERNAL)",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Status" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PlanItemsRequest": {
+        "type": "object",
+        "properties": {
+          "titles": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "PlanItemsResponse": {
+        "type": "object",
+        "properties": {
+          "items": { "type": "array", "items": { "$ref": "#/components/schemas/Item" } }
+        }
+      },
+      "Item": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "done": { "type": "boolean" }
+        }
+      },
+      "Status": {
+        "type": "object",
+        "description": "google.rpc.Status in proto-JSON",
+        "properties": {
+          "code": { "type": "integer", "format": "int32", "description": "The grpc status code" },
+          "message": { "type": "string" },
+          "details": { "type": "array", "items": { "type": "object" } }
+        }
+      }
+    }
+  }
+}

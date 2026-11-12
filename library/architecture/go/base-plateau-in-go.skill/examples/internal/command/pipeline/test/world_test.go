@@ -1,7 +1,6 @@
 package test
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 
@@ -18,12 +17,14 @@ func logf(format string, args ...any) {
 
 // World holds per-scenario state, reset before every scenario.
 type World struct {
-	err     error
-	logs    bytes.Buffer
-	wrapped pipeline.Handler[string, string]
+	err         error
+	middlewares []pipeline.Middleware
+	calls       []string          // "{middleware} in", "handler {command}", "{middleware} out", in order
+	seen        map[string]string // what each middleware was called with
+	result      string
 }
 
-func (w *World) reset() { *w = World{} }
+func (w *World) reset() { *w = World{seen: map[string]string{}} }
 
 func registerWorldHooks(sc *godog.ScenarioContext, w *World) {
 	sc.Before(func(ctx context.Context, _ *godog.Scenario) (context.Context, error) {

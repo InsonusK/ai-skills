@@ -1,0 +1,8 @@
+flowchart LR
+    R1["entity.ErrEmptyTitle<br/>errorkind.New(ErrInvalid, ...)"] -->|Kind| K1(("errorkind.ErrInvalid"))
+    W["service: errorkind.Wrap(ErrUnavailable, ..., err)"] -->|Kind| K2(("errorkind.ErrUnavailable"))
+    W -->|Cause| C["the driver's or transport's error"]
+    K1 -. re-exported .-> P["pipeline.KindOf"]
+    K2 -. re-exported .-> P
+    P --> A["rpcstatus.Of, entry.ExitCode:<br/>the code of the kind, the Message"]
+    C --> L["logging.Error:<br/>error = Message, cause = Cause"]

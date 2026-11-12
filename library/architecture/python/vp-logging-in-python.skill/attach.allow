@@ -1,0 +1,7 @@
+# The logging variation point attaches to the base plateau: it adds the masked
+# formatter and changes only the logger line of main.py, the dependencies, and
+# the readme.
+base library/architecture/python/base-plateau-in-python.skill/examples
+change src/todo/main.py
+change pyproject.toml
+change README.md

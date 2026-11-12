@@ -1,0 +1,23 @@
+sequenceDiagram
+    autonumber
+    participant First as Caller A
+    participant Second as Caller B
+    participant Service as Service
+    participant DB as PostgreSQL
+
+    First->>+Service: read the row
+    Service->>+DB: select
+    DB-->>-Service: the row, version 7
+    Service-->>-First: the row, version 7
+    Second->>+Service: read the row
+    Service->>+DB: select
+    DB-->>-Service: the row, version 7
+    Service-->>-Second: the row, version 7
+    First->>+Service: save, with version 7
+    Service->>+DB: update where version is 7
+    DB-->>-Service: one row, version 8
+    Service-->>-First: saved, version 8
+    Second->>+Service: save, with version 7
+    Service->>+DB: update where version is 7
+    DB-->>-Service: no row
+    Service-->>-Second: concurrent change: read again

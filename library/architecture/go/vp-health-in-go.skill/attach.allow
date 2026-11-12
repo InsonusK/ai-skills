@@ -1,0 +1,5 @@
+# The health variation point attaches to the base plateau: it adds the management
+# entry point and changes only these base files.
+base library/architecture/go/base-plateau-in-go.skill/examples
+change cmd/todo/main.go
+change README.md

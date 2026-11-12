@@ -4,7 +4,7 @@ description: The .NET implementation of [[library/testing/core/solution-conforma
 whenToUse: Set up or review the test tooling of a .NET solution that must prove conformance to a Cucumber/Gherkin spec, or wire coverage, mutation testing, and the living doc into a .NET solution's `make`/CI pipeline.
 domain: skill
 type: architecture
-version: 20261009220000
+version: 20261021120000
 tags:
   - skill/architecture/solution
   - solution/conformance-testing-in-dotnet

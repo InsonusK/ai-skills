@@ -1,0 +1,18 @@
+sequenceDiagram
+    autonumber
+    participant Client as HttpApiClient.CallAsync<br/>src/Infrastructure/Client/Core/Client.Http/HttpApiClient.cs
+    participant Retry as RetryMiddleware<br/>src/Infrastructure/Client/Middleware/Retry/RetryMiddleware.cs
+    participant Attempt as HttpApiClient.AttemptAsync<br/>src/Infrastructure/Client/Core/Client.Http/HttpApiClient.cs
+    participant API as Todo API
+
+    Client->>+Retry: RunAsync(call, next, token)
+    loop up to TODO_API_RETRY_ATTEMPTS, 3 by default
+        Retry->>+Attempt: next(token)
+        Attempt->>+API: POST /v1/items/plan, within TODO_API_TIMEOUT
+        API-->>-Attempt: answer, or none
+        Attempt-->>-Retry: success, or ApiUnavailableException
+        Note over Retry: success, a status, or the last attempt: leave the loop
+        Note over Retry: ApiUnavailableException: WARN "api client call retried", wait 100ms doubled, plus or minus 50 percent
+        Note over Retry: the caller's cancellation ends the wait: the last exception is thrown
+    end
+    Retry-->>-Client: the outcome of the last attempt

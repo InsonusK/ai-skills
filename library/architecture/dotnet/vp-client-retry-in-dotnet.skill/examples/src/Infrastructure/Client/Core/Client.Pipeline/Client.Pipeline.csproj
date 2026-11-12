@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The extension point of every client of another service's API, over HTTP
+       or gRPC alike: the client middleware run around the attempts of each
+       call. Copied from the templates of the client variation points, never
+       edited. No package. -->
+</Project>

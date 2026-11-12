@@ -1,0 +1,20 @@
+sequenceDiagram
+    autonumber
+    participant Handler as PlanRemoteItemsHandler<br/>src/todo/command/plan_remote_items.py
+    participant Service as RemotePlanner<br/>src/todo/service/remote_planner.py
+    participant Adapter as TodoApi<br/>src/todo/infrastructure/client/todo_api/todo_api.py
+    participant Client as HttpClient<br/>src/todo/infrastructure/client/core/httpclient/client.py
+    participant API as Todo API, or with TODO_API_HOST=mock its emulator<br/>src/todo/infrastructure/client/todo_api/mock/todo_api_mock.py
+
+    Handler->>+Service: plan(titles)
+    Service->>+Adapter: plan_items(titles)
+    Adapter->>+Client: call(POST, path, request, decode)
+    Note over Client: the operation is in the adapter's list, the client middleware run around each attempt
+    Note over Client: record "http client request sent"
+    Client->>+API: POST /v1/items/plan, JSON, X-Request-Id, within TODO_API_TIMEOUT
+    API-->>-Client: answer, or none
+    Note over Client: record "http client response received"
+    Client-->>-Adapter: the decoded answer, or raises ApiUnavailableError or ApiStatusError
+    Adapter-->>-Service: list of todo_api.Item, or the error
+    Note over Service: ApiUnavailableError: kind unavailable. Code INVALID_ARGUMENT: kind invalid. Anything else: no kind
+    Service-->>-Handler: list of entity.Item, or an error

@@ -1,0 +1,21 @@
+%% The model of the architecture catalog: the base plateau, the variation
+%% points that attach above it (entries) and below it (services), and the
+%% direction of the calls.
+flowchart TB
+    entries["<b>API variation points</b> - one Entry each in [entries]<br/>Startup* · CLI · HTTP · gRPC · Kafka / RabbitMQ listener<br/>Health: management port 8081, no command"]
+
+    subgraph base["Base plateau"]
+        command["command<br/>handlers, optional factory"]
+        domain["domain<br/>entities, domain services"]
+        command --> domain
+    end
+
+    subgraph services["Service variation points"]
+        service["service<br/>business language"]
+        infrastructure["infrastructure - technique<br/>DB · HTTP / gRPC client ·<br/>Kafka / RabbitMQ producer · TaskBox"]
+        service --> infrastructure
+    end
+
+    entries -- "plain parameters → command" --> command
+    command -- "through interfaces" --> service
+    domain -- "through interfaces" --> service

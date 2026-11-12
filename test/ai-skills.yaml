@@ -26,4 +26,4 @@ settings:
   remove_orphans: true
   dry_run: false
   validation:
-    exclude_from_checks: [examples, templates]
+    exclude_from_checks: [examples, examples-proto, templates]

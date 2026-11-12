@@ -1,0 +1,31 @@
+sequenceDiagram
+    autonumber
+    participant Caller as API caller
+    participant RequestLog as requestlog.Middleware<br/>internal/api/http/middleware/requestlog/requestlog.go
+    participant AnswerFailures as answerfailures.Middleware<br/>internal/api/http/middleware/answerfailures/answerfailures.go
+    participant Auth as authentication.Middleware<br/>internal/api/http/middleware/authentication/authentication.go
+    participant Endpoint as endpoint.ItemsHandler<br/>internal/api/http/endpoint/items.go
+    participant Log as logging.Middleware<br/>internal/command/middleware/logging/logging.go
+    participant Access as access.Middleware<br/>internal/command/middleware/access/access.go
+    participant Batch as batchlimit.Middleware<br/>internal/command/middleware/batchlimit/batchlimit.go
+    participant Handler as PlanItemsHandler<br/>internal/command/plan_items.go
+
+    Caller->>+RequestLog: POST /v1/items/plan
+    RequestLog->>+AnswerFailures: the request
+    AnswerFailures->>+Auth: the request
+    Note over Auth: API middleware: the token to an identity in the context
+    Auth->>+Endpoint: the route of the contract
+    Endpoint->>+Log: PlanItems
+    Log->>+Access: PlanItems
+    Note over Access: command middleware: the command's mark against the identity
+    Access->>+Batch: PlanItems
+    Note over Batch: command middleware: the size of the batch
+    Batch->>+Handler: PlanItems
+    Handler-->>-Batch: the result
+    Batch-->>-Access: the result
+    Access-->>-Log: the result
+    Log-->>-Endpoint: the result
+    Endpoint-->>-Auth: 200 with JSON
+    Auth-->>-AnswerFailures: the answer
+    AnswerFailures-->>-RequestLog: a rejection at any step arrives here as google.rpc.Status
+    RequestLog-->>-Caller: the answer

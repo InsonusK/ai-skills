@@ -1,0 +1,12 @@
+# The unit of work variation point attaches to the PostgreSQL example: it adds
+# the unit of work over the database (a GORM plugin in
+# internal/infrastructure/postgres/unitofwork), the command middleware that ends
+# it, and the sample command ImportItems with its scenarios, and changes only
+# these files: the composition root, which attaches the unit and lists the
+# middleware, the command registry, which builds ImportItems over the decorated
+# AddItem, and the readme.
+base library/architecture/go/vp-postgres-in-go.skill/examples
+change cmd/todo/main.go
+change internal/command/handlers.go
+change README.md
+change internal/command/test/runner_test.go

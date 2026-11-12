@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The process: the composition root (Program.cs), the entry points (Api/),
+       and the base settings. The only project that references every other. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Shared.csproj" />
+    <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks.csproj" />
+    <ProjectReference Include="..\..\Middleware\Middleware.csproj" />
+    <ProjectReference Include="..\..\Modules\Todo\Todo.Commands\Todo.Commands.csproj" />
+    <ProjectReference Include="..\..\Modules\Todo\Todo.Application\Todo.Application.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- ASP.NET Core for the web entry points (Api/Core/Hosting); it brings
+         Microsoft.Extensions.DependencyInjection and Logging with it. -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- The HTTP contract, served by Api/Http/Pipeline/HttpDocs under this name. -->
+    <EmbeddedResource Include="..\..\..\docs\integration\api\todo\openapi.json" LogicalName="openapi.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" />
+  </ItemGroup>
+</Project>

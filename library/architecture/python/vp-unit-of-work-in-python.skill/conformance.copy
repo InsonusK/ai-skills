@@ -1,0 +1,29 @@
+# The shared scenarios this example runs: written by `make conformance-sync`,
+# checked by test/check-conformance.sh. The example is a full copy of the
+# PostgreSQL one, so it runs those scenarios too.
+vp-postgres.skill/conformance/postgres examples/src/todo/infrastructure/postgres/features
+vp-unit-of-work.skill/conformance/unit-of-work examples/src/todo/infrastructure/postgres/unit_of_work/features
+base-plateau.skill/conformance/config examples/src/todo/config/features
+base-plateau.skill/conformance/entry examples/src/todo/api/core/entry/features
+base-plateau.skill/conformance/json-log examples/src/todo/log/features
+base-plateau.skill/conformance/command-pipeline examples/src/todo/command/pipeline/features
+base-plateau.skill/conformance/command-logging examples/src/todo/command/middleware/logging/features
+base-plateau.skill/conformance/plan-items examples/src/todo/command/features
+base-plateau.skill/conformance/item examples/src/todo/domain/entity/features
+base-plateau.skill/conformance/planner examples/src/todo/domain/service/features
+vp-grpc-api.skill/conformance/rpcstatus examples/src/todo/api/core/rpcstatus/features
+vp-grpc-api.skill/conformance/grpc-pipeline examples/src/todo/api/grpc/pipeline/features
+vp-grpc-api.skill/conformance/grpc-contract examples/src/todo/api/grpc/endpoint/features
+vp-http-api.skill/conformance/http-pipeline examples/src/todo/api/http/pipeline/features
+vp-http-api.skill/conformance/proto-http-pipeline examples/src/todo/api/http/pipeline/features
+vp-http-api.skill/conformance/proto-http-contract examples/src/todo/api/http/endpoint/features
+vp-http-api.skill/conformance/proto-http-items examples/src/todo/api/http/endpoint/features
+vp-http-api.skill/conformance/proto-http-lists examples/src/todo/api/http/endpoint/features
+vp-http-api.skill/conformance/proto-grpc-items examples/src/todo/api/grpc/endpoint/features
+vp-http-api.skill/conformance/proto-item-lists examples/src/todo/command/features
+vp-postgres.skill/conformance/postgres-item-lists-service examples/src/todo/service/features
+vp-postgres.skill/conformance/postgres-application examples/src/todo/features
+vp-postgres.skill/conformance/postgres-migrate-job examples/src/todo/features
+vp-unit-of-work.skill/conformance/unit-of-work-middleware examples/src/todo/command/middleware/unit_of_work/features
+vp-unit-of-work.skill/conformance/nested-commands examples/src/todo/command/middleware/unit_of_work/features
+vp-unit-of-work.skill/conformance/import-items examples/src/todo/command/features

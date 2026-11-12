@@ -1,0 +1,21 @@
+sequenceDiagram
+    autonumber
+    participant Front as Caller
+    participant Entry as Entry point
+    participant Service as Service
+    participant DB as PostgreSQL
+
+    Front->>Front: make the id, a UUID v7
+    Front->>+Entry: create, with the id
+    Entry->>Entry: refuse an id that is no UUID v7: invalid
+    Entry->>+Service: the command, with the id
+    Service->>+DB: insert under the id
+    DB-->>-Service: saved
+    Service-->>-Entry: created
+    Entry-->>-Front: created
+    Front->>+Entry: create, the same id, the answer lost
+    Entry->>+Service: the command, with the id
+    Service->>+DB: insert under the id
+    DB-->>-Service: duplicate key
+    Service-->>-Entry: conflict
+    Entry-->>-Front: conflict: the id is taken

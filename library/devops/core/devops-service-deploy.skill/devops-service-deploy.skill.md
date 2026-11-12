@@ -46,6 +46,7 @@ Fill and copy the folder [[./templates/deploy-{service-name}.skill.template/depl
 | `{version}` | the version the examples deploy, never `latest` |
 | `{namespace}` | the Kubernetes namespace |
 | `{host-port}` | the port published on the host |
+| `{health-port}` | the port the service serves `/health/*` on: its management port (`8081` in services of the architecture catalog), or its API port (`8080`) when it serves them there |
 | `{date}` | the day the deploy skill is written, `YYYYMMDD` |
 
 - Violation: deployment described only in the README, the deploy skill kept under `skills/` instead of `docs/skills/devops/`, or the template copied with `{service-name}` left in it.

@@ -1,0 +1,19 @@
+sequenceDiagram
+    autonumber
+    participant Caller as API caller
+    participant RequestLog as RequestLogMiddleware<br/>src/App/App.Host/Api/Http/Middleware/RequestLog/RequestLogMiddleware.cs
+    participant AnswerFailures as AnswerFailuresMiddleware<br/>src/App/App.Host/Api/Http/Middleware/AnswerFailures/AnswerFailuresMiddleware.cs
+    participant Endpoint as ItemsHandler<br/>src/App/App.Host/Api/Http/Endpoint/ItemsHandler.cs
+    participant Handler as PlanItemsHandler<br/>src/Modules/Todo/Todo.Application/Commands/PlanItemsHandler.cs
+
+    Caller->>+RequestLog: POST /v1/items/plan
+    RequestLog->>+AnswerFailures: the request
+    AnswerFailures->>+Endpoint: the route of the contract
+    Note over Endpoint: decodes the JSON body into PlanItems
+    Endpoint->>+Handler: PlanItems, through the command middleware
+    Handler-->>-Endpoint: the result, or an error with its kind
+    Endpoint-->>-AnswerFailures: 200 with JSON, or the error
+    Note over AnswerFailures: the kind to google.rpc.Status, a panic to INTERNAL
+    AnswerFailures-->>-RequestLog: the answer
+    Note over RequestLog: logs the request and the answer
+    RequestLog-->>-Caller: the answer

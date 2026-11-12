@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The command middleware: the MediatR pipeline behaviors around every
+       command handler, one folder each - Logging/ in the base plateau, a
+       variation point's beside it. No ASP.NET: a command middleware knows no
+       transport; an API's middleware lives in App.Host/Api/{Api}/Middleware. -->
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.csproj" />
+    <ProjectReference Include="..\BuildingBlocks\BuildingBlocks.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
+  </ItemGroup>
+</Project>

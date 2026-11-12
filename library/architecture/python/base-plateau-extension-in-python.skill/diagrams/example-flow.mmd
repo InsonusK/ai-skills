@@ -1,0 +1,31 @@
+sequenceDiagram
+    autonumber
+    participant Caller as API caller
+    participant RequestLog as RequestLogMiddleware<br/>src/todo/api/http/middleware/request_log/middleware.py
+    participant AnswerFailures as AnswerFailuresMiddleware<br/>src/todo/api/http/middleware/answer_failures/middleware.py
+    participant Auth as AuthenticationMiddleware<br/>src/todo/api/http/middleware/authentication/middleware.py
+    participant Endpoint as ItemsHandler<br/>src/todo/api/http/endpoint/items.py
+    participant Log as LoggingMiddleware<br/>src/todo/command/middleware/logging/middleware.py
+    participant Access as AccessMiddleware<br/>src/todo/command/middleware/access/middleware.py
+    participant Batch as BatchLimitMiddleware<br/>src/todo/command/middleware/batch_limit/middleware.py
+    participant Handler as PlanItemsHandler<br/>src/todo/command/plan_items.py
+
+    Caller->>+RequestLog: POST /v1/items/plan
+    RequestLog->>+AnswerFailures: the request
+    AnswerFailures->>+Auth: the request
+    Note over Auth: API middleware: the token to an identity in the context
+    Auth->>+Endpoint: the route of the contract
+    Endpoint->>+Log: PlanItems
+    Log->>+Access: PlanItems
+    Note over Access: command middleware: the command's mark against the identity
+    Access->>+Batch: PlanItems
+    Note over Batch: command middleware: the size of the batch
+    Batch->>+Handler: PlanItems
+    Handler-->>-Batch: the result
+    Batch-->>-Access: the result
+    Access-->>-Log: the result
+    Log-->>-Endpoint: the result
+    Endpoint-->>-Auth: 200 with JSON
+    Auth-->>-AnswerFailures: the answer
+    AnswerFailures-->>-RequestLog: a rejection at any step arrives here as google.rpc.Status
+    RequestLog-->>-Caller: the answer

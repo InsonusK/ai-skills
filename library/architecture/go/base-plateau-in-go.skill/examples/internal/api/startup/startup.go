@@ -6,8 +6,9 @@
 // and the error kind), and nothing below them.
 //
 // It exists only in the base plateau. When an API variation point is attached
-// (HTTP, gRPC, CLI, a listener), its entry replaces the startup lines in the
+// (HTTP, gRPC, CLI, a listener), its Entry replaces the startup Entry in the
 // "// [entries]" section of cmd/{app}/main.go and this package is deleted.
+// The exit code of the process is package entry's, which stays.
 // It stays only in an application whose whole job is one command per run
 // (a job started by a scheduler), or, rarely, beside a server that must run
 // one command once at start.
@@ -16,20 +17,11 @@ package startup
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"io"
 	"os"
 	"strings"
 
 	"github.com/example/todo/internal/command/pipeline"
-)
-
-// Exit codes of a process whose work is the startup command. A script or a
-// scheduler that started the process reads them to tell the outcomes apart.
-const (
-	ExitOK       = 0 // the command succeeded; its result is on standard output
-	ExitFailure  = 1 // the command failed for a reason other than its input
-	ExitRejected = 2 // the command broke a business rule (pipeline.ErrInvalid)
 )
 
 // EnvList reads the comma-separated environment variable name as a list -
@@ -53,18 +45,4 @@ func Run[TCommand, TResult any](ctx context.Context, handler pipeline.Handler[TC
 		return err
 	}
 	return json.NewEncoder(out).Encode(res)
-}
-
-// ExitCode maps the error Run returned to the process exit code: nil is
-// ExitOK, a command rejected by a business rule is ExitRejected, any other
-// error ExitFailure.
-func ExitCode(err error) int {
-	switch {
-	case err == nil:
-		return ExitOK
-	case errors.Is(err, pipeline.ErrInvalid):
-		return ExitRejected
-	default:
-		return ExitFailure
-	}
 }

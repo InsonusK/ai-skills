@@ -1,0 +1,10 @@
+# The logging variation point attaches to the base plateau: it adds the
+# MaskedLogging project, its scenarios, and the log marks of Shared, and changes
+# only the provider line of Program.cs, the project and package files, and the
+# readme.
+base library/architecture/dotnet/base-plateau-in-dotnet.skill/examples
+change src/App/App.Host/Program.cs
+change src/App/App.Host/App.Host.csproj
+change Todo.slnx
+change Directory.Packages.props
+change README.md

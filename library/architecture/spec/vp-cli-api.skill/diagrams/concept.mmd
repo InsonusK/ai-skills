@@ -1,0 +1,19 @@
+sequenceDiagram
+    autonumber
+    participant Shell as Shell or script
+    participant Run as Fixed runner
+    participant Action as Action of a resource
+    participant Binding as Binding of the flags
+    participant Handler as Command handler
+
+    Shell->>+Run: the arguments
+    Note over Run: parses the arguments, logs the run
+    Run->>+Action: the action of the resource
+    Action->>+Binding: reads the flags
+    Binding-->>-Action: the command
+    Action->>+Handler: the command, through the command middleware
+    Handler-->>-Action: the result, or an error with its kind
+    Note over Action: writes json or text to stdout
+    Action-->>-Run: nil, or the error
+    Note over Run: the error to stderr, logs the end of the run
+    Run-->>-Shell: the exit code: 0, 2 for invalid, 1 for a failure

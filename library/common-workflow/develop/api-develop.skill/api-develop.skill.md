@@ -104,25 +104,10 @@ Give a method of the HTTP form the success status 201 when it created a business
 - Fix: decide which of the three cases the method is, set that status in the server, and list it in the method's OpenAPI responses.
 
 ### Map an error by the canonical table
-Take the HTTP status of an error from the canonical gRPC-to-HTTP mapping:
-
-| grpc code | HTTP |
-|---|---|
-| `INVALID_ARGUMENT`, `FAILED_PRECONDITION`, `OUT_OF_RANGE` | 400 |
-| `UNAUTHENTICATED` | 401 |
-| `PERMISSION_DENIED` | 403 |
-| `NOT_FOUND` | 404 |
-| `ALREADY_EXISTS`, `ABORTED` | 409 |
-| `RESOURCE_EXHAUSTED` | 429 |
-| `CANCELLED` | 499 |
-| `INTERNAL`, `UNKNOWN`, `DATA_LOSS` | 500 |
-| `UNIMPLEMENTED` | 501 |
-| `UNAVAILABLE` | 503 |
-| `DEADLINE_EXCEEDED` | 504 |
-
+Take the gRPC code of an error from its kind, and the HTTP status from the code by the canonical gRPC-to-HTTP mapping — both tables are owned by [error-kinds](library/develop/core/error-kinds.skill/error-kinds.skill.md).
 - Violation: 409 for `FAILED_PRECONDITION`; 422 for a request that cannot be parsed.
 - Risk: the HTTP status and the grpc status of one outcome disagree, and a gateway in front of the service answers differently from the service itself.
-- Fix: replace the status with the one from the table; refuse a request that cannot be parsed with `INVALID_ARGUMENT`, 400.
+- Fix: replace the status with the one from error-kinds' tables; refuse a request that cannot be parsed with `INVALID_ARGUMENT`, 400.
 
 ### Return `google.rpc.Status` as the error body
 Return the body of every HTTP error of the HTTP form as `google.rpc.Status` in proto-JSON — `{"code": <grpc code>, "message": "...", "details": []}` — and reference `.google.rpc.Status` as the schema of every error response in the OpenAPI spec. Decision recorded in [error-body-google-rpc-status](./adr/error-body-google-rpc-status.md).

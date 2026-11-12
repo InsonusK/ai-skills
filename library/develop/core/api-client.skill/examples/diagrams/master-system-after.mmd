@@ -1,0 +1,23 @@
+sequenceDiagram
+  autonumber
+  participant Joiner as domain service or command
+  participant User as UserService
+  participant UserClient as UserApiClient
+  participant UserApi as User API
+  participant Directory as DirectoryService
+  participant DirectoryClient as DirectoryApiClient
+  participant DirectoryApi as Directory API
+  Note over DirectoryApi: master system of the name
+  Joiner->>+User: User()
+  User->>+UserClient: User()
+  UserClient->>+UserApi: GET /getUser
+  UserApi-->>-UserClient: nameId 17, surname Lee
+  UserClient-->>-User: nameId 17, surname Lee
+  User-->>-Joiner: nameId 17, surname Lee
+  Joiner->>+Directory: Name(17)
+  Directory->>+DirectoryClient: Name(17)
+  DirectoryClient->>+DirectoryApi: GET /names/17
+  DirectoryApi-->>-DirectoryClient: "Ann"
+  DirectoryClient-->>-Directory: Ann
+  Directory-->>-Joiner: Ann
+  Note over Joiner: joins the two answers

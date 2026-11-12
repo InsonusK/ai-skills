@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=80"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "todo"
+version = "0.1.0"
+description = "The base plateau of the architecture catalog: a to-do planner"
+requires-python = ">=3.13"
+dependencies = [
+    "grpcio==1.84.0",
+    "protobuf==7.36.2",
+]
+
+[project.optional-dependencies]
+# The scenarios and the type check. A real project adds its testing contract
+# (coverage, mutation, reports) per solution-conformance-testing-in-python.
+dev = [
+    "pytest==9.1.1",
+    "pytest-bdd==9.0.0",
+    "mypy==2.4.0",
+    # make proto-gen: the code of the consumed proto contracts and its type stubs
+    "grpcio-tools==1.84.0",
+    "mypy-protobuf==5.1.0",
+    "types-grpcio==1.84.0.20260928",
+]
+
+[project.scripts]
+todo = "todo.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+exclude = ["*.test", "*.test.*"]
+
+[tool.pytest.ini_options]
+testpaths = ["src"]
+python_files = ["*_test.py"]
+addopts = "--import-mode=importlib"
+markers = [
+    "status/todo: planned, not implemented yet - excluded from the run",
+    "status/broken: implemented, known to fail - excluded from the run",
+    "category/happy", "category/boundary", "category/negative", "category/error",
+    "type/domain", "type/service", "type/api/cli", "type/tech-check",
+]
+
+[tool.mypy]
+strict = true
+files = ["src"]
