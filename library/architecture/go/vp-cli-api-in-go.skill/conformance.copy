@@ -1,0 +1,13 @@
+# The shared scenarios this example runs: written by `make conformance-sync`,
+# checked by test/check-conformance.sh. One line per unit:
+# <spec folder> <folder of this skill it is copied into>.
+base-plateau.skill/conformance/config examples/internal/config/features
+base-plateau.skill/conformance/entry examples/internal/api/core/entry/features
+base-plateau.skill/conformance/json-log examples/internal/logging/features
+base-plateau.skill/conformance/command-pipeline examples/internal/command/pipeline/features
+base-plateau.skill/conformance/command-logging examples/internal/command/middleware/logging/features
+base-plateau.skill/conformance/plan-items examples/internal/command/features
+base-plateau.skill/conformance/item examples/internal/domain/entity/features
+base-plateau.skill/conformance/planner examples/internal/domain/service/features
+vp-cli-api.skill/conformance/cli-pipeline examples/internal/api/cli/pipeline/features
+vp-cli-api.skill/conformance/cli-items examples/internal/api/cli/endpoint/features

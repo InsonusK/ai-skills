@@ -1,0 +1,9 @@
+# The sample access variation point attaches to the HTTP example: it adds its
+# middleware packages (internal/command/middleware/{access,batchlimit},
+# internal/api/http/middleware/authentication) and changes
+# only the composition root, the command it marks, and the readme and Makefile.
+base library/architecture/go/vp-http-api-in-go.skill/examples
+change cmd/todo/main.go
+change internal/command/plan_items.go
+change Makefile
+change README.md

@@ -1,0 +1,20 @@
+sequenceDiagram
+    autonumber
+    participant Service as RemotePlannerService<br/>src/Modules/Todo/Todo.Application/Services/RemotePlannerService.cs
+    participant Adapter as TodoApiClient<br/>src/Infrastructure/Client/TodoApi/TodoApi/TodoApiClient.cs
+    participant Stub as ItemsServiceClient, generated at build<br/>docs/integration/client/todo/todo.proto
+    participant Interceptor as CallInterceptor<br/>src/Infrastructure/Client/Core/Client.Grpc/CallInterceptor.cs
+    participant API as Todo API, or with TODO_API_HOST=mock its emulator<br/>src/Infrastructure/Client/TodoApi/TodoApi/Mock/TodoApiMock.cs
+
+    Service->>+Adapter: PlanItemsAsync(titles, token)
+    Adapter->>+Stub: PlanItemsAsync(request, token)
+    Stub->>+Interceptor: the call of /todo.v1.ItemsService/PlanItems
+    Note over Interceptor: the method is in the adapter's list, the client middleware run around each attempt
+    Note over Interceptor: record "grpc client call sent"
+    Interceptor->>+API: PlanItems, x-request-id, within TODO_API_TIMEOUT
+    API-->>-Interceptor: response, or a status
+    Note over Interceptor: record "grpc client call answered"
+    Interceptor-->>-Stub: the response, or throws ApiUnavailableException or ApiStatusException
+    Stub-->>-Adapter: the generated response, or the outcome
+    Adapter-->>-Service: TodoApiItem list, or the exception
+    Note over Service: ApiUnavailableException: kind Unavailable. Code InvalidArgument: kind Invalid. Anything else: no kind

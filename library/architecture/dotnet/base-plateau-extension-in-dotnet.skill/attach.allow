@@ -1,0 +1,12 @@
+# The sample access variation point attaches to the HTTP example: it adds its
+# command middleware (src/Middleware/Access, src/Middleware/BatchLimit, with
+# their scenarios in src/Middleware.Tests), its HTTP middleware
+# (Api/Http/Middleware/Authentication), and the marks in Shared, and changes
+# only the composition root, the command it marks with its project, and the
+# readme and Makefile.
+base library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples
+change src/App/App.Host/Program.cs
+change src/Modules/Todo/Todo.Commands/Todo.Commands.csproj
+change src/Modules/Todo/Todo.Commands/PlanItemsCommand.cs
+change Makefile
+change README.md

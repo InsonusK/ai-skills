@@ -1,0 +1,35 @@
+sequenceDiagram
+    autonumber
+    participant Caller as a scenario<br/>src/todo/command/middleware/unit_of_work/test/nested_commands_steps_test.py
+    participant Middleware as UnitOfWorkMiddleware<br/>src/todo/command/middleware/unit_of_work/middleware.py
+    participant Import as ImportItemsHandler<br/>src/todo/command/import_items.py
+    participant Add as AddItemHandler<br/>src/todo/command/add_item.py
+    participant Repository as postgres.Repository of ItemRow<br/>src/todo/infrastructure/postgres/repository.py
+    participant Unit as UnitOfWork, the router<br/>src/todo/infrastructure/postgres/unit_of_work/unit_of_work.py
+    participant DB as PostgreSQL
+
+    Caller->>+Middleware: handlers.import_items.handle(ImportItemsCommand)
+    Middleware->>Unit: begin(): a new unit in the context, this command ends it
+    Middleware->>+Import: call_next
+    loop one nested AddItemCommand per title, through the decorated AddItem
+        Import->>+Add: handle: the middleware calls begin, None, and passes on
+        Add->>+Repository: insert(ItemRow), through ItemLists
+        Repository->>+Unit: Database.session asks connection_for(write=True)
+        Note over Unit,DB: the first write takes a connection and BEGIN
+        Unit-->>-Repository: the unit's connection: the call runs behind a SAVEPOINT
+        Repository->>+DB: INSERT
+        DB-->>-Repository: the row, or 23505: ROLLBACK TO SAVEPOINT
+        Repository-->>-Add: None, or DuplicateKeyError told as a conflict
+        Add-->>-Import: result, or the conflict
+    end
+    Import-->>-Middleware: result, or the conflict
+    alt the handler returned
+        Middleware->>+Unit: unit.commit(), shielded from the caller's cancellation
+        Unit->>DB: COMMIT
+        Unit-->>-Middleware: None, or a failure told as unavailable
+    else the handler raised
+        Middleware->>+Unit: unit.rollback(), shielded
+        Unit->>DB: ROLLBACK
+        Unit-->>-Middleware: done
+    end
+    Middleware-->>-Caller: the result, or the failure

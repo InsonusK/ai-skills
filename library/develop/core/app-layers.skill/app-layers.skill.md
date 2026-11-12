@@ -2,7 +2,7 @@
 name: app-layers
 description: How an application's code is split into layers — api, command (with an optional command factory), domain (entities and domain services), service, and infrastructure — what each layer owns, what it may call, where an interface stands between them, how each is tested
 whenToUse: when you design an application or a feature, when you add or change an entry point, a command or command factory, an entity or domain service, a service, or an infrastructure adapter, or when you review such a change — in any stack
-updated: 20261017
+updated: 20261026
 tags:
   - stack
   - concern/architecture
@@ -11,6 +11,9 @@ tags:
   - app-type/cli
 adr:
   - adr/service-wraps-one-infrastructure.md
+  - adr/commands-named-command.md
+  - adr/nested-command-through-pipeline.md
+  - adr/api-runs-independent-commands.md
 ---
 
 # Goal
@@ -27,7 +30,7 @@ adr:
 - **Interfaces where I/O starts** - A caller reaches a service, and a service reaches its infrastructure, through an interface; code with no I/O behind it is called directly.
 
 # Scope
-- Covers the layer split of one application in any stack. The stack-specific packages and interface placement are described in its stack-specialized extensions: `app-layers-in-go`; `app-layers-in-dotnet` and `app-layers-in-python` are planned.
+- Covers the layer split of one application in any stack. The stack-specific packages and interface placement are described in its stack-specialized extensions: `app-layers-in-go`, `app-layers-in-dotnet`, `app-layers-in-python`.
 
 # Rule
 
@@ -38,9 +41,9 @@ Place every part of the application in one of these layers and let it call only 
 
 | Layer | Owns | May call | Never calls |
 |---|---|---|---|
-| api | parsing an input into plain parameters; turning a result or an error into the response | command factories, commands | domain, services, infrastructure |
+| api | parsing an input into plain parameters; turning a result or an error into the response | command factories, commands (several only when independent) | domain, services, infrastructure |
 | command factory (optional) | choosing the command from plain parameters and the application's state | domain services, services | infrastructure; never parses an input format |
-| command | the main logic of one operation | domain services, entities, services, other commands (nested, through their handlers) | infrastructure, api types |
+| command | the main logic of one operation | domain services, entities, services, other commands (nested, through the command pipeline) | infrastructure, api types |
 | domain service | business logic reused by several commands | entities, services | infrastructure, commands |
 | entity | the rules of one object of the domain | other entities | anything with I/O |
 | service | methods in the application's language over one infrastructure, hiding its technique | its own infrastructure | other services, domain services, commands |
@@ -50,17 +53,35 @@ Place every part of the application in one of these layers and let it call only 
 - Risk: a call skipping a layer spreads the knowledge of that layer's technique upward, so replacing it means editing every caller.
 - Fix: route the call through the layer in between; when two services must cooperate, a domain service or the command calls both. Decision recorded in [service-wraps-one-infrastructure](./adr/service-wraps-one-infrastructure.md).
 
+### Run a nested command through the command pipeline
+Let a command run another command only through that command's handler as the command pipeline built it — wrapped by every command middleware — never by building its handler, calling its logic, or sharing a function with it.
+- Violation: a handler that constructs `AddItemHandler` itself, or calls a private function both commands use, to add the items it imports.
+- Risk: the nested operation runs without its log line, its access check, and its place in the unit of work, so the same operation behaves differently depending on whether an entry point or a command started it.
+- Fix: the handler takes the nested command's handler from the command registry (dotnet: sends the command through `ISender`); logic both commands need moves into a domain service. Decision recorded in [nested-command-through-pipeline](./adr/nested-command-through-pipeline.md).
+
 ### API parses, never decides
 Make api turn its input into plain parameters and pass them to a command, or to a command factory when the input alone cannot pick the command.
 - Violation: an HTTP handler that checks a business rule, reads the application's state, or calls a service.
 - Risk: the rule and the choice of command spread over every entry point, and the next entry point repeats them.
 - Fix: api only parses, calls, and maps the result or error to its own response.
 
+### API runs several commands only when they are independent
+Let api call several commands for one input only when none of them uses another's result or waits for another's success; when the commands must run in an order, let api call one orchestrating command that runs them as nested commands.
+- Violation: an HTTP handler that creates an order and then reserves stock with the new order's id; a job that skips sending reminders when archiving failed.
+- Risk: an order of commands is a business process — written in api, it is repeated by every entry point that needs it and runs outside one unit of work, so a failure halfway leaves the first steps done.
+- Fix: independent commands — one command per message of a batch, each answered by its own result or error; an order — `PlaceOrderCommand` runs `CreateOrder` and `ReserveStock` per [Run a nested command through the command pipeline](#run-a-nested-command-through-the-command-pipeline). Decision recorded in [api-runs-independent-commands](./adr/api-runs-independent-commands.md).
+
 ### A command takes plain parameters
 Give a command only the plain values its operation needs — ids, names, texts, amounts — never an object of the input's transport.
 - Violation: a command field holding a Telegram update, an HTTP request, or a context object whose only purpose is to carry the transport's data.
 - Risk: the command runs only from the input whose type it holds, so reusing it from HTTP (`quiz?chatId=111&userId=222`) or a test means faking that input.
 - Fix: api unpacks the values (`chatId`, `userId`) and fills the command with them.
+
+### Name a command by its role
+Name a command type `{Operation}Command`, its result `{Operation}Result`, and a part of a result `{Thing}View`, in every stack — also where the package or namespace already says command. Decision recorded in [commands-named-command](./adr/commands-named-command.md).
+- Violation: `PlanItems` as the command type; `command.PlanItems` in Go; a result named `PlanItemsResponse`.
+- Risk: a reader tells a command from its result or a view only by knowing the codebase's habit (a verb is a command); a command named like a generated rpc method clashes with it and needs an alias.
+- Fix: `PlanItemsCommand`, `PlanItemsResult`, `ItemView`, handled by `PlanItemsHandler`; the operation keeps its name `PlanItems` in logs (`"command":"PlanItems"`) and in scenarios.
 
 ### Add a command factory only when the input cannot choose
 Add a command factory only when the same input leads to different commands depending on the application's state.
@@ -131,8 +152,10 @@ Use a package with no I/O and no business rule — formatting, layout, conversio
 
 # Check list
 - [ ] Every part sits in one layer of [Keep each part in its layer and its calls downward](#keep-each-part-in-its-layer-and-its-calls-downward), and every call goes down the table.
+- [ ] A command runs another command only through its handler from the command pipeline, never by building it or sharing its logic.
 - [ ] api only parses, calls a command or a command factory, and maps the result or error.
-- [ ] Every command holds plain values, no transport object.
+- [ ] api calls several commands only when none uses another's result or success; an order of commands is one orchestrating command.
+- [ ] Every command holds plain values, no transport object, and is named `{Operation}Command`; its result `{Operation}Result`, a part of a result `{Thing}View`.
 - [ ] Every command factory chooses by application state; no factory maps a fixed input to one command.
 - [ ] No command returns an entity; no command, domain service, or entity calls infrastructure.
 - [ ] Each infrastructure adapter is wrapped by one service whose methods use the application's language; no service calls another service.

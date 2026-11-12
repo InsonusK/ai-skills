@@ -1,0 +1,22 @@
+sequenceDiagram
+    autonumber
+    participant Caller as Caller, with its deadline
+    participant Client as Fixed client code
+    participant Retry as Retry middleware
+    participant API as Other service's API
+
+    Caller->>+Client: call of a listed operation
+    Client->>+Retry: the call, with its mark
+    alt the operation is not marked retryable
+        Retry->>+API: one attempt
+        API-->>-Retry: any outcome
+    else the operation is marked retryable
+        loop up to {API}_RETRY_ATTEMPTS, each within {API}_TIMEOUT
+            Retry->>+API: attempt
+            API-->>-Retry: answer, a status, or nothing
+            Note over Retry: unavailable: WARN, wait backoff doubled, plus or minus 50 percent, unless the caller's deadline ends first
+            Note over Retry: any other outcome: leave the loop
+        end
+    end
+    Retry-->>-Client: the outcome of the last attempt
+    Client-->>-Caller: the answer, or the outcome

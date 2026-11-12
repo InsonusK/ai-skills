@@ -1,0 +1,14 @@
+flowchart LR
+    subgraph db["Variation point that brings the dependency (vp-postgres)"]
+        dbCode["Its code implements the contract<br/>and registers itself"]
+        dbTest["Its scenarios: take the check<br/>through the contract, real database"]
+    end
+    contract(["Contract neither of them owns<br/>dotnet: the framework's registry<br/>Go, Python: a plain function shape"])
+    subgraph health["Variation point that takes it (vp-health)"]
+        healthCode["Its code reads the contract<br/>and never names a dependency"]
+        healthTest["Its scenarios: a fake check<br/>through the same contract"]
+    end
+    dbCode -- "brings a named check" --> contract
+    contract -- "gives every check" --> healthCode
+    dbTest -. "proves one half" .-> contract
+    healthTest -. "proves the other half" .-> contract

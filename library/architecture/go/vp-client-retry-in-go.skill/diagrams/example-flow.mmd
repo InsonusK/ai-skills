@@ -1,0 +1,18 @@
+sequenceDiagram
+    autonumber
+    participant Client as httpclient.Client.Call<br/>internal/infrastructure/client/core/httpclient/client.go
+    participant Retry as retry.Middleware<br/>internal/infrastructure/client/middleware/retry/retry.go
+    participant Attempt as httpclient.Client.attempt<br/>internal/infrastructure/client/core/httpclient/client.go
+    participant API as Todo API
+
+    Client->>+Retry: the call, Retryable, next
+    loop up to TODO_API_RETRY_ATTEMPTS, 3 by default
+        Retry->>+Attempt: next(ctx)
+        Attempt->>+API: POST /v1/items/plan, within TODO_API_TIMEOUT
+        API-->>-Attempt: answer, or none
+        Attempt-->>-Retry: success, or outcome.ErrUnavailable
+        Note over Retry: success, a status, or the last attempt: leave the loop
+        Note over Retry: outcome.ErrUnavailable: WARN "api client call retried", wait 100ms doubled, plus or minus 50 percent
+        Note over Retry: no wait starts that would end past the deadline of ctx
+    end
+    Retry-->>-Client: the outcome of the last attempt

@@ -26,6 +26,8 @@ In tg-bot-service, commands reached stores and clients directly, and one rule en
 ### Description
 Infrastructure (`UserHTTPClient`, a PostgreSQL store) does the technical work. One service per infrastructure (`UserService`, `StorageService`) offers methods in the application's language and hides the calls and the transaction. A domain service (`Registration.Register`: check, add, save the link) composes services and entities into reusable logic. A command calls domain services, entities, and services. A service never calls another service. Callers reach services, and services reach infrastructure, through interfaces.
 
+The same split under older names: in `solution-integration-client-layering` and the plateau catalogs built on it, **Client** is what this skill calls a **service** (composes calls into the application's own model) and **Integration** is what it calls **infrastructure** (calls the API, maps its response, rejects a contract mismatch). The older skill keeps its names until those catalogs are replaced; code written to this skill uses service and infrastructure.
+
 ### Benefits
 - Replacing a store or a transport touches one adapter and one service.
 - A simple command stays simple: it calls the service it needs, with no domain service in between.

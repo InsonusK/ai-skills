@@ -1,0 +1,19 @@
+sequenceDiagram
+    autonumber
+    participant Job as Migration job
+    participant Command as Command
+    participant Service as Service
+    participant Repository as Repository
+    participant Selector as Selector
+    participant DB as PostgreSQL
+
+    Job->>+DB: apply the migrations, then end
+    DB-->>-Job: done, or a failure that stops the deployment
+    Command->>+Service: a method in the application's language
+    Service->>+Repository: SelectBy(a named specification)
+    Repository-->>-Service: a selector, no statement run
+    Service->>+Selector: Count, First, Update, Delete
+    Selector->>+DB: one question, or one save
+    DB-->>-Selector: rows, or a failure
+    Selector-->>-Service: rows, or duplicate key, row changed, unavailable
+    Service-->>-Command: entities, or conflict, concurrent change, unavailable

@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The domain of the module: entities, domain services, the rule errors.
+       It references only Shared (the error kinds) and no package, so its rules
+       are tested by their scenarios alone. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\Shared.csproj" />
+  </ItemGroup>
+</Project>

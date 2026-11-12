@@ -1,0 +1,26 @@
+// version: 1.0.0
+syntax = "proto3";
+
+package todo.v1;
+
+option csharp_namespace = "Contracts.Todo.V1";
+
+// ItemsService plans and keeps to-do items.
+service ItemsService {
+  // PlanItems turns a list of titles into to-do items, none done yet.
+  // INVALID_ARGUMENT when the titles break a rule (empty, repeated).
+  rpc PlanItems(PlanItemsRequest) returns (PlanItemsResponse);
+}
+
+message PlanItemsRequest {
+  repeated string titles = 1;
+}
+
+message PlanItemsResponse {
+  repeated Item items = 1;
+}
+
+message Item {
+  string title = 1;
+  bool done = 2;
+}

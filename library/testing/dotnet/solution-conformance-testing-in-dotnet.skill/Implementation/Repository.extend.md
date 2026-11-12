@@ -13,9 +13,10 @@ tags:
 
 ## Project Structure
 ```
-/tests
-  /{TestProject}               — one per test project, however the solution splits them
-    — feature and binding layout: see cucumber-testing-in-dotnet
+/src/{...}
+  /{Project}                   — a production project
+  /{Project}.Tests             — its test project, beside it; one per production project
+    — location, feature and binding layout: see cucumber-testing-in-dotnet
     reqnroll.json
 /report-template
   index.html
@@ -35,7 +36,7 @@ Apply [test-project layout](library/testing/dotnet/cucumber-testing-in-dotnet.sk
 ## Directory and class skills
 | Directory | file | Description |
 | ----------------- | ---- | ----------- |
-| /tests/{TestProject} | reqnroll.json | One per test project: Reqnroll's `html` formatter (native report) and `message` formatter (scenario inventory source), both written into that project's own `bin/` |
+| /src/{...}/{TestProject} — beside its project | reqnroll.json | One per test project: Reqnroll's `html` formatter (native report) and `message` formatter (scenario inventory source), both written into that project's own `bin/` |
 | /report-template | index.html | Landing page `tools/testing/test-report.sh` publishes into `$TEST_REPORT_DIR/` with its `<!-- test-reports -->` line replaced by one item per report — badge, then link; shows `run.json`. Kept outside `.github/` since this solution never owns `.github/workflows/*` |
 | / | stryker-config.json | `solution` + `test-case-filter: Category!=status/todo&Category!=status/broken`, so Stryker.NET's own test runs skip `@status/todo` and `@status/broken` scenarios |
 

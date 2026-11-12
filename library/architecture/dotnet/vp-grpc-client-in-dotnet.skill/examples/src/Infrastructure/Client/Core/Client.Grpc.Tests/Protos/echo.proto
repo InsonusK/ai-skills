@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+// The test API of the fixed client code's scenarios: an API of these
+// scenarios only, so the fixed code is tested without any API of the
+// application.
+package test.v1;
+
+option csharp_namespace = "Client.Grpc.Tests.Echo";
+
+service EchoService {
+  rpc Echo(EchoMessage) returns (EchoMessage);
+}
+
+message EchoMessage {
+  string text = 1;
+}

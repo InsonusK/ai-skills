@@ -1,0 +1,8 @@
+# The logging variation point attaches to the base plateau: it adds the masked
+# handler and changes only the logger line of main.go, the module files, and
+# the readme.
+base library/architecture/go/base-plateau-in-go.skill/examples
+change cmd/todo/main.go
+change go.mod
+change go.sum
+change README.md

@@ -1,0 +1,17 @@
+# The HTTP client variation point attaches to the base plateau: it adds the
+# fixed client code (Client.Abstractions, Client.Http), the todo API's adapter
+# and its mock, the service over it, and the command that uses it, and changes
+# only these base files: the composition root and its project, the project of
+# the module whose service uses the adapter, the solution, and the build and
+# readme files.
+base library/architecture/dotnet/base-plateau-in-dotnet.skill/examples
+change src/App/App.Host/Program.cs
+change src/App/App.Host/App.Host.csproj
+change src/Modules/Todo/Todo.Application/Todo.Application.csproj
+change Todo.slnx
+change Makefile
+change README.md
+# The todo API's adapter is written per API: the HTTP and the gRPC client
+# examples each show their own. The service over it catches only the outcomes
+# of Client.Abstractions, the same for both.
+sample src/Infrastructure/Client/TodoApi/*

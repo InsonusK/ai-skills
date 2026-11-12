@@ -1,0 +1,43 @@
+from pytest_bdd import scenarios, then
+
+from todo.api.grpc import Endpoints, services
+from todo.api.grpc.endpoint import ItemsHandler
+from todo.command import PlanItemsCommand, PlanItemsResult
+from todo.gen.api.todo import todo_pb2, todo_pb2_grpc
+
+scenarios("../features/contract.feature")
+
+
+class NeverCalled:
+    async def handle(self, command: PlanItemsCommand) -> PlanItemsResult:
+        raise AssertionError("the contract scenario calls no command")
+
+
+# Every generated module of the contract, one per proto file of
+# docs/integration/api/todo/; make proto-gen keeps them in step with the files.
+_CONTRACT = [todo_pb2.DESCRIPTOR]
+
+
+@then("the gRPC API and its proto contract both have exactly the services:")
+def the_api_and_its_contract_have(datatable: list[list[str]]) -> None:
+    want = sorted(row[0] for row in datatable[1:])
+    served = sorted(service.name for service in services(Endpoints(items=ItemsHandler(plan_items=NeverCalled()))))
+    described = sorted(service.full_name for file in _CONTRACT for service in file.services_by_name.values())
+    print(f"then: served {served}, described {described}")
+    assert served == want
+    assert described == want
+
+
+@then("every method of the proto contract should be implemented by its service")
+def every_method_is_implemented() -> None:
+    # A servicer of the API subclasses the generated {Service}Servicer, whose
+    # methods answer UNIMPLEMENTED; each method of the contract must be its own.
+    for file in _CONTRACT:
+        for service in file.services_by_name.values():
+            generated = getattr(todo_pb2_grpc, f"{service.name}Servicer")
+            written = generated.__subclasses__()
+            print(f"then: {service.full_name} servicers {[cls.__name__ for cls in written]}")
+            assert written, f"no servicer of {service.full_name}"
+            for cls in written:
+                for method in service.methods:
+                    assert getattr(cls, method.name) is not getattr(generated, method.name), f"{cls.__name__}.{method.name} is not written"

@@ -1,0 +1,31 @@
+sequenceDiagram
+    autonumber
+    participant Caller as API caller
+    participant RequestLog as RequestLogMiddleware<br/>src/App/App.Host/Api/Http/Middleware/RequestLog/RequestLogMiddleware.cs
+    participant AnswerFailures as AnswerFailuresMiddleware<br/>src/App/App.Host/Api/Http/Middleware/AnswerFailures/AnswerFailuresMiddleware.cs
+    participant Auth as AuthenticationMiddleware<br/>src/App/App.Host/Api/Http/Middleware/Authentication/AuthenticationMiddleware.cs
+    participant Endpoint as ItemsHandler<br/>src/App/App.Host/Api/Http/Endpoint/ItemsHandler.cs
+    participant Log as LoggingMiddleware<br/>src/Middleware/Logging/LoggingMiddleware.cs
+    participant Access as AccessMiddleware<br/>src/Middleware/Access/AccessMiddleware.cs
+    participant Batch as BatchLimitMiddleware<br/>src/Middleware/BatchLimit/BatchLimitMiddleware.cs
+    participant Handler as PlanItemsHandler<br/>src/Modules/Todo/Todo.Application/Commands/PlanItemsHandler.cs
+
+    Caller->>+RequestLog: POST /v1/items/plan
+    RequestLog->>+AnswerFailures: the request
+    AnswerFailures->>+Auth: the request
+    Note over Auth: API middleware: the token to an identity in the context
+    Auth->>+Endpoint: the route of the contract
+    Endpoint->>+Log: PlanItems
+    Log->>+Access: PlanItems
+    Note over Access: command middleware: the command's mark against the identity
+    Access->>+Batch: PlanItems
+    Note over Batch: command middleware: the size of the batch
+    Batch->>+Handler: PlanItems
+    Handler-->>-Batch: the result
+    Batch-->>-Access: the result
+    Access-->>-Log: the result
+    Log-->>-Endpoint: the result
+    Endpoint-->>-Auth: 200 with JSON
+    Auth-->>-AnswerFailures: the answer
+    AnswerFailures-->>-RequestLog: a rejection at any step arrives here as google.rpc.Status
+    RequestLog-->>-Caller: the answer

@@ -1,0 +1,5 @@
+# The health variation point attaches to the base plateau: it adds the management
+# entry point and changes only these base files. It needs no dependency.
+base library/architecture/python/base-plateau-in-python.skill/examples
+change src/todo/main.py
+change README.md

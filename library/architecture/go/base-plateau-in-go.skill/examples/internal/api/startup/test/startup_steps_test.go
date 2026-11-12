@@ -9,6 +9,7 @@ import (
 
 	"github.com/cucumber/godog"
 
+	"github.com/example/todo/internal/api/core/entry"
 	"github.com/example/todo/internal/api/startup"
 	"github.com/example/todo/internal/command"
 	"github.com/example/todo/internal/command/pipeline"
@@ -27,9 +28,9 @@ func registerStartupSteps(sc *godog.ScenarioContext, w *World) {
 }
 
 func (w *World) theProcessStartsWithPlanItems(ctx context.Context, titles string) error {
-	cmd := command.PlanItems{Titles: strings.Split(titles, "|")}
+	cmd := command.PlanItemsCommand{Titles: strings.Split(titles, "|")}
 	err := startup.Run(ctx, command.NewPlanItemsHandler(), cmd, &w.out)
-	w.exitCode = startup.ExitCode(err)
+	w.exitCode = entry.ExitCode(err)
 	logf("when: Run(PlanItems %q) -> err=%v exit=%d", cmd.Titles, err, w.exitCode)
 	return nil
 }
@@ -39,7 +40,7 @@ func (w *World) theProcessStartsWithFailingHandler(ctx context.Context, message 
 		return "", errors.New(message)
 	})
 	err := startup.Run(ctx, failing, "cmd", &w.out)
-	w.exitCode = startup.ExitCode(err)
+	w.exitCode = entry.ExitCode(err)
 	logf("when: Run(failing) -> err=%v exit=%d", err, w.exitCode)
 	return nil
 }

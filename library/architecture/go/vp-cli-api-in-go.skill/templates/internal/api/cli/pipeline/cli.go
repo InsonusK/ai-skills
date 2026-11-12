@@ -1,0 +1,141 @@
+// Source: skill vp-cli-api-in-go
+
+// Package pipeline is the fixed part of the command-line entry point, copied
+// from templates and never edited: `{app} {resource} {action} [flags]` runs
+// one command and exits. Run builds the command line on cobra
+// (github.com/spf13/cobra) - help at every level, flag parsing, --version,
+// shell completion - and the generic Command turns the parsed flags into a
+// command and its result into one JSON line, or text with --output text;
+// logging.go writes the records of a run. Like every entry point it knows only
+// the command layer - never domain, service, or infrastructure. Other packages
+// import it as clipipeline; inside it, the command layer's pipeline is
+// commandpipeline.
+package pipeline
+
+import (
+	"bytes"
+	"context"
+	"errors"
+	"fmt"
+	"io"
+	"log/slog"
+	"time"
+
+	"github.com/spf13/cobra"
+
+	commandpipeline "{module-path}/internal/command/pipeline"
+	"{module-path}/internal/logging"
+	"{module-path}/internal/shared/errorkind"
+)
+
+// Resource is one resource of the command line - `todo items ...` - with its
+// actions, built by Command in the resource's file of the endpoint package.
+type Resource struct {
+	// Name is the resource as typed: "items".
+	Name string
+	// Short is its one-line help.
+	Short string
+	// Actions are its commands: `todo items plan`.
+	Actions []*cobra.Command
+}
+
+// Run is the CLI entry point's one call from the composition root: it builds
+// the command line `name` from the resources, runs the action args name, and
+// returns its error. An error of the action's handler is returned as it is,
+// so the process exit code follows its kind; an error of the command line
+// itself - an unknown action, a bad flag - wraps commandpipeline.ErrInvalid (exit
+// code 2). Help goes to stdout, every error to stderr. Two records are logged
+// per run, so the log reads top-down as it ran - "cli call received" once the
+// arguments are parsed, "cli call answered" when it ends (see logCall); the
+// run gets a request id of its own, so every record of it carries the same
+// one once the logging variation point is attached.
+func Run(ctx context.Context, logger *slog.Logger, name, version string, args []string, resources []Resource, stdout, stderr io.Writer) error {
+	ctx = logging.WithRequestID(ctx, "")
+	start := time.Now()
+	root := &cobra.Command{
+		Use:           name,
+		Args:          noArgs,
+		RunE:          showHelp,
+		Short:         name + " - the command line of the application",
+		Version:       version,
+		SilenceErrors: true, // Run prints the error once, below
+		SilenceUsage:  true, // a failed command is not a usage error
+	}
+	root.PersistentFlags().String(outputFlag, outputJSON, "output format: json or text")
+	// runs once the arguments are parsed, before the action: the first record
+	root.PersistentPreRun = func(cmd *cobra.Command, _ []string) { logReceived(cmd, logger) }
+	root.SetFlagErrorFunc(func(cmd *cobra.Command, err error) error {
+		return errorkind.New(errorkind.ErrInvalid, fmt.Sprintf("%s (see %s --help)", err, cmd.CommandPath()))
+	})
+	for _, resource := range resources {
+		group := &cobra.Command{Use: resource.Name, Short: resource.Short, Args: noArgs, RunE: showHelp}
+		group.AddCommand(resource.Actions...)
+		root.AddCommand(group)
+	}
+	root.SetArgs(args)
+	var output bytes.Buffer // what the action printed, for the record of the run
+	root.SetOut(io.MultiWriter(stdout, &output))
+	root.SetErr(stderr)
+
+	ran, err := execute(ctx, logger, root, args)
+	defer func() { logCall(ctx, logger, ran, args, start, err, output.String()) }()
+	var handled handlerError
+	switch {
+	case err == nil:
+		return nil
+	case errors.As(err, &handled):
+		err = handled.err
+	case commandpipeline.KindOf(err) == nil:
+		// cobra's own errors - an unknown command, a missing argument - carry no kind
+		err = errorkind.New(errorkind.ErrInvalid, fmt.Sprintf("%s (see %s --help)", err, name))
+	}
+	// An error with a kind prints its own message, as an HTTP or gRPC entry
+	// point answers it: not the text of a wrapper on its way up, nor its cause.
+	if kinded := errorkind.Of(err); kinded != nil {
+		fmt.Fprintln(stderr, "Error:", kinded.Message)
+	} else {
+		fmt.Fprintln(stderr, "Error:", err)
+	}
+	return err
+}
+
+// execute runs the command line. An action that panics is recovered and
+// answered as a failure with no kind - "Error: internal error", exit code 1,
+// the panic logged - so a bug never ends the process with the runtime's own
+// exit code 2, which a script reads as a rejected command. The CLI's answer of
+// every failure is fixed here, not left to the composition root (ADR
+// fixed-middleware-inside-the-entry of skill base-plateau-extension).
+func execute(ctx context.Context, logger *slog.Logger, root *cobra.Command, args []string) (ran *cobra.Command, err error) {
+	defer func() {
+		if p := recover(); p != nil {
+			logger.ErrorContext(ctx, "cli action crashed", slog.Any("panic", p))
+			if ran, _, _ = root.Find(args); ran == nil {
+				ran = root
+			}
+			err = handlerError{errors.New("internal error")}
+		}
+	}()
+	return root.ExecuteContextC(ctx)
+}
+
+// noArgs rejects an argument where an action is expected, so `todo items
+// bogus` is an unknown command instead of the group's help.
+func noArgs(cmd *cobra.Command, args []string) error {
+	if len(args) > 0 {
+		return errorkind.New(errorkind.ErrInvalid, fmt.Sprintf("unknown command %q for %q (see %s --help)", args[0], cmd.CommandPath(), cmd.CommandPath()))
+	}
+	return nil
+}
+
+// showHelp answers a resource, or the application, called with no action:
+// its help, as `--help` would.
+func showHelp(cmd *cobra.Command, _ []string) error {
+	return cmd.Help()
+}
+
+// handlerError marks an error returned by an action's handler, so Run tells
+// it from an error of the command line.
+type handlerError struct{ err error }
+
+func (e handlerError) Error() string { return e.err.Error() }
+func (e handlerError) Unwrap() error { return e.err }

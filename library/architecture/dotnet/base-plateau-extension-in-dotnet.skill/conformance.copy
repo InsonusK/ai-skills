@@ -1,0 +1,18 @@
+# The shared scenarios this example runs: written by `make conformance-sync`,
+# checked by test/check-conformance.sh. One line per unit:
+# <spec folder> <folder of this skill it is copied into>.
+base-plateau.skill/conformance/config examples/src/App/App.Host.Tests/features
+base-plateau.skill/conformance/entry examples/src/App/App.Host.Tests/features
+base-plateau.skill/conformance/json-log examples/src/BuildingBlocks.Tests/features
+base-plateau.skill/conformance/command-pipeline examples/src/BuildingBlocks.Tests/features
+base-plateau.skill/conformance/command-logging examples/src/Middleware.Tests/features
+base-plateau.skill/conformance/plan-items examples/src/Modules/Todo/Todo.Application.Tests/Commands/features
+base-plateau.skill/conformance/item examples/src/Modules/Todo/Todo.Domain.Tests/features
+base-plateau.skill/conformance/planner examples/src/Modules/Todo/Todo.Domain.Tests/features
+vp-grpc-api.skill/conformance/rpcstatus examples/src/App/App.Host.Tests/features
+vp-http-api.skill/conformance/http-pipeline examples/src/App/App.Host.Tests/features/Http
+vp-http-api.skill/conformance/http-contract examples/src/App/App.Host.Tests/features/Http
+vp-http-api.skill/conformance/http-items examples/src/App/App.Host.Tests/features/Http
+base-plateau-extension.skill/conformance/command-access examples/src/Middleware.Tests/features
+base-plateau-extension.skill/conformance/batch-limit examples/src/Middleware.Tests/features
+base-plateau-extension.skill/conformance/http-authentication examples/src/App/App.Host.Tests/features/Http

@@ -2,7 +2,7 @@
 name: devops-project-version
 description: How a project records its one version and exposes it to developers and CI — `make version` prints it, `make version-check` fails unless it was raised against a base ref — through a shared tools/version/ folder whose only stack-specific file is read-version.sh
 whenToUse: when a project needs its version readable by CI or a build, when you add or review `tools/version/` or the `version`/`version-check` make targets, or when a build must put the version into an artifact
-updated: 20261010
+updated: 20261025
 tags:
   - stack
   - concern/ci
@@ -19,7 +19,7 @@ adr:
 - Every build that stamps a version taking it from `make version`.
 
 # Core Principle
-- A project has one recorded version, in the place its stack's own tooling reads.
+- **Built on project-version** - Where the version is recorded, how the program reports it, and how a snapshot overrides it are [project-version](library/develop/core/project-version.skill.md)'s and its stack extensions'; this skill makes that one place readable by developers and CI.
 - Only `read-version.sh` knows that place; `version.sh`, the `Makefile`, and CI do not.
 - **Stack extensions** - The implementation for a stack is described in the stack-specialized extensions `devops-project-version-in-go`, `devops-project-version-in-python`, `devops-project-version-in-typescript` (also for Angular), `devops-project-version-in-dotnet`; ask the user which one to load.
 - Decision recorded in [[./adr/version-behind-make.md|version-behind-make]].
@@ -39,17 +39,29 @@ Add the line `include tools/version/version.mk` to the project's `Makefile`.
 - Risk: the targets drift from the contract CI calls.
 - Fix: one `include` line; no recipe of these two targets in the `Makefile`.
 
+```
+tools/version/
+├── version.mk          copied from this skill: the targets version and version-check
+├── version.sh          copied from this skill: prints, validates, and compares
+└── read-version.sh     copied from the stack's extension: the one reader of the place
+
+Makefile:   include tools/version/version.mk
+
+$ make -s version
+1.4.0
+```
+
 ### Take read-version.sh from the stack's extension
 Copy `read-version.sh` from the extension for the project's stack, and never write the place of the version anywhere else.
 - Violation: a workflow step or a second script reading the manifest directly.
 - Risk: when the version moves, one reader is updated and the other keeps reporting the old place.
 - Fix: every reader calls `make version`.
 
-### Record MAJOR.MINOR.PATCH and nothing else
-Record the version as three dot-separated numbers without a prefix or a suffix.
-- Violation: `v1.4.0`, `1.4`, `1.4.0-rc1` in the version source.
-- Risk: `make version` refuses it, and a suffix recorded in the source collides with the snapshot suffix a publishing step adds.
-- Fix: record `1.4.0`; a snapshot build appends its own suffix to what `make version` prints.
+### Read the place project-version names
+Point `read-version.sh` at the one place [project-version](library/develop/core/project-version.skill.md)'s stack extension records the version, and let `version.sh` accept only `MAJOR.MINOR.PATCH` from it.
+- Violation: a `read-version.sh` that reads a `VERSION` file, a tag, or a second copy of the number.
+- Risk: `make version` prints a number the program and the package do not carry.
+- Fix: the stack extension's `read-version.sh` reads the place of `project-version-in-{stack}`; a snapshot build appends its own suffix to what `make version` prints.
 
 ### Take the version of an artifact from make version
 Pass the output of `make -s version` into every build that stamps a version — an image's `VERSION` build argument, a binary's linker flag, a package's version override.
@@ -63,10 +75,26 @@ Set `DELTA_BASE` to the tip of the branch the change is merged into, with that r
 - Risk: against the previous commit, a second commit in the same pull request fails the check or a stale branch passes with a version already released; without the ref the check stops with "is not a commit".
 - Fix: `make version-check DELTA_BASE=origin/master` on a checkout with full history.
 
+```
+$ make -s version-check DELTA_BASE=origin/master      # the version was not raised
+version-check: 1.4.0 must be greater than 1.4.0 at origin/master      (exit 2)
+$ make -s version-check DELTA_BASE=origin/master      # raised to 1.5.0
+version-check: 1.5.0 is greater than 1.4.0 at origin/master           (exit 0)
+$ make -s version                                     # recorded as v1.5
+version: 'v1.5' is not MAJOR.MINOR.PATCH                              (exit 2)
+```
+
+```yaml
+# a pull-request job
+- uses: actions/checkout@v4
+  with: { fetch-depth: 0 }
+- run: make version-check DELTA_BASE=origin/${{ github.base_ref }}
+```
+
 # Check list
 - [ ] `tools/version/version.mk` and `tools/version/version.sh` are byte-identical to this skill's assets.
 - [ ] `tools/version/read-version.sh` is byte-identical to the stack extension's asset.
 - [ ] The `Makefile` has `include tools/version/version.mk` and no own `version`/`version-check` recipe.
 - [ ] `make -s version` prints one line, `MAJOR.MINOR.PATCH`.
 - [ ] `make version-check DELTA_BASE={ref}` fails for an unchanged version and passes for a raised one.
-- [ ] No file but the version source holds the version number; builds take it from `make version`.
+- [ ] The version is recorded per [project-version](library/develop/core/project-version.skill.md); builds take it from `make version`.

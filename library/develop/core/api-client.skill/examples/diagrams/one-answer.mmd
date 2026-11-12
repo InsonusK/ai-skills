@@ -1,0 +1,13 @@
+sequenceDiagram
+  autonumber
+  participant Command as command
+  participant Service as UserService
+  participant Client as UserApiClient
+  participant Api as User API
+  Command->>+Service: UserName()
+  Service->>+Client: UserName()
+  Client->>+Api: GET /getUserName
+  Api-->>-Client: "Ann Lee"
+  Note over Client: splits the answer
+  Client-->>-Service: name Ann, surname Lee
+  Service-->>-Command: name Ann, surname Lee

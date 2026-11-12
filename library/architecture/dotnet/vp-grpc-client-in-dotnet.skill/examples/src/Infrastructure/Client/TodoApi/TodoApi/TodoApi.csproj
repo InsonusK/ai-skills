@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The adapter of the todo API over gRPC and its mock. Only App.Host
+       references it, to build it in [services]. -->
+  <ItemGroup>
+    <ProjectReference Include="..\TodoApi.Abstractions\TodoApi.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Core\Client.Grpc\Client.Grpc.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" />
+    <PackageReference Include="Grpc.Tools" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- The consumed contract, copied unchanged: its messages, its client, and
+         the service base the mock implements, generated at build time and
+         internal, so no generated message leaves the adapter. -->
+    <Protobuf Include="..\..\..\..\..\docs\integration\client\todo\todo.proto" GrpcServices="Both" Access="Internal" Link="Contract\todo.proto" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="TodoApi.Tests" />
+  </ItemGroup>
+</Project>

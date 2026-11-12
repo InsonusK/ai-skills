@@ -1,0 +1,17 @@
+sequenceDiagram
+  autonumber
+  participant Command as command
+  participant Service as UserService
+  participant Client as UserApiClient
+  participant Api as User API
+  Command->>+Service: UserName() - unchanged
+  Service->>+Client: UserName()
+  Client->>+Api: GET /getUserName
+  Api-->>-Client: "17 Lee"
+  Client-->>-Service: nameId 17, surname Lee
+  Service->>+Client: NameById(17)
+  Client->>+Api: GET /getNameById?id=17
+  Api-->>-Client: "Ann"
+  Client-->>-Service: Ann
+  Note over Service: composes the two answers
+  Service-->>-Command: name Ann, surname Lee - unchanged

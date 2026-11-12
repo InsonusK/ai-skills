@@ -6,8 +6,8 @@ import (
 	domainservice "github.com/example/todo/internal/domain/service"
 )
 
-// PlanItems asks to plan one open to-do item per title.
-type PlanItems struct {
+// PlanItemsCommand asks to plan one open to-do item per title.
+type PlanItemsCommand struct {
 	Titles []string
 }
 
@@ -22,7 +22,7 @@ type ItemView struct {
 	Done  bool   `json:"done"`
 }
 
-// PlanItemsHandler handles PlanItems.
+// PlanItemsHandler handles PlanItemsCommand.
 type PlanItemsHandler struct {
 	planner domainservice.Planner
 }
@@ -31,7 +31,7 @@ func NewPlanItemsHandler() *PlanItemsHandler {
 	return &PlanItemsHandler{planner: domainservice.NewPlanner()}
 }
 
-func (h *PlanItemsHandler) Handle(_ context.Context, cmd PlanItems) (PlanItemsResult, error) {
+func (h *PlanItemsHandler) Handle(_ context.Context, cmd PlanItemsCommand) (PlanItemsResult, error) {
 	items, err := h.planner.Plan(cmd.Titles)
 	if err != nil {
 		return PlanItemsResult{}, err

@@ -1,0 +1,19 @@
+sequenceDiagram
+    autonumber
+    participant Caller as API caller
+    participant RequestLog as Request log, fixed
+    participant AnswerFailures as Answer failures, fixed
+    participant Endpoint as Route of the contract
+    participant Handler as Command handler
+
+    Caller->>+RequestLog: a request
+    RequestLog->>+AnswerFailures: the request
+    AnswerFailures->>+Endpoint: the route of the contract
+    Note over Endpoint: decodes the JSON body into the command
+    Endpoint->>+Handler: the command, through the command middleware
+    Handler-->>-Endpoint: the result, or an error with its kind
+    Endpoint-->>-AnswerFailures: 200 with JSON, or the error
+    Note over AnswerFailures: the kind to google.rpc.Status, a panic to INTERNAL
+    AnswerFailures-->>-RequestLog: the answer
+    Note over RequestLog: logs the request and the answer
+    RequestLog-->>-Caller: the answer

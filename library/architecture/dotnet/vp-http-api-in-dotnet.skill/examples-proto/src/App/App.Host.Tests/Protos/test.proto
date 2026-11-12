@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+// The test service the gRPC pipeline's scenarios call: one method over a
+// command of the scenarios, so the fixed code is tested without the contract.
+package test.v1;
+
+option csharp_namespace = "App.Host.Tests.Steps.Grpc.Contract";
+
+service EchoService {
+  rpc Echo(EchoRequest) returns (EchoResponse);
+}
+
+message EchoRequest {
+  string text = 1;
+}
+
+message EchoResponse {
+  string text = 1;
+}
