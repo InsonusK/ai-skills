@@ -1,0 +1,32 @@
+# dotnet entities — status
+
+The plan, per `INVARIANTS.md` §5. One line per wave; the decisions log is `DECISIONS.md`.
+
+| Wave | What | State |
+|---|---|---|
+| 1a | the HTTP proto example keeps its lists in the process (`KeptLists`), no store | done (6d2fa5f3) |
+| 1b | `vp-postgres-in-dotnet` over the entities form; the spec's two forms; `app-layers-in-dotnet` | done (8b009c65) + audit (00d2717f) |
+| 2 stage 1 | `vp-unit-of-work-in-dotnet` over the new base | done (00d865b1) + review (7960b67e, 15d2e100, 35024df1, 9cc27cd1) |
+| 2 stage 2 | `vp-row-version-in-dotnet` over the new base | done |
+
+Wave 2 stage 2 is delivered as planned below; the decisions it added are in `DECISIONS.md` (2026-11-12): the save under the caller's version by an untracked read and `UpdateAsync`, `INeverChanges` in `Shared.Persistence`, the recording repository of the handler's scenarios, the scoped override of the HTTP contract scenario, and the sample's whole-application scenarios in the example's own feature files.
+
+## Wave 2 stage 2 — vp-row-version-in-dotnet
+
+Attaches to `vp-postgres-in-dotnet/examples` (a sibling of `vp-unit-of-work`, as the rows form's #292 did). The mechanics of #292 carry over; the layers change with the entities form: no rows, no service — the handler works over `IRepository<Item>`, and `DbUpdateConcurrencyException` becomes `ConcurrentChange` in `StoreFailuresMiddleware` (already there, `INVARIANTS.md` §4).
+
+| # | Artifact | Class |
+|---|---|---|
+| 1 | `Item.Version` (`uint`), `ItemConfiguration`: `IsRowVersion()`; migration `AddItemVersion` (no DDL, snapshot knows the version) | copy-and-modify + new |
+| 2 | `INeverChanges` mark — new file in `Shared.Persistence` (the persistence contract); the "every row is marked" scenario checks the model | new |
+| 3 | `CompleteItemCommand`/`Result`, `CompleteItemHandler`; `ItemView` gains `Id` and `Version` (text); a specification that reads the item untracked | new + copy-and-modify |
+| 4 | the save under the caller's version: untracked read, the caller's version set on the entity, `UpdateAsync` — EF Core compares it in the `WHERE`; an unparseable version becomes 0 and matches no row (a concurrent change) | design decision A, see DECISIONS.md |
+| 5 | contract: proto 1.2.0 (`CompleteItem`, `Item.id`, `Item.version`), regenerated swagger; gRPC override, HTTP route | copy-and-modify |
+| 6 | scenarios: the shared copy `row-version.feature` in `Postgres.Tests` over a `notes` table (steps on Ardalis's API, a changed row is `DbUpdateConcurrencyException`); `CompleteItem.feature` in `Todo.Application.Tests` (over `InMemoryRepository`); id/version in the entry-point features; `persistence.feature` — a completion under a moved version answers 409 ABORTED | new + copy-and-modify |
+| 7 | the skill: `vp-row-version-in-dotnet.skill.md`, `attach.allow`, `conformance.copy`, `diagrams/example-flow.mmd`, `examples/README.md`; the spec links the extension | new |
+| 8 | verification: `make test` of the example on PostgreSQL, `make conformance-sync`, `test/test.sh`, `library/testing/agent/check.sh` | — |
+
+## Done when
+
+- Every dotnet example in scope passes `make test` on PostgreSQL; Go and Python examples pass unchanged.
+- `test/test.sh` and `library/testing/agent/check.sh` pass.

@@ -1,0 +1,19 @@
+sequenceDiagram
+    autonumber
+    participant Client as a client<br/>src/App/App.Host/Api/Http/Endpoint/ListsHandler.cs
+    participant Handler as CompleteItemHandler<br/>src/Modules/Todo/Todo.Application/Commands/CompleteItemHandler.cs
+    participant Repository as IRepository of Item<br/>src/Infrastructure/Postgres/Postgres/Repositories/PostgresRepository.cs
+    participant DB as PostgreSQL
+
+    Client->>+Handler: CompleteItemCommand(home, 1, version "7") from POST .../items/1/complete
+    Handler->>+Repository: FirstOrDefaultAsync(ItemOfListById), untracked
+    Repository->>+DB: SELECT id, list_id, title, done, xmin FROM list_items
+    DB-->>-Repository: the row, xmin 9: another caller changed it
+    Repository-->>-Handler: Item, Version 9
+    Note over Handler: item.Complete(), then item.ChangeUnder("7"): the caller's, not 9
+    Handler->>+Repository: UpdateAsync(item at version 7)
+    Repository->>+DB: UPDATE ... WHERE id = 1 AND xmin = 7 RETURNING xmin
+    DB-->>-Repository: no row: DbUpdateConcurrencyException
+    Repository-->>-Handler: DbUpdateConcurrencyException
+    Note over Handler: the store failures middleware answers it:<br/>ConcurrentChange, "item was changed meanwhile"
+    Handler-->>-Client: 409 ABORTED: read it again
