@@ -81,16 +81,22 @@ public sealed class PersistenceSteps(ITestOutputHelper output)
         await _running;
     }
 
-    [When("I add {string} to the list {string} over HTTP")]
-    [Given("{string} was added to the list {string} over HTTP")]
+    [When("I add {string} to the list {string}")]
+    [Given("{string} was added to the list {string}")]
     public async Task WhenIAddOverHttp(string title, string listId) =>
         _response = await Http.PostAsJsonAsync(Items(listId), new { title });
 
-    [When("I read the list {string} over HTTP")]
+    [When("I read the list {string}")]
     public async Task WhenIReadOverHttp(string listId) => _response = await Http.GetAsync(Items(listId));
 
-    [Then("the application should answer {int}")]
-    public void ThenTheApplicationShouldAnswer(int status) => Assert.Equal((HttpStatusCode)status, _response!.StatusCode);
+    [Then("the call should succeed")]
+    public void ThenTheCallShouldSucceed() => Assert.True((int)_response!.StatusCode is >= 200 and < 300, $"status {_response.StatusCode}: {_response.Content.ReadAsStringAsync().Result}");
+
+    [Then("the call should be rejected as a conflict")]
+    public void ThenTheCallShouldBeRejectedAsAConflict() => Assert.Equal(HttpStatusCode.Conflict, _response!.StatusCode);
+
+    [Then("the call should fail as unavailable")]
+    public void ThenTheCallShouldFailAsUnavailable() => Assert.Equal(HttpStatusCode.ServiceUnavailable, _response!.StatusCode);
 
     [Then("the answer should mention {string}")]
     public async Task ThenTheAnswerShouldMention(string text) => Assert.Contains(text, await _response!.Content.ReadAsStringAsync());

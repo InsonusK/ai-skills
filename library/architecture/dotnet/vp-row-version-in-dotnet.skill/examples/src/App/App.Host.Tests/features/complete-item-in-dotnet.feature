@@ -8,17 +8,17 @@ Feature: CompleteItem over the whole application
   Scenario: An added item answers its version, and is completed under it
     Given a migrated database for the application
     And the application is running
-    And "buy milk" was added to the list "home" over HTTP
+    And "buy milk" was added to the list "home"
     When I complete the added item over HTTP with the version it answered
-    Then the application should answer 200
+    Then the call should succeed
     And the answer should carry another version than the added item's
 
   @category/negative
   Scenario: A completion under a version another connection moved answers a concurrent change
     Given a migrated database for the application
     And the application is running
-    And "buy milk" was added to the list "home" over HTTP
+    And "buy milk" was added to the list "home"
     And another connection changes the title of that item
     When I complete the added item over HTTP with the version it answered
-    Then the application should answer 409
+    Then the call should be rejected as a conflict
     And the log should have no error record

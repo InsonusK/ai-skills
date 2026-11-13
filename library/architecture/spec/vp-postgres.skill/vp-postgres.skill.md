@@ -2,7 +2,7 @@
 name: vp-postgres
 description: The PostgreSQL variation point — one database behind a repository in one of two forms (rows under a service with one contract of insert, update, delete, SelectBy and a selector, in Go and Python; the domain's entities mapped and reached by the handler through Ardalis's repository, in dotnet), named specifications, every table classified by who sets its identity and whether its rows change, the outcomes (duplicate key, missing reference, row changed, unavailable) told as error kinds, DATABASE_DSN that no log prints, migrations applied by a one-shot job or behind MIGRATE_ON_START, a readiness check, and shared scenarios on the real engine at TEST_DATABASE_DSN
 whenToUse: when an application built on the base plateau must keep its data between runs in PostgreSQL, when you add a table, a specification, a repository method, or a migration, when you replace an in-memory store with a database, or when you review database code
-updated: 20261106
+updated: 20261113
 tags:
   - stack
   - concern/architecture

@@ -168,25 +168,35 @@ def the_application_restarts(world: World) -> None:
     world.wait_listening()
 
 
-@given(parsers.parse('"{title}" was added to the list "{list_id}" over HTTP'))
+@given(parsers.parse('"{title}" was added to the list "{list_id}"'))
 def an_item_was_added(world: World, title: str, list_id: str) -> None:
     world.send("POST", f"/v1/lists/{list_id}/items", json.dumps({"title": title}))
     assert world.status == 201, world.body
 
 
-@when(parsers.parse('I add "{title}" to the list "{list_id}" over HTTP'))
+@when(parsers.parse('I add "{title}" to the list "{list_id}"'))
 def i_add(world: World, title: str, list_id: str) -> None:
     world.send("POST", f"/v1/lists/{list_id}/items", json.dumps({"title": title}))
 
 
-@when(parsers.parse('I read the list "{list_id}" over HTTP'))
+@when(parsers.parse('I read the list "{list_id}"'))
 def i_read(world: World, list_id: str) -> None:
     world.send("GET", f"/v1/lists/{list_id}/items")
 
 
-@then(parsers.parse("the application should answer {status:d}"))
-def the_application_should_answer(world: World, status: int) -> None:
-    assert world.status == status, world.body
+@then("the call should succeed")
+def the_call_should_succeed(world: World) -> None:
+    assert 200 <= world.status < 300, world.body
+
+
+@then("the call should be rejected as a conflict")
+def the_call_should_be_rejected_as_a_conflict(world: World) -> None:
+    assert world.status == 409, world.body
+
+
+@then("the call should fail as unavailable")
+def the_call_should_fail_as_unavailable(world: World) -> None:
+    assert world.status == 503, world.body
 
 
 @then(parsers.parse('the answer should mention "{text}"'))
