@@ -68,3 +68,13 @@ One command middleware, `StoreFailuresMiddleware<,>` of `Middleware/StoreFailure
 
 - Every dotnet example in scope passes `make test` on PostgreSQL; Go and Python examples pass unchanged.
 - `test/test.sh` and `library/testing/agent/check.sh` pass.
+
+## 7. The CLI pivot (owner, 2026-11-12)
+
+The database examples of dotnet stop demonstrating through the HTTP API: their API changes only ever exercised the sample, and a CLI is simpler to run. The chain becomes `base-plateau → vp-cli-api → vp-postgres → {vp-unit-of-work, vp-row-version}`; Go and Python keep their HTTP chain until a catalog-wide call.
+
+- `vp-cli-api-in-dotnet` is written first (wave CLI-1): `Api/Cli/Pipeline` copied from templates, one file per resource in `Api/Cli/Endpoint`, `Commands.cs` with the resources and the entry factory; it replaces the startup entry, as [vp-cli-api](library/architecture/spec/vp-cli-api.skill/vp-cli-api.skill.md) says.
+- The shared scenarios of `vp-postgres` (`postgres-application`) name no entry point after wave CLI-2, so one text runs over HTTP (Go, Python) and over the CLI (dotnet); each stack's steps bind it.
+- The DB examples then hold no gRPC/HTTP entry point, no proto, no swagger: their test suites shrink to the CLI, the application over its database, and the conformance copies that stay.
+- `vp-unit-of-work-in-dotnet` is re-based with `vp-postgres-in-dotnet`: its example is a full copy of it.
+- `vp-row-version-in-dotnet`'s sample is `CompleteItem` as a CLI action; the contract, the entry points, and the scoped contract override of the HTTP wave go away.

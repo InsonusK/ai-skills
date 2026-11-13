@@ -1,0 +1,10 @@
+# The CLI API variation point attaches to the base plateau: it adds its
+# packages' files and changes only these base files; its Entry replaces the
+# startup entry, which is deleted with its scenarios.
+base library/architecture/dotnet/base-plateau-in-dotnet.skill/examples
+change src/App/App.Host/Program.cs
+change Makefile
+change README.md
+delete src/App/App.Host/Api/Startup/*
+delete src/App/App.Host.Tests/features/startup.feature
+delete src/App/App.Host.Tests/Steps/StartupSteps.cs

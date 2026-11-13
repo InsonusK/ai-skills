@@ -8,6 +8,13 @@ The plan, per `INVARIANTS.md` §5. One line per wave; the decisions log is `DECI
 | 1b | `vp-postgres-in-dotnet` over the entities form; the spec's two forms; `app-layers-in-dotnet` | done (8b009c65) + audit (00d2717f) |
 | 2 stage 1 | `vp-unit-of-work-in-dotnet` over the new base | done (00d865b1) + review (7960b67e, 15d2e100, 35024df1, 9cc27cd1) |
 | 2 stage 2 | `vp-row-version-in-dotnet` over the new base | done |
+| CLI-1 | `vp-cli-api-in-dotnet` off the base plateau (spec `vp-cli-api` gains the dotnet stack) | **in progress** |
+| CLI-2 | the shared `postgres-application` scenarios name no entry point; Go/Python steps rebind | — |
+| CLI-3 | `vp-postgres-in-dotnet` re-based on the CLI chain | — |
+| CLI-4 | `vp-unit-of-work-in-dotnet` re-based (full copy of the PostgreSQL example) | — |
+| CLI-5 | `vp-row-version-in-dotnet` re-based; `CompleteItem` a CLI action | — |
+
+The CLI pivot (owner, 2026-11-12): the database examples of dotnet run via a CLI, not the HTTP API — see `INVARIANTS.md` §7.
 
 Wave 2 stage 2 is delivered as planned below; the decisions it added are in `DECISIONS.md` (2026-11-12): the save under the caller's version by an untracked read and `UpdateAsync`, `INeverChanges` in `Shared.Persistence`, the recording repository of the handler's scenarios, the scoped override of the HTTP contract scenario, and the sample's whole-application scenarios in the example's own feature files.
 
