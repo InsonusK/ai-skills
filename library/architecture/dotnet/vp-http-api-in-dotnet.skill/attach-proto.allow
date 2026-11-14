@@ -1,10 +1,11 @@
 # The HTTP form of a proto contract: the HTTP variation point attached to a
 # service that already has the gRPC one, serving the same contract over HTTP.
-# Besides the HTTP form, the example adds AddItem and ListItems with an
-# in-memory store (a service in Todo.Application/Services, the store in
-# src/Infrastructure/Memory) so it shows a path parameter, 201, 404, 409, and a
-# deprecated method; those commands are why the gRPC endpoint, its scenarios,
-# the module's projects, and its registration (TodoModule.cs) change.
+# Besides the HTTP form, the example adds AddItem and ListItems over lists kept
+# by the process while it runs (KeptLists of Todo.Application, which refuses a
+# title a list holds): the HTTP variation point adds a way to call
+# the application, not a store. They show a path parameter, 201, 404, 409, and
+# a deprecated method; those commands are why the gRPC endpoint, its scenarios,
+# the module's project, and its registration (TodoModule.cs) change.
 base library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/examples
 examples examples-proto
 change src/App/App.Host/Program.cs

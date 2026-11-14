@@ -1,15 +1,15 @@
 using MediatR;
-using Todo.Application.Services;
 using Todo.Commands;
+using Todo.Domain.Errors;
 
 namespace Todo.Application.Commands;
 
-/// <summary>Handles <see cref="ListItemsCommand"/>: an unknown list is the service's not found.</summary>
-public sealed class ListItemsHandler(IItemLists lists) : IRequestHandler<ListItemsCommand, ListItemsResult>
+/// <summary>Handles <see cref="ListItemsCommand"/>: a list nobody added to is not found.</summary>
+public sealed class ListItemsHandler(KeptLists lists) : IRequestHandler<ListItemsCommand, ListItemsResult>
 {
-    public async Task<ListItemsResult> Handle(ListItemsCommand command, CancellationToken cancellationToken)
+    public Task<ListItemsResult> Handle(ListItemsCommand command, CancellationToken cancellationToken)
     {
-        var items = await lists.ItemsAsync(command.ListId, cancellationToken);
-        return new ListItemsResult(items.Select(item => new ItemView(item.Title, item.Done)).ToList());
+        var items = lists.Items(command.ListId) ?? throw TodoErrors.NoList(command.ListId);
+        return Task.FromResult(new ListItemsResult(items.Select(item => new ItemView(item.Title, item.Done)).ToList()));
     }
 }

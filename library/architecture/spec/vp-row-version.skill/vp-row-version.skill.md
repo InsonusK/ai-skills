@@ -2,7 +2,7 @@
 name: vp-row-version
 description: The row version variation point — a table whose rows change declares a version the database engine keeps, every read and every save answers it as an opaque text, the caller gives it back with a write, and the base repository's one write that finds another version reports a changed row, so no edit is lost silently, with no lock and no read before the write, attached to vp-postgres table by table
 whenToUse: when rows of a table change after they are created, when two users or two processes may change one row, when you decide whether a table needs a version, or when you review how an edit reaches the database
-updated: 20261104
+updated: 20261112
 tags:
   - stack
   - concern/architecture
@@ -30,7 +30,7 @@ adr:
 # Scope
 - Covers one row of one table written by one call. A table takes this variation point when [vp-postgres](library/architecture/spec/vp-postgres.skill/vp-postgres.skill.md#classify-every-table) says so; `vp-external-id` and `vp-edit-timestamp` attach beside it in any number.
 - A worker claiming rows under a lock is step 4 of the [catalog](library/architecture/README.md). A write that must check the versions of several rows the caller saw together is left to the project: the variation point checks each row it writes.
-- The implementation for each stack is described in its stack-specialized extension.
+- The implementation for each stack is described in its stack-specialized extension: `vp-row-version-in-dotnet`.
 
 # Rule
 

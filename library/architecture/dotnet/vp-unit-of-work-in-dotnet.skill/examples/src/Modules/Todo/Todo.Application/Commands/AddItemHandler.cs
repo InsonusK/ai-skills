@@ -1,20 +1,28 @@
 using MediatR;
-using Todo.Application.Services;
+using Shared.Persistence;
+using Todo.Application.Specifications;
 using Todo.Commands;
 using Todo.Domain.Entities;
+using Todo.Domain.Errors;
 
 namespace Todo.Application.Commands;
 
 /// <summary>
 /// Handles <see cref="AddItemCommand"/>: an invalid title is the entity's invalid
-/// error, a title already in the list the service's conflict.
+/// error, a title already in the list a conflict. The check before the write
+/// gives the rule's message; under a race the unique index refuses the second
+/// write, and the store failures middleware answers it as a conflict.
 /// </summary>
-public sealed class AddItemHandler(IItemLists lists) : IRequestHandler<AddItemCommand, AddItemResult>
+public sealed class AddItemHandler(IRepository<Item> items) : IRequestHandler<AddItemCommand, AddItemResult>
 {
     public async Task<AddItemResult> Handle(AddItemCommand command, CancellationToken cancellationToken)
     {
-        var item = new Item(command.Title);
-        await lists.AddAsync(command.ListId, item, cancellationToken);
+        var item = Item.InList(command.ListId, command.Title);
+        if (await items.AnyAsync(new ItemOfListTitled(command.ListId, item.Title), cancellationToken))
+        {
+            throw TodoErrors.ItemAlreadyInList(command.ListId, item.Title);
+        }
+        await items.AddAsync(item, cancellationToken);
         return new AddItemResult(new ItemView(item.Title, item.Done));
     }
 }

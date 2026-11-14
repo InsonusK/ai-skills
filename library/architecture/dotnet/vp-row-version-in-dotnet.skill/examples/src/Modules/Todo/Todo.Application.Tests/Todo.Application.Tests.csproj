@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="Reqnroll.xUnit" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Todo.Application\Todo.Application.csproj" />
+    <!-- The repository in memory stands in for the database: the handlers run over the real contract. -->
+    <ProjectReference Include="..\..\..\Infrastructure\Postgres\Postgres.Testing\Postgres.Testing.csproj" />
+  </ItemGroup>
+</Project>

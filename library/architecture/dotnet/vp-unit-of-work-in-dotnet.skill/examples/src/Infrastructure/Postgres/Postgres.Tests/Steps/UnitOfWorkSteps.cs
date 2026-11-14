@@ -1,11 +1,8 @@
 using System.Globalization;
+using Ardalis.Specification;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
-using Postgres.Abstractions;
-using Postgres.Abstractions.Rows;
-using Postgres.Abstractions.Specifications;
-using Postgres.Repositories;
 using Postgres.Testing;
 using Postgres.UnitOfWork;
 using Reqnroll;
@@ -15,33 +12,33 @@ using Xunit;
 
 namespace Postgres.Tests.Steps;
 
-/// <summary>A table with a statement of its own: it runs past SaveChanges, and the unit of work must still hold it.</summary>
-public sealed class ItemRepository(DbContext context) : PostgresRepository<ItemRow>(context)
+/// <summary>Every task of the one owner of these scenarios, in the order they were stored.</summary>
+public sealed class TasksOfOwner : Specification<OwnerTask>
 {
-    public Task<int> RenameAsync(string from, string to, CancellationToken cancellationToken) =>
-        WriteAsync(
-            () => Context.Set<ItemRow>().Where(item => item.Title == from).ExecuteUpdateAsync(item => item.SetProperty(row => row.Title, to), cancellationToken),
-            $"rename in {Table}",
-            cancellationToken);
+    public TasksOfOwner(long ownerId) => Query.Where(task => task.OwnerId == ownerId).OrderBy(task => task.Id);
 }
 
 /// <summary>
 /// One command scope over a real database: the repository and the unit of work
-/// as a command has them, with the database's table read past both.
+/// as a command has them, with the table read past both. The scenarios run on
+/// the sample table of tasks, the "list" of their text: the repository writes
+/// it with no check in front of its unique index, so a duplicate key reaches
+/// the database and the savepoint of the save is proved. The unit of work watches
+/// the saves of that context as AddPostgresUnitOfWork has it watch AppDbContext.
 /// </summary>
 [Binding]
 public sealed class UnitOfWorkSteps
 {
-    private const string ListId = "home";
-
     private TestDatabase? _database;
     private ServiceProvider? _provider;
     private AsyncServiceScope _scope;
-    private ItemRepository _repository = null!;
+    private SampleContext _context = null!;
+    private TaskRepository _repository = null!;
     private IUnitOfWork _unitOfWork = null!;
+    private long _ownerId;
     private bool _joined;
     private Exception? _error;
-    private IReadOnlyList<ItemRow>? _rows;
+    private IReadOnlyList<OwnerTask>? _tasks;
 
     private async Task AttemptAsync(Func<Task> action)
     {
@@ -65,17 +62,29 @@ public sealed class UnitOfWorkSteps
         return (long)(await count.ExecuteScalarAsync())!;
     }
 
+    private OwnerTask Task(string title) => new() { OwnerId = _ownerId, Title = title };
+
     [Given("a command scope with the unit of work")]
     public async Task GivenACommandScope()
     {
         _database = await TestDatabase.CreateAsync();
-        await PostgresMigrations.ApplyAsync(_database.Config, CancellationToken.None);
         var services = new ServiceCollection();
         services.AddPostgres(_database.Config);
         services.AddPostgresUnitOfWork();
+        services.AddDbContext<SampleContext>((provider, options) =>
+            options.UseNpgsql(_database.Config.Dsn).AddInterceptors(provider.GetRequiredService<PostgresUnitOfWork>()));
         _provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true });
+        await using (var setup = _provider.CreateAsyncScope())
+        {
+            var context = setup.ServiceProvider.GetRequiredService<SampleContext>();
+            await context.Database.EnsureCreatedAsync();
+            var owner = new Owner { Name = "ann" };
+            await new Repositories.PostgresRepository<Owner>(context).AddAsync(owner);
+            _ownerId = owner.Id;
+        }
         _scope = _provider.CreateAsyncScope();
-        _repository = new ItemRepository(_scope.ServiceProvider.GetRequiredService<AppDbContext>());
+        _context = _scope.ServiceProvider.GetRequiredService<SampleContext>();
+        _repository = new TaskRepository(_context);
         _unitOfWork = _scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
     }
 
@@ -83,8 +92,7 @@ public sealed class UnitOfWorkSteps
     public async Task GivenTheListAlreadyHolds(string title)
     {
         await using var other = _provider!.CreateAsyncScope();
-        await other.ServiceProvider.GetRequiredService<IRepository<ItemRow>>()
-            .InsertAsync(new ItemRow { ListId = ListId, Title = title }, CancellationToken.None);
+        await new TaskRepository(other.ServiceProvider.GetRequiredService<SampleContext>()).AddAsync(Task(title));
     }
 
     [Given("the unit of work has begun")]
@@ -92,20 +100,23 @@ public sealed class UnitOfWorkSteps
 
     [When("the command stores {string}")]
     [Given("the command has stored {string}")]
-    public Task WhenTheCommandStores(string title) =>
-        AttemptAsync(() => _repository.InsertAsync(new ItemRow { ListId = ListId, Title = title }, CancellationToken.None));
+    public Task WhenTheCommandStores(string title) => AttemptAsync(() => _repository.AddAsync(Task(title)));
 
     [When("the command reads the list")]
-    public async Task WhenTheCommandReadsTheList() =>
-        _rows = await _repository.SelectBy(new ItemsOfList(ListId)).OrderBy(row => row.Id).AllAsync(CancellationToken.None);
+    public async Task WhenTheCommandReadsTheList() => _tasks = await _repository.ListAsync(new TasksOfOwner(_ownerId));
 
     [When("the command marks the rows of the list as done")]
     public Task WhenTheCommandMarksTheRows() =>
-        AttemptAsync(() => _repository.SelectBy(new ItemsOfList(ListId)).UpdateAsync(row => row.Done = true, CancellationToken.None));
+        AttemptAsync(async () =>
+        {
+            var tasks = await _repository.ListAsync(new TasksOfOwner(_ownerId));
+            tasks.ForEach(task => task.Done = true);
+            await _repository.UpdateRangeAsync(tasks);
+        });
 
     [When("the command deletes the rows of the list")]
     public Task WhenTheCommandDeletesTheRows() =>
-        AttemptAsync(() => _repository.SelectBy(new ItemsOfList(ListId)).DeleteAsync(CancellationToken.None));
+        AttemptAsync(() => _repository.DeleteRangeAsync(new TasksOfOwner(_ownerId)));
 
     [When("the command renames {string} to {string} in one statement")]
     public Task WhenTheCommandRenames(string from, string to) =>
@@ -132,36 +143,35 @@ public sealed class UnitOfWorkSteps
     }
 
     [Then("the table should hold {int} rows for any other connection")]
-    public async Task ThenTheTableShouldHold(int rows) => Assert.Equal(rows, await _database!.CountAsync("list_items"));
+    public async Task ThenTheTableShouldHold(int rows) => Assert.Equal(rows, await _database!.CountAsync("tasks"));
 
     [Then("the table should hold {int} done rows for any other connection")]
     public async Task ThenTheTableShouldHoldDone(int rows) =>
-        Assert.Equal(rows, await CountAsync("SELECT count(*) FROM list_items WHERE done"));
+        Assert.Equal(rows, await CountAsync("SELECT count(*) FROM tasks WHERE done"));
 
     [Then("the table should hold no row titled {string} for any other connection")]
     public async Task ThenTheTableShouldHoldNoRowTitled(string title) =>
-        Assert.Equal(0, await CountAsync("SELECT count(*) FROM list_items WHERE title = @title", new NpgsqlParameter("title", title)));
+        Assert.Equal(0, await CountAsync("SELECT count(*) FROM tasks WHERE title = @title", new NpgsqlParameter("title", title)));
 
     [Then("the command should see the rows:")]
     public void ThenTheCommandShouldSee(Table expected)
     {
-        Assert.Equal(expected.RowCount, _rows!.Count);
+        Assert.Equal(expected.RowCount, _tasks!.Count);
         foreach (var (row, index) in expected.Rows.Select((row, index) => (row, index)))
         {
-            Assert.Equal(row["title"], _rows[index].Title);
-            Assert.Equal(row["done"], _rows[index].Done.ToString(CultureInfo.InvariantCulture).ToLowerInvariant());
+            Assert.Equal(row["title"], _tasks[index].Title);
+            Assert.Equal(row["done"], _tasks[index].Done.ToString(CultureInfo.InvariantCulture).ToLowerInvariant());
         }
     }
 
     [Then("the command should have been told a duplicate key")]
-    public void ThenTheCommandShouldHaveBeenToldADuplicateKey() => Assert.IsType<DuplicateKeyException>(_error);
+    public void ThenTheCommandShouldHaveBeenToldADuplicateKey() => Assert.Equal(ErrorKind.Conflict, new PostgresFailures().KindOf(_error!)?.Kind);
 
     [Then("the nested command should have joined")]
     public void ThenTheNestedCommandShouldHaveJoined() => Assert.True(_joined);
 
     [Then("the command should hold no transaction")]
-    public void ThenTheCommandShouldHoldNoTransaction() =>
-        Assert.Null(_scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.CurrentTransaction);
+    public void ThenTheCommandShouldHoldNoTransaction() => Assert.Null(_context.Database.CurrentTransaction);
 
     [Then("the commit should fail as unavailable")]
     public void ThenTheCommitShouldFailAsUnavailable() => Assert.Equal(ErrorKind.Unavailable, ErrorKindException.KindOf(_error));

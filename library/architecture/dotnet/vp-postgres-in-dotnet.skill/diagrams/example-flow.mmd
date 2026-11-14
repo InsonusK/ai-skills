@@ -1,28 +1,34 @@
 sequenceDiagram
     autonumber
-    participant Api as ItemsHandler<br/>src/App/App.Host/Api/Http/Endpoint/ItemsHandler.cs
+    participant Api as ListsHandler<br/>src/App/App.Host/Api/Cli/Endpoint/ListsHandler.cs
     participant Sender as ScopedSender<br/>src/BuildingBlocks/Pipeline/ScopedSender.cs
+    participant Failures as StoreFailuresMiddleware<br/>src/Middleware/StoreFailures/StoreFailuresMiddleware.cs
     participant Handler as AddItemHandler<br/>src/Modules/Todo/Todo.Application/Commands/AddItemHandler.cs
-    participant Service as ItemListsService<br/>src/Modules/Todo/Todo.Application/Services/ItemListsService.cs
-    participant Repository as PostgresRepository of ItemRow<br/>src/Infrastructure/Postgres/Postgres/Repositories/PostgresRepository.cs
+    participant Repository as PostgresRepository of Item<br/>src/Infrastructure/Postgres/Postgres/Repositories/PostgresRepository.cs
     participant DB as PostgreSQL
 
     Api->>+Sender: Send(AddItemCommand)
     Note over Sender: opens the command's scope: one AppDbContext
-    Sender->>+Handler: Handle, through the command middleware
-    Handler->>+Service: AddAsync(listId, item)
-    Service->>+Repository: InsertAsync(row)
-    Repository->>+DB: SaveChangesAsync: INSERT INTO list_items
-    alt the row is stored
-        DB-->>Repository: the row
-        Repository-->>Service: done
-        Service-->>Handler: done
-        Handler-->>Sender: AddItemResult
-    else unique index broken
-        DB-->>-Repository: 23505
-        Repository-->>-Service: DuplicateKeyException
-        Service-->>-Handler: conflict, ItemAlreadyInList
-        Handler-->>-Sender: conflict
+    Sender->>+Failures: Handle, after the logging middleware
+    Failures->>+Handler: Handle
+    Handler->>+Repository: AnyAsync(ItemOfListTitled)
+    Repository->>DB: SELECT EXISTS FROM list_items
+    Repository-->>-Handler: true or false
+    alt the title is in the list
+        Note over Handler: conflict, ItemAlreadyInList, with the rule's message
+    else a new title
+        Handler->>+Repository: AddAsync(Item.InList)
+        Repository->>+DB: SaveChangesAsync: INSERT INTO list_items
+        alt the row is stored
+            DB-->>Repository: the id of the item
+            Repository-->>Handler: saved
+        else another command stored the title meanwhile
+            DB-->>-Repository: 23505
+            Repository-->>-Handler: DbUpdateException, the tracker cleared
+        end
     end
+    Handler-->>-Failures: AddItemResult, or the failure
+    Note over Failures: 23505 becomes conflict, the failure its cause, and a conflict of the handler passes as it is
+    Failures-->>-Sender: the result, or the error with its kind
     Note over Sender: disposes the scope and its context
-    Sender-->>-Api: the result, or the conflict
+    Sender-->>-Api: the result, or the error

@@ -1,0 +1,19 @@
+using Microsoft.Extensions.DependencyInjection;
+
+namespace Todo.Application;
+
+/// <summary>
+/// The Todo module as the composition root adds it: the handler of every
+/// command of the module - MediatR finds each in this assembly, so a new
+/// command adds only its files.
+/// </summary>
+public static class TodoModule
+{
+    /// <summary>
+    /// Registers the module's handlers. The repositories they take
+    /// (<c>IRepository&lt;Item&gt;</c>) are the infrastructure's, registered in the
+    /// composition root's "// [services]".
+    /// </summary>
+    public static IServiceCollection AddTodoModule(this IServiceCollection services) =>
+        services.AddMediatR(mediatr => mediatr.RegisterServicesFromAssembly(typeof(TodoModule).Assembly));
+}

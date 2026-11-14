@@ -1,0 +1,29 @@
+# The row version variation point attaches to the PostgreSQL example: it adds
+# the CompleteItem command with its scenarios, the shared scenarios of the
+# version over a table of notes, the INeverChanges mark, and the migration EF
+# Core writes for the row version (no DDL in the SQL: xmin is a system column),
+# and changes only the application over a table that changes - its entity, its
+# commands, its CLI resource and output. No file of the store's mechanism
+# changes: EF Core compares a row version an entity declares.
+base library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples
+# the entity carries its version; the configuration and the model snapshot follow it
+change src/Modules/Todo/Todo.Domain/Entities/Item.cs
+change src/Modules/Todo/Todo.Domain/Configurations/ItemConfiguration.cs
+change src/Modules/Todo/Todo.Domain/Todo.Domain.csproj
+change src/Infrastructure/Postgres/Postgres/Migrations/AppDbContextModelSnapshot.cs
+# the module's errors: a change with no version, an item that is not there
+change src/Modules/Todo/Todo.Domain/Errors/TodoErrors.cs
+# the answers carry the id and the version; the item for a change is read untracked
+change src/Modules/Todo/Todo.Commands/PlanItemsCommand.cs
+change src/Modules/Todo/Todo.Application/Commands/AddItemHandler.cs
+change src/Modules/Todo/Todo.Application/Commands/ListItemsHandler.cs
+change src/Modules/Todo/Todo.Application/Specifications/ItemsOfList.cs
+# The CLI adds CompleteItem; persistent items carry ids and opaque versions.
+change src/App/App.Host/Api/Cli/Endpoint/ListsHandler.cs
+change src/App/App.Host.Tests/Steps/Cli/CliListsSteps.cs
+change src/App/App.Host.Tests/features/Cli/lists-in-dotnet.feature
+# the scenarios of the changed answers and of the whole application over its database
+change src/Modules/Todo/Todo.Application.Tests/Commands/Steps/ItemListsSteps.cs
+change src/Modules/Todo/Todo.Application.Tests/Commands/features/item-lists-in-dotnet.feature
+change src/App/App.Host.Tests/Steps/PersistenceSteps.cs
+change README.md

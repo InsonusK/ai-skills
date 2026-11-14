@@ -1,0 +1,23 @@
+sequenceDiagram
+    autonumber
+    participant Person as a person or a script
+    participant Program as Program<br/>src/App/App.Host/Program.cs
+    participant Cli as Cli<br/>src/App/App.Host/Api/Cli/Pipeline/Cli.cs
+    participant Action as CliCommand<br/>src/App/App.Host/Api/Cli/Pipeline/CliCommand.cs
+    participant Sender as ISender (MediatR)
+    participant Handler as PlanItemsHandler<br/>src/Modules/Todo/Todo.Application/Commands/PlanItemsHandler.cs
+
+    Person->>+Program: todo items plan --title "buy milk"
+    Program->>+Cli: RunAsync(logger, "todo", version, args, resources, stdout, stderr)
+    Note over Cli: parse: resource items, action plan, flag --title<br/>log "cli call received" with the flags
+    Cli->>+Action: RunAsync(flags, "json", stdout)
+    Action->>Action: read: PlanItemsCommand(["buy milk"])
+    Action->>+Sender: Send(command)
+    Sender->>+Handler: Handle(command)
+    Handler-->>-Sender: PlanItemsResult
+    Sender-->>-Action: PlanItemsResult
+    Action->>Action: encode → {"items":[{"title":"buy milk","done":false}]}
+    Action-->>-Cli: printed, no error
+    Note over Cli: log "cli call answered" with the output, failed false
+    Cli-->>-Program: null
+    Program-->>-Person: the JSON line on stdout, exit 0

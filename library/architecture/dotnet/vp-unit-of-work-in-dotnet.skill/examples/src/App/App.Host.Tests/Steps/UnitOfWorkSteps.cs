@@ -2,9 +2,9 @@ using Npgsql;
 using BuildingBlocks.Pipeline;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Middleware.StoreFailures;
 using Middleware.UnitOfWork;
 using Postgres;
-using Postgres.Abstractions;
 using Postgres.Testing;
 using Postgres.UnitOfWork;
 using Reqnroll;
@@ -46,7 +46,7 @@ public sealed class UnitOfWorkSteps
         services.AddPostgresUnitOfWork();
         services.AddTodoModule();
         services.AddCommandScope();
-        services.AddCommandMiddleware(typeof(UnitOfWorkMiddleware<,>));
+        services.AddCommandMiddleware(typeof(StoreFailuresMiddleware<,>), typeof(UnitOfWorkMiddleware<,>));
         _provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true });
         _sender = _provider.GetRequiredService<ISender>();
     }

@@ -1,112 +1,154 @@
 // Source: skill vp-postgres-in-dotnet
 
-using System.Linq.Expressions;
 using Ardalis.Specification;
-using Postgres.Abstractions;
+using Shared.Errors;
+using Shared.Persistence;
 
 namespace Postgres.Testing;
 
 /// <summary>
-/// The repository a service's scenarios use instead of a database: the same
-/// specifications picked from a list of rows, or the failure the scenario set.
-/// It proves what the service does with the contract; what the database does
-/// is proved by the scenarios on the real engine.
+/// The repository's contract in memory, for the scenarios of the handlers, which
+/// run with no database: a specification is evaluated over the kept entities by
+/// Ardalis's in-memory evaluator. It keeps the
+/// entity objects themselves, so an entity a handler changed is stored as changed;
+/// <see cref="UpdateAsync"/> has nothing left to write. An entity whose <c>Id</c>
+/// is kept already is a conflict, as the database's primary key answers it;
+/// every other rule is the entity's. Two commands that change one entity at once
+/// are not kept apart, nor is a change undone when its command fails later:
+/// it serves one scenario. The database's behaviour is proved by Postgres.Tests.
 /// </summary>
-public sealed class InMemoryRepository<TRow> : IRepository<TRow> where TRow : class
+public class InMemoryRepository<TEntity> : IRepository<TEntity>, IReadRepository<TEntity> where TEntity : class
 {
-    private readonly List<TRow> _rows = [];
+    private static readonly InMemorySpecificationEvaluator Evaluator = InMemorySpecificationEvaluator.Default;
 
-    /// <summary>What every call throws, when a scenario sets it.</summary>
-    public Exception? Failure { get; set; }
+    private readonly List<object> _entities = [];
+    private readonly Lock _writing = new();
 
-    public Task InsertAsync(TRow row, CancellationToken cancellationToken)
+    public virtual Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        Check();
-        _rows.Add(row);
-        return Task.CompletedTask;
+        Write(entities => Keep(entities, [entity]));
+        return Task.FromResult(entity);
     }
 
-    public Task UpdateAsync(TRow row, CancellationToken cancellationToken)
+    public virtual Task<IEnumerable<TEntity>> AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
-        Check();
-        return Task.CompletedTask;
+        var added = entities.ToList();
+        Write(entities => Keep(entities, added));
+        return Task.FromResult<IEnumerable<TEntity>>(added);
     }
 
-    public Task DeleteAsync(TRow row, CancellationToken cancellationToken)
+    public virtual Task<int> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Read(entities => entities.Contains(entity) ? 1 : 0));
+
+    public virtual Task<int> UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Read(entities => entities.Count(entities.Contains)));
+
+    public virtual Task<int> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Write(entities => entities.Remove(entity) ? 1 : 0));
+
+    public virtual Task<int> DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
     {
-        Check();
-        _rows.Remove(row);
-        return Task.CompletedTask;
+        var deleted = entities.ToList();
+        return Task.FromResult(Write(entities => deleted.Count(entity => entities.Remove(entity))));
     }
 
-    public IRowSelector<TRow> SelectBy(ISpecification<TRow> specification) => new RowSelector(this, specification, null);
-
-    public IResultSelector<TResult> SelectBy<TResult>(ISpecification<TRow, TResult> specification) where TResult : class =>
-        new ResultSelector<TResult>(this, specification, null);
-
-    private void Check()
+    // A count, an existence check, and a delete refuse a page (SpecificationPage).
+    public virtual Task<int> DeleteRangeAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
     {
-        if (Failure is not null)
+        SpecificationPage.Refuse(specification);
+        return Task.FromResult(Write(entities =>
         {
-            throw Failure;
+            var deleted = entities.Cast<TEntity>().Where(specification.IsSatisfiedBy).ToList();
+            deleted.ForEach(entity => entities.Remove(entity));
+            return deleted.Count;
+        }));
+    }
+
+    public virtual Task<int> SaveChangesAsync(CancellationToken cancellationToken = default) => Task.FromResult(0);
+
+    public virtual Task<TEntity?> GetByIdAsync<TId>(TId id, CancellationToken cancellationToken = default) where TId : notnull =>
+        Task.FromResult(Read(entities => entities.FirstOrDefault(root => Equals(IdOf(root), id))));
+
+    public virtual Task<TEntity?> FirstOrDefaultAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Read(entities => Evaluator.Evaluate(entities, specification).FirstOrDefault()));
+
+    public virtual Task<TResult?> FirstOrDefaultAsync<TResult>(ISpecification<TEntity, TResult> specification, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Read(entities => Evaluator.Evaluate(entities, specification).FirstOrDefault()));
+
+    public virtual Task<TEntity?> SingleOrDefaultAsync(ISingleResultSpecification<TEntity> specification, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Read(entities => Evaluator.Evaluate(entities, specification).SingleOrDefault()));
+
+    public virtual Task<TResult?> SingleOrDefaultAsync<TResult>(ISingleResultSpecification<TEntity, TResult> specification, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Read(entities => Evaluator.Evaluate(entities, specification).SingleOrDefault()));
+
+    public virtual Task<List<TEntity>> ListAsync(CancellationToken cancellationToken = default) =>
+        Task.FromResult(Read(entities => entities.ToList()));
+
+    public virtual Task<List<TEntity>> ListAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Read(entities => Evaluator.Evaluate(entities, specification).ToList()));
+
+    public virtual Task<List<TResult>> ListAsync<TResult>(ISpecification<TEntity, TResult> specification, CancellationToken cancellationToken = default) =>
+        Task.FromResult(Read(entities => Evaluator.Evaluate(entities, specification).ToList()));
+
+    public virtual Task<int> CountAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
+    {
+        SpecificationPage.Refuse(specification);
+        return Task.FromResult(Read(entities => entities.Count(specification.IsSatisfiedBy)));
+    }
+
+    public virtual Task<int> CountAsync(CancellationToken cancellationToken = default) =>
+        Task.FromResult(Read(entities => entities.Count));
+
+    public virtual Task<bool> AnyAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
+    {
+        SpecificationPage.Refuse(specification);
+        return Task.FromResult(Read(entities => entities.Any(specification.IsSatisfiedBy)));
+    }
+
+    public virtual Task<bool> AnyAsync(CancellationToken cancellationToken = default) =>
+        Task.FromResult(Read(entities => entities.Count > 0));
+
+    public virtual async IAsyncEnumerable<TEntity> AsAsyncEnumerable(ISpecification<TEntity> specification)
+    {
+        foreach (var entity in await ListAsync(specification))
+        {
+            yield return entity;
         }
     }
 
-    private abstract class Selection<TResult>(InMemoryRepository<TRow> repository, Func<IQueryable<TResult>, IOrderedQueryable<TResult>>? order)
-        : IOrderedSelection<TResult> where TResult : class
+    /// <summary>The key of an entity, its <c>Id</c> property; null for an entity with none, or with a key the store sets (0).</summary>
+    private static object? IdOf(object entity) =>
+        typeof(TEntity).GetProperty("Id")?.GetValue(entity) is { } id && !Equals(id, 0L) && !Equals(id, 0) ? id : null;
+
+    /// <summary>Adds the entities, all or none; a key already kept, or given twice, is a conflict.</summary>
+    private static void Keep(List<object> entities, IReadOnlyList<TEntity> added)
     {
-        protected InMemoryRepository<TRow> Repository { get; } = repository;
-        protected Func<IQueryable<TResult>, IOrderedQueryable<TResult>>? Order { get; } = order;
-        protected abstract IEnumerable<TResult> Picked { get; }
-
-        private List<TResult> Read()
+        var kept = entities.Select(IdOf).Where(id => id is not null).ToHashSet();
+        foreach (var entity in added)
         {
-            Repository.Check();
-            var rows = Picked.AsQueryable();
-            return (Order is null ? rows : Order(rows)).ToList();
+            if (IdOf(entity) is { } id && !kept.Add(id))
+            {
+                throw new ErrorKindException(ErrorKind.Conflict, $"{typeof(TEntity).Name} {id} already exists");
+            }
         }
-
-        public Task<IReadOnlyList<TResult>> AllAsync(CancellationToken cancellationToken) => Task.FromResult<IReadOnlyList<TResult>>(Read());
-        public Task<TResult?> SingleAsync(CancellationToken cancellationToken) => Task.FromResult(Read().SingleOrDefault());
-        public Task<int> CountAsync(CancellationToken cancellationToken) => Task.FromResult(Read().Count);
-        public Task<bool> AnyAsync(CancellationToken cancellationToken) => Task.FromResult(Read().Count > 0);
-        public Task<TResult?> FirstAsync(CancellationToken cancellationToken) => Task.FromResult(Read().FirstOrDefault());
-        public Task<IReadOnlyList<TResult>> TakeAsync(int count, CancellationToken cancellationToken) => Task.FromResult<IReadOnlyList<TResult>>(Read().Take(count).ToList());
-        public Task<IReadOnlyList<TResult>> PageAsync(int page, int size, CancellationToken cancellationToken) =>
-            Task.FromResult<IReadOnlyList<TResult>>(Read().Skip((page - 1) * size).Take(size).ToList());
+        entities.AddRange(added);
     }
 
-    private sealed class RowSelector(InMemoryRepository<TRow> repository, ISpecification<TRow> specification, Func<IQueryable<TRow>, IOrderedQueryable<TRow>>? order)
-        : Selection<TRow>(repository, order), IOrderedRowSelector<TRow>
+    private TResult Read<TResult>(Func<List<TEntity>, TResult> read)
     {
-        protected override IEnumerable<TRow> Picked => specification.Evaluate(Repository._rows);
-
-        public async Task<int> UpdateAsync(Action<TRow> change, CancellationToken cancellationToken)
+        lock (_writing)
         {
-            var rows = await AllAsync(cancellationToken);
-            rows.ToList().ForEach(change);
-            return rows.Count;
+            return read(_entities.Cast<TEntity>().ToList());
         }
-
-        public async Task<int> DeleteAsync(CancellationToken cancellationToken)
-        {
-            var rows = await AllAsync(cancellationToken);
-            rows.ToList().ForEach(row => Repository._rows.Remove(row));
-            return rows.Count;
-        }
-
-        public IOrderedRowSelector<TRow> OrderBy<TKey>(Expression<Func<TRow, TKey>> key) => new RowSelector(Repository, specification, rows => rows.OrderBy(key));
-        public IOrderedRowSelector<TRow> OrderByDescending<TKey>(Expression<Func<TRow, TKey>> key) => new RowSelector(Repository, specification, rows => rows.OrderByDescending(key));
-        public IOrderedRowSelector<TRow> ThenBy<TKey>(Expression<Func<TRow, TKey>> key) => new RowSelector(Repository, specification, rows => Order!(rows).ThenBy(key));
     }
 
-    private sealed class ResultSelector<TResult>(InMemoryRepository<TRow> repository, ISpecification<TRow, TResult> specification, Func<IQueryable<TResult>, IOrderedQueryable<TResult>>? order)
-        : Selection<TResult>(repository, order), IOrderedResultSelector<TResult> where TResult : class
+    private TResult Write<TResult>(Func<List<object>, TResult> write)
     {
-        protected override IEnumerable<TResult> Picked => specification.Evaluate(Repository._rows);
-
-        public IOrderedResultSelector<TResult> OrderBy<TKey>(Expression<Func<TResult, TKey>> key) => new ResultSelector<TResult>(Repository, specification, rows => rows.OrderBy(key));
-        public IOrderedResultSelector<TResult> OrderByDescending<TKey>(Expression<Func<TResult, TKey>> key) => new ResultSelector<TResult>(Repository, specification, rows => rows.OrderByDescending(key));
-        public IOrderedResultSelector<TResult> ThenBy<TKey>(Expression<Func<TResult, TKey>> key) => new ResultSelector<TResult>(Repository, specification, rows => Order!(rows).ThenBy(key));
+        lock (_writing)
+        {
+            return write(_entities);
+        }
     }
+
+    private void Write(Action<List<object>> write) => Write(entities => { write(entities); return 0; });
 }
