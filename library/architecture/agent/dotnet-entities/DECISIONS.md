@@ -35,3 +35,6 @@ One line per choice; ⚠️ marks a fork with real trade-offs, decided by the ow
 - ⚠️ 2026-11-12, owner: the CLI pivot is taken now, in this branch: `vp-postgres-in-dotnet` and `vp-row-version-in-dotnet` run via a CLI; `vp-unit-of-work-in-dotnet` follows, its example being a full copy of the PostgreSQL one.
 - 2026-11-12, agent: the dotnet CLI parses the command line by its own copied code (no package): System.CommandLine is still pre-release and its API churns, and the fixed code must be a copy never edited; cobra (Go) and click (Python) play the same role there.
 - 2026-11-12, agent: the endpoint's handlers take MediatR's `ISender` (the way to the handlers in dotnet, as the command registry is in Go); a resource's scenarios fake the handlers by registering fake `IRequestHandler`s.
+- 2026-11-14, agent, CLI audit: only a FormatException of the input conversion is invalid; the same exception from output conversion is a crash. The adapter catches it around Read only; dotnet-specific scenarios cover all four stages.
+- 2026-11-14, agent: persistence scenarios launch a separate dotnet process per CLI action, with arguments passed through ArgumentList. Restart durability is checked across actual process lifetimes, not only DI scopes.
+- 2026-11-14, owner: retain the current short infrastructure namespaces in this branch; agree a catalog-wide naming rule separately.

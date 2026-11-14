@@ -9,14 +9,7 @@ base-plateau.skill/conformance/command-logging examples/src/Middleware.Tests/fea
 base-plateau.skill/conformance/plan-items examples/src/Modules/Todo/Todo.Application.Tests/Commands/features
 base-plateau.skill/conformance/item examples/src/Modules/Todo/Todo.Domain.Tests/features
 base-plateau.skill/conformance/planner examples/src/Modules/Todo/Todo.Domain.Tests/features
-vp-grpc-api.skill/conformance/rpcstatus examples/src/App/App.Host.Tests/features
-vp-grpc-api.skill/conformance/grpc-pipeline examples/src/App/App.Host.Tests/features/Grpc
-vp-grpc-api.skill/conformance/grpc-contract examples/src/App/App.Host.Tests/features/Grpc
-vp-http-api.skill/conformance/http-pipeline examples/src/App/App.Host.Tests/features/Http
-vp-http-api.skill/conformance/proto-http-pipeline examples/src/App/App.Host.Tests/features/Http
-vp-http-api.skill/conformance/proto-http-contract examples/src/App/App.Host.Tests/features/Http
-vp-http-api.skill/conformance/proto-http-items examples/src/App/App.Host.Tests/features/Http
-vp-http-api.skill/conformance/proto-http-lists examples/src/App/App.Host.Tests/features/Http
-vp-http-api.skill/conformance/proto-grpc-items examples/src/App/App.Host.Tests/features/Grpc
 vp-postgres.skill/conformance/postgres-application examples/src/App/App.Host.Tests/features
 vp-postgres.skill/conformance/postgres-migrate-job examples/src/App/App.Migrate.Tests/features
+vp-cli-api.skill/conformance/cli-pipeline examples/src/App/App.Host.Tests/features/Cli
+vp-cli-api.skill/conformance/cli-items examples/src/App/App.Host.Tests/features/Cli

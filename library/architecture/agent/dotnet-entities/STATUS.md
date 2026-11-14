@@ -8,9 +8,9 @@ The plan, per `INVARIANTS.md` §5. One line per wave; the decisions log is `DECI
 | 1b | `vp-postgres-in-dotnet` over the entities form; the spec's two forms; `app-layers-in-dotnet` | done (8b009c65) + audit (00d2717f) |
 | 2 stage 1 | `vp-unit-of-work-in-dotnet` over the new base | done (00d865b1) + review (7960b67e, 15d2e100, 35024df1, 9cc27cd1) |
 | 2 stage 2 | `vp-row-version-in-dotnet` over the new base | done |
-| CLI-1 | `vp-cli-api-in-dotnet` off the base plateau (spec `vp-cli-api` gains the dotnet stack) | **in progress** |
-| CLI-2 | the shared `postgres-application` scenarios name no entry point; Go/Python steps rebind | — |
-| CLI-3 | `vp-postgres-in-dotnet` re-based on the CLI chain | — |
+| CLI-1 | `vp-cli-api-in-dotnet` off the base plateau (spec `vp-cli-api` gains the dotnet stack) | done (5e98544e), audited; output-failure classification fixed |
+| CLI-2 | the shared `postgres-application` scenarios name no entry point; Go/Python steps rebind | done (6c7bdadb), audited |
+| CLI-3 | `vp-postgres-in-dotnet` re-based on the CLI chain | done; audited; 161 scenarios pass on PostgreSQL |
 | CLI-4 | `vp-unit-of-work-in-dotnet` re-based (full copy of the PostgreSQL example) | — |
 | CLI-5 | `vp-row-version-in-dotnet` re-based; `CompleteItem` a CLI action | — |
 

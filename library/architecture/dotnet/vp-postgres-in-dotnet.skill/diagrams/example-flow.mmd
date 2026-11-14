@@ -1,6 +1,6 @@
 sequenceDiagram
     autonumber
-    participant Api as ItemsHandler<br/>src/App/App.Host/Api/Http/Endpoint/ItemsHandler.cs
+    participant Api as ListsHandler<br/>src/App/App.Host/Api/Cli/Endpoint/ListsHandler.cs
     participant Sender as ScopedSender<br/>src/BuildingBlocks/Pipeline/ScopedSender.cs
     participant Failures as StoreFailuresMiddleware<br/>src/Middleware/StoreFailures/StoreFailuresMiddleware.cs
     participant Handler as AddItemHandler<br/>src/Modules/Todo/Todo.Application/Commands/AddItemHandler.cs
