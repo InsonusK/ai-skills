@@ -2,7 +2,7 @@
 name: vp-cli-api-in-dotnet
 description: The CLI API variation point in dotnet — Api/Cli/Pipeline copied from templates (Run building the command line with --version and help at every level, usage errors as the invalid kind, a crash of the action's glue as a failure with no kind, the generic command adapter with --output json|text, the run log), one {Resource}Handler per resource in Api/Cli/Endpoint, Commands.cs with the endpoints and the entry factory, and the startup entry replaced in Program.cs
 whenToUse: when a dotnet application built on the base plateau must be run from a command line, when you offer a new command as an action of such an application, or when you review its Api/Cli package
-updated: 20261113
+updated: 20261114
 tags:
   - stack/dotnet
   - concern/architecture

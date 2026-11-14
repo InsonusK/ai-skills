@@ -34,7 +34,8 @@ public static class Commands
         {
             var logger = provider.GetRequiredService<ILoggerFactory>().CreateLogger("App.Host.Api.Cli");
             var endpoints = new CliEndpoints(new ItemsHandler(provider.GetRequiredService<ISender>()));
-            var error = await Run(logger, name, version, args, endpoints, stdout, stderr, stopping);            if (error is not null)
+            var error = await Run(logger, name, version, args, endpoints, stdout, stderr, stopping);
+            if (error is not null)
             {
                 throw error;
             }

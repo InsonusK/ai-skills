@@ -2,7 +2,7 @@
 name: vp-cli-api
 description: The CLI API variation point — a command-line entry point attached to the base plateau that runs one command per call as `{app} {resource} {action} [flags]`, prints the result on standard output as one JSON line or as text, writes errors on standard error, exits by the error kind with usage errors as rejected, offers help at every level, and replaces the startup entry without editing any other base file
 whenToUse: when an application built on the base plateau must be run from a command line by a person or a script — adding the CLI entry point, offering a new command as an action, or reviewing the CLI entry point of such an application
-updated: 20261113
+updated: 20261114
 tags:
   - stack
   - concern/architecture
@@ -24,7 +24,7 @@ tags:
 
 # Scope
 - Covers a command-line application whose every call runs one command and ends. An interactive shell, a long-running daemon started from the command line, and reading a command's input from standard input are not covered.
-- The implementation for each stack is described in its stack-specialized extension: `vp-cli-api-in-go`, `vp-cli-api-in-python`.
+- The implementation for each stack is described in its stack-specialized extension: `vp-cli-api-in-go`, `vp-cli-api-in-python`, `vp-cli-api-in-dotnet`.
 
 # Rule
 

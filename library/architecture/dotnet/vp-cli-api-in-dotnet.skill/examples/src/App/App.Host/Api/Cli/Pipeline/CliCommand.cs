@@ -1,6 +1,7 @@
 // Source: skill vp-cli-api-in-dotnet
 
 using System.Text.Json;
+using Shared.Errors;
 
 namespace App.Host.Api.Cli.Pipeline;
 
@@ -44,7 +45,7 @@ public abstract record CliAction(string Use, string Short)
     /// <summary>The action's flags, without --output, which every action has.</summary>
     public abstract IReadOnlyList<CliFlag> Flags { get; }
 
-    /// <summary>Runs the action: reads the command, calls the handler, prints the result. A failure of the handler is returned with its kind kept; an error of read is a <see cref="FormatException"/> (a usage error); anything else that escapes is a crash of the action.</summary>
+    /// <summary>Runs the action: reads the command, calls the handler, prints the result. A failure of the handler is returned with its kind kept; a <see cref="FormatException"/> of read is returned as invalid (a usage error); anything else that escapes is a crash of the action.</summary>
     public abstract Task<Exception?> RunAsync(CliFlags flags, string output, TextWriter stdout, CancellationToken stopping);
 }
 
@@ -86,7 +87,15 @@ public static class CliCommand
 
         public override async Task<Exception?> RunAsync(CliFlags flags, string output, TextWriter stdout, CancellationToken stopping)
         {
-            var command = Read(flags); // a FormatException of read is a usage error of Cli.RunAsync
+            TCommand command;
+            try
+            {
+                command = Read(flags);
+            }
+            catch (FormatException usage)
+            {
+                return new ErrorKindException(ErrorKind.Invalid, usage.Message);
+            }
             TResult result;
             try
             {

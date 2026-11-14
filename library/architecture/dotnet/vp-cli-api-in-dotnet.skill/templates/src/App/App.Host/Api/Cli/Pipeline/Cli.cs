@@ -112,14 +112,7 @@ public static class Cli
                 return Usage($"--{missing.Name} is required");
             }
             RunLog.Received(logger, actionPath, flags.Given());
-            try
-            {
-                return await action.RunAsync(flags, output, printed, stopping);
-            }
-            catch (FormatException read)
-            {
-                return Usage($"{read.Message} (see {actionPath} --help)");
-            }
+            return await action.RunAsync(flags, output, printed, stopping);
         }
 
         static bool IsHelp(string arg) => arg is "--help" or "-h";
