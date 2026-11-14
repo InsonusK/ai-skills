@@ -1,4 +1,4 @@
-@type/infrastructure/db/postgres
+@type/infrastructure/db/postgresql
 Feature: The rows and their migrations
   As a developer who changes a row
   I want a row that no migration matches to fail

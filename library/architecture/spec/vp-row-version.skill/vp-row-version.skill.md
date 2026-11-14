@@ -2,7 +2,7 @@
 name: vp-row-version
 description: The row version variation point — a table whose rows change declares a version the database engine keeps, every read and every save answers it as an opaque text, the caller gives it back with a write, and the base repository's one write that finds another version reports a changed row, so no edit is lost silently, with no lock and no read before the write, attached to vp-postgres table by table
 whenToUse: when rows of a table change after they are created, when two users or two processes may change one row, when you decide whether a table needs a version, or when you review how an edit reaches the database
-updated: 20261112
+updated: 20261114
 tags:
   - stack
   - concern/architecture

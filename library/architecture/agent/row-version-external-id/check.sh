@@ -33,3 +33,5 @@ for check in check-link-direction check-vp-attach check-vp-diagrams check-templa
     fi
     rm -f "$log"
 done
+
+python3 test/check-architecture-tags.py

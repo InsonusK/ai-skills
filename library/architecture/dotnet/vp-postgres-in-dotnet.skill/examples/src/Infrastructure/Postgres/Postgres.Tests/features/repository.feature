@@ -1,7 +1,7 @@
 # Shared by every stack's PostgreSQL variation point. The source is
 # library/architecture/spec/vp-postgres.skill/conformance/; a stack's copy is
 # written by `make conformance-sync` and never edited.
-@type/infrastructure/db/postgres
+@type/infrastructure/db/postgresql
 Feature: The repository writes one row
   As the code over the repository
   I want one generic repository for every table

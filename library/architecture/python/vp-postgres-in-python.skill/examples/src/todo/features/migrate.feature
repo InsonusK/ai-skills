@@ -1,4 +1,4 @@
-@type/infrastructure/db/postgres
+@type/infrastructure/db/postgresql
 Feature: The migration job
   As a deployment
   I want a job that applies the migrations and tells how it ended

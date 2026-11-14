@@ -2,7 +2,7 @@
 name: vp-external-id
 description: The external id variation point — a table whose rows are created by a caller outside the service (a front end, another system) takes the caller's UUID v7 as its primary key, refused as invalid when it is no UUID v7, saved as given, and a taken id answered as a conflict, so the caller knows the id before the answer and can repeat a create it lost; attached to vp-postgres table by table
 whenToUse: when rows of a table are created by a caller outside the service that must know the row's id before the service answers (a front end working offline, another system creating records), when you decide who sets the identity of a table's rows, or when you review how a created row gets its id
-updated: 20261104
+updated: 20261114
 tags:
   - stack
   - concern/architecture

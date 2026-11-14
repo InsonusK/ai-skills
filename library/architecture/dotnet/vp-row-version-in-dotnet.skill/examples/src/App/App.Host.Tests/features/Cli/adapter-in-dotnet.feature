@@ -1,3 +1,4 @@
+@type/api/cli
 Feature: CLI adapter failures in dotnet
   The input conversion alone defines usage errors; output conversion failures
   are internal errors even when their exception type is FormatException.

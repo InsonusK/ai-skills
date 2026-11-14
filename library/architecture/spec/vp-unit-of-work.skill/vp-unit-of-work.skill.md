@@ -2,7 +2,7 @@
 name: vp-unit-of-work
 description: The unit of work variation point — a command middleware around the outermost command that keeps every write of that command, its nested commands, and its notification handlers in one transaction, opened on the first write and ended by the middleware alone, attached to a DB variation point with no change to a repository, a service, or a handler
 whenToUse: when an application with a DB variation point has a command that writes in several places at once (nested commands, notification handlers, an outbox task), when you decide whether an application needs a unit of work, or when you review one
-updated: 20261103
+updated: 20261114
 tags:
   - stack
   - concern/architecture

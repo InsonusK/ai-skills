@@ -1,7 +1,7 @@
 # The scenarios of the Python unit of work beside the shared ones of
 # unit-of-work.feature: what the shared scenarios cannot see of asyncio's
 # cancellation and of a task that outlives its command.
-@type/infrastructure/db/postgres
+@type/infrastructure/db/postgresql
 Feature: The unit of work over SQLAlchemy
   As a command that writes in several places
   I want the unit of work to hold through a cancelled caller and a task left behind
@@ -10,7 +10,7 @@ Feature: The unit of work over SQLAlchemy
   Background:
     Given a command scope with the unit of work
 
-  @category/edge
+  @category/boundary
   Scenario: A caller cancelled during the commit does not undo it
     Given a commit takes half a second
     And the unit of work has begun
@@ -26,7 +26,7 @@ Feature: The unit of work over SQLAlchemy
     And the unit of work rolls back
     Then the table should hold 0 done rows for any other connection
 
-  @category/edge
+  @category/error
   Scenario: An update of a selector that fails halfway changes none of its rows, and the unit goes on
     Given the list already holds "buy milk"
     And the list already holds "walk the dog"

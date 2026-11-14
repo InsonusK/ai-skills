@@ -46,6 +46,9 @@ Every `{stack}/vp-*` skill holds `attach.allow`: the base example it attaches to
 - When the rule pulls toward an unnatural structure, stop, name the conflict and both ways out, and decide with the owner on the spot.
 - Ideas for the revision: edits several variation points make to one place in any order are harmless; edits that need an order are stages of the program's logic, so each may get a method of its own that the base calls in order (watch for a swarm of small methods), or a method marked by an attribute of its stage, the base calling the marked methods stage by stage.
 
+`test/check-architecture-tags.py` validates feature types, scenario categories and
+pytest registrations against the shared testing vocabulary; `test/test.sh` runs it.
+
 Every `spec/` skill keeps its scenarios in `conformance/`, one folder per place of the code that runs them. Every stack skill names in `conformance.copy` where its example takes a copy of each folder: its own skill's, and those of the example it attaches to. `make conformance-sync` writes the copies; `test/check-conformance.sh` fails while one is missing or differs. A scenario of a mechanism only one stack has lives beside the copies as `{name}-in-{stack}.feature`.
 
 A project takes one stack with a single `subpath` in `ai-skills.yaml` (`library/architecture/go`);
@@ -79,6 +82,12 @@ the `spec/` skills come along because every stack skill links its spec.
 
 ## Status
 
+The table describes the current architecture integration branch. A completed
+PR into an intermediate branch reaches users only after the integration branch
+is merged into develop and then master. Empty cells mean planned work, not a
+failing or deliberately skipped implementation. Shared specifications for row
+version and external id exist before their stack implementations.
+
 | Step | Content | Go | dotnet | Python |
 |---|---|:-:|:-:|:-:|
 | 1a | base plateau (on `app-layers`) | ✅ | ✅ | ✅ |
@@ -88,7 +97,7 @@ the `spec/` skills come along because every stack skill links its spec.
 | — | health (`vp-health`, `:8081`) + one runner for every entry point (`entry.RunAll`) | ✅ | ✅ | ✅ (asyncio, no dependency) |
 | 1c-2 | HTTP form of a gRPC contract (`vp-http-api`, proto mode) | ✅ | ✅ | ✅ |
 | 1d | API: CLI (`vp-cli-api`; Go cobra, dotnet System.CommandLine, Python click) | ✅ | ✅ | ✅ |
-| — | logging: one logger, payload attribute, base handler drops it; every entry point logs its calls; `vp-logging` masks and writes the payload | ✅ | base ✅ | ✅ |
+| — | logging: one logger, payload attribute, base handler drops it; every entry point logs its calls; `vp-logging` masks and writes the payload | ✅ | ✅ (masked payload) | ✅ |
 | — | extension of the base (`base-plateau-extension`): command registry, middleware lists for commands and entries, one directory per middleware, sample access VP | ✅ | ✅ | ✅ |
 | 2 | clients (`develop/core/api-client`): HTTP (`vp-http-client`), gRPC (`vp-grpc-client`) | HTTP ✅, gRPC ✅ (buf managed mode, bufconn mock; one `client/core/outcome` for every transport) | HTTP ✅, gRPC ✅ (one `Client.Abstractions` for every transport; mock through a call invoker) | HTTP ✅ (httpx2, `MockTransport`; one `outcomes.py` for every transport), gRPC ✅ (`grpc.aio`, the mock on a loopback server) |
 | 2b | client retry (`vp-client-retry`): client middleware list in every client, operations marked retryable, `{API}_RETRY_ATTEMPTS`/`_BACKOFF` | ✅ | ✅ (`Client.Pipeline`; the wait ends with the caller's cancellation) | ✅ (`core/pipeline`; the cancellation passes through) |
@@ -118,16 +127,19 @@ variation points are formed (2026-10-18).
 | dotnet fixed code (`Shared`: error kinds; `BuildingBlocks`: `AddCommandMiddleware`, `JsonLogProvider`, `LogAttr`, `RequestId`; `Middleware`: `LoggingMiddleware`; `Api/Core/Entry`, `Api/Startup`; `Api/Core/Errors/RpcStatus`, `Api/Core/Hosting/WebHost`, `Api/Http/Pipeline` with `ProtoJson`, `Api/Grpc/Pipeline`, `Api/Management`) | templates of `base-plateau-in-dotnet`, `error-kinds-in-dotnet`, `vp-http-api-in-dotnet`, `vp-grpc-api-in-dotnet`, `vp-health-in-dotnet` | no placeholder at all: one NuGet package (or two: `Shared` with no dependency, the rest over MediatR) |
 | TaskBox | `taskbox-spec` published; `taskbox-go` code proven, not yet packaged | already decided as a library (ADR `contract-vp-realized-by-libraries`) |
 
+## Decisions already implemented
+
+Python's asyncio/FastAPI/stdlib logging, dotnet's own payload masking
+(`own-masking-not-serilog`), and the save-at-once unit of work are implemented.
+Their owning skills and ADRs are authoritative; the historical stack execution
+order is not an outstanding task.
+
 ## Decisions waiting for their variation point
 
 Agreed with the owner; written into the variation point's skill and ADR when it is built.
 
 | Decision | Goes to | Agreed |
 |---|---|---|
-| **dotnet logging VP: own masking or Serilog + `Destructurama.Attributed`** — the base has its own `JsonLogProvider`; the logging variation point replaces only its `AddProvider` line, so the choice is made there (ADR `own-json-log-provider`). | dotnet logging (B4) | 2026-10-21 |
-| **Python stack**: async handlers and entry points (asyncio), FastAPI for the HTTP variation point, the standard library's `logging` with a formatter of its own (ADRs `async-handlers`, `stdlib-logging` of `base-plateau-in-python`). | Python | 2026-10-22 |
-| **Order of B**: B1 dotnet base → B2 HTTP + health → B3 gRPC + HTTP form → B4 logging VP; then Python base → HTTP → gRPC → CLI → health → logging. dotnet now also has a CLI for the database example chain (2026-11-12). | B | 2026-10-21 |
-| **Unit of work at the command.** Optional, available once the DB variation point is attached; the outermost command opens it, nested commands and notification handlers join, services never commit. A simple service may skip it; once any command changes data in several places at once (nested commands, notification handlers, outbox task), every command is wrapped. Rejected: each service method owning its transaction (breaks atomicity across handlers); mandatory for every application. Every stack: a store saves at once, the unit of work only wraps the saves of one command in a transaction opened on the first write, so it attaches with no change to a store and the service keeps seeing a duplicate key (the first form for dotnet, EF change tracking with one transaction at the end, was replaced on 2026-10-31: ADR `a-store-saves-at-once` of `vp-postgres-in-dotnet`). dotnet: pipeline behavior over `SaveChanges`. Go: command middleware, unit of work in `context.Context`, a GORM plugin routes every statement of a begun unit (ADR `statements-routed-by-a-gorm-plugin` of `vp-unit-of-work-in-go`). | DB (step 3) | 2026-10-17, 2026-10-31 |
 | **In-process notifications in Go** (the counterpart of MediatR notifications), joining the command's unit of work. | DB (step 3) | 2026-10-17 |
 
 ## Decisions and open questions of the queued VPs

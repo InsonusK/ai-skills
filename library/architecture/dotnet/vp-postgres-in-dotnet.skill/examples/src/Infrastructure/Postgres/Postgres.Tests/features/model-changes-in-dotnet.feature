@@ -1,4 +1,4 @@
-@type/infrastructure/db/postgres
+@type/infrastructure/db/postgresql
 Feature: The model and its migrations
   As a developer who changes an entity or its mapping
   I want a change of the model with no migration to fail

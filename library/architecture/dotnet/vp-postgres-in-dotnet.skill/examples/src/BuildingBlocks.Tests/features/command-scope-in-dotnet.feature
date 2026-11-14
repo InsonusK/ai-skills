@@ -25,7 +25,7 @@ Feature: One scope per command
     When a command that tells a notification is sent
     Then the notification's handler should have run in the command's scope
 
-  @category/edge
+  @category/concurrency
   Scenario: Commands sent at once do not share a scope
     When two commands are sent at once
     Then each command should have run in a scope of its own

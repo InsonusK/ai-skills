@@ -3,7 +3,7 @@
 # written by `make conformance-sync` and never edited. The text names no entry
 # point: each stack's steps make the call over its own (HTTP in Go and Python,
 # the CLI in dotnet).
-@type/infrastructure/db/postgres
+@type/infrastructure/db/postgresql
 Feature: The application over its database
   As a caller of the application
   I want what I stored to outlive the process, and the database's failures told in the application's answers

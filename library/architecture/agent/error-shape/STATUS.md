@@ -13,5 +13,5 @@ The plan by waves; each wave passes `check.sh`, gets a fresh-eyes audit, and is 
 
 Examples in scope, per stack: `base-plateau`, `base-plateau-extension`, `vp-cli-api` (Go, Python), `vp-client-retry`, `vp-grpc-api`, `vp-grpc-client`, `vp-health`, `vp-http-api` (`examples`, `examples-proto`), `vp-http-client`, `vp-logging`.
 
-Found on the way, not part of this migration: `AccessConfig.feature` of `base-plateau-extension-in-dotnet` fails about one run in six - its scenarios set and read environment variables while xUnit runs them in parallel (`AccessConfigSteps.ThenTheTokenShouldName` sees no tokens).
+Historical issue, fixed by #286 and integrated into arch-new-vp/develop: `AccessConfig.feature` of `base-plateau-extension-in-dotnet` previously failed about one run in six - its scenarios set and read environment variables while xUnit runs them in parallel (`AccessConfigSteps.ThenTheTokenShouldName` sees no tokens).
 

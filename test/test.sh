@@ -15,6 +15,7 @@ bash ./check-vp-attach.sh
 bash ./check-vp-diagrams.sh
 bash ./check-templates.sh
 bash ./check-conformance.sh
+python3 ./check-architecture-tags.py
 
 aism --version
 aism sync
