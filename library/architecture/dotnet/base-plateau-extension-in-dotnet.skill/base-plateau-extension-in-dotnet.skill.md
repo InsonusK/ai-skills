@@ -58,14 +58,13 @@ Give every module an `Add{Module}Module()` extension method in `{Module}.Applica
 ```csharp
 // Todo.Application/TodoModule.cs
 public static IServiceCollection AddTodoModule(this IServiceCollection services) =>
-    services
-        .AddMediatR(mediatr => mediatr.RegisterServicesFromAssembly(typeof(TodoModule).Assembly))
-        .AddSingleton<IItemLists, ItemListsService>();
+    services.AddMediatR(mediatr => mediatr.RegisterServicesFromAssembly(typeof(TodoModule).Assembly));
+    // and, when a handler needs one, .AddScoped<IRemotePlanner, RemotePlannerService>()
 ```
 
 - Violation: `services.AddMediatR(...)` in `Program.cs`; a handler registered by hand; a behavior given to `AddMediatR`'s configuration.
 - Risk: a middleware registered with the module wraps only some commands, or is registered twice once a second module arrives.
-- Fix: the module registers handlers and services only; its infrastructure (`IListStore`) is registered in `// [services]`; the middleware are listed once in `AddCommandMiddleware`.
+- Fix: the module registers handlers and services only; its infrastructure (the repositories, a client) is registered in `// [services]`; the middleware are listed once in `AddCommandMiddleware`.
 
 ### Send a nested command through ISender
 Let a handler that runs another command — of its own module or of another — take `ISender` in its constructor and send the command, never take or build the nested command's handler.

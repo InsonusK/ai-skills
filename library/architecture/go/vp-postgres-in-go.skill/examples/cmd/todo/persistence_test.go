@@ -171,7 +171,7 @@ func registerPersistenceSteps(sc *godog.ScenarioContext, a *app) {
 	add := func(title, list string) error {
 		return a.send(http.MethodPost, "/v1/lists/"+list+"/items", `{"title":"`+title+`"}`)
 	}
-	sc.Step(`^"([^"]*)" was added to the list "([^"]*)" over HTTP$`, func(title, list string) error {
+	sc.Step(`^"([^"]*)" was added to the list "([^"]*)"$`, func(title, list string) error {
 		if err := add(title, list); err != nil {
 			return err
 		}
@@ -180,15 +180,24 @@ func registerPersistenceSteps(sc *godog.ScenarioContext, a *app) {
 		}
 		return nil
 	})
-	sc.Step(`^I add "([^"]*)" to the list "([^"]*)" over HTTP$`, add)
-	sc.Step(`^I read the list "([^"]*)" over HTTP$`, func(list string) error {
+	sc.Step(`^I add "([^"]*)" to the list "([^"]*)"$`, add)
+	sc.Step(`^I read the list "([^"]*)"$`, func(list string) error {
 		return a.send(http.MethodGet, "/v1/lists/"+list+"/items", "")
 	})
-	sc.Step(`^the application should answer (\d+)$`, func(want int) error {
-		if a.status != want {
-			return fmt.Errorf("status: got %d, want %d (%s)", a.status, want, a.body)
+	answer := func(what string, ok func(status int) bool) error {
+		if !ok(a.status) {
+			return fmt.Errorf("%s: got %d (%s)", what, a.status, a.body)
 		}
 		return nil
+	}
+	sc.Step(`^the call should succeed$`, func() error {
+		return answer("success", func(status int) bool { return status >= 200 && status < 300 })
+	})
+	sc.Step(`^the call should be rejected as a conflict$`, func() error {
+		return answer("conflict", func(status int) bool { return status == http.StatusConflict })
+	})
+	sc.Step(`^the call should fail as unavailable$`, func() error {
+		return answer("unavailable", func(status int) bool { return status == http.StatusServiceUnavailable })
 	})
 	sc.Step(`^the answer should mention "([^"]*)"$`, func(text string) error {
 		if !strings.Contains(a.body, text) {

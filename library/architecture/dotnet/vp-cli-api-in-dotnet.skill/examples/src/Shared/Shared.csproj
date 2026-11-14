@@ -1,0 +1,4 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The error kinds: the lowest project, with no package, so the domain can
+       reference it and stay free of every framework. -->
+</Project>

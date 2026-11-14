@@ -16,6 +16,7 @@ In tg-bot-service, commands reached stores and clients directly, and one rule en
 # Selected variant
 [[#Service per infrastructure, domain services above it]]
 - Owner decision, 2026-10-17: a domain service holds reusable business logic and may call services for nested operations; a simple command may call a service directly.
+- Amended by the owner (2026-11-06): in a stack whose ORM maps the domain's entities (the entities form of `vp-postgres`, dotnet), the application's own store is not an external system behind a service; a command takes the repository's contract of an entity, and one command middleware turns the store's failures into error kinds ([entities-mapped-by-ef-core](library/architecture/dotnet/vp-postgres-in-dotnet.skill/adr/entities-mapped-by-ef-core.md)). A service still wraps one infrastructure for everything else.
 
 # Searched variants
 

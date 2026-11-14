@@ -1,8 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- The domain of the module: entities, domain services, the rule errors.
-       It references only Shared (the error kinds) and no package, so its rules
-       are tested by their scenarios alone. -->
+  <!-- The domain of the module: entities, their configurations (the tables the
+       module owns), domain services, the rule errors. It references Shared (the
+       error kinds) and EF Core's relational model API for the configurations
+       (tables, columns, indexes), never a provider: no connection and no I/O, so its rules are tested by their
+       scenarios alone. -->
   <ItemGroup>
     <ProjectReference Include="..\..\..\Shared\Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
   </ItemGroup>
 </Project>

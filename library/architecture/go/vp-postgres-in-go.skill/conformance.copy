@@ -1,6 +1,7 @@
 # The shared scenarios of the PostgreSQL variation point this example runs:
 # written by `make conformance-sync`, checked by test/check-conformance.sh.
 vp-postgres.skill/conformance/postgres examples/internal/infrastructure/postgres/features
+vp-postgres.skill/conformance/postgres-selector examples/internal/infrastructure/postgres/features
 base-plateau.skill/conformance/config examples/internal/config/features
 base-plateau.skill/conformance/entry examples/internal/api/core/entry/features
 base-plateau.skill/conformance/json-log examples/internal/logging/features

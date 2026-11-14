@@ -5,6 +5,7 @@
        transport; an API's middleware lives in App.Host/Api/{Api}/Middleware. -->
   <ItemGroup>
     <ProjectReference Include="..\Shared\Shared.csproj" />
+    <ProjectReference Include="..\Shared.Persistence\Shared.Persistence.csproj" />
     <ProjectReference Include="..\BuildingBlocks\BuildingBlocks.csproj" />
   </ItemGroup>
   <ItemGroup>
