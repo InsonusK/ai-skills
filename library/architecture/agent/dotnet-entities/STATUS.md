@@ -12,13 +12,13 @@ The plan, per `INVARIANTS.md` §5. One line per wave; the decisions log is `DECI
 | CLI-2 | the shared `postgres-application` scenarios name no entry point; Go/Python steps rebind | done (6c7bdadb), audited |
 | CLI-3 | `vp-postgres-in-dotnet` re-based on the CLI chain | done; audited; 155 scenarios pass on PostgreSQL |
 | CLI-4 | `vp-unit-of-work-in-dotnet` re-based (full copy of the PostgreSQL example) | done; audited; 178 scenarios pass on PostgreSQL |
-| CLI-5 | `vp-row-version-in-dotnet` re-based; `CompleteItem` a CLI action | — |
+| CLI-5 | `vp-row-version-in-dotnet` re-based; `CompleteItem` a CLI action | done; audited; 180 scenarios pass on PostgreSQL |
 
 The CLI pivot (owner, 2026-11-12): the database examples of dotnet run via a CLI, not the HTTP API — see `INVARIANTS.md` §7.
 
 Wave 2 stage 2 is delivered as planned below; the decisions it added are in `DECISIONS.md` (2026-11-12): the save under the caller's version by an untracked read and `UpdateAsync`, `INeverChanges` in `Shared.Persistence`, the recording repository of the handler's scenarios, the scoped override of the HTTP contract scenario, and the sample's whole-application scenarios in the example's own feature files.
 
-## Wave 2 stage 2 — vp-row-version-in-dotnet
+## Historical delivery before the CLI pivot — wave 2 stage 2
 
 Attaches to `vp-postgres-in-dotnet/examples` (a sibling of `vp-unit-of-work`, as the rows form's #292 did). The mechanics of #292 carry over; the layers change with the entities form: no rows, no service — the handler works over `IRepository<Item>`, and `DbUpdateConcurrencyException` becomes `ConcurrentChange` in `StoreFailuresMiddleware` (already there, `INVARIANTS.md` §4).
 

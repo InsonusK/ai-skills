@@ -1,6 +1,6 @@
 @type/infrastructure/db/postgres
 Feature: CompleteItem over the whole application
-  As a caller of the API
+  As a caller of the CLI
   I want an item completed only under the version I read
   So that a change another caller made meanwhile is never overwritten
 
@@ -9,7 +9,7 @@ Feature: CompleteItem over the whole application
     Given a migrated database for the application
     And the application is running
     And "buy milk" was added to the list "home"
-    When I complete the added item over HTTP with the version it answered
+    When I complete the added item with the version it answered
     Then the call should succeed
     And the answer should carry another version than the added item's
 
@@ -19,6 +19,6 @@ Feature: CompleteItem over the whole application
     And the application is running
     And "buy milk" was added to the list "home"
     And another connection changes the title of that item
-    When I complete the added item over HTTP with the version it answered
-    Then the call should be rejected as a conflict
+    When I complete the added item with the version it answered
+    Then the call should be rejected as a concurrent change
     And the log should have no error record

@@ -3,7 +3,7 @@
 # version over a table of notes, the INeverChanges mark, and the migration EF
 # Core writes for the row version (no DDL in the SQL: xmin is a system column),
 # and changes only the application over a table that changes - its entity, its
-# commands, its contract and entry points. No file of the store's mechanism
+# commands, its CLI resource and output. No file of the store's mechanism
 # changes: EF Core compares a row version an entity declares.
 base library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples
 # the entity carries its version; the configuration and the model snapshot follow it
@@ -18,12 +18,10 @@ change src/Modules/Todo/Todo.Commands/PlanItemsCommand.cs
 change src/Modules/Todo/Todo.Application/Commands/AddItemHandler.cs
 change src/Modules/Todo/Todo.Application/Commands/ListItemsHandler.cs
 change src/Modules/Todo/Todo.Application/Specifications/ItemsOfList.cs
-# the contract: an item's id and version, CompleteItem
-change docs/integration/api/todo/todo.proto
-change docs/integration/api/todo/todo.swagger.json
-# the entry points serve CompleteItem and answer ids and versions
-change src/App/App.Host/Api/Grpc/Endpoint/ItemsHandler.cs
-change src/App/App.Host/Api/Http/Endpoint/ListsHandler.cs
+# The CLI adds CompleteItem; persistent items carry ids and opaque versions.
+change src/App/App.Host/Api/Cli/Endpoint/ListsHandler.cs
+change src/App/App.Host.Tests/Steps/Cli/CliListsSteps.cs
+change src/App/App.Host.Tests/features/Cli/lists-in-dotnet.feature
 # the scenarios of the changed answers and of the whole application over its database
 change src/Modules/Todo/Todo.Application.Tests/Commands/Steps/ItemListsSteps.cs
 change src/Modules/Todo/Todo.Application.Tests/Commands/features/item-lists-in-dotnet.feature

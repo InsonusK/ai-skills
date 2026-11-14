@@ -2,12 +2,13 @@
 name: vp-row-version-in-dotnet
 description: The row version variation point in dotnet — an entity that changes has a uint Version configured IsRowVersion(), which Npgsql maps to xmin and EF Core compares in UpdateAsync, DeleteAsync, and UpdateRangeAsync and reads back, an entity that never changes is an INeverChanges of Shared.Persistence, the handler reads the entity untracked, saves it under the version the caller read, and DbUpdateConcurrencyException is the concurrent change the store failures middleware answers, and every item the API answers carries its id and its version as text
 whenToUse: when a dotnet application with vp-postgres-in-dotnet has a table whose rows change after they are created, when you add a command that changes such a row, or when you review how a dotnet handler saves a change
-updated: 20261112
+updated: 20261114
 tags:
   - stack/dotnet
   - framework/ef-core
   - concern/architecture
   - app-type/service
+  - app-type/cli
 ---
 
 # Goal
@@ -74,15 +75,15 @@ Throw the module's `Invalid` error (`TodoErrors.NoVersion()`) for a command that
 - Fix: `CompleteItemHandler` checks it first; `complete-item-in-dotnet.feature` proves the items are not read then.
 
 ### Carry the version as text through every answer
-Give every item the API answers its id and its version, `string version` in the proto contract, from `AddItem`, `ListItems`, and the change's own answer.
+Give every item the API answers its id and its version, opaque text in the CLI output, from `AddItem`, `ListItems`, and the change's own answer.
 - Violation: the contract typed by the row's `uint`; `AddItem` answering the title alone, so the caller cannot make its first change.
 - Risk: the caller has nothing to give back, or the contract breaks when the engine changes.
-- Fix: `ItemView` carries them from the handler to the entry point (`Id` and `Version` are null only for a planned item, which nothing keeps); `Message` of each entry point maps them.
+- Fix: `ItemView` carries them from the handler to the entry point (`Id` and `Version` are null only for a planned item, which nothing keeps); the CLI resource maps them.
 
 ### Run the shared scenarios
 Name both `conformance/` folders in [conformance.copy](./conformance.copy): the example is a full copy of the PostgreSQL one, so it runs those scenarios too.
 - Risk: a change of EF Core or of the base repository breaks the version check, and only these scenarios show it.
-- Fix: `make conformance-sync` writes the copies; `complete-item-in-dotnet.feature` of `App.Host.Tests` proves the whole application answers 409 for a completion under a version another connection moved.
+- Fix: `make conformance-sync` writes the copies; `complete-item-in-dotnet.feature` of `App.Host.Tests` proves the whole application exits 2 with a concurrent change for a completion under a version another connection moved.
 
 # Check list
 - [ ] Every entity of `AppDbContext` has a `uint` row version configured `IsRowVersion()`, or implements `INeverChanges`; the migration of each row version is generated.
@@ -97,4 +98,4 @@ A completion that another caller beat, with the example's real types:
 
 @import "./diagrams/example-flow.mmd" {as="mermaid"}
 
-- [examples/](./examples/README.md) — the PostgreSQL example with the row version attached: `CompleteItem` over gRPC and HTTP, proven in `src/Modules/Todo/Todo.Application.Tests/Commands/features/complete-item-in-dotnet.feature` and `src/App/App.Host.Tests/features/complete-item-in-dotnet.feature`.
+- [examples/](./examples/README.md) — the PostgreSQL example with the row version attached: `CompleteItem` as `lists complete`, proven in `src/Modules/Todo/Todo.Application.Tests/Commands/features/complete-item-in-dotnet.feature` and `src/App/App.Host.Tests/features/complete-item-in-dotnet.feature`.
