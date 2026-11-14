@@ -16,7 +16,7 @@ adr:
 
 # Goal
 - **The PostgreSQL variation point in Go** - A Go application that keeps every property of [vp-postgres](library/architecture/spec/vp-postgres.skill/vp-postgres.skill.md); this skill details its implementation for Go and restates none of its rules.
-- **Attached by the listed changes only** - Attaching it replaces the in-memory store of [vp-http-api-in-go](library/architecture/go/vp-http-api-in-go.skill/vp-http-api-in-go.skill.md)'s proto example and changes only the files [attach.allow](./attach.allow) names, which the repository's attach check verifies.
+- **Attached by the listed changes only** - Attaching it to [vp-http-api-in-go](library/architecture/go/vp-http-api-in-go.skill/vp-http-api-in-go.skill.md)'s proto example, whose lists live in the process, puts a service over the database where those lists were, so no handler changes, and changes only the files [attach.allow](./attach.allow) names, which the repository's attach check verifies.
 
 # Core Principle
 - **GORM behind one generic repository** - GORM maps the rows and builds the statements; `Repository[TRow]`, the selectors, and the translation of failures are ours. Decision recorded in [repository-over-gorm](./adr/repository-over-gorm.md).

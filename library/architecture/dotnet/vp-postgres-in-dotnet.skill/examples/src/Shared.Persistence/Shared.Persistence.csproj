@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The repository's contract of the service's own store: the interfaces the
+       domain and the handlers see, implemented by the store's project. Apart
+       from Shared, so an application with no store keeps Shared free of every
+       package; its one package, Ardalis.Specification, knows no EF Core. -->
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Ardalis.Specification" />
+  </ItemGroup>
+</Project>

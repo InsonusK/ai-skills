@@ -1,20 +1,19 @@
 using MediatR;
-using Todo.Application.Services;
 using Todo.Commands;
 using Todo.Domain.Entities;
 
 namespace Todo.Application.Commands;
 
 /// <summary>
-/// Handles <see cref="AddItemCommand"/>: an invalid title is the entity's invalid
-/// error, a title already in the list the service's conflict.
+/// Handles <see cref="AddItemCommand"/>: keeps the item in its list. An invalid
+/// title is the entity's invalid error, a title already in the list a conflict.
 /// </summary>
-public sealed class AddItemHandler(IItemLists lists) : IRequestHandler<AddItemCommand, AddItemResult>
+public sealed class AddItemHandler(KeptLists lists) : IRequestHandler<AddItemCommand, AddItemResult>
 {
-    public async Task<AddItemResult> Handle(AddItemCommand command, CancellationToken cancellationToken)
+    public Task<AddItemResult> Handle(AddItemCommand command, CancellationToken cancellationToken)
     {
         var item = new Item(command.Title);
-        await lists.AddAsync(command.ListId, item, cancellationToken);
-        return new AddItemResult(new ItemView(item.Title, item.Done));
+        lists.Add(command.ListId, item);
+        return Task.FromResult(new AddItemResult(new ItemView(item.Title, item.Done)));
     }
 }

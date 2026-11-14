@@ -1,17 +1,17 @@
 # The PostgreSQL variation point attaches to the proto example of the HTTP
-# variation point, the one that keeps its lists in memory: it deletes that
-# store and adds src/todo/infrastructure/postgres (the fixed code, the
-# application's tables and migrations), the migration job src/todo/migrate.py,
-# and alembic.ini. The base files it changes are the composition root, the
-# service over the store with its error and scenarios (the repository, and the
-# unavailable answer), and the project's build files.
+# variation point, whose lists live in the process (command/kept_lists.py): it
+# deletes those lists with their scenarios and adds the service over the
+# repository (src/todo/service, its scenarios shared as
+# postgres-item-lists-service), src/todo/infrastructure/postgres (the fixed
+# code, the application's tables and migrations), the migration job
+# src/todo/migrate.py, and alembic.ini. No handler changes: they take what they
+# need of the item lists as a protocol, which the service has. The base files it
+# changes are the composition root and the project's build files.
 base library/architecture/python/vp-http-api-in-python.skill/examples-proto
 change src/todo/main.py
-change src/todo/service/item_lists.py
-change src/todo/service/errors.py
-change src/todo/service/features/item-lists-service.feature
-change src/todo/service/test/item_lists_steps_test.py
+delete src/todo/command/kept_lists.py
+delete src/todo/command/features/kept-lists-in-python.feature
+delete src/todo/command/test/kept_lists_steps_test.py
 change pyproject.toml
 change Makefile
 change README.md
-delete src/todo/infrastructure/memory/*

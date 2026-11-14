@@ -1,23 +1,20 @@
-# The PostgreSQL variation point attaches to the proto example of the HTTP
-# variation point, the one that keeps its lists in memory: it deletes that store
-# and adds src/Infrastructure/Postgres, the migration job src/App/App.Migrate,
-# and the command scope in BuildingBlocks. The base files it changes are the
-# composition root and its project, the module's service with its registration
-# and scenarios (the store's namespace, and the unavailable answer), the module's
-# errors, the host's scenarios project, and the solution's build files.
-base library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples-proto
+# PostgreSQL attaches to the CLI example. The sample adds a persistent lists
+# resource and commands; the entity gains its key, list, mapping and specs.
+base library/architecture/dotnet/vp-cli-api-in-dotnet.skill/examples
 change src/App/App.Host/Program.cs
 change src/App/App.Host/App.Host.csproj
-change src/App/App.Host.Tests/App.Host.Tests.csproj
-change src/Modules/Todo/Todo.Application/Todo.Application.csproj
+change src/App/App.Host/Api/Cli/Commands.cs
+change src/App/App.Host.Tests/Steps/Cli/CliItemsSteps.cs
 change src/Modules/Todo/Todo.Application/TodoModule.cs
-change src/Modules/Todo/Todo.Application/Services/ItemListsService.cs
-change src/Modules/Todo/Todo.Application.Tests/Services/Steps/ItemListsServiceSteps.cs
-change src/Modules/Todo/Todo.Application.Tests/Services/features/item-lists-service.feature
-change src/Modules/Todo/Todo.Application.Tests/Todo.Application.Tests.csproj
-change src/Modules/Todo/Todo.Domain/Errors/TodoErrors.cs
+change src/App/App.Host.Tests/App.Host.Tests.csproj
+change src/Middleware/Middleware.csproj
+change src/Modules/Todo/Todo.Domain/Todo.Domain.csproj
+change src/Modules/Todo/Todo.Domain/Entities/Item.cs
+change src/Modules/Todo/Todo.Application/Todo.Application.csproj
 change Directory.Packages.props
 change Todo.slnx
 change Makefile
 change README.md
-delete src/Infrastructure/Memory/*
+change src/Modules/Todo/Todo.Domain/Errors/TodoErrors.cs
+change src/Modules/Todo/Todo.Application.Tests/Todo.Application.Tests.csproj
+change src/App/App.Host.Tests/Steps/Cli/CliWorld.cs

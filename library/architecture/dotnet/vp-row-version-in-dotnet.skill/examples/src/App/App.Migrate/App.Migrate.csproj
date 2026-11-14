@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The job that applies the migrations and ends; published beside App.Host,
+       it is the image's /app/migrate. Only App.Host and this project are
+       composition roots. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>migrate</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Postgres\Postgres\Postgres.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+  </ItemGroup>
+</Project>

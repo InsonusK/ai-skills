@@ -31,5 +31,3 @@ vp-http-api.skill/conformance/proto-http-items examples-proto/src/todo/api/http/
 vp-http-api.skill/conformance/proto-http-lists examples-proto/src/todo/api/http/endpoint/features
 vp-http-api.skill/conformance/proto-grpc-items examples-proto/src/todo/api/grpc/endpoint/features
 vp-http-api.skill/conformance/proto-item-lists examples-proto/src/todo/command/features
-vp-http-api.skill/conformance/proto-item-lists-service examples-proto/src/todo/service/features
-vp-http-api.skill/conformance/proto-memory-lists examples-proto/src/todo/infrastructure/memory/features
