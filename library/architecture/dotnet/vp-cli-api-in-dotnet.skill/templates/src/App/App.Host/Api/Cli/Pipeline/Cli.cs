@@ -1,6 +1,8 @@
 // Source: skill vp-cli-api-in-dotnet
 
 using System.Diagnostics;
+using System.CommandLine;
+using System.CommandLine.Parsing;
 using System.Text;
 using BuildingBlocks.Logging;
 using Microsoft.Extensions.Logging;
@@ -68,117 +70,134 @@ public static class Cli
 
         async Task<Exception?> DispatchAsync()
         {
-            if (args.Count == 0 || IsHelp(args[0]))
+            // System.CommandLine owns tokenization, command selection and option
+            // parsing. We render help and errors ourselves to keep the catalog's
+            // output, logging and exit-code contract; no parser action is invoked.
+            var root = new RootCommand("the command line of the application");
+            root.SetAction(_ => 0); // a group without a subcommand shows our help
+            root.Options.Clear();
+            root.Directives.Clear();
+            var help = new Option<bool>("--help", "-h") { Recursive = true };
+            var showVersion = new Option<bool>("--version");
+            root.Options.Add(help);
+            root.Options.Add(showVersion);
+            var groups = new Dictionary<Command, Resource>();
+            var actions = new Dictionary<Command, ActionBinding>();
+            foreach (var resource in resources)
             {
-                RootHelp(printed, name, resources);
+                var group = new Command(resource.Name, resource.Short);
+                group.SetAction(_ => 0);
+                root.Subcommands.Add(group);
+                groups.Add(group, resource);
+                foreach (var action in resource.Actions)
+                {
+                    var command = new Command(action.Use, action.Short);
+                    group.Subcommands.Add(command);
+                    var options = new Dictionary<CliFlag, Option<string[]>>();
+                    foreach (var flag in action.Flags)
+                    {
+                        var option = ValuesOption(flag.Name, flag.Description);
+                        option.Required = flag.Required;
+                        command.Options.Add(option);
+                        options.Add(flag, option);
+                    }
+                    var output = ValuesOption(OutputFlag, "output format: json or text");
+                    command.Options.Add(output);
+                    actions.Add(command, new ActionBinding(resource, action, options, output));
+                }
+            }
+            // The library drops an empty value attached by '='. Supplying it
+            // as its own argument preserves an explicit empty string.
+            var input = args.SelectMany(arg => arg.StartsWith("--", StringComparison.Ordinal) && arg.IndexOf('=') == arg.Length - 1
+                ? new[] { arg[..^1], "" } : new[] { arg }).ToArray();
+            var parsed = root.Parse(input, new ParserConfiguration { ResponseFileTokenReplacer = null });
+            var selected = parsed.CommandResult.Command;
+            actions.TryGetValue(selected, out var binding);
+            groups.TryGetValue(selected, out var selectedGroup);
+            actionPath = binding is not null ? $"{name} {binding.Resource.Name} {binding.Action.Use}"
+                : selectedGroup is not null ? $"{name} {selectedGroup.Name}" : name;
+
+            if ((parsed.Errors.Count == 0 && parsed.GetValue(help)) || args.Any(arg => arg is "--help" or "-h") || args.Count == 0 ||
+                (selectedGroup is not null && parsed.Errors.Count == 0))
+            {
+                if (binding is not null) ActionHelp(printed, actionPath, binding.Action);
+                else if (selectedGroup is not null) ResourceHelp(printed, name, selectedGroup);
+                else RootHelp(printed, name, resources);
                 return null;
             }
-            if (args is ["--version"])
+            // Unlike our CLI contract, the library accepts an unknown --flag
+            // as a string option's value. Validate raw option names without
+            // consuming tokens; --text=--value still carries an explicit value.
+            var declared = binding?.Options.Keys.Select(flag => "--" + flag.Name).ToHashSet() ?? [];
+            declared.Add("--help");
+            if (binding is not null) declared.Add("--" + OutputFlag);
+            if (selected == root) declared.Add("--version");
+            var unknown = args.FirstOrDefault(arg => arg.StartsWith("--", StringComparison.Ordinal) && !declared.Contains(arg.Split('=', 2)[0]));
+            if (unknown is not null) return Usage($"unknown flag: {unknown} (see {actionPath} --help)");
+
+            // Array arity is checked across repeated occurrences by the
+            // library. Our flags require one value for each occurrence.
+            if (binding is not null)
             {
-                printed.WriteLine($"{name} version " + version); // concatenation: the templates check fills braces
+                var valueOptions = binding.Options.Values.Select(option => option.Name).Append(binding.Output.Name).ToHashSet();
+                var tokens = parsed.Tokens;
+                for (var i = 0; i < tokens.Count; i++)
+                {
+                    if (tokens[i].Type == TokenType.Option && valueOptions.Contains(tokens[i].Value) &&
+                        (i + 1 == tokens.Count || tokens[i + 1].Type != TokenType.Argument))
+                    {
+                        return Usage($"{tokens[i].Value} wants a value (see {actionPath} --help)");
+                    }
+                }
+            }
+
+            if (parsed.Errors.Count > 0)
+            {
+                var messages = parsed.Errors.Select(error => error.Message).ToList();
+                // Keep the shared usage vocabulary while retaining the parser's
+                // detailed diagnostics for unknown tokens and missing values.
+                if (binding is not null)
+                {
+                    messages.AddRange(binding.Options.Where(pair => pair.Key.Required && parsed.GetResult(pair.Value) is not { Implicit: false })
+                        .Select(pair => $"--{pair.Key.Name} is required"));
+                }
+                return Usage(string.Join(" ", messages) + $" (see {actionPath} --help)");
+            }
+            if (parsed.GetValue(showVersion))
+            {
+                printed.WriteLine($"{name} version " + version);
                 return null;
             }
-            var resource = resources.FirstOrDefault(known => known.Name == args[0]);
-            if (resource is null)
+            if (binding is null) return Usage($"choose an action (see {actionPath} --help)");
+
+            var flags = new CliFlags();
+            foreach (var (flag, option) in binding.Options)
             {
-                return Usage($"unknown command \"{args[0]}\" (see {name} --help)");
+                foreach (var value in parsed.GetValue(option) ?? []) flags.Give(flag.Name, value);
             }
-            var rest = args.Skip(1).ToList();
-            if (rest.Count == 0 || IsHelp(rest[0]))
+            var outputFormat = (parsed.GetValue(binding.Output) ?? []).LastOrDefault() ?? OutputJson;
+            if (outputFormat is not (OutputJson or OutputText))
             {
-                ResourceHelp(printed, name, resource);
-                return null;
-            }
-            var action = resource.Actions.FirstOrDefault(known => known.Use == rest[0]);
-            if (action is null)
-            {
-                return Usage($"unknown action \"{rest[0]}\" (see {name} {resource.Name} --help)");
-            }
-            actionPath = $"{name} {resource.Name} {action.Use}";
-            var given = rest.Skip(1).ToList();
-            if (given.Any(IsHelp))
-            {
-                ActionHelp(printed, actionPath, action);
-                return null;
-            }
-            var (flags, output, parseError) = ParseFlags(given, action, actionPath);
-            if (parseError is not null)
-            {
-                return parseError;
-            }
-            var missing = action.Flags.FirstOrDefault(flag => flag.Required && !flags.Has(flag.Name));
-            if (missing is not null)
-            {
-                return Usage($"--{missing.Name} is required");
+                return Usage($"--output must be json or text, not \"{outputFormat}\"");
             }
             RunLog.Received(logger, actionPath, flags.Given());
-            return await action.RunAsync(flags, output, printed, stopping);
+            return await binding.Action.RunAsync(flags, outputFormat, printed, stopping);
         }
-
-        static bool IsHelp(string arg) => arg is "--help" or "-h";
 
         static ErrorKindException Usage(string message) => new(ErrorKind.Invalid, message);
     }
 
-    // The flags of one action: its own, and --output. An unknown flag or a
-    // flag without its value is a usage error.
-    private static (CliFlags Given, string Output, ErrorKindException? Error) ParseFlags(
-        IReadOnlyList<string> args, CliAction action, string actionPath)
+    // One value per occurrence, including repeated flags. Arrays retain their
+    // order; CliFlags.Value returns the last value of a scalar flag.
+    private static Option<string[]> ValuesOption(string name, string description) => new("--" + name)
     {
-        var flags = new CliFlags();
-        var output = OutputJson;
-        for (var i = 0; i < args.Count; i++)
-        {
-            var arg = args[i];
-            string flag;
-            string? value;
-            if (arg.StartsWith("--", StringComparison.Ordinal))
-            {
-                var equals = arg.IndexOf('=');
-                flag = equals < 0 ? arg[2..] : arg[2..equals];
-                value = equals < 0 ? null : arg[(equals + 1)..];
-            }
-            else
-            {
-                return (flags, output, new ErrorKindException(ErrorKind.Invalid, $"unexpected argument \"{arg}\" (see {actionPath} --help)"));
-            }
-            if (flag == OutputFlag)
-            {
-                var (outputValue, outputError) = value is null ? Next(args, ref i, flag, actionPath) : (value, null);
-                if (outputError is not null)
-                {
-                    return (flags, output, outputError);
-                }
-                if (outputValue is not (OutputJson or OutputText))
-                {
-                    return (flags, output, new ErrorKindException(ErrorKind.Invalid, $"--output must be json or text, not \"{outputValue}\""));
-                }
-                output = outputValue;
-                continue;
-            }
-            var declared = action.Flags.FirstOrDefault(known => known.Name == flag);
-            if (declared is null)
-            {
-                return (flags, output, new ErrorKindException(ErrorKind.Invalid, $"unknown flag: --{flag} (see {actionPath} --help)"));
-            }
-            var (flagValue, valueError) = value is null ? Next(args, ref i, flag, actionPath) : (value, null);
-            if (valueError is not null)
-            {
-                return (flags, output, valueError);
-            }
-            flags.Give(flag, flagValue!);
-        }
-        return (flags, output, null);
-    }
+        Description = description,
+        Arity = ArgumentArity.OneOrMore,
+        AllowMultipleArgumentsPerToken = false,
+    };
 
-    private static (string? Value, ErrorKindException? Error) Next(IReadOnlyList<string> args, ref int i, string flag, string actionPath)
-    {
-        if (i + 1 < args.Count && !args[i + 1].StartsWith("--", StringComparison.Ordinal))
-        {
-            return (args[++i], null);
-        }
-        return (null, new ErrorKindException(ErrorKind.Invalid, $"--{flag} wants a value (see {actionPath} --help)"));
-    }
+    private sealed record ActionBinding(Resource Resource, CliAction Action,
+        Dictionary<CliFlag, Option<string[]>> Options, Option<string[]> Output);
 
     private static void RootHelp(TextWriter output, string name, IReadOnlyList<Resource> resources)
     {

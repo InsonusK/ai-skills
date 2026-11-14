@@ -7,6 +7,9 @@ runs in a new process; a list outlives it. The unit of work wraps every command:
 The import scenarios send this sample command through ISender; the CLI keeps
 the PostgreSQL example's actions.
 
+The CLI uses System.CommandLine 2.0.14 for parsing; its copied adapter keeps the
+application's JSON/text output, error kinds, logs and exit codes.
+
 ```bash
 export DATABASE_DSN='Host=localhost;Database=todo;Username=todo;Password=todo'
 make init

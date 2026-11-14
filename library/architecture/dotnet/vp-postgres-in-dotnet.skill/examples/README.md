@@ -4,6 +4,9 @@ The base plateau with the CLI and PostgreSQL variation points: EF Core maps
 entities in their modules, and handlers use Ardalis repositories. Every action
 runs in a new process; a list outlives it.
 
+The CLI uses System.CommandLine 2.0.14 for parsing; its copied adapter keeps the
+application's JSON/text output, error kinds, logs and exit codes.
+
 ```bash
 export DATABASE_DSN='Host=localhost;Database=todo;Username=todo;Password=todo'
 make init

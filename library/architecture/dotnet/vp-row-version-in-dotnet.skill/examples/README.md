@@ -7,6 +7,9 @@ runs in a new process; a list outlives it. The row version variation point adds
 answer. Give both back when completing it; a stale version exits 2 as a
 concurrent change, without overwriting the newer row.
 
+The CLI uses System.CommandLine 2.0.14 for parsing; its copied adapter keeps the
+application's JSON/text output, error kinds, logs and exit codes.
+
 ```bash
 export DATABASE_DSN='Host=localhost;Database=todo;Username=todo;Password=todo'
 make init

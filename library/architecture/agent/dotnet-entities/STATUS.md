@@ -13,6 +13,7 @@ The plan, per `INVARIANTS.md` §5. One line per wave; the decisions log is `DECI
 | CLI-3 | `vp-postgres-in-dotnet` re-based on the CLI chain | done; audited; 155 scenarios pass on PostgreSQL |
 | CLI-4 | `vp-unit-of-work-in-dotnet` re-based (full copy of the PostgreSQL example) | done; audited; 178 scenarios pass on PostgreSQL |
 | CLI-5 | `vp-row-version-in-dotnet` re-based; `CompleteItem` a CLI action | done; audited; 180 scenarios pass on PostgreSQL |
+| CLI-6 | replace copied parsing logic with System.CommandLine across the CLI chain | done; audited; all four examples pass |
 
 The CLI pivot (owner, 2026-11-12): the database examples of dotnet run via a CLI, not the HTTP API — see `INVARIANTS.md` §7.
 
@@ -47,10 +48,10 @@ PostgreSQL 18 instance; each persistence CLI action launched a separate OS proce
 |---|---:|---|
 | base plateau | 53 | 0 / 0 |
 | HTTP proto | 159 | 0 / 0 |
-| CLI | 73 | 0 / 0 |
-| PostgreSQL | 155 | 0 / 0 |
-| unit of work | 178 | 0 / 0 |
-| row version | 180 | 0 / 0 |
+| CLI | 93 | 0 / 0 |
+| PostgreSQL | 175 | 0 / 0 |
+| unit of work | 198 | 0 / 0 |
+| row version | 200 | 0 / 0 |
 
 Go's PostgreSQL and unit of work examples passed `make test`. Python's same
 examples passed 240 and 272 scenarios, respectively. Their entry points remain HTTP.
@@ -67,3 +68,17 @@ Every CLI wave had a separate fresh-eyes audit. Confirmed issues fixed: output
 FormatException classification, fake-handler coverage of the lists resource,
 its CLI tag, and obsolete documentation paths. Infrastructure namespaces stay
 unchanged by the owner's decision of 2026-11-14.
+
+## CLI-6 — System.CommandLine
+
+Owner decision of 2026-11-14: the CLI and all three database examples use
+System.CommandLine 2.0.14. Templates and host package references are checked
+mechanically. Shared conformance features are unchanged; 20 dotnet-only parser
+scenarios add coverage per example. All 666 scenarios in these four examples
+passed, with no failures or skips. Base/HTTP and Go/Python results above remain
+from the preceding verification; those implementations did not change in CLI-6.
+
+The independent audit confirmed parsing, package propagation and documentation.
+Issues found and fixed: a missing value in a repeated flag, explicit empty values,
+and malformed bool options. `test/test.sh`, the chain checker and the testing
+catalog checker passed after the migration.

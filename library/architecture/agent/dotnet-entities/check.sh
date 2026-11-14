@@ -52,6 +52,8 @@ for name in chain[:chain.index(through)+1]:
         resource_name = resource.stem.removesuffix('Handler').lower()
         features = example/'src/App/App.Host.Tests/features/Cli'
         check(any(features.glob(f'{resource_name}*.feature')), f'{name}: no feature for CLI resource {resource_name}')
+    check('PackageReference Include="System.CommandLine"' in (example/'src/App/App.Host/App.Host.csproj').read_text(), f'{name}: missing parser dependency')
+    check('PackageVersion Include="System.CommandLine" Version="2.0.14"' in (example/'Directory.Packages.props').read_text(), f'{name}: parser version drift')
     for source in (skill/'templates').rglob('*.cs'):
         target = example/source.relative_to(skill/'templates')
         # templates use no placeholders in fixed code

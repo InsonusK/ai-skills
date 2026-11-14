@@ -59,6 +59,7 @@ public sealed class CapturedLogs : ILoggerProvider
 /// </summary>
 [Binding]
 [Scope(Feature = "Command line")]
+[Scope(Feature = "Command line parsing in dotnet")]
 [Scope(Feature = "items commands")]
 [Scope(Feature = "lists commands in dotnet")]
 public sealed class CliWorld

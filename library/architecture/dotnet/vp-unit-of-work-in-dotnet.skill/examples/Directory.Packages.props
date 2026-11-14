@@ -33,6 +33,11 @@
     <PackageVersion Include="AspNetCore.HealthChecks.NpgSql" Version="9.0.0" />
   </ItemGroup>
 
+  <!-- CLI parsing; the adapter keeps the catalog output and exit-code contract. -->
+  <ItemGroup>
+    <PackageVersion Include="System.CommandLine" Version="2.0.14" />
+  </ItemGroup>
+
   <!-- Scenarios -->
   <ItemGroup>
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />

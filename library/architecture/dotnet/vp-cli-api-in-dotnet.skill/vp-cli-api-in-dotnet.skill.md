@@ -1,12 +1,14 @@
 ---
 name: vp-cli-api-in-dotnet
-description: The CLI API variation point in dotnet — Api/Cli/Pipeline copied from templates (Run building the command line with --version and help at every level, usage errors as the invalid kind, a crash of the action's glue as a failure with no kind, the generic command adapter with --output json|text, the run log), one {Resource}Handler per resource in Api/Cli/Endpoint, Commands.cs with the endpoints and the entry factory, and the startup entry replaced in Program.cs
+description: The CLI API variation point in dotnet — Api/Cli/Pipeline copied from templates (System.CommandLine parsing the command tree with --version and help at every level, usage errors as the invalid kind, a crash of the action's glue as a failure with no kind, the generic command adapter with --output json|text, the run log), one {Resource}Handler per resource in Api/Cli/Endpoint, Commands.cs with the endpoints and the entry factory, and the startup entry replaced in Program.cs
 whenToUse: when a dotnet application built on the base plateau must be run from a command line, when you offer a new command as an action of such an application, or when you review its Api/Cli package
 updated: 20261114
 tags:
   - stack/dotnet
   - concern/architecture
   - app-type/cli
+adr:
+  - adr/system-commandline-for-parsing.md
 ---
 
 # Goal
@@ -14,6 +16,7 @@ tags:
 - **Attached by the listed changes only** - Attaching it adds files and changes only what [attach.allow](./attach.allow) names, which the repository's attach check verifies against [base-plateau-in-dotnet](library/architecture/dotnet/base-plateau-in-dotnet.skill/base-plateau-in-dotnet.skill.md)'s example.
 
 # Core Principle
+- **Library parsing, catalog behavior** - System.CommandLine parses commands and flags; the copied adapter controls help, output, error kinds and logging without invoking parser actions. Decision recorded in [system-commandline-for-parsing](./adr/system-commandline-for-parsing.md).
 - **Copied once, written per command** - `Pipeline/` is copied from templates and never edited; per command the application writes, in its resource's file of `Endpoint/`, a flag list, a `read`, an output type with `encode`, and a `text`.
 - **MediatR is the way to the handlers** - Each endpoint's handler takes `ISender` and sends the command, so every command middleware runs; the entry itself takes no list of middleware.
 
@@ -31,6 +34,11 @@ src/App/App.Host/Api/Cli/
 # Rule
 
 ## MUST
+
+### Install the parsing dependency
+Add `System.CommandLine` to the host's package references and pin version `2.0.14` in `Directory.Packages.props`, as the example does.
+- Risk: the copied pipeline cannot compile without its parsing library, or examples silently use different parser behavior.
+- Fix: keep the host reference and central version together; run all CLI scenarios when updating the package.
 
 ### Copy the pipeline from templates
 Copy [Cli.cs](./templates/src/App/App.Host/Api/Cli/Pipeline/Cli.cs), [CliCommand.cs](./templates/src/App/App.Host/Api/Cli/Pipeline/CliCommand.cs), and [RunLog.cs](./templates/src/App/App.Host/Api/Cli/Pipeline/RunLog.cs) to `src/App/App.Host/Api/Cli/Pipeline/`, unchanged.

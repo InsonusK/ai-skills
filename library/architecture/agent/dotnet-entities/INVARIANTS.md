@@ -78,3 +78,12 @@ The database examples of dotnet stop demonstrating through the HTTP API: their A
 - The DB examples then hold no gRPC/HTTP entry point, no proto, no swagger: their test suites shrink to the CLI, the application over its database, and the conformance copies that stay.
 - `vp-unit-of-work-in-dotnet` is re-based with `vp-postgres-in-dotnet`: its example is a full copy of it.
 - `vp-row-version-in-dotnet`'s sample is `CompleteItem` as a CLI action; the contract, the entry points, and the scoped contract override of the HTTP wave go away.
+
+## 8. System.CommandLine (owner, 2026-11-14)
+
+- The CLI adapter uses the stable System.CommandLine package to parse the command
+  tree, flags and repeated values. Resource definitions, JSON/text output, help,
+  error kinds, run logs and EntryRunner exit codes keep their existing contract.
+- The copied pipeline remains identical in the CLI and three database examples;
+  each host references the centrally pinned package. Shared conformance copies
+  stay unchanged, and the four examples must pass their scenarios.

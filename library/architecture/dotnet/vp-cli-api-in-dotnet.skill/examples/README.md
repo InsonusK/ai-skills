@@ -4,6 +4,9 @@ The base plateau in dotnet with the CLI API variation point attached: the proces
 command per call as `todo {resource} {action} [flags]`, prints the result as one JSON line
 (`--output text` for a person), writes errors on stderr, and exits by the error kind.
 
+The CLI uses System.CommandLine 2.0.14 for parsing; its copied adapter keeps the
+application's JSON/text output, error kinds, logs and exit codes.
+
 ```bash
 make init    # once: the packages
 make run ARGS="items plan --title 'buy milk' --title 'walk the dog'"   # {"items":[{"title":"buy milk","done":false},...]}

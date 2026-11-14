@@ -8,3 +8,5 @@ change README.md
 delete src/App/App.Host/Api/Startup/*
 delete src/App/App.Host.Tests/features/startup.feature
 delete src/App/App.Host.Tests/Steps/StartupSteps.cs
+change Directory.Packages.props
+change src/App/App.Host/App.Host.csproj

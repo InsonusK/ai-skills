@@ -87,7 +87,7 @@ the `spec/` skills come along because every stack skill links its spec.
 | — | error kinds (`library/develop/core/error-kinds`) | ✅ | ✅ (exceptions) | ✅ (exceptions) |
 | — | health (`vp-health`, `:8081`) + one runner for every entry point (`entry.RunAll`) | ✅ | ✅ | ✅ (asyncio, no dependency) |
 | 1c-2 | HTTP form of a gRPC contract (`vp-http-api`, proto mode) | ✅ | ✅ | ✅ |
-| 1d | API: CLI (`vp-cli-api`; Go cobra, Python click) | ✅ | ✅ | ✅ |
+| 1d | API: CLI (`vp-cli-api`; Go cobra, dotnet System.CommandLine, Python click) | ✅ | ✅ | ✅ |
 | — | logging: one logger, payload attribute, base handler drops it; every entry point logs its calls; `vp-logging` masks and writes the payload | ✅ | base ✅ | ✅ |
 | — | extension of the base (`base-plateau-extension`): command registry, middleware lists for commands and entries, one directory per middleware, sample access VP | ✅ | ✅ | ✅ |
 | 2 | clients (`develop/core/api-client`): HTTP (`vp-http-client`), gRPC (`vp-grpc-client`) | HTTP ✅, gRPC ✅ (buf managed mode, bufconn mock; one `client/core/outcome` for every transport) | HTTP ✅, gRPC ✅ (one `Client.Abstractions` for every transport; mock through a call invoker) | HTTP ✅ (httpx2, `MockTransport`; one `outcomes.py` for every transport), gRPC ✅ (`grpc.aio`, the mock on a loopback server) |

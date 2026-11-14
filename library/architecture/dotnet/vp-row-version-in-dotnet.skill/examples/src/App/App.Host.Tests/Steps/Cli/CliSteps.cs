@@ -49,6 +49,7 @@ public sealed class EchoFake
 /// </summary>
 [Binding]
 [Scope(Feature = "Command line")]
+[Scope(Feature = "Command line parsing in dotnet")]
 public sealed class CliSteps(CliWorld world)
 {
     private readonly EchoFake _echo = new();
