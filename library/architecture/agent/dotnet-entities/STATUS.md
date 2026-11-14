@@ -37,3 +37,33 @@ Attaches to `vp-postgres-in-dotnet/examples` (a sibling of `vp-unit-of-work`, as
 
 - Every dotnet example in scope passes `make test` on PostgreSQL; Go and Python examples pass unchanged.
 - `test/test.sh` and `library/testing/agent/check.sh` pass.
+
+## Verification — 2026-11-14
+
+Every example below passed `make test`. Database scenarios ran on an isolated
+PostgreSQL 18 instance; each persistence CLI action launched a separate OS process.
+
+| dotnet example | Passed | Skipped / failed |
+|---|---:|---|
+| base plateau | 53 | 0 / 0 |
+| HTTP proto | 159 | 0 / 0 |
+| CLI | 73 | 0 / 0 |
+| PostgreSQL | 155 | 0 / 0 |
+| unit of work | 178 | 0 / 0 |
+| row version | 180 | 0 / 0 |
+
+Go's PostgreSQL and unit of work examples passed `make test`. Python's same
+examples passed 240 and 272 scenarios, respectively. Their entry points remain HTTP.
+
+Repository gates passed:
+
+- `bash library/architecture/agent/dotnet-entities/check.sh`: chain, allow lists,
+  skill links, fixed templates, conformance copies, CLI resource coverage and diagrams.
+- `bash test/test.sh`: link direction, attach checks, 51 diagrams, 240 template
+  pairs, 771 conformance copies and `aism sync` (807 skills, two targets).
+- `bash library/testing/agent/check.sh`: all checks passed.
+
+Every CLI wave had a separate fresh-eyes audit. Confirmed issues fixed: output
+FormatException classification, fake-handler coverage of the lists resource,
+its CLI tag, and obsolete documentation paths. Infrastructure namespaces stay
+unchanged by the owner's decision of 2026-11-14.

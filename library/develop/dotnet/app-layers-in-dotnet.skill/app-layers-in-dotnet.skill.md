@@ -2,7 +2,7 @@
 name: app-layers-in-dotnet
 description: The application layers in dotnet — one project per layer of each module (Domain, Commands, Application) plus Shared, BuildingBlocks, App.Host, and the repository's contract in Shared.Persistence for the service's own store, an Abstractions and an implementation project per other infrastructure, project references that let the compiler hold the direction of the calls, entry points and other modules that see only a module's Commands, service interfaces declared beside their consumer, and entities that guard their state
 whenToUse: when you design a dotnet application or feature, when you add or change a dotnet entry point, command, handler, entity, or domain service, or when you review such a change
-updated: 20261031
+updated: 20261114
 tags:
   - stack/dotnet
   - concern/architecture
@@ -65,7 +65,7 @@ Give each project only these references, so a call against [app-layers](library/
 |---|---|
 | `Shared` | nothing — no project, no package |
 | `Shared.Persistence` | `Shared`; the package `Ardalis.Specification`, which knows no EF Core |
-| `{Module}.Domain` | `Shared`; `Microsoft.EntityFrameworkCore.Relational` (the model API, no provider) when the module keeps data |
+| `{Module}.Domain` | `Shared`; `Microsoft.EntityFrameworkCore.Relational` (the model API, no provider) when the module keeps data; `Shared.Persistence` for the `INeverChanges` mark when using row version |
 | `{Module}.Commands` | the package `MediatR.Contracts`; `Shared` for the log marks (`[LogMask]`, `[LogOmit]`) of a command's fields |
 | `{Module}.Application` | `{Module}.Commands`, `{Module}.Domain`, `MediatR`; `Shared.Persistence` when the module keeps data; the `{Other}.Commands` of a module it calls; the `{Infra}.Abstractions` its services use, never a store's project |
 | `{Infra}.Abstractions` | `Shared` at most — no package of the technique; an `{Api}.Abstractions` also `Client.Abstractions`, the outcomes every client reports |
@@ -135,7 +135,7 @@ Api/{Transport}/
 │   └── ...          adapter, one file per wrapper around every call (logging, recovery)
 ├── Endpoint/        one class per resource: {Resource}Handler (ItemsHandler), mapping its operations
 └── Routes.cs        the registration: every {Resource}Handler, and the method that runs the entry
-                     (Services.cs for gRPC)
+                     (Services.cs for gRPC, Commands.cs for CLI)
 ```
 
 - Violation: a resource's routes in `Pipeline/`; a wrapper added inside the server's file.
@@ -157,7 +157,7 @@ Write the fake of the layer below as a small class in the test project implement
 # Check list
 - [ ] Every layer is in its project and folder per [One project per layer](#one-project-per-layer); the code the entry points share is in `App.Host/Api/Core/`.
 - [ ] Every project has only the references of [Reference only downward](#reference-only-downward).
-- [ ] Another module is called only by its commands; no project outside a module references its `Application` or `Domain`.
+- [ ] Another module is called only by its commands; `App.Host` references `Application` for registration, and the store references `Domain` for mapping, as [Reference only downward](#reference-only-downward) permits.
 - [ ] A handler reaches its module's entities through `IRepository<T>`; configurations are in the module's Domain, specifications in its Application.
 - [ ] Each service interface is in its consumer's project (`Application/Services`, or `Domain/Services` for a domain service); each infrastructure interface is in `{Infra}.Abstractions`; implementations are built only in `// [services]`.
 - [ ] Code under `App.Host/Api` uses only `{Module}.Commands`, `ISender`, `Shared`, and `BuildingBlocks`.

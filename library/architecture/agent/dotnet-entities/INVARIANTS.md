@@ -27,7 +27,7 @@ The anchor document for mapping the domain's entities in dotnet with EF Core and
 | Repository in memory, for the handlers' scenarios | `Postgres.Testing/InMemoryRepository<T>`, the same interfaces |
 
 - A handler takes `IRepository<T>` (or `IReadRepository<T>` when it only reads), loads, calls the entity's methods, and saves. No service stands between a handler and its own database; a service stays for another system's API (`Client`).
-- The HTTP variation point adds a way to call the application, not a store: its proto example keeps the lists in the process (`KeptLists`), with no repository and no Ardalis. Attaching the database turns those sample handlers into handlers over `IRepository<Item>`; a handler written over the repository changes for no store.
+- The HTTP variation point adds a way to call the application: its proto example keeps the lists in the process (`KeptLists`), with no repository and no Ardalis. The database chain uses the CLI base (§7), adding list commands whose handlers take `IRepository<Item>`; a handler written over the repository changes for no store.
 - A rule over several rows (a title unique in its list) is a unique index; the handler checks it first for the rule's message.
 - `Postgres.Abstractions`, the rows, and `IItemLists` go away.
 
