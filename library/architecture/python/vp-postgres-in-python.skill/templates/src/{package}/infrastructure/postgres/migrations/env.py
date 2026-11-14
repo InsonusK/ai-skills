@@ -12,9 +12,15 @@ from {package}.infrastructure.postgres.config import load_config
 from {package}.infrastructure.postgres.tables import Row
 
 
+def include(item: object, name: str | None, kind: str, reflected: bool, compared_to: object) -> bool:
+    """Leaves out a system column, as a row's version (xmin) is: the engine
+    keeps it, no migration makes it, and no table lists it."""
+    return not (kind == "column" and getattr(item, "system", False))
+
+
 def run(connection: Connection) -> None:
     # compare_type: a column whose type changed is a change of its own.
-    context.configure(connection=connection, target_metadata=Row.metadata, compare_type=True)
+    context.configure(connection=connection, target_metadata=Row.metadata, compare_type=True, include_object=include)
     with context.begin_transaction():
         context.run_migrations()
 

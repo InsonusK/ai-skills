@@ -2,7 +2,7 @@
 name: vp-postgres-in-go
 description: The PostgreSQL variation point in Go — internal/infrastructure/postgres copied from templates (Config of DATABASE_DSN and MIGRATE_ON_START, Database with Ping, the generic Repository and Projections over GORM with their selectors, the translation of pgx's codes into outcomes, Migrate over goose, postgrestest), rows and specification types per table in package tables, SQL migrations embedded by package migrations and checked against the rows, the job cmd/migrate, and the shared scenarios at TEST_DATABASE_DSN
 whenToUse: when a Go application built on the base plateau must keep its data in PostgreSQL, when you add a table, a specification, a repository method, or a migration in Go, or when you review a Go repository or migration
-updated: 20261104
+updated: 20261114
 tags:
   - stack/go
   - concern/architecture

@@ -2,7 +2,7 @@
 name: vp-unit-of-work-in-python
 description: The unit of work variation point in Python — package unit_of_work of infrastructure/postgres, the router of the database's connections added by attach through Database.use, which opens the transaction on a begun unit's first write with a savepoint per call, and UnitOfWorkMiddleware listed last in the command middleware, which begins the unit in a context variable and ends it shielded from cancellation; nested commands join through the context, repositories left unchanged
 whenToUse: when a Python application with vp-postgres-in-python has a command that writes in several places or runs nested commands, or when you review a Python unit of work
-updated: 20261103
+updated: 20261114
 tags:
   - stack/python
   - concern/architecture

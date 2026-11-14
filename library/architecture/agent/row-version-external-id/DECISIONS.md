@@ -12,3 +12,6 @@ One line per choice; ⚠️ marks a fork with real trade-offs, decided by the ow
 - 2026-11-04, agent: the version is an opaque `string` in every contract.
 - 2026-11-04, agent: a versioned row answers its new version on create and on update.
 - 2026-11-04, agent: the entry point refuses an id that is no UUID v7 as `invalid`; no check of its time.
+- 2026-11-14, owner: finish the integration chain and row version on the current catalog, then reconcile its statuses and outstanding tasks.
+- 2026-11-14, agent: #294 and its integration PR #300 are merged. Port the Go/Python work from #292 onto this base; preserve the newer dotnet entities/CLI implementation and use a successor PR instead of force-updating the obsolete branch.
+- 2026-11-14, agent, R1 audit: optional version checks preserve unversioned writes. Python detaches all selected rows before its first versioned save to prevent autoflush bypass; templates and UoW copies carry the same fix. Caller-version boundary cases are explicitly exercised in the next sample waves.
