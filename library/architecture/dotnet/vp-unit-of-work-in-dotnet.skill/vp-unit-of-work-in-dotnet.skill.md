@@ -2,7 +2,7 @@
 name: vp-unit-of-work-in-dotnet
 description: The unit of work variation point in dotnet — IUnitOfWork in Shared, UnitOfWorkMiddleware listed last in the command middleware, and PostgresUnitOfWork, a SaveChanges interceptor scoped with the command that opens the transaction on the first save, with nested commands and notification handlers joining through ScopedSender and repositories left unchanged
 whenToUse: when a dotnet application with vp-postgres-in-dotnet has a command that writes in several places, runs nested commands, or handles a notification that writes, or when you review a dotnet unit of work
-updated: 20261102
+updated: 20261114
 tags:
   - stack/dotnet
   - concern/architecture
@@ -86,4 +86,4 @@ One import of the example, with its real classes:
 
 @import "./diagrams/example-flow.mmd" {as="mermaid"}
 
-- [examples/](./examples/README.md) — the PostgreSQL example with the unit of work attached: `ImportItems` keeps all its titles or none, proven in `src/App/App.Host.Tests/features/UnitOfWork.feature`; it has no entry point, its scenarios send it.
+- [examples/](./examples/README.md) — the PostgreSQL example with the unit of work attached: `ImportItems` keeps all its titles or none, proven in `src/App/App.Host.Tests/features/nested-commands.feature`; it has no entry point, its scenarios send it.

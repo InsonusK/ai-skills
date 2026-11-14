@@ -1,7 +1,6 @@
-# The shared scenarios this example runs: written by `make conformance-sync`,
-# checked by test/check-conformance.sh.
+# The shared scenarios of the PostgreSQL variation point this example runs:
+# written by `make conformance-sync`, checked by test/check-conformance.sh.
 vp-postgres.skill/conformance/postgres examples/src/Infrastructure/Postgres/Postgres.Tests/features
-vp-unit-of-work.skill/conformance/unit-of-work examples/src/Infrastructure/Postgres/Postgres.Tests/features
 base-plateau.skill/conformance/config examples/src/App/App.Host.Tests/features
 base-plateau.skill/conformance/entry examples/src/App/App.Host.Tests/features
 base-plateau.skill/conformance/json-log examples/src/BuildingBlocks.Tests/features
@@ -10,17 +9,11 @@ base-plateau.skill/conformance/command-logging examples/src/Middleware.Tests/fea
 base-plateau.skill/conformance/plan-items examples/src/Modules/Todo/Todo.Application.Tests/Commands/features
 base-plateau.skill/conformance/item examples/src/Modules/Todo/Todo.Domain.Tests/features
 base-plateau.skill/conformance/planner examples/src/Modules/Todo/Todo.Domain.Tests/features
-vp-grpc-api.skill/conformance/rpcstatus examples/src/App/App.Host.Tests/features
-vp-grpc-api.skill/conformance/grpc-pipeline examples/src/App/App.Host.Tests/features/Grpc
-vp-grpc-api.skill/conformance/grpc-contract examples/src/App/App.Host.Tests/features/Grpc
-vp-http-api.skill/conformance/http-pipeline examples/src/App/App.Host.Tests/features/Http
-vp-http-api.skill/conformance/proto-http-pipeline examples/src/App/App.Host.Tests/features/Http
-vp-http-api.skill/conformance/proto-http-contract examples/src/App/App.Host.Tests/features/Http
-vp-http-api.skill/conformance/proto-http-items examples/src/App/App.Host.Tests/features/Http
-vp-http-api.skill/conformance/proto-http-lists examples/src/App/App.Host.Tests/features/Http
-vp-http-api.skill/conformance/proto-grpc-items examples/src/App/App.Host.Tests/features/Grpc
 vp-postgres.skill/conformance/postgres-application examples/src/App/App.Host.Tests/features
 vp-postgres.skill/conformance/postgres-migrate-job examples/src/App/App.Migrate.Tests/features
+vp-cli-api.skill/conformance/cli-pipeline examples/src/App/App.Host.Tests/features/Cli
+vp-cli-api.skill/conformance/cli-items examples/src/App/App.Host.Tests/features/Cli
+vp-unit-of-work.skill/conformance/unit-of-work examples/src/Infrastructure/Postgres/Postgres.Tests/features
 vp-unit-of-work.skill/conformance/unit-of-work-middleware examples/src/Middleware.Tests/features
 vp-unit-of-work.skill/conformance/nested-commands examples/src/App/App.Host.Tests/features
 vp-unit-of-work.skill/conformance/import-items examples/src/Modules/Todo/Todo.Application.Tests/Commands/features

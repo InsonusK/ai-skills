@@ -10,8 +10,8 @@ The plan, per `INVARIANTS.md` §5. One line per wave; the decisions log is `DECI
 | 2 stage 2 | `vp-row-version-in-dotnet` over the new base | done |
 | CLI-1 | `vp-cli-api-in-dotnet` off the base plateau (spec `vp-cli-api` gains the dotnet stack) | done (5e98544e), audited; output-failure classification fixed |
 | CLI-2 | the shared `postgres-application` scenarios name no entry point; Go/Python steps rebind | done (6c7bdadb), audited |
-| CLI-3 | `vp-postgres-in-dotnet` re-based on the CLI chain | done; audited; 161 scenarios pass on PostgreSQL |
-| CLI-4 | `vp-unit-of-work-in-dotnet` re-based (full copy of the PostgreSQL example) | — |
+| CLI-3 | `vp-postgres-in-dotnet` re-based on the CLI chain | done; audited; 155 scenarios pass on PostgreSQL |
+| CLI-4 | `vp-unit-of-work-in-dotnet` re-based (full copy of the PostgreSQL example) | done; audited; 178 scenarios pass on PostgreSQL |
 | CLI-5 | `vp-row-version-in-dotnet` re-based; `CompleteItem` a CLI action | — |
 
 The CLI pivot (owner, 2026-11-12): the database examples of dotnet run via a CLI, not the HTTP API — see `INVARIANTS.md` §7.
