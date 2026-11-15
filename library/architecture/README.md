@@ -154,15 +154,21 @@ Agreed with the owner; written into the variation point's skill and ADR when it 
 
 ## Backlog
 
-| Task | When |
-|---|---|
-| **Revise the attach rule** (see [Layout](#layout)): decide what it keeps, and whether edits that need an order go to methods per stage or to methods marked by a stage attribute | before the next variation point that changes a shared method |
-| **Namespaces of dotnet projects.** Keep `Postgres` and `Postgres.Testing` in the DB entities branch (owner, 2026-11-14); agree the common rule for infrastructure namespaces across the catalog separately | catalog-wide naming pass |
-| **Refinement: a middleware decides itself where it is registered.** *Task:* let a middleware decide whether it is applied to a given API endpoint or command at all. *Goal:* as the middleware of the command or API list grow, every call passes through more middleware that only hand it on unchanged; a middleware known not to apply should not be wrapped around that endpoint or command. *Proposal:* every middleware declares a decorating method; it is called once when the chain is built for an endpoint or a command, checks what it is applied to (the command's type and its marks, the route), and either wraps it or returns it unwrapped. A value-filtered middleware (batch limit) keeps its check of the value at call time; only the mark check moves to build time. Per stack: Go `Decorate` can ask with the zero value of `TCommand`; Python with the command's class; dotnet needs a registration that MediatR resolves per closed command type (a constraint, or a factory of `IPipelineBehavior<TCommand,TResult>`) | after #253, before the list grows (DB unit of work) |
-| The new catalog's clients follow `library/develop/core/api-client` (the `{API}` group with `{API}_TIMEOUT`, the mock as an emulator inside the process); `api-client-develop` and `client-mocking` (`common-workflow/develop`) stay for the old catalogs and are removed with them | when the old catalogs are replaced |
-| A row read back from a store, or an item answered by another service, that breaks an entity's rule carries the entity's kind invalid up to the caller (Go `service/item_lists.go` of the proto example wraps it with `%w`; dotnet and Python likewise): it is a failure of this service, not the caller's invalid input; `vp-http-client-in-go` and `vp-grpc-client-in-go` wrap with `%v` | next change of the proto examples |
-| The verification `curl` of the `devops-service-deploy` guides calls `/health/ready` on the published API port; for a service with the management port it needs that port published or port-forwarded | with the next change of `devops-service-deploy` |
-| Review [Library candidates](#library-candidates) with the owner: turn fixed Go code (handler contract, error kinds + `rpcstatus`, HTTP/gRPC entry points) into libraries services import instead of copying templates | after the last variation point (step 4) |
-| Move `library/common-workflow/develop/*` to `library/develop/{core,stack}` | later pass |
-| The old dotnet catalog (`library/dotnet/architecture/...`: plateau examples, `*.Tests.csproj.create.md`) still keeps test projects in a root `tests/`; `cucumber-testing-in-dotnet` now puts each beside its project (ADR `test-location`) | when the old dotnet catalog is replaced |
-| `api-develop-in-go` still says the contract's routes are one list in `internal/api/http/server.go` exposed as `ContractRoutes()`; the HTTP variation point now keeps them in `internal/api/http/endpoint` (`Routes`) | with the move of `library/common-workflow/develop/*` |
+Open a task card for its context, source locations, scope, acceptance criteria,
+checks and owner decisions. Read [shared execution guidance](backlog/README.md)
+before taking a task. Ready tasks can be started; Needs decision tasks require
+agreement on the named choice; Deferred tasks name their start condition.
+The separate Status table above remains the roadmap for future variation points.
+
+| Task | Status | Start condition |
+|---|---|---|
+| [Revise the attach rule](backlog/attach-rule.md) | Needs decision | Before the next VP changes a shared method |
+| [Infrastructure namespaces in .NET](backlog/dotnet-namespaces.md) | Needs decision | Catalog-wide naming pass; keep current names until agreed |
+| [Select middleware when building the chain](backlog/middleware-selection.md) | Needs decision | Investigation can start; agree the registration contract before migration |
+| [Retire legacy client guidance](backlog/legacy-client-skills.md) | Deferred | Confirmed replacement of old catalogs and migration of their consumers |
+| [Invalid loaded entity is a service failure](backlog/invalid-loaded-entity.md) | Ready | Can start independently |
+| [Verify readiness on the health port](backlog/deployment-health-port.md) | Ready | Can start independently |
+| [Review fixed-code library candidates](backlog/fixed-code-libraries.md) | Deferred | Owner review once the VP set is mature; former step-4 milestone |
+| [Move common development guidance](backlog/develop-guidance-migration.md) | Deferred | Scheduled migration pass with per-skill destination/consumer inventory |
+| [Align legacy .NET test-project locations](backlog/legacy-dotnet-test-location.md) | Deferred | Confirm surviving old-catalog artifacts and migration window |
+| [Align Go API route guidance](backlog/go-api-route-guidance.md) | Deferred | Skill migration or an independently scheduled compatibility repair |
