@@ -2,11 +2,13 @@
 name: vp-http-api
 description: The HTTP API variation point — an entry point attached to the base plateau that serves commands as versioned HTTP routes, answers errors by their kind, publishes its OpenAPI contract and Swagger UI, stops gracefully, and replaces the startup entry without editing any other base file
 whenToUse: when an application built on the base plateau must be reachable over HTTP — adding the HTTP entry point, serving a new command over HTTP, or reviewing the HTTP entry point of such an application
-updated: 20261102
+updated: 20261115
 tags:
   - stack
   - concern/architecture
   - app-type/service
+adr:
+  - adr/shared-contract-and-example-operations.md
 ---
 
 # Goal
@@ -30,6 +32,11 @@ tags:
 # Rule
 
 ## MUST
+
+### Keep shared contract checks independent of sample operations
+Compare served operations with OpenAPI in the shared scenario, and pin each example's intended operations in its own native feature.
+- Risk: a common table of one sample's routes rejects an application that correctly extends its contract; removing the pin entirely lets accidental operation changes pass.
+- Fix: keep both assertions, as [shared-contract-and-example-operations](./adr/shared-contract-and-example-operations.md) records; a further sample operation changes only its example table.
 
 ### Follow api-develop
 Version, document, and publish the HTTP API per [api-develop](library/common-workflow/develop/api-develop.skill/api-develop.skill.md): the major version in every route (`/v1/...`), the contract file under `docs/integration/api/{contract-name}/`, Swagger UI and the spec behind `HTTP_API_DOCS_ENABLED`, every emitted URL under `HTTP_BASE_PATH`, success status 201/202/200 by what the command did, and `google.rpc.Status` as every error body.

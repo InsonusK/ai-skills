@@ -64,3 +64,10 @@ Every table answers two questions; each answer is one variation point, attached 
   marks remain the next implementation stage, not a new prerequisite here.
 - The HTTP operation-list decision is recorded separately before editing that
   shared scenario. Metadata normalization changes classification, never asserts.
+
+## 8. HTTP contract separation (owner, 2026-11-14)
+
+The shared proto HTTP scenario compares the served operations and OpenAPI only.
+Every consuming example keeps its own operation-list-in-{stack}.feature, pinning
+its expected routes independently; the row-version examples include CompleteItem.
+No operation pin is removed without an equivalent example assertion.

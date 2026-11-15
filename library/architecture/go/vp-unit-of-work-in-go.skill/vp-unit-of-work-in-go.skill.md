@@ -2,7 +2,7 @@
 name: vp-unit-of-work-in-go
 description: The unit of work variation point in Go — package unitofwork of internal/infrastructure/postgres, a GORM plugin added by Attach through Database.Use that opens the transaction on a begun unit's first write, behind a savepoint per write, and commandunitofwork.Middleware listed last in the command middleware, which begins the unit in the command's context and ends it; nested commands join through the context, repositories left unchanged
 whenToUse: when a Go application with vp-postgres-in-go has a command that writes in several places or runs nested commands, or when you review a Go unit of work
-updated: 20261114
+updated: 20261115
 tags:
   - stack/go
   - concern/architecture

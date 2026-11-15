@@ -104,7 +104,24 @@ for project in (CATALOG / 'python').glob('*.skill/examples*/pyproject.toml'):
     for missing in sorted({tag[1:] for tag in used} - registered):
         fail(project, 1, f'pytest mark is not registered: {missing}')
 
+# Every common proto HTTP contract consumer also keeps its own static pin.
+# Equality alone would miss an operation accidentally removed from both sides.
+http_pins = 0
+for manifest in CATALOG.glob('*/' + '*.skill/conformance.copy'):
+    for entry in manifest.read_text(encoding="utf-8").splitlines():
+        if not entry.startswith('vp-http-api.skill/conformance/proto-http-contract '):
+            continue
+        destination = entry.split()[1]
+        stack = manifest.parent.parent.name
+        pin = manifest.parent / destination / f'operation-list-in-{stack}.feature'
+        if not pin.is_file():
+            fail(manifest, 1, f'missing HTTP operation pin: {pin.relative_to(ROOT)}')
+        elif 'the HTTP API and its OpenAPI contract both have exactly the operations:' not in pin.read_text(encoding="utf-8"):
+            fail(pin, 1, 'missing static HTTP operation assertion')
+        else:
+            http_pins += 1
+
 if errors:
     print('\n'.join(errors), file=sys.stderr)
     raise SystemExit(1)
-print(f'architecture tags ok: {len(feature_tags)} features, controlled types/categories and pytest registrations')
+print(f'architecture tags ok: {len(feature_tags)} features, controlled types/categories, pytest registrations, {http_pins} HTTP pins')

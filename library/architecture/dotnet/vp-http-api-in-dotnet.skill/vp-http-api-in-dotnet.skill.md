@@ -2,7 +2,7 @@
 name: vp-http-api-in-dotnet
 description: The HTTP API variation point in dotnet — Api/Http/Pipeline copied from templates (settings, the server on its own WebApplication, the request log, the error answers as google.rpc.Status, the docs), one {Resource}Handler class per resource in Api/Http/Endpoint written as Minimal API routes, the registration in Api/Http/Routes.cs with AddHttpApi and its list of middlewares in Program.cs, and the contract either hand-written in OpenAPI with routes over records of their own, or, as the HTTP form of a gRPC contract, generated from the proto file's google.api.http annotations with the routes over the generated messages (ProtoJson)
 whenToUse: when a dotnet application built on the base plateau must be served over HTTP, when a dotnet service with a gRPC contract needs its HTTP form, when you serve a new command over HTTP in such an application, or when you review its Api/Http folders
-updated: 20261102
+updated: 20261115
 tags:
   - stack/dotnet
   - concern/architecture

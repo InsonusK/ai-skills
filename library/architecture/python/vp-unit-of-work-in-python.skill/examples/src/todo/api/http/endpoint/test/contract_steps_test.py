@@ -8,7 +8,7 @@ from todo.api.http import Endpoints, routes
 from todo.api.http.endpoint import ItemsHandler, ListsHandler
 from todo.api.http.pipeline.docs import find_contract
 
-scenarios("../features/contract.feature")
+scenarios("../features/contract.feature", "../features/operation-list-in-python.feature")
 
 
 class NeverCalled:
@@ -16,9 +16,21 @@ class NeverCalled:
         raise AssertionError("the contract scenario calls no command")
 
 
+@then("the HTTP API should serve exactly the operations its OpenAPI contract describes")
+def the_routes_match_the_contract() -> None:
+    served, described = operations()
+    assert served == described
+
+
 @then("the HTTP API and its OpenAPI contract both have exactly the operations:")
 def the_api_and_its_contract_have(datatable: list[list[str]]) -> None:
     want = sorted((method, path) for method, path in datatable[1:])
+    served, described = operations()
+    assert served == want
+    assert described == want
+
+
+def operations() -> tuple[list[tuple[str, str]], list[tuple[str, str]]]:
     routers = routes(Endpoints(items=ItemsHandler(plan_items=NeverCalled()), lists=ListsHandler(add_item=NeverCalled(), list_items=NeverCalled())))
     served = sorted(
         (method, route.path)
@@ -28,7 +40,6 @@ def the_api_and_its_contract_have(datatable: list[list[str]]) -> None:
         for method in route.methods or set()
     )
     contract = json.loads(find_contract().read_text())
-    described = sorted((method.upper(), path) for path, operations in contract["paths"].items() for method in operations)
+    described = sorted((method.upper(), path) for path, methods in contract["paths"].items() for method in methods)
     print(f"then: served {served}, described {described}")
-    assert served == want
-    assert described == want
+    return served, described
