@@ -14,6 +14,11 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 
+& python (Join-Path $scriptDir "check-architecture-backlog.py")
+if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
+}
+
 & aism --version
 & aism sync
 if ($LASTEXITCODE -ne 0) {
