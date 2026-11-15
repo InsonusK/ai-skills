@@ -38,7 +38,15 @@ class VersionType(TypeDecorator[str]):
     cache_ok = True
 
     def process_bind_param(self, value: Any, dialect: Dialect) -> Any:
-        return None if value is None else int(value)
+        if value is None:
+            return None
+        try:
+            number = int(value)
+        except (TypeError, ValueError, OverflowError):
+            return 0
+        # A nonempty caller version that cannot be xmin matches no row,
+        # rather than surfacing an encoding/SQL failure to the caller.
+        return number if 0 <= number <= 0xFFFFFFFF else 0
 
     def process_result_value(self, value: Any, dialect: Dialect) -> Any:
         return None if value is None else str(value)
