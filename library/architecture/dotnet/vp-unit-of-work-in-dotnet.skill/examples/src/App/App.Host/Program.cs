@@ -4,8 +4,7 @@
 
 using System.Runtime.InteropServices;
 using App.Host.Api.Core.Entry;
-using App.Host.Api.Grpc;
-using App.Host.Api.Http;
+using App.Host.Api.Cli;
 using App.Host.Config;
 using App.Host.Version;
 using BuildingBlocks.Logging;
@@ -13,6 +12,7 @@ using BuildingBlocks.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Middleware.Logging;
+using Middleware.StoreFailures;
 using Middleware.UnitOfWork;
 using Postgres;
 using Postgres.UnitOfWork;
@@ -22,7 +22,7 @@ namespace App.Host;
 
 public static class Program
 {
-    public static async Task<int> Main()
+    public static async Task<int> Main(string[] args)
     {
         // stopping is cancelled on SIGINT or SIGTERM, so a long-running entry
         // point (an HTTP server, a listener) stops gracefully.
@@ -34,10 +34,10 @@ public static class Program
         }
         using var onInterrupt = PosixSignalRegistration.Create(PosixSignal.SIGINT, Stop);
         using var onTerminate = PosixSignalRegistration.Create(PosixSignal.SIGTERM, Stop);
-        return await RunAsync(Console.Out, Console.Error, stopping.Token);
+        return await RunAsync(args, Console.Out, Console.Error, stopping.Token);
     }
 
-    public static async Task<int> RunAsync(TextWriter stdout, TextWriter stderr, CancellationToken stopping)
+    public static async Task<int> RunAsync(string[] args, TextWriter stdout, TextWriter stderr, CancellationToken stopping)
     {
         AppConfig config;
         PostgresConfig postgres;
@@ -59,7 +59,7 @@ public static class Program
         services.AddLogging(logging => logging.SetMinimumLevel(config.LogLevel).AddProvider(new JsonLogProvider(stderr)));
 
         // [services] - infrastructure and the services over it. One context per
-        // command scope, and every repository over it scoped with it.
+        // command scope, and the repository of every entity scoped with it.
         services.AddPostgres(postgres);
         services.AddPostgresUnitOfWork();
 
@@ -71,15 +71,11 @@ public static class Program
         services.AddCommandScope();
         services.AddCommandMiddleware(
             typeof(LoggingMiddleware<,>),
+            typeof(StoreFailuresMiddleware<,>),
             typeof(UnitOfWorkMiddleware<,>));
 
-        // [entries] - every entry point, registered as an Entry and run
-        // together by EntryRunner until the first one ends. The gRPC variation
-        // point replaced the startup entry with its own, the HTTP variation
-        // point added the HTTP form of the same contract - both over the same
-        // handlers; the health variation point adds one more.
-        services.AddGrpcApi(interceptors: []);
-        services.AddHttpApi(middlewares: []);
+        // [entries] - one CLI action, then the process ends.
+        services.AddCliEntry("todo", AppVersion.Value, args, stdout, stderr);
 
         // ValidateScopes: a scoped service taken outside a command scope stops the
         // call, instead of living as long as the process with its context.

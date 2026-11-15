@@ -52,3 +52,22 @@ Every table answers two questions; each answer is one variation point, attached 
 
 - Every stack runs both `conformance/` folders unedited; `test/test.sh` and `library/testing/agent/check.sh` pass.
 - Every example in scope passes its tests and its type check; the DB ones on PostgreSQL.
+
+## 7. Completion on the entities base (2026-11-14)
+
+- Go/Python preserve the rows form and HTTP entry points; dotnet uses the
+  already delivered entities/Ardalis/CLI form of dotnet-entities/INVARIANTS.md.
+- Stage R1 carries the optional version checks into the PostgreSQL fixed code
+  and every UoW copy. Stages R3/R4 attach examples to the current PostgreSQL
+  examples; inherited files remain current and shared scenarios stay unedited.
+- This completion delivers the row-version axis. External id and its identity
+  marks remain the next implementation stage, not a new prerequisite here.
+- The HTTP operation-list decision is recorded separately before editing that
+  shared scenario. Metadata normalization changes classification, never asserts.
+
+## 8. HTTP contract separation (owner, 2026-11-14)
+
+The shared proto HTTP scenario compares the served operations and OpenAPI only.
+Every consuming example keeps its own operation-list-in-{stack}.feature, pinning
+its expected routes independently; the row-version examples include CompleteItem.
+No operation pin is removed without an equivalent example assertion.

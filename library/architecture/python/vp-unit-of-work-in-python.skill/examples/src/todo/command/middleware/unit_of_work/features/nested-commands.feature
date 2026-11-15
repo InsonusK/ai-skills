@@ -1,4 +1,4 @@
-@type/infrastructure/db/postgres
+@type/infrastructure/db/postgresql
 Feature: Nested commands in one unit of work
   As a caller of a command that runs other commands
   I want all of them to succeed together or leave nothing

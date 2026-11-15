@@ -1,11 +1,11 @@
 # Shared by every stack's PostgreSQL variation point. The source is
 # library/architecture/spec/vp-postgres.skill/conformance/; a stack's copy is
 # written by `make conformance-sync` and never edited.
-@type/infrastructure/db/postgres
+@type/infrastructure/db/postgresql
 Feature: The repository writes one row
-  As the service over the database
-  I want one contract for every table
-  So that a new table needs a row and its mapping, and nothing else
+  As the code over the repository
+  I want one generic repository for every table
+  So that a new table needs its mapping, and nothing else
 
   Background:
     Given a database with the sample tables

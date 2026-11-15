@@ -14,10 +14,9 @@ from todo.api import grpc as grpc_api
 from todo.api import http as http_api
 from todo.api.core.entry import exit_code, run_all
 from todo.command import build_handlers
+from todo.command.kept_lists import KeptLists
 from todo.command.middleware.logging import LoggingMiddleware
-from todo.infrastructure.memory import Lists
 from todo.log import attrs, new_logger
-from todo.service import ItemLists
 
 
 def main() -> None:
@@ -47,9 +46,10 @@ async def run(stdout: TextIO, stderr: TextIO, stopping: asyncio.Event) -> int:
     # (skill project-version-in-python).
     logger.info("starting", extra=attrs(version=version("todo")))
 
-    # [services] - infrastructure and the services over it. The lists live in
-    # memory in this example; the DB variation point replaces this line.
-    item_lists = ItemLists(Lists())
+    # [services] - infrastructure and the services over it. This example has
+    # none: the lists live in the process; the DB variation point replaces this
+    # line with a service over the database.
+    item_lists = KeptLists()
 
     # [handlers] - the handler of every command, built by the command registry
     # over the services and wrapped by this command middleware, the first the

@@ -18,14 +18,14 @@ Feature: Unit of work middleware
     Then the unit of work should have been ended with "rollback"
     And the command should fail with "taken"
 
-  @category/edge
+  @category/boundary
   Scenario: A nested command joins and ends nothing
     Given a unit of work already begun by the outer command
     When a command runs through the unit of work middleware
     Then the unit of work should not have been ended
     And the command should answer its result
 
-  @category/edge
+  @category/boundary
   Scenario: A nested command that fails leaves the ending to the outer command
     Given a unit of work already begun by the outer command
     And the handler fails with "taken"

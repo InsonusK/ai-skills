@@ -1,6 +1,6 @@
 # The scenarios of the Python repository beside the shared ones: what the
 # shared scenarios leave to each stack.
-@type/infrastructure/db/postgres
+@type/infrastructure/db/postgresql
 Feature: The repository in Python
   As the service over the database
   I want the details the shared scenarios leave to each stack to hold
@@ -17,7 +17,7 @@ Feature: The repository in Python
     When I insert the task "c" of "ann"
     Then the inserted row should hold the key of "c" for any other connection
 
-  @category/edge
+  @category/boundary
   Scenario: An order of an ordered selector begins a new order
     When I select the unclosed tasks of "ann" ordered by title
     And I order that selector by title descending

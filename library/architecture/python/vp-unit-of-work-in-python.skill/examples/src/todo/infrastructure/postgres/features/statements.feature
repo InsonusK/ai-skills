@@ -1,4 +1,4 @@
-@type/infrastructure/db/postgres
+@type/infrastructure/db/postgresql
 Feature: A statement past the repository's contract
   As a table with a statement the contract cannot express
   I want it to pass through the same translation of failures

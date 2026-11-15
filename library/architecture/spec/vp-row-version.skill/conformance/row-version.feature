@@ -1,7 +1,7 @@
 # Shared by every stack's row version variation point. The source is
 # library/architecture/spec/vp-row-version.skill/conformance/; a stack's copy is
 # written by `make conformance-sync` and never edited.
-@type/infrastructure/db/postgres
+@type/infrastructure/db/postgresql
 Feature: The version of a row
   As the service over a table whose rows change
   I want every write to compare the version the caller read
@@ -77,21 +77,21 @@ Feature: The version of a row
     Then the repository should report a changed row
     And the note "other" should be there for any other connection
 
-  @category/edge
+  @category/concurrency
   Scenario: A statement that knows nothing of the version moves it
     When I read the note "a"
     And another connection changes the note "a" to "other"
     And I change that row to "mine" and save it
     Then the repository should report a changed row
 
-  @category/edge
+  @category/concurrency
   Scenario: Update of a selector fails as a whole when one of its rows moved
     When I update every note while another connection changes the note "b" to "other"
     Then the repository should report a changed row
     And the note "a" should be there for any other connection
     And the note "other" should be there for any other connection
 
-  @category/edge
+  @category/concurrency
   Scenario: Of two saves at the same moment exactly one is kept
     When two callers save one row at the same moment, 50 times
     Then every time exactly one of them should have been told a changed row

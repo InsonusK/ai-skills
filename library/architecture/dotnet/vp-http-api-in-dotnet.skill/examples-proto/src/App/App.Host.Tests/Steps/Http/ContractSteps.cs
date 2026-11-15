@@ -11,11 +11,24 @@ namespace App.Host.Tests.Steps.Http;
 [Binding]
 public sealed class ContractSteps(HttpWorld world, ITestOutputHelper output)
 {
+    [Then("the HTTP API should serve exactly the operations its OpenAPI contract describes")]
+    public async Task ThenTheRoutesMatchTheContract()
+    {
+        var (contract, served) = await Operations();
+        Assert.Equal(contract, served);
+    }
+
     [Then("the HTTP API and its OpenAPI contract both have exactly the operations:")]
     public async Task ThenTheHttpApiAndItsContractHaveExactlyTheOperations(DataTable table)
     {
         var listed = table.Rows.Select(row => $"{row["method"]} {row["path"]}").Order().ToList();
+        var (contract, served) = await Operations();
+        Assert.Equal(listed, contract);
+        Assert.Equal(listed, served);
+    }
 
+    private async Task<(List<string> Contract, List<string> Served)> Operations()
+    {
         var spec = JsonDocument.Parse(HttpDocs.PublishedSpec("")).RootElement.GetProperty("paths");
         var contract = spec.EnumerateObject()
             .SelectMany(path => path.Value.EnumerateObject().Select(method => $"{method.Name.ToUpperInvariant()} {path.Name}"))
@@ -30,7 +43,6 @@ public sealed class ContractSteps(HttpWorld world, ITestOutputHelper output)
             .Order().ToList();
 
         output.WriteLine($"then: contract [{string.Join(", ", contract)}], served [{string.Join(", ", served)}]");
-        Assert.Equal(listed, contract);
-        Assert.Equal(listed, served);
+        return (contract, served);
     }
 }

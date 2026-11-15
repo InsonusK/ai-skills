@@ -22,6 +22,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up Python for validation
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+
       - name: Install ai-skill-manager
         run: curl -fsSL https://raw.githubusercontent.com/InsonusK/go-ai-skill-manager/master/scripts/install.sh | sh
 
@@ -44,6 +49,11 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set up Python for validation
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
 
       - name: Install ai-skill-manager
         run: |

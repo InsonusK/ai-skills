@@ -1,11 +1,11 @@
-# Shared by every stack's PostgreSQL variation point. The source is
-# library/architecture/spec/vp-postgres.skill/conformance/; a stack's copy is
+# Shared by every stack whose PostgreSQL variation point has the rows form (Go, Python). The source is
+# library/architecture/spec/vp-postgres.skill/conformance/postgres-selector/; a stack's copy is
 # written by `make conformance-sync` and never edited.
 #
 # An answer of rows is a list of row objects, never text. A table of the form
 # "| title | done |" names the fields each row must have; "one row" is a single
 # object, "no row" is the absence of one, "an empty list" is a list with no rows.
-@type/infrastructure/db/postgres
+@type/infrastructure/db/postgresql
 Feature: The selector works on the rows a specification picks
   As the service over the database
   I want to take the rows of one specification and ask what I need
@@ -133,7 +133,7 @@ Feature: The selector works on the rows a specification picks
       | b     | false |
       | aa    | false |
 
-  @category/edge
+  @category/boundary
   Scenario: An order gives a new selector and leaves the first one as it is
     When I select the unclosed tasks of "ann"
     And I order that selector by title and, apart, by title descending
@@ -151,7 +151,7 @@ Feature: The selector works on the rows a specification picks
     Then the update should answer 2
     And the table "tasks" should hold 3 done rows for any other connection
 
-  @category/edge
+  @category/boundary
   Scenario: An order changes nothing for Count, Update, and Delete
     When I select the unclosed tasks of "ann" ordered by title
     Then Count should answer 2
@@ -165,7 +165,7 @@ Feature: The selector works on the rows a specification picks
     Then the delete should answer 2
     And the table "tasks" should hold 1 rows for any other connection
 
-  @category/edge
+  @category/concurrency
   Scenario: A selector is no snapshot: the write answers what it touched
     When I select the unclosed tasks of "ann"
     Then Count should answer 2
@@ -173,7 +173,7 @@ Feature: The selector works on the rows a specification picks
     And I update them as done
     Then the update should answer 3
 
-  @category/edge
+  @category/boundary
   Scenario: A selector asks again after its own write
     When I select the unclosed tasks of "ann"
     And I update them as done

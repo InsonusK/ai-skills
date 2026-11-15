@@ -4,7 +4,7 @@
 #
 # An answer of rows is a list of row objects, never text: a table of the form
 # "| title | done |" names the fields each row must have.
-@type/infrastructure/db/postgres
+@type/infrastructure/db/postgresql
 Feature: The unit of work over PostgreSQL
   As a command that writes in several places
   I want its writes held in one transaction that opens on the first write
@@ -61,7 +61,7 @@ Feature: The unit of work over PostgreSQL
     And the unit of work rolls back
     Then the table should hold no row titled "buy bread" for any other connection
 
-  @category/edge
+  @category/negative
   Scenario: A duplicate key the command handles leaves the transaction usable
     Given the unit of work has begun
     And the command has stored "buy milk"
@@ -71,7 +71,7 @@ Feature: The unit of work over PostgreSQL
     And the unit of work commits
     Then the table should hold 2 rows for any other connection
 
-  @category/edge
+  @category/negative
   Scenario: A duplicate key of a statement leaves the transaction usable
     Given the unit of work has begun
     And the command has stored "buy milk"
@@ -82,13 +82,13 @@ Feature: The unit of work over PostgreSQL
     And the unit of work commits
     Then the table should hold 3 rows for any other connection
 
-  @category/edge
+  @category/boundary
   Scenario: A command that only reads opens no transaction
     Given the unit of work has begun
     When the command reads the list
     Then the command should hold no transaction
 
-  @category/edge
+  @category/boundary
   Scenario: A nested command joins the unit of work
     Given the unit of work has begun
     When a nested command asks to begin

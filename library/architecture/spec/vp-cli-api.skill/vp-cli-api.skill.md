@@ -2,7 +2,7 @@
 name: vp-cli-api
 description: The CLI API variation point — a command-line entry point attached to the base plateau that runs one command per call as `{app} {resource} {action} [flags]`, prints the result on standard output as one JSON line or as text, writes errors on standard error, exits by the error kind with usage errors as rejected, offers help at every level, and replaces the startup entry without editing any other base file
 whenToUse: when an application built on the base plateau must be run from a command line by a person or a script — adding the CLI entry point, offering a new command as an action, or reviewing the CLI entry point of such an application
-updated: 20261102
+updated: 20261114
 tags:
   - stack
   - concern/architecture
@@ -24,7 +24,7 @@ tags:
 
 # Scope
 - Covers a command-line application whose every call runs one command and ends. An interactive shell, a long-running daemon started from the command line, and reading a command's input from standard input are not covered.
-- The implementation for each stack is described in its stack-specialized extension: `vp-cli-api-in-go`, `vp-cli-api-in-python`.
+- The implementation for each stack is described in its stack-specialized extension: `vp-cli-api-in-go`, `vp-cli-api-in-python`, `vp-cli-api-in-dotnet`.
 
 # Rule
 
@@ -80,7 +80,7 @@ Test the fixed code once through a test resource of its own — a success, the t
 - Fix: one fake handler per command; a resource's scenarios check only its own flags and output.
 
 ### Pass the shared scenarios
-Run every file of this skill's [conformance/](./conformance/) unchanged in each stack's example, through a copy named in the stack skill's `conformance.copy` (`make conformance-sync`), as [conformance-scenarios-copied-into-each-stack](library/architecture/spec/vp-logging.skill/adr/conformance-scenarios-copied-into-each-stack.md) decides. The skill has no dotnet stack: Go and Python run them.
+Run every file of this skill's [conformance/](./conformance/) unchanged in each stack's example, through a copy named in the stack skill's `conformance.copy` (`make conformance-sync`), as [conformance-scenarios-copied-into-each-stack](library/architecture/spec/vp-logging.skill/adr/conformance-scenarios-copied-into-each-stack.md) decides.
 - Violation: a stack rewording a shared scenario or keeping its own copy of one; a scenario skipped because the stack fails it.
 - Risk: the stacks drift apart under one name: a check one stack makes and another does not is a defect found in one and left open in the others.
 - Fix: step definitions are the stack's own; a scenario of a mechanism only one stack has goes in a `{name}-in-{stack}.feature` beside the copies; `bash test/check-conformance.sh` fails while a copy is missing or differs.

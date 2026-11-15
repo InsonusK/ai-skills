@@ -1,10 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <!-- The command handlers of the module, one file per command. -->
+  <!-- The command handlers of the module, one file per command, and the
+       specifications they pick rows with. They reach the store through the
+       repository's contract (Shared.Persistence), never a store itself. -->
   <ItemGroup>
     <ProjectReference Include="..\Todo.Commands\Todo.Commands.csproj" />
     <ProjectReference Include="..\Todo.Domain\Todo.Domain.csproj" />
-    <!-- The repository's contract and the rows its service uses; never the repository itself. -->
-    <ProjectReference Include="..\..\..\Infrastructure\Postgres\Postgres.Abstractions\Postgres.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\Shared.Persistence\Shared.Persistence.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MediatR" />
