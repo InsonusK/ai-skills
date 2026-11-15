@@ -2,7 +2,7 @@
 name: vp-http-api-in-go
 description: The HTTP API variation point in Go — internal/api/http/pipeline copied from templates (settings, the generic Endpoint, the server with graceful stop, the request log, the docs), one {Resource}Handler per resource in internal/api/http/endpoint, the registration in internal/api/http/routes.go, the contract either hand-written in OpenAPI or, as the HTTP form of a gRPC contract, generated from the proto file's google.api.http annotations with the routes over the generated messages, and one httpapi.Entry in main.go with its list of middlewares
 whenToUse: when a Go application built on the base plateau must be served over HTTP, when a Go service with a gRPC contract needs its HTTP form, when you serve a new command over HTTP in such an application, or when you review its internal/api/http packages
-updated: 20261102
+updated: 20261115
 tags:
   - stack/go
   - concern/architecture

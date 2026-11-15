@@ -2,7 +2,7 @@
 name: vp-http-api-in-python
 description: The HTTP variation point in Python — the api/http/pipeline package copied from templates (FastAPI app with binding by pydantic models, every error answered as google.rpc.Status through exception handlers and one ASGI layer, the request log with X-Request-Id, the committed OpenAPI contract and Swagger UI served without a CDN, uvicorn on its own socket stopped by the entry's event, the application's middlewares around the contract's routes), one module per resource in api/http/endpoint, routes.py with the entry factory, the contract either hand-written in OpenAPI or, as the HTTP form of a gRPC contract, generated from the proto file's google.api.http annotations with the routes over the generated messages (proto.py), and the entry listed in main.py
 whenToUse: when a Python application built on the base plateau must be reachable over HTTP, when you serve a new command over HTTP in a Python service, or when you review a Python service's HTTP entry point
-updated: 20261102
+updated: 20261115
 tags:
   - stack/python
   - concern/architecture

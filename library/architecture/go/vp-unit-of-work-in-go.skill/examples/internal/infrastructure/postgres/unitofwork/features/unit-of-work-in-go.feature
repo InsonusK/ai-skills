@@ -1,7 +1,7 @@
 # The scenarios of the Go unit of work beside the shared ones of
 # unit-of-work.feature: what the shared scenarios cannot see of GORM's
 # Transaction and of the command's context.
-@type/infrastructure/db/postgres
+@type/infrastructure/db/postgresql
 Feature: The unit of work over GORM
   As a command that writes in several places
   I want the unit of work to hold through GORM's own transactions and the caller's cancellation
@@ -10,7 +10,7 @@ Feature: The unit of work over GORM
   Background:
     Given a command scope with the unit of work
 
-  @category/edge
+  @category/boundary
   Scenario: A caller that leaves after the writes does not undo the commit
     Given the unit of work has begun
     And the command has stored "buy milk"
@@ -27,7 +27,7 @@ Feature: The unit of work over GORM
     And the unit of work rolls back
     Then the table should hold 0 done rows for any other connection
 
-  @category/edge
+  @category/error
   Scenario: An update of a selector that fails halfway changes none of its rows, and the unit goes on
     Given the list already holds "buy milk"
     And the list already holds "walk the dog"

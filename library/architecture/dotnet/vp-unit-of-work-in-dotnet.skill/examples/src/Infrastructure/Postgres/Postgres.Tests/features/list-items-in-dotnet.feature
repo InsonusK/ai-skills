@@ -1,4 +1,4 @@
-@type/infrastructure/db/postgres
+@type/infrastructure/db/postgresql
 Feature: The items of a list in the database
   As a handler that keeps the items of the lists
   I want each item a row of list_items, read back in the order it was added

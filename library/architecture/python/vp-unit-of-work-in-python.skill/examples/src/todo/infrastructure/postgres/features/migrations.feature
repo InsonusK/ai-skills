@@ -1,7 +1,7 @@
 # Shared by every stack's PostgreSQL variation point. The source is
 # library/architecture/spec/vp-postgres.skill/conformance/; a stack's copy is
 # written by `make conformance-sync` and never edited.
-@type/infrastructure/db/postgres
+@type/infrastructure/db/postgresql
 Feature: Migrations
   As a deployment
   I want the database brought up to the latest migration

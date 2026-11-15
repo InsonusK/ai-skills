@@ -14,15 +14,18 @@ import (
 )
 
 func registerContractSteps(sc *godog.ScenarioContext, w *World) {
+	sc.Step(`^the HTTP API should serve exactly the operations its OpenAPI contract describes$`, func(ctx context.Context) error { return w.bothHaveExactly(ctx, nil) })
 	sc.Step(`^the HTTP API and its OpenAPI contract both have exactly the operations:$`, w.bothHaveExactly)
 }
 
-// bothHaveExactly compares, as sets, the operations of the table with the
-// routes the server serves and with the operations of the embedded spec.
+// bothHaveExactly compares served routes with the embedded spec, and with an
+// explicit application operation list when the example supplies a table.
 func (w *World) bothHaveExactly(ctx context.Context, table *godog.Table) error {
 	want := []string{}
-	for _, row := range table.Rows[1:] {
-		want = append(want, row.Cells[0].Value+" "+row.Cells[1].Value)
+	if table != nil {
+		for _, row := range table.Rows[1:] {
+			want = append(want, row.Cells[0].Value+" "+row.Cells[1].Value)
+		}
 	}
 	served := []string{}
 	for _, route := range httpapi.Routes(w.handlers()) {
@@ -31,6 +34,9 @@ func (w *World) bothHaveExactly(ctx context.Context, table *godog.Table) error {
 	spec, err := specOperations(todo.Spec)
 	if err != nil {
 		return err
+	}
+	if table == nil {
+		want = slices.Clone(served)
 	}
 	slices.Sort(want)
 	slices.Sort(served)

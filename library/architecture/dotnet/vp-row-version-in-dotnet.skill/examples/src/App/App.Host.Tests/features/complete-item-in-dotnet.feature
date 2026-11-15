@@ -1,4 +1,4 @@
-@type/infrastructure/db/postgres
+@type/infrastructure/db/postgresql
 Feature: CompleteItem over the whole application
   As a caller of the CLI
   I want an item completed only under the version I read

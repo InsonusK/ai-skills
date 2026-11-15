@@ -23,6 +23,7 @@ from todo.infrastructure.postgres.selector import (
     Selector,
 )
 from todo.infrastructure.postgres.specification import Columns, Key, Projection, Specification
+from todo.infrastructure.postgres.version import version_column
 
 __all__ = [
     "Columns",
@@ -47,4 +48,5 @@ __all__ = [
     "UnavailableError",
     "load_config",
     "migrate",
+    "version_column",
 ]

@@ -6,9 +6,4 @@ Feature: HTTP contract
 
   @category/happy
   Scenario: The HTTP API serves exactly the operations its contract describes
-    Then the HTTP API and its OpenAPI contract both have exactly the operations:
-      | method | path                     |
-      | POST   | /v1/items/plan           |
-      | POST   | /v1/lists/{listId}/items |
-      | GET    | /v1/lists/{listId}/items |
-      | POST   | /v1/lists/{listId}/clear |
+    Then the HTTP API should serve exactly the operations its OpenAPI contract describes

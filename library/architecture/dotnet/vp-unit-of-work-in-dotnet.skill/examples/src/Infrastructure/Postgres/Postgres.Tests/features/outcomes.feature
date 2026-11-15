@@ -1,7 +1,7 @@
 # Shared by every stack's PostgreSQL variation point. The source is
 # library/architecture/spec/vp-postgres.skill/conformance/; a stack's copy is
 # written by `make conformance-sync` and never edited.
-@type/infrastructure/db/postgres
+@type/infrastructure/db/postgresql
 Feature: The outcomes of the database are told apart
   As the code over the repository
   I want the outcomes of the database told apart
@@ -48,7 +48,7 @@ Feature: The outcomes of the database are told apart
     When I delete that row
     Then the repository should report a changed row
 
-  @category/edge
+  @category/error
   Scenario Outline: A failed write leaves nothing pending for the next one
     Given one session for the whole scenario
     When <failed>

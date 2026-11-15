@@ -1,0 +1,25 @@
+# Row version attaches to the current PostgreSQL example. The sample adds
+# CompleteItem and id/version output; the store mechanism remains identical.
+base library/architecture/go/vp-postgres-in-go.skill/examples
+change README.md
+change cmd/todo/persistence_test.go
+change docs/integration/api/todo/todo.proto
+change docs/integration/api/todo/todo.swagger.json
+change gen/api/todo/todo.pb.go
+change gen/api/todo/todo_grpc.pb.go
+change internal/api/grpc/endpoint/items.go
+change internal/api/grpc/endpoint/test/items_steps_test.go
+change internal/api/grpc/endpoint/test/world_test.go
+change internal/api/http/endpoint/items.go
+change internal/api/http/endpoint/lists.go
+change internal/api/http/endpoint/test/items_steps_test.go
+change internal/api/http/endpoint/test/world_test.go
+change internal/command/add_item.go
+change internal/command/handlers.go
+change internal/command/list_items.go
+change internal/command/plan_items.go
+change internal/command/test/item_lists_steps_test.go
+change internal/infrastructure/postgres/tables/items.go
+change internal/service/item_lists.go
+change internal/service/test/steps_test.go
+change internal/api/http/endpoint/features/operation-list-in-go.feature

@@ -1,4 +1,4 @@
-@type/infrastructure/db/postgres
+@type/infrastructure/db/postgresql
 Feature: A page in a specification
   As a handler that reads a page of roots
   I want a specification with a page to serve a list only
