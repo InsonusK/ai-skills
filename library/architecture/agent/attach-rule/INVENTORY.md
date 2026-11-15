@@ -539,4 +539,3 @@ Deleted: none.
 
 - Changed/deleted `README.md`: `python/vp-row-version-in-python.skill/attach.allow`, `python/vp-unit-of-work-in-python.skill/attach.allow`.
 - Changed/deleted `src/todo/command/handlers.py`: `python/vp-row-version-in-python.skill/attach.allow`, `python/vp-unit-of-work-in-python.skill/attach.allow`.
-

@@ -64,4 +64,5 @@ for base, variants in sorted(groups.items()):
             count += 1
     if not count:
         print('None.')
-    print()
+    if base != sorted(groups)[-1]:
+        print()
