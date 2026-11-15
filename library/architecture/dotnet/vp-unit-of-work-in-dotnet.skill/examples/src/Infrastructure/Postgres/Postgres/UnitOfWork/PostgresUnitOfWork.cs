@@ -15,7 +15,7 @@ namespace Postgres.UnitOfWork;
 /// calling SaveChangesAsync, unaware of it. EF Core protects each save inside the
 /// transaction with a savepoint, so a duplicate key a command handles leaves the
 /// transaction usable. A statement past SaveChanges (ExecuteUpdate, ExecuteDelete,
-/// raw SQL) opens the transaction by the empty save of PostgresStatements.WriteAsync.
+/// raw SQL) opens the transaction by the empty save of PostgresRepository.WriteAsync.
 /// </summary>
 public sealed class PostgresUnitOfWork : SaveChangesInterceptor, IUnitOfWork
 {
@@ -61,7 +61,7 @@ public sealed class PostgresUnitOfWork : SaveChangesInterceptor, IUnitOfWork
         {
             await _transaction.CommitAsync(cancellationToken);
         }
-        catch (Exception error) when (StoreFailures.IsUnavailable(error))
+        catch (Exception error) when (PostgresFailures.IsUnavailable(error))
         {
             throw UnitOfWorkErrors.Unavailable(error);
         }
@@ -77,7 +77,7 @@ public sealed class PostgresUnitOfWork : SaveChangesInterceptor, IUnitOfWork
         {
             await _transaction.RollbackAsync(cancellationToken);
         }
-        catch (Exception error) when (StoreFailures.IsUnavailable(error))
+        catch (Exception error) when (PostgresFailures.IsUnavailable(error))
         {
             // The connection is gone, and the server dropped the transaction with it.
         }

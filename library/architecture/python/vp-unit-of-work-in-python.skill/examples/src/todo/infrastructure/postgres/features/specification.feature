@@ -1,11 +1,11 @@
-# Shared by every stack's PostgreSQL variation point. The source is
-# library/architecture/spec/vp-postgres.skill/conformance/; a stack's copy is
+# Shared by every stack whose PostgreSQL variation point has the rows form (Go, Python). The source is
+# library/architecture/spec/vp-postgres.skill/conformance/postgres-selector/; a stack's copy is
 # written by `make conformance-sync` and never edited.
 #
 # An answer of rows is a list of row objects, never text. A table of the form
 # "| title | done |" names the fields each row must have; "one row" is a single
 # object, "no row" is the absence of one, "an empty list" is a list with no rows.
-@type/infrastructure/db/postgres
+@type/infrastructure/db/postgresql
 Feature: A specification picks rows
   As the service over the database
   I want a named description of a set of rows
@@ -43,7 +43,7 @@ Feature: A specification picks rows
       | owner | title |
       | ann   | c     |
 
-  @category/edge
+  @category/boundary
   Scenario: One specification serves several selectors
     Given the task "c" of "ann" is open
     When I give one specification of "ann" to two selectors

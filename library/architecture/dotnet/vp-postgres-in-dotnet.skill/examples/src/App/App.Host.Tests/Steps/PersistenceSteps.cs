@@ -1,5 +1,4 @@
-using System.Net;
-using System.Net.Http.Json;
+using System.Diagnostics;
 using Postgres;
 using Postgres.Testing;
 using Reqnroll;
@@ -9,23 +8,47 @@ using Xunit.Abstractions;
 namespace App.Host.Tests.Steps;
 
 /// <summary>
-/// The whole application: Program.RunAsync on real ports over a real database,
-/// so the scenarios go through everything the composition root built.
+/// The whole application: a separate CLI process over a real database,
+/// so each action goes through everything the composition root builds.
 /// </summary>
 [Binding]
 public sealed class PersistenceSteps(ITestOutputHelper output)
 {
-    private static readonly HttpClient Http = new();
-
-    private readonly int _httpPort = FreePort.Next();
-    private readonly int _grpcPort = FreePort.Next();
     private readonly StringWriter _stderr = new();
-    private CancellationTokenSource? _stop;
-    private Task<int>? _running;
     private TestDatabase? _database;
-    private HttpResponseMessage? _response;
+    private int _exitCode;
+    private string _answer = "";
+    private string _callError = "";
 
-    private string Items(string listId) => $"http://localhost:{_httpPort}/v1/lists/{listId}/items";
+    // A separate OS process for every action proves persistence beyond the
+    // lifetime of both the command scope and the application process.
+    private async Task RunAsync(params string[] args)
+    {
+        var start = new ProcessStartInfo("dotnet")
+        {
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+        };
+        start.ArgumentList.Add(typeof(App.Host.Program).Assembly.Location);
+        foreach (var arg in args) start.ArgumentList.Add(arg);
+        using var process = Process.Start(start)!;
+        var stdout = process.StandardOutput.ReadToEndAsync();
+        var stderr = process.StandardError.ReadToEndAsync();
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+        try
+        {
+            await process.WaitForExitAsync(timeout.Token);
+        }
+        finally
+        {
+            if (!process.HasExited) process.Kill(entireProcessTree: true);
+        }
+        _exitCode = process.ExitCode;
+        _answer = await stdout;
+        _callError = await stderr;
+        _stderr.Write(_callError);
+    }
 
     private static void SetEnvironment(string? dsn, string? migrate)
     {
@@ -58,45 +81,48 @@ public sealed class PersistenceSteps(ITestOutputHelper output)
     [Given("the application is running")]
     public async Task WhenTheApplicationStarts()
     {
-        Environment.SetEnvironmentVariable("HTTP_LISTEN_PORT", _httpPort.ToString());
-        Environment.SetEnvironmentVariable("GRPC_LISTEN_PORT", _grpcPort.ToString());
-        _stop = new CancellationTokenSource();
-        _running = Task.Run(() => App.Host.Program.RunAsync(TextWriter.Null, _stderr, _stop.Token));
-        var serving = FreePort.WaitServingAsync(_httpPort);
-        Assert.Same(serving, await Task.WhenAny(serving, _running));
-        await serving;
+        await RunAsync("--help");
+        Assert.Equal(0, _exitCode);
     }
 
     [When("the application restarts")]
-    public async Task WhenTheApplicationRestarts()
-    {
-        await StopAsync();
-        await WhenTheApplicationStarts();
-    }
+    public Task WhenTheApplicationRestarts() => WhenTheApplicationStarts();
 
     [When("the application starts and ends")]
-    public async Task WhenTheApplicationStartsAndEnds()
+    public Task WhenTheApplicationStartsAndEnds() => RunAsync("--help");
+
+    [When("I add {string} to the list {string}")]
+    [Given("{string} was added to the list {string}")]
+    public Task WhenIAdd(string title, string listId) =>
+        RunAsync("lists", "add", "--list", listId, "--title", title);
+
+    [When("I read the list {string}")]
+    public Task WhenIRead(string listId) => RunAsync("lists", "show", "--list", listId);
+
+    [Then("the call should succeed")]
+    public void ThenTheCallShouldSucceed() => Assert.True(_exitCode == 0, _callError);
+
+    [Then("the call should be rejected as a conflict")]
+    public void ThenTheCallShouldBeRejectedAsAConflict()
     {
-        _running = App.Host.Program.RunAsync(TextWriter.Null, _stderr, CancellationToken.None);
-        await _running;
+        Assert.Equal(2, _exitCode);
+        Assert.Empty(_answer);
+        Assert.Contains("already", _callError);
     }
 
-    [When("I add {string} to the list {string} over HTTP")]
-    [Given("{string} was added to the list {string} over HTTP")]
-    public async Task WhenIAddOverHttp(string title, string listId) =>
-        _response = await Http.PostAsJsonAsync(Items(listId), new { title });
-
-    [When("I read the list {string} over HTTP")]
-    public async Task WhenIReadOverHttp(string listId) => _response = await Http.GetAsync(Items(listId));
-
-    [Then("the application should answer {int}")]
-    public void ThenTheApplicationShouldAnswer(int status) => Assert.Equal((HttpStatusCode)status, _response!.StatusCode);
+    [Then("the call should fail as unavailable")]
+    public void ThenTheCallShouldFailAsUnavailable()
+    {
+        Assert.Equal(1, _exitCode);
+        Assert.Empty(_answer);
+        Assert.Contains("Error: the database is unavailable", _callError);
+    }
 
     [Then("the answer should mention {string}")]
-    public async Task ThenTheAnswerShouldMention(string text) => Assert.Contains(text, await _response!.Content.ReadAsStringAsync());
+    public void ThenTheAnswerShouldMention(string text) => Assert.Contains(text, _answer);
 
     [Then("the application should have exited with {int}")]
-    public async Task ThenTheApplicationShouldHaveExitedWith(int exitCode) => Assert.Equal(exitCode, await _running!);
+    public void ThenTheApplicationShouldHaveExitedWith(int exitCode) => Assert.Equal(exitCode, _exitCode);
 
     [Then("the log should mention {string}")]
     public void ThenTheLogShouldMention(string text) => Assert.Contains(text, _stderr.ToString());
@@ -108,26 +134,11 @@ public sealed class PersistenceSteps(ITestOutputHelper output)
     [Then("the log should not mention {string}")]
     public void ThenTheLogShouldNotMention(string text) => Assert.DoesNotContain(text, _stderr.ToString());
 
-    private async Task StopAsync()
-    {
-        if (_stop is null)
-        {
-            return;
-        }
-        await _stop.CancelAsync();
-        await _running!;
-        _stop.Dispose();
-        _stop = null;
-    }
-
     [AfterScenario]
     public async Task StopTheApplication()
     {
-        await StopAsync();
         output.WriteLine(_stderr.ToString());
         SetEnvironment(null, null);
-        Environment.SetEnvironmentVariable("HTTP_LISTEN_PORT", null);
-        Environment.SetEnvironmentVariable("GRPC_LISTEN_PORT", null);
         if (_database is not null)
         {
             await _database.DisposeAsync();

@@ -18,9 +18,7 @@ import (
 	commandlogging "github.com/example/todo/internal/command/middleware/logging"
 	"github.com/example/todo/internal/command/pipeline"
 	"github.com/example/todo/internal/config"
-	"github.com/example/todo/internal/infrastructure/memory"
 	"github.com/example/todo/internal/logging"
-	"github.com/example/todo/internal/service"
 	"github.com/example/todo/internal/version"
 )
 
@@ -44,9 +42,10 @@ func run(ctx context.Context, stdout, stderr io.Writer) int {
 	logger := slog.New(logging.NewHandler(stderr, cfg.LogLevel))
 	logger.Info("starting", "version", version.Version)
 
-	// [services] - infrastructure and the services over it. The lists live in
-	// memory in this example; the DB variation point replaces these two lines.
-	itemLists := service.NewItemLists(memory.NewLists())
+	// [services] - infrastructure and the services over it. This example has
+	// none: the lists live in the process; the DB variation point replaces this
+	// line with a service over the database.
+	itemLists := command.NewKeptLists()
 
 	// [handlers] - the handler of every command, built by the command registry
 	// over the services and wrapped by this command middleware, the first the

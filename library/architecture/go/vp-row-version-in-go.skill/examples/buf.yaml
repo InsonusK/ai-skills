@@ -1,0 +1,7 @@
+# docs/integration/api is the one module; each contract is a folder of it.
+version: v2
+modules:
+  - path: docs/integration/api
+deps:
+  - buf.build/googleapis/googleapis
+  - buf.build/grpc-ecosystem/grpc-gateway

@@ -1,0 +1,23 @@
+{
+  "A failed write leaves nothing pending for the next one": "error",
+  "A caller cancelled during the commit does not undo it": "boundary",
+  "A caller that leaves after the writes does not undo the commit": "boundary",
+  "A command that only reads opens no transaction": "boundary",
+  "A duplicate key of a statement leaves the transaction usable": "negative",
+  "A duplicate key the command handles leaves the transaction usable": "negative",
+  "A nested command joins and ends nothing": "boundary",
+  "A nested command joins the unit of work": "boundary",
+  "A nested command that fails leaves the ending to the outer command": "boundary",
+  "A selector asks again after its own write": "boundary",
+  "A selector is no snapshot: the write answers what it touched": "concurrency",
+  "A statement that knows nothing of the version moves it": "concurrency",
+  "An order changes nothing for Count, Update, and Delete": "boundary",
+  "An order gives a new selector and leaves the first one as it is": "boundary",
+  "An order of an ordered selector begins a new order": "boundary",
+  "An update of a selector that fails halfway changes none of its rows, and the unit goes on": "error",
+  "Commands sent at once do not share a scope": "concurrency",
+  "Of two saves at the same moment exactly one is kept": "concurrency",
+  "One specification serves several selectors": "boundary",
+  "The caller's version is saved, not the one read just now": "concurrency",
+  "Update of a selector fails as a whole when one of its rows moved": "concurrency"
+}

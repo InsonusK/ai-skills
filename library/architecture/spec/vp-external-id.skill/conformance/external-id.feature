@@ -1,7 +1,7 @@
 # Shared by every stack's external id variation point. The source is
 # library/architecture/spec/vp-external-id.skill/conformance/; a stack's copy is
 # written by `make conformance-sync` and never edited.
-@type/infrastructure/db/postgres
+@type/infrastructure/db/postgresql
 Feature: An identity set by the caller
   As the service over a table whose rows a caller outside it creates
   I want the row saved under the UUID v7 the caller made, and a taken one refused

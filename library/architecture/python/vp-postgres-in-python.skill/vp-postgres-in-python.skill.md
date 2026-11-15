@@ -2,7 +2,7 @@
 name: vp-postgres-in-python
 description: The PostgreSQL variation point in Python — src/{package}/infrastructure/postgres copied from templates (Config of DATABASE_DSN and MIGRATE_ON_START, Database with its session per call and ping, the generic Repository and Projections over SQLAlchemy 2's async ORM on asyncpg with their selectors, the translation of SQLSTATE into outcomes, migrate over Alembic, postgrestest), rows and specification classes per table in tables/, Alembic migrations checked by alembic check, the job todo-migrate, and the shared scenarios at TEST_DATABASE_DSN
 whenToUse: when a Python application built on the base plateau must keep its data in PostgreSQL, when you add a table, a specification, a repository method, or a migration in Python, or when you review a Python repository or migration
-updated: 20261103
+updated: 20261115
 tags:
   - stack/python
   - concern/architecture
@@ -15,7 +15,7 @@ adr:
 
 # Goal
 - **The PostgreSQL variation point in Python** - A Python application that keeps every property of [vp-postgres](library/architecture/spec/vp-postgres.skill/vp-postgres.skill.md); this skill details its implementation for Python and restates none of its rules.
-- **Attached by the listed changes only** - Attaching it replaces the in-memory store of [vp-http-api-in-python](library/architecture/python/vp-http-api-in-python.skill/vp-http-api-in-python.skill.md)'s proto example and changes only the files [attach.allow](./attach.allow) names, which the repository's attach check verifies.
+- **Attached by the listed changes only** - Attaching it to [vp-http-api-in-python](library/architecture/python/vp-http-api-in-python.skill/vp-http-api-in-python.skill.md)'s proto example, whose lists live in the process, puts a service over the database where those lists were, so no handler changes, and changes only the files [attach.allow](./attach.allow) names, which the repository's attach check verifies.
 
 # Core Principle
 - **SQLAlchemy behind one generic repository** - SQLAlchemy maps the rows and builds the statements; `Repository[TRow]`, the selectors, and the translation of failures are ours. Decision recorded in [repository-over-sqlalchemy](./adr/repository-over-sqlalchemy.md).
@@ -32,6 +32,7 @@ src/{package}/infrastructure/postgres/ copied, never edited
 ├── selector.py                        Selector, OrderedSelector, ResultSelector, OrderedResultSelector
 ├── specification.py                   Specification, Projection, Key, Columns
 ├── outcomes.py                        DuplicateKeyError, MissingReferenceError, RowChangedError, UnavailableError, RefusedError
+├── version.py                         version_column (xmin): compared by update, delete, a selector's update when a row declares it
 ├── migrate.py                         migrate(database, migrations.LOCATION)
 ├── postgrestest/                      copied: create (a database per scenario), not_answering, Failing
 ├── tables/                            per table: the row, its keys, its specifications; Row, their base

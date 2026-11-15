@@ -1,11 +1,11 @@
 # Shared by every stack's PostgreSQL variation point. The source is
 # library/architecture/spec/vp-postgres.skill/conformance/; a stack's copy is
 # written by `make conformance-sync` and never edited.
-@type/infrastructure/db/postgres
-Feature: The repository reports what the service must tell apart
-  As the service over the database
-  I want the outcomes of the database in the repository's terms
-  So that I turn each into a kind and never read an error code of the engine
+@type/infrastructure/db/postgresql
+Feature: The outcomes of the database are told apart
+  As the code over the repository
+  I want the outcomes of the database told apart
+  So that each becomes a kind and nothing above the repository reads an error code of the engine
 
   Background:
     Given a database with the sample tables
@@ -48,7 +48,7 @@ Feature: The repository reports what the service must tell apart
     When I delete that row
     Then the repository should report a changed row
 
-  @category/edge
+  @category/error
   Scenario Outline: A failed write leaves nothing pending for the next one
     Given one session for the whole scenario
     When <failed>

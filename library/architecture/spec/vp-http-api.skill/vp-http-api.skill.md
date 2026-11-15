@@ -2,11 +2,13 @@
 name: vp-http-api
 description: The HTTP API variation point — an entry point attached to the base plateau that serves commands as versioned HTTP routes, answers errors by their kind, publishes its OpenAPI contract and Swagger UI, stops gracefully, and replaces the startup entry without editing any other base file
 whenToUse: when an application built on the base plateau must be reachable over HTTP — adding the HTTP entry point, serving a new command over HTTP, or reviewing the HTTP entry point of such an application
-updated: 20261102
+updated: 20261115
 tags:
   - stack
   - concern/architecture
   - app-type/service
+adr:
+  - adr/shared-contract-and-example-operations.md
 ---
 
 # Goal
@@ -30,6 +32,11 @@ tags:
 # Rule
 
 ## MUST
+
+### Keep shared contract checks independent of sample operations
+Compare served operations with OpenAPI in the shared scenario, and pin each example's intended operations in its own native feature.
+- Risk: a common table of one sample's routes rejects an application that correctly extends its contract; removing the pin entirely lets accidental operation changes pass.
+- Fix: keep both assertions, as [shared-contract-and-example-operations](./adr/shared-contract-and-example-operations.md) records; a further sample operation changes only its example table.
 
 ### Follow api-develop
 Version, document, and publish the HTTP API per [api-develop](library/common-workflow/develop/api-develop.skill/api-develop.skill.md): the major version in every route (`/v1/...`), the contract file under `docs/integration/api/{contract-name}/`, Swagger UI and the spec behind `HTTP_API_DOCS_ENABLED`, every emitted URL under `HTTP_BASE_PATH`, success status 201/202/200 by what the command did, and `google.rpc.Status` as every error body.
@@ -97,7 +104,7 @@ Test the HTTP entry point with the command handlers replaced by fakes, covering 
 - Fix: one fake handler per command, setting what the scenario needs.
 
 ### Pass the shared scenarios
-Run every file of this skill's [conformance/](./conformance/) unchanged in each stack's example, through a copy named in the stack skill's `conformance.copy` (`make conformance-sync`), as [conformance-scenarios-copied-into-each-stack](library/architecture/spec/vp-logging.skill/adr/conformance-scenarios-copied-into-each-stack.md) decides. The plain mode runs `http-*/`, the proto mode `http-pipeline/` and `proto-*/`; `rpcstatus` comes from [vp-grpc-api](library/architecture/spec/vp-grpc-api.skill/vp-grpc-api.skill.md).
+Run every file of this skill's [conformance/](./conformance/) unchanged in each stack's example, through a copy named in the stack skill's `conformance.copy` (`make conformance-sync`), as [conformance-scenarios-copied-into-each-stack](library/architecture/spec/vp-logging.skill/adr/conformance-scenarios-copied-into-each-stack.md) decides. The plain mode runs `http-*/`, the proto mode `http-pipeline/` and `proto-*/`. This variation point adds a way to call the application, not a store: its proto example keeps the lists in the process, with no service and no store; the scenarios of a service over a store belong to the database's variation point (`postgres-item-lists-service/` of [vp-postgres](library/architecture/spec/vp-postgres.skill/vp-postgres.skill.md)). `proto-item-lists/` fakes what the handlers ask of the item lists, so it runs where they take it as an interface (Go, Python); dotnet's handlers take their lists as a class, and its handler scenarios are its own. `rpcstatus` comes from [vp-grpc-api](library/architecture/spec/vp-grpc-api.skill/vp-grpc-api.skill.md).
 - Violation: a stack rewording a shared scenario or keeping its own copy of one; a scenario skipped because the stack fails it.
 - Risk: the stacks drift apart under one name: a check one stack makes and another does not is a defect found in one and left open in the others.
 - Fix: step definitions are the stack's own; a scenario of a mechanism only one stack has goes in a `{name}-in-{stack}.feature` beside the copies; `bash test/check-conformance.sh` fails while a copy is missing or differs.

@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- The domain of the module: entities, their configurations (the tables the
+       module owns), domain services, the rule errors. It references Shared (the
+       error kinds), Shared.Persistence (the marks of an entity's table, as
+       INeverChanges), and EF Core's relational model API for the configurations
+       (tables, columns, indexes), never a provider: no connection and no I/O, so its rules are tested by their
+       scenarios alone. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Shared\Shared.csproj" />
+    <ProjectReference Include="..\..\..\Shared.Persistence\Shared.Persistence.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+  </ItemGroup>
+</Project>
