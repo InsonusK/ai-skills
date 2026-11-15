@@ -5,6 +5,7 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"reflect"
+	"strconv"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -42,8 +43,15 @@ func (v *Version) Scan(src any) error {
 	return nil
 }
 
-// Value gives the version as text; a statement casts it to xid.
-func (v Version) Value() (driver.Value, error) { return string(v), nil }
+// Value binds an opaque caller version as xid. Unusable text matches no row
+// (xmin 0), rather than turning a concurrent-change rejection into a SQL error.
+func (v Version) Value() (driver.Value, error) {
+	value, err := strconv.ParseUint(string(v), 10, 32)
+	if err != nil {
+		return "0", nil
+	}
+	return strconv.FormatUint(value, 10), nil
+}
 
 // versionField is the field of TRow that declares the version, or nil.
 func versionField(rowSchema *schema.Schema) *schema.Field {
