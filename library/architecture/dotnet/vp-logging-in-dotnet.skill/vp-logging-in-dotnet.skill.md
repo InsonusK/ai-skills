@@ -2,7 +2,7 @@
 name: vp-logging-in-dotnet
 description: The logging variation point in dotnet — the MaskedLogging project copied from templates (MaskedLogProvider writing the payload masked by [LogMask] / [LogOmit] marks from Shared, [JsonIgnore], proto debug_redact, and secret names, cut to LOG_PAYLOAD_MAX_BYTES, kept by LOG_PAYLOAD, with the request_id of the call, unreadable bodies written unparsed and warned once) and the provider line of Program.cs replaced
 whenToUse: when a dotnet application built on the base plateau must log the data of its calls, when you mark a property of a dotnet command, request type, or proto message as secret or not to log, or when you review such an application's log
-updated: 20261102
+updated: 20261119
 tags:
   - stack/dotnet
   - concern/architecture
@@ -38,8 +38,13 @@ src/
 
 ## MUST
 
+### Fill the service namespace
+Fill `{service-namespace}` with the application's namespace root from [the namespace convention](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md#qualify-namespaces-with-the-service-name) before copying this skill's templates.
+- Risk: an unfilled identifier does not compile, while a different root in each file splits the service's types.
+- Fix: substitute the same identifier in every delivered source, preserve template logic, and verify no `{service-namespace}` remains in application sources.
+
 ### Copy the project from templates
-Copy, unchanged, [MaskedLogging/](./templates/src/MaskedLogging/) to `src/MaskedLogging/` and [LogMarks.cs](./templates/src/Shared/Logging/LogMarks.cs) to `src/Shared/Logging/`, with the example's `src/MaskedLogging.Tests/`; add both projects to the solution, a reference to `MaskedLogging` to `App.Host.csproj`, and `Google.Protobuf` `3.35.1` and `Grpc.Tools` `2.84.0` (the versions of [vp-grpc-api-in-dotnet](library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/vp-grpc-api-in-dotnet.skill.md)) to `Directory.Packages.props`.
+Copy, after [namespace substitution](#fill-the-service-namespace), [MaskedLogging/](./templates/src/MaskedLogging/) to `src/MaskedLogging/` and [LogMarks.cs](./templates/src/Shared/Logging/LogMarks.cs) to `src/Shared/Logging/`, with the example's `src/MaskedLogging.Tests/`; add both projects to the solution, a reference to `MaskedLogging` to `App.Host.csproj`, and `Google.Protobuf` `3.35.1` and `Grpc.Tools` `2.84.0` (the versions of [vp-grpc-api-in-dotnet](library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/vp-grpc-api-in-dotnet.skill.md)) to `Directory.Packages.props`.
 - Risk: a retyped mask misses a form of payload — a JSON body, a proto message, a header map — and leaks it.
 - Fix: copy the files; `make test` passes.
 

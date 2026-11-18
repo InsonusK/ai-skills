@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace BuildingBlocks.Pipeline;
+namespace TodoExampleService.BuildingBlocks.Pipeline;
 
 /// <summary>
 /// The sender every entry point and handler receives once a variation point

@@ -5,12 +5,12 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using BuildingBlocks.Logging;
-using Client.Abstractions;
-using Client.Pipeline;
+using {service-namespace}.BuildingBlocks.Logging;
+using {service-namespace}.Infrastructure.Client.Core.Abstractions;
+using {service-namespace}.Infrastructure.Client.Core.Pipeline;
 using Microsoft.Extensions.Logging;
 
-namespace Client.Http;
+namespace {service-namespace}.Infrastructure.Client.Core.Http;
 
 /// <summary>One operation of the contract an adapter calls.</summary>
 /// <param name="Retryable">Marks an operation safe to send again: a repeat does what one call does. Only such an operation is repeated by the retry middleware.</param>

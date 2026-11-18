@@ -1,11 +1,11 @@
 using System.Text.Json.Serialization;
-using App.Host.Api.Cli;
-using App.Host.Api.Cli.Pipeline;
+using TodoExampleService.App.Host.Api.Cli;
+using TodoExampleService.App.Host.Api.Cli.Pipeline;
 using Reqnroll;
-using Shared.Errors;
+using TodoExampleService.Shared.Errors;
 using Xunit;
 
-namespace App.Host.Tests.Steps.Cli;
+namespace TodoExampleService.App.Host.Tests.Steps.Cli;
 
 // The test resource of the pipeline scenarios: echo, whose command answers a
 // configured text, and plain, the same with no text form of its output. It

@@ -1,8 +1,12 @@
-# .NET infrastructure naming: decision brief
+# Historical .NET infrastructure naming investigation
 
-Status: investigation prepared; naming rule and migration scope await owner
-agreement. Baseline: `080ba3c5` (develop). No projects, namespaces, templates or
-legacy consumers are renamed by this investigation.
+Status: historical investigation from PR #307; its short-namespace recommendation
+was rejected by the owner. The approved
+[service-qualified namespace ADR](../../../develop/dotnet/app-layers-in-dotnet.skill/adr/service-qualified-namespaces.md)
+and [migration contract](MIGRATION.md) supersede the proposals below. Baseline
+figures describe `080ba3c5`; `INVENTORY.json` is regenerated to describe the current
+implementation. This document preserves the considered alternatives, not the
+effective convention.
 
 ## Recommendation
 

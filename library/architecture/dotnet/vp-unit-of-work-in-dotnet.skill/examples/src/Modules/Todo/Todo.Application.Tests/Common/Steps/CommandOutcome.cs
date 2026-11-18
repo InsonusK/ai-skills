@@ -1,8 +1,8 @@
 using Reqnroll;
-using Shared.Errors;
+using TodoExampleService.Shared.Errors;
 using Xunit;
 
-namespace Todo.Application.Tests.Common.Steps;
+namespace TodoExampleService.Modules.Todo.Application.Tests.Common.Steps;
 
 /// <summary>
 /// The failure of the command a scenario sent, shared by every step class of

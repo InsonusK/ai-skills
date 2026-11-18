@@ -1,14 +1,14 @@
-using App.Host.Api.Http.Pipeline;
-using BuildingBlocks.Logging;
+using TodoExampleService.App.Host.Api.Http.Pipeline;
+using TodoExampleService.BuildingBlocks.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Reqnroll;
-using Shared.Errors;
+using TodoExampleService.Shared.Errors;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace App.Host.Tests.Steps.Http;
+namespace TodoExampleService.App.Host.Tests.Steps.Http;
 
 /// <summary>A middleware that writes the record "middleware {name}" before it passes the request on.</summary>
 public sealed class NamedMiddleware(string name, ILogger logger) : IMiddleware

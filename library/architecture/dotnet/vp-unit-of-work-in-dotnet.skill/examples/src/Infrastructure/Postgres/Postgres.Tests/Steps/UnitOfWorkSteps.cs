@@ -3,14 +3,14 @@ using Ardalis.Specification;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
-using Postgres.Testing;
-using Postgres.UnitOfWork;
+using TodoExampleService.Infrastructure.Database.Postgres.Testing;
+using TodoExampleService.Infrastructure.Database.Postgres.UnitOfWork;
 using Reqnroll;
-using Shared.Errors;
-using Shared.UnitOfWork;
+using TodoExampleService.Shared.Errors;
+using TodoExampleService.Shared.UnitOfWork;
 using Xunit;
 
-namespace Postgres.Tests.Steps;
+namespace TodoExampleService.Infrastructure.Database.Postgres.Tests.Steps;
 
 /// <summary>Every task of the one owner of these scenarios, in the order they were stored.</summary>
 public sealed class TasksOfOwner : Specification<OwnerTask>

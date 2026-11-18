@@ -1,15 +1,15 @@
-using App.Host.Api.Grpc.Pipeline;
-using BuildingBlocks.Logging;
+using TodoExampleService.App.Host.Api.Grpc.Pipeline;
+using TodoExampleService.BuildingBlocks.Logging;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Reqnroll;
-using Shared.Errors;
+using TodoExampleService.Shared.Errors;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace App.Host.Tests.Steps.Grpc;
+namespace TodoExampleService.App.Host.Tests.Steps.Grpc;
 
 /// <summary>An interceptor that writes the record "interceptor {name}" before it passes the call on.</summary>
 public sealed class NamedInterceptor(string name, ILogger logger) : Interceptor

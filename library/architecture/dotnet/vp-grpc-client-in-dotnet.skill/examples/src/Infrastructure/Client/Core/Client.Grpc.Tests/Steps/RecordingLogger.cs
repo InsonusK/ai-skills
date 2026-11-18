@@ -1,7 +1,7 @@
-using BuildingBlocks.Logging;
+using TodoExampleService.BuildingBlocks.Logging;
 using Microsoft.Extensions.Logging;
 
-namespace Client.Grpc.Tests.Steps;
+namespace TodoExampleService.Infrastructure.Client.Core.Grpc.Tests.Steps;
 
 /// <summary>One record: its level, its message, and every attribute as it was written, the payload too.</summary>
 public sealed record Record(LogLevel Level, string Message, IReadOnlyDictionary<string, object?> Attributes);

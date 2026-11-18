@@ -1,9 +1,9 @@
 // Source: skill vp-postgres-in-dotnet
 
 using MediatR;
-using Shared.Persistence;
+using {service-namespace}.Shared.Persistence;
 
-namespace Middleware.StoreFailures;
+namespace {service-namespace}.Middleware.StoreFailures;
 
 /// <summary>
 /// The command middleware that tells a failure of the store in the error kinds:

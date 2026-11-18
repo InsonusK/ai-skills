@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
 using MediatR;
-using Shared.Access;
+using TodoExampleService.Shared.Access;
 
-namespace Todo.Commands;
+namespace TodoExampleService.Modules.Todo.Commands;
 
 /// <summary>Asks to plan one open to-do item per title.</summary>
 public sealed record PlanItemsCommand(IReadOnlyList<string> Titles) : IRequest<PlanItemsResult>, IRestricted, IBatch

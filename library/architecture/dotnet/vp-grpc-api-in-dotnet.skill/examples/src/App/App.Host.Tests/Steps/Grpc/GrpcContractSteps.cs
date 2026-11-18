@@ -1,11 +1,11 @@
 using System.Reflection;
-using Contracts.Todo.V1;
+using TodoExampleService.Contracts.Todo.V1;
 using Google.Protobuf.Reflection;
 using Reqnroll;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace App.Host.Tests.Steps.Grpc;
+namespace TodoExampleService.App.Host.Tests.Steps.Grpc;
 
 /// <summary>The services the application serves held against the services of its proto contract.</summary>
 [Binding]

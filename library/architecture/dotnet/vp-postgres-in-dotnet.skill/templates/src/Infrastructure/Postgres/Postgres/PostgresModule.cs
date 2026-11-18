@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Postgres.Repositories;
-using Shared.Persistence;
+using {service-namespace}.Infrastructure.Database.Postgres.Repositories;
+using {service-namespace}.Shared.Persistence;
 
-namespace Postgres;
+namespace {service-namespace}.Infrastructure.Database.Postgres;
 
 /// <summary>The database as the composition root adds it.</summary>
 public static class PostgresModule

@@ -1,11 +1,11 @@
 // Source: skill base-plateau-in-dotnet
 
 using System.Text.Json;
-using App.Host.Api.Core.Entry;
+using {service-namespace}.App.Host.Api.Core.Entry;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace App.Host.Api.Startup;
+namespace {service-namespace}.App.Host.Api.Startup;
 
 /// <summary>
 /// The base plateau's only entry point: the process runs one command when it

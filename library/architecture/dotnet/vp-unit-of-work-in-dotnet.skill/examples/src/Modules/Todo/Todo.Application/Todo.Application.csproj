@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>$(ServiceNamespace).Modules.Todo.Application</RootNamespace>
+  </PropertyGroup>
   <!-- The command handlers of the module, one file per command, and the
        specifications they pick rows with. They reach the store through the
        repository's contract (Shared.Persistence), never a store itself. -->

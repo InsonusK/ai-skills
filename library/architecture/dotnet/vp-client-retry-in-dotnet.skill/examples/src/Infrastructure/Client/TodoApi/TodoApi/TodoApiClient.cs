@@ -1,10 +1,10 @@
-using Client.Http;
-using Client.Pipeline;
+using TodoExampleService.Infrastructure.Client.Core.Http;
+using TodoExampleService.Infrastructure.Client.Core.Pipeline;
 using Microsoft.Extensions.Logging;
-using TodoApi.Abstractions;
-using TodoApi.Mock;
+using TodoExampleService.Infrastructure.Client.TodoApi.Abstractions;
+using TodoExampleService.Infrastructure.Client.TodoApi.Mock;
 
-namespace TodoApi;
+namespace TodoExampleService.Infrastructure.Client.TodoApi;
 
 /// <summary>
 /// The adapter of the todo API of another service

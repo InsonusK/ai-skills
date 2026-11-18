@@ -3,7 +3,7 @@
 using System.Globalization;
 using Microsoft.Extensions.Logging;
 
-namespace MaskedLogging;
+namespace {service-namespace}.MaskedLogging;
 
 /// <summary>
 /// The logging variation point's own settings. They are read here, not in

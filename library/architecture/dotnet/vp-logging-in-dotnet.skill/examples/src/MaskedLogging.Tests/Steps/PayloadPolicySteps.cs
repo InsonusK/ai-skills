@@ -2,13 +2,13 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using BuildingBlocks.Logging;
+using TodoExampleService.BuildingBlocks.Logging;
 using Microsoft.Extensions.Logging;
 using Reqnroll;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace MaskedLogging.Tests.Steps;
+namespace TodoExampleService.MaskedLogging.Tests.Steps;
 
 /// <summary>
 /// The steps of payload-policy.feature and payload-in-dotnet.feature: records logged

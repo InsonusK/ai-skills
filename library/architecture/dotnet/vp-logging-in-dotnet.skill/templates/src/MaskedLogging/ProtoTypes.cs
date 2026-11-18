@@ -5,7 +5,7 @@ using System.Reflection;
 using Google.Protobuf;
 using Google.Protobuf.Reflection;
 
-namespace MaskedLogging;
+namespace {service-namespace}.MaskedLogging;
 
 /// <summary>
 /// The proto messages of every loaded assembly by full name, so an Any is

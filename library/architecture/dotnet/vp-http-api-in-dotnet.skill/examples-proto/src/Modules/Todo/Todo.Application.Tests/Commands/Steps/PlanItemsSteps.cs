@@ -1,11 +1,11 @@
 using Reqnroll;
-using Shared.Errors;
-using Todo.Application.Commands;
-using Todo.Commands;
+using TodoExampleService.Shared.Errors;
+using TodoExampleService.Modules.Todo.Application.Commands;
+using TodoExampleService.Modules.Todo.Commands;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Todo.Application.Tests.Commands.Steps;
+namespace TodoExampleService.Modules.Todo.Application.Tests.Commands.Steps;
 
 [Binding]
 public sealed class PlanItemsSteps(ITestOutputHelper output)

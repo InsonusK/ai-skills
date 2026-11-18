@@ -2,7 +2,7 @@
 
 using Npgsql;
 
-namespace Postgres.Testing;
+namespace {service-namespace}.Infrastructure.Database.Postgres.Testing;
 
 /// <summary>
 /// One database of its own for one scenario, created on the server

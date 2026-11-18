@@ -1,9 +1,9 @@
 using System.Text.Json;
-using App.Host.Api.Http.Pipeline;
+using TodoExampleService.App.Host.Api.Http.Pipeline;
 using Reqnroll;
 using Xunit;
 
-namespace App.Host.Tests.Steps.Http;
+namespace TodoExampleService.App.Host.Tests.Steps.Http;
 
 [Binding]
 public sealed class DocsSteps(HttpWorld world)

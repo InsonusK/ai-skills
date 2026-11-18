@@ -2,7 +2,7 @@
 name: base-plateau-extension-in-dotnet
 description: How a variation point extends the base plateau in dotnet — one registration method per module, API, and variation point called in order in the three sections of Program.cs (AddTodoModule, AddCommandMiddleware with the list of command middleware, AddHttpApi and AddGrpcApi with their lists of API middleware, every entry point registered as an Entry), every middleware in a folder of its own named {Name}Middleware — the command middleware as MediatR pipeline behaviors in the Middleware project, an API's in App.Host/Api/{Api}/Middleware inside its fixed RequestLogMiddleware and AnswerFailuresMiddleware — marks as interfaces of Shared a command implements, rejections as ErrorKindException, the variation point's own settings, and attach.allow, with a sample access variation point attached to the HTTP example
 whenToUse: when you write, attach, or review a variation point of a dotnet application built on the base plateau, when you add a middleware around commands or around the requests or calls of an API, or when you add a command or a module to such an application
-updated: 20261102
+updated: 20261119
 tags:
   - stack/dotnet
   - concern/architecture
@@ -16,6 +16,7 @@ adr:
 - **A sample to copy from** - [examples/](./examples/README.md) attaches a sample access variation point to the HTTP example of [vp-http-api-in-dotnet](library/architecture/dotnet/vp-http-api-in-dotnet.skill/vp-http-api-in-dotnet.skill.md): one HTTP middleware and two command middleware, with the attach check proving that only the composition root, the marked command with its project, and the readme and Makefile changed.
 
 # Core Principle
+- **Service ownership** - Namespace identifiers follow [the .NET namespace convention](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md#qualify-namespaces-with-the-service-name).
 - **Program.cs reads as a list of registrations** - Each module, API, and variation point brings one `Add{Part}()` extension method of `IServiceCollection`; `Program.cs` calls them in order in its three sections, and the order of a list argument is the order of wrapping ([ADR](./adr/registration-methods-in-program.md)).
 - **A folder per middleware** - A command middleware is `src/Middleware/{Name}/{Name}Middleware.cs`, an open generic MediatR pipeline behavior; an API's is `src/App/App.Host/Api/{Api}/Middleware/{Name}/{Name}Middleware.cs`. The `Middleware` project knows no ASP.NET, so a command middleware works for every API.
 - **MediatR is the command registry** - A module's `Add{Module}Module()` lets MediatR find every handler of its assembly, so a new command adds no line anywhere; `ISender` is what an entry point takes, and every middleware of the list wraps every handler.
@@ -73,7 +74,7 @@ Let a handler that runs another command — of its own module or of another — 
 - Fix: `await sender.Send(new AddItemCommand(listId, title), ct)`; MediatR wraps each `Send` with the behaviors of `AddCommandMiddleware`.
 
 ### One folder per middleware
-Put each command middleware in `src/Middleware/{Name}/` with the settings, identity, and errors it uses, its scenarios in `src/Middleware.Tests/`, and each API middleware in `src/App/App.Host/Api/{Api}/Middleware/{Name}/`, the class named `{Name}Middleware` and the namespace `Middleware.{Name}` or `App.Host.Api.{Api}.Middleware.{Name}`; put the marks in `src/Shared/{VariationPoint}/`.
+Put each command middleware in `src/Middleware/{Name}/` with the settings, identity, and errors it uses, its scenarios in `src/Middleware.Tests/`, and each API middleware in `src/App/App.Host/Api/{Api}/Middleware/{Name}/`, the class named `{Name}Middleware` and the namespace `{service-namespace}.Middleware.{Name}` or `{service-namespace}.App.Host.Api.{Api}.Middleware.{Name}`; put the marks in `src/Shared/{VariationPoint}/`.
 - Violation: `AccessMiddleware` added to `BuildingBlocks/Pipeline`; an HTTP middleware in `Api/Http/Pipeline`, which is copied from templates; a project of its own per variation point.
 - Risk: a variation point edits a base project or a template, and a reader looking for a step finds it under another name.
 - Fix: a new folder needs no project edit — the SDK compiles every file of the project's folders; a middleware that needs a package the `Middleware` project lacks adds it there, as a listed change.

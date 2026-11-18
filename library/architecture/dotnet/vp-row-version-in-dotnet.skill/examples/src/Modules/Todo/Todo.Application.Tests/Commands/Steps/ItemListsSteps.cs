@@ -1,14 +1,14 @@
-using Postgres.Testing;
+using TodoExampleService.Infrastructure.Database.Postgres.Testing;
 using Reqnroll;
-using Shared.Errors;
-using Todo.Application.Commands;
-using Todo.Application.Tests.Common.Steps;
-using Todo.Commands;
-using Todo.Domain.Entities;
+using TodoExampleService.Shared.Errors;
+using TodoExampleService.Modules.Todo.Application.Commands;
+using TodoExampleService.Modules.Todo.Application.Tests.Common.Steps;
+using TodoExampleService.Modules.Todo.Commands;
+using TodoExampleService.Modules.Todo.Domain.Entities;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Todo.Application.Tests.Commands.Steps;
+namespace TodoExampleService.Modules.Todo.Application.Tests.Commands.Steps;
 
 /// <summary>
 /// The handlers over the repository of the items, kept in memory for one

@@ -1,6 +1,6 @@
 using System.Net.Sockets;
-using App.Host.Api.Core.Entry;
-using App.Host.Api.Management;
+using TodoExampleService.App.Host.Api.Core.Entry;
+using TodoExampleService.App.Host.Api.Management;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
@@ -8,7 +8,7 @@ using Reqnroll;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace App.Host.Tests.Steps.Management;
+namespace TodoExampleService.App.Host.Tests.Steps.Management;
 
 /// <summary>The management server on a real port, started and stopped as the entry runner does.</summary>
 [Binding]

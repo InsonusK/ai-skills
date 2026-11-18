@@ -1,15 +1,15 @@
 using Ardalis.Specification;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using Postgres.Repositories;
-using Postgres.Testing;
+using TodoExampleService.Infrastructure.Database.Postgres.Repositories;
+using TodoExampleService.Infrastructure.Database.Postgres.Testing;
 using Reqnroll;
-using Shared.Errors;
-using Shared.Persistence;
+using TodoExampleService.Shared.Errors;
+using TodoExampleService.Shared.Persistence;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Postgres.Tests.Steps;
+namespace TodoExampleService.Infrastructure.Database.Postgres.Tests.Steps;
 
 // The table of the shared scenarios of skill vp-row-version: notes, whose rows
 // change. It exists only in this project: the application never ships it.

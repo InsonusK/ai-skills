@@ -1,6 +1,6 @@
 // Source: skill vp-http-client-in-dotnet
 
-namespace Client.Abstractions;
+namespace {service-namespace}.Infrastructure.Client.Core.Abstractions;
 
 /// <summary>
 /// The code of a status an API answered: google.rpc.Code, which is also the

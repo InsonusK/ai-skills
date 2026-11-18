@@ -2,7 +2,7 @@
 
 using Microsoft.Extensions.Logging;
 
-namespace BuildingBlocks.Logging;
+namespace TodoExampleService.BuildingBlocks.Logging;
 
 /// <summary>
 /// The base plateau's logger provider: one JSON line per record on

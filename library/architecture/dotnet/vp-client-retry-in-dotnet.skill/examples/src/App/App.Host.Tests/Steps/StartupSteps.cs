@@ -1,14 +1,14 @@
-using App.Host.Api.Core.Entry;
-using App.Host.Api.Startup;
+using TodoExampleService.App.Host.Api.Core.Entry;
+using TodoExampleService.App.Host.Api.Startup;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Reqnroll;
-using Todo.Application.Commands;
-using Todo.Commands;
+using TodoExampleService.Modules.Todo.Application.Commands;
+using TodoExampleService.Modules.Todo.Commands;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace App.Host.Tests.Steps;
+namespace TodoExampleService.App.Host.Tests.Steps;
 
 /// <summary>A command of the scenarios whose handler fails for a reason with no kind.</summary>
 public sealed record FailingCommand(string Message) : IRequest<string>;

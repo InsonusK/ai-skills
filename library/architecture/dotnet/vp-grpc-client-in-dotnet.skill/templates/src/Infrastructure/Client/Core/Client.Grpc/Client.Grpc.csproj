@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>$(ServiceNamespace).Infrastructure.Client.Core.Grpc</RootNamespace>
+  </PropertyGroup>
   <!-- The fixed part of every client of another service's gRPC API: the {API}
        settings, the channel with one interceptor for the timeout, the request
        id, the call log, and the outcomes, and the mock inside the process.

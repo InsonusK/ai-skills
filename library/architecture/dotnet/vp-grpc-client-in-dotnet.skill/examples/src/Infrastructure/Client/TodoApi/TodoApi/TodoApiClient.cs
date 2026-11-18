@@ -1,11 +1,11 @@
-using Client.Grpc;
-using Client.Pipeline;
-using Contracts.Todo.V1;
+using TodoExampleService.Infrastructure.Client.Core.Grpc;
+using TodoExampleService.Infrastructure.Client.Core.Pipeline;
+using TodoExampleService.Contracts.Todo.V1;
 using Microsoft.Extensions.Logging;
-using TodoApi.Abstractions;
-using TodoApi.Mock;
+using TodoExampleService.Infrastructure.Client.TodoApi.Abstractions;
+using TodoExampleService.Infrastructure.Client.TodoApi.Mock;
 
-namespace TodoApi;
+namespace TodoExampleService.Infrastructure.Client.TodoApi;
 
 /// <summary>
 /// The adapter of the todo API of another service

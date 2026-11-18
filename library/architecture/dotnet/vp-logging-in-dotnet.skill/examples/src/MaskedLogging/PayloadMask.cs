@@ -12,9 +12,9 @@ using System.Text.Json.Serialization.Metadata;
 using Google.Protobuf;
 using Google.Protobuf.Reflection;
 using Any = Google.Protobuf.WellKnownTypes.Any;
-using Shared.Logging;
+using TodoExampleService.Shared.Logging;
 
-namespace MaskedLogging;
+namespace TodoExampleService.MaskedLogging;
 
 /// <summary>
 /// A body the mask could not read - bytes that are not JSON, or a proto Any

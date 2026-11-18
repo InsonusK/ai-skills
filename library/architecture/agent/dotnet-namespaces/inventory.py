@@ -42,11 +42,20 @@ def project_record(name):
     prefix = str(Path(name).parent) + '/'
     namespaces = sorted({ns for p, text in sources.items()
                          if p.startswith(prefix) and p.endswith('.cs')
-                         for ns in re.findall(r'^\s*namespace\s+([\w.]+)', text, re.M)})
+                         for ns in re.findall(r'^\s*namespace\s+([^;\s]+)', text, re.M)})
+    service_namespace = None
+    for parent in (ROOT / name).parents:
+        props = str((parent / 'Directory.Build.props').relative_to(ROOT))
+        if props in sources:
+            service_namespace = ET.fromstring(sources[props]).findtext('.//ServiceNamespace')
+            break
+        if parent == ROOT:
+            break
     return {
         'path': name, 'project_name': Path(name).stem,
         'identity_overrides_in_project': properties(projects[name]),
         'declared_namespaces': namespaces,
+        'declared_service_namespace': service_namespace,
         'project_references': references[name],
         'referenced_by': sorted(incoming[name]),
     }
@@ -55,14 +64,23 @@ def project_record(name):
 infra = {scope: [project_record(p) for p in sorted(projects)
                  if p.startswith(prefix) and infrastructure(p)]
          for scope, prefix in [('current', CURRENT), ('legacy', LEGACY)]}
-namespace_prefixes = {record['project_name'] for records in infra.values()
-                      for record in records if record['declared_namespaces']}
+namespace_prefixes = set()
+for records in infra.values():
+    for record in records:
+        if not record['declared_namespaces']:
+            continue
+        prefix = next((item['value'] for item in record['identity_overrides_in_project']
+                       if item['property'] == 'RootNamespace'), record['project_name'])
+        service = record['declared_service_namespace'] or (
+            '{service-namespace}' if '/templates/' in record['path'] else '')
+        prefix = prefix.replace('$(ServiceNamespace)', service)
+        namespace_prefixes.add(prefix)
 imports = defaultdict(list)
 templates = []
 for name, text in sorted(sources.items()):
     if name.endswith('.cs'):
         for target in sorted(set(re.findall(
-                r'^\s*(?:global\s+)?using\s+(?:static\s+)?(?:\w+\s*=\s*)?([\w.]+)\s*;',
+                r'^\s*(?:global\s+)?using\s+(?:static\s+)?(?:\w+\s*=\s*)?([\w.{}-]+)\s*;',
                 text, re.M))):
             if any(target == prefix or target.startswith(prefix + '.')
                    for prefix in namespace_prefixes):
@@ -70,13 +88,14 @@ for name, text in sorted(sources.items()):
     if name.startswith(CURRENT) and '/templates/' in name and infrastructure(name):
         templates.append({
             'path': name,
-            'namespaces': re.findall(r'^\s*namespace\s+([\w.{}]+)', text, re.M),
+            'namespaces': re.findall(r'^\s*namespace\s+([^;\s]+)', text, re.M),
             'path_identifier_tokens': sorted(set(re.findall(r'\{\w+\}', name))),
         })
 
 output = {
     'scope': 'Tracked files only. Raw XML declarations, not evaluated MSBuild properties; '
-             'explicit C# namespaces, not generated sources. Imports matched by project-name prefix.',
+             'explicit C# namespaces, not generated sources. Imports matched by declared RootNamespace '
+             '(project name as fallback), substituting the nearest ServiceNamespace declaration.',
     'project_counts': {scope: sum(p.startswith(prefix) for p in projects)
                        for scope, prefix in [('current', CURRENT), ('legacy', LEGACY)]},
     'infrastructure_projects': infra,

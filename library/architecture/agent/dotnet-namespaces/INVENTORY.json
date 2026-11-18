@@ -1,5 +1,5 @@
 {
-  "scope": "Tracked files only. Raw XML declarations, not evaluated MSBuild properties; explicit C# namespaces, not generated sources. Imports matched by project-name prefix.",
+  "scope": "Tracked files only. Raw XML declarations, not evaluated MSBuild properties; explicit C# namespaces, not generated sources. Imports matched by declared RootNamespace (project name as fallback), substituting the nearest ServiceNamespace declaration.",
   "project_counts": {
     "current": 227,
     "legacy": 35
@@ -9,10 +9,16 @@
       {
         "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Abstractions/Client.Abstractions.csproj",
         "project_name": "Client.Abstractions",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Client.Abstractions"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Core.Abstractions"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.Core.Abstractions"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [],
         "referenced_by": [
           "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Http/Client.Http.csproj",
@@ -23,10 +29,16 @@
       {
         "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Http.Tests/Client.Http.Tests.csproj",
         "project_name": "Client.Http.Tests",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Client.Http.Tests.Steps"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Core.Http.Tests"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.Core.Http.Tests.Steps"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\Client.Http\\Client.Http.csproj"
         ],
@@ -35,10 +47,16 @@
       {
         "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Http/Client.Http.csproj",
         "project_name": "Client.Http",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Client.Http"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Core.Http"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.Core.Http"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\Client.Abstractions\\Client.Abstractions.csproj",
           "..\\Client.Pipeline\\Client.Pipeline.csproj",
@@ -52,10 +70,16 @@
       {
         "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Pipeline.Tests/Client.Pipeline.Tests.csproj",
         "project_name": "Client.Pipeline.Tests",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Client.Pipeline.Tests.Steps"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Core.Pipeline.Tests"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.Core.Pipeline.Tests.Steps"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\Client.Pipeline\\Client.Pipeline.csproj"
         ],
@@ -64,10 +88,16 @@
       {
         "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Pipeline/Client.Pipeline.csproj",
         "project_name": "Client.Pipeline",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Client.Pipeline"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Core.Pipeline"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.Core.Pipeline"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [],
         "referenced_by": [
           "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Http/Client.Http.csproj",
@@ -78,10 +108,16 @@
       {
         "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Middleware/Retry.Tests/Retry.Tests.csproj",
         "project_name": "Retry.Tests",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Retry.Tests.Steps"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Middleware.Retry.Tests"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.Middleware.Retry.Tests.Steps"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\Retry\\Retry.csproj"
         ],
@@ -90,10 +126,16 @@
       {
         "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Middleware/Retry/Retry.csproj",
         "project_name": "Retry",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Retry"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Middleware.Retry"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.Middleware.Retry"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\..\\Core\\Client.Abstractions\\Client.Abstractions.csproj",
           "..\\..\\Core\\Client.Pipeline\\Client.Pipeline.csproj",
@@ -107,10 +149,16 @@
       {
         "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Abstractions/TodoApi.Abstractions.csproj",
         "project_name": "TodoApi.Abstractions",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "TodoApi.Abstractions"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.TodoApi.Abstractions"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.TodoApi.Abstractions"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\..\\Core\\Client.Abstractions\\Client.Abstractions.csproj"
         ],
@@ -122,10 +170,16 @@
       {
         "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Tests/TodoApi.Tests.csproj",
         "project_name": "TodoApi.Tests",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "TodoApi.Tests.Steps"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.TodoApi.Tests"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.TodoApi.Tests.Steps"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\TodoApi\\TodoApi.csproj"
         ],
@@ -134,11 +188,17 @@
       {
         "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApi.csproj",
         "project_name": "TodoApi",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "TodoApi",
-          "TodoApi.Mock"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.TodoApi"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.TodoApi",
+          "TodoExampleService.Infrastructure.Client.TodoApi.Mock"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\TodoApi.Abstractions\\TodoApi.Abstractions.csproj",
           "..\\..\\Core\\Client.Http\\Client.Http.csproj"
@@ -151,10 +211,16 @@
       {
         "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/templates/src/Infrastructure/Client/Middleware/Retry/Retry.csproj",
         "project_name": "Retry",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Retry"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Middleware.Retry"
+          }
         ],
+        "declared_namespaces": [
+          "{service-namespace}.Infrastructure.Client.Middleware.Retry"
+        ],
+        "declared_service_namespace": null,
         "project_references": [
           "..\\..\\Core\\Client.Abstractions\\Client.Abstractions.csproj",
           "..\\..\\Core\\Client.Pipeline\\Client.Pipeline.csproj",
@@ -165,10 +231,16 @@
       {
         "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Abstractions/Client.Abstractions.csproj",
         "project_name": "Client.Abstractions",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Client.Abstractions"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Core.Abstractions"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.Core.Abstractions"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [],
         "referenced_by": [
           "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Grpc/Client.Grpc.csproj",
@@ -178,10 +250,16 @@
       {
         "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Grpc.Tests/Client.Grpc.Tests.csproj",
         "project_name": "Client.Grpc.Tests",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Client.Grpc.Tests.Steps"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Core.Grpc.Tests"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.Core.Grpc.Tests.Steps"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\Client.Grpc\\Client.Grpc.csproj"
         ],
@@ -190,10 +268,16 @@
       {
         "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Grpc/Client.Grpc.csproj",
         "project_name": "Client.Grpc",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Client.Grpc"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Core.Grpc"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.Core.Grpc"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\Client.Abstractions\\Client.Abstractions.csproj",
           "..\\Client.Pipeline\\Client.Pipeline.csproj",
@@ -207,10 +291,16 @@
       {
         "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Pipeline.Tests/Client.Pipeline.Tests.csproj",
         "project_name": "Client.Pipeline.Tests",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Client.Pipeline.Tests.Steps"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Core.Pipeline.Tests"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.Core.Pipeline.Tests.Steps"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\Client.Pipeline\\Client.Pipeline.csproj"
         ],
@@ -219,10 +309,16 @@
       {
         "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Pipeline/Client.Pipeline.csproj",
         "project_name": "Client.Pipeline",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Client.Pipeline"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Core.Pipeline"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.Core.Pipeline"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [],
         "referenced_by": [
           "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Grpc/Client.Grpc.csproj",
@@ -232,10 +328,16 @@
       {
         "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Abstractions/TodoApi.Abstractions.csproj",
         "project_name": "TodoApi.Abstractions",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "TodoApi.Abstractions"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.TodoApi.Abstractions"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.TodoApi.Abstractions"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\..\\Core\\Client.Abstractions\\Client.Abstractions.csproj"
         ],
@@ -247,10 +349,16 @@
       {
         "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Tests/TodoApi.Tests.csproj",
         "project_name": "TodoApi.Tests",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "TodoApi.Tests.Steps"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.TodoApi.Tests"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.TodoApi.Tests.Steps"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\TodoApi\\TodoApi.csproj"
         ],
@@ -259,11 +367,17 @@
       {
         "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApi.csproj",
         "project_name": "TodoApi",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "TodoApi",
-          "TodoApi.Mock"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.TodoApi"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.TodoApi",
+          "TodoExampleService.Infrastructure.Client.TodoApi.Mock"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\TodoApi.Abstractions\\TodoApi.Abstractions.csproj",
           "..\\..\\Core\\Client.Grpc\\Client.Grpc.csproj"
@@ -276,10 +390,16 @@
       {
         "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Abstractions/Client.Abstractions.csproj",
         "project_name": "Client.Abstractions",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Client.Abstractions"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Core.Abstractions"
+          }
         ],
+        "declared_namespaces": [
+          "{service-namespace}.Infrastructure.Client.Core.Abstractions"
+        ],
+        "declared_service_namespace": null,
         "project_references": [],
         "referenced_by": [
           "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Grpc/Client.Grpc.csproj"
@@ -288,10 +408,16 @@
       {
         "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Grpc/Client.Grpc.csproj",
         "project_name": "Client.Grpc",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Client.Grpc"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Core.Grpc"
+          }
         ],
+        "declared_namespaces": [
+          "{service-namespace}.Infrastructure.Client.Core.Grpc"
+        ],
+        "declared_service_namespace": null,
         "project_references": [
           "..\\Client.Abstractions\\Client.Abstractions.csproj",
           "..\\Client.Pipeline\\Client.Pipeline.csproj",
@@ -302,10 +428,16 @@
       {
         "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Pipeline/Client.Pipeline.csproj",
         "project_name": "Client.Pipeline",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Client.Pipeline"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Core.Pipeline"
+          }
         ],
+        "declared_namespaces": [
+          "{service-namespace}.Infrastructure.Client.Core.Pipeline"
+        ],
+        "declared_service_namespace": null,
         "project_references": [],
         "referenced_by": [
           "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Grpc/Client.Grpc.csproj"
@@ -314,10 +446,16 @@
       {
         "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Abstractions/Client.Abstractions.csproj",
         "project_name": "Client.Abstractions",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Client.Abstractions"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Core.Abstractions"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.Core.Abstractions"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [],
         "referenced_by": [
           "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Http/Client.Http.csproj",
@@ -327,10 +465,16 @@
       {
         "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Http.Tests/Client.Http.Tests.csproj",
         "project_name": "Client.Http.Tests",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Client.Http.Tests.Steps"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Core.Http.Tests"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.Core.Http.Tests.Steps"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\Client.Http\\Client.Http.csproj"
         ],
@@ -339,10 +483,16 @@
       {
         "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Http/Client.Http.csproj",
         "project_name": "Client.Http",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Client.Http"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Core.Http"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.Core.Http"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\Client.Abstractions\\Client.Abstractions.csproj",
           "..\\Client.Pipeline\\Client.Pipeline.csproj",
@@ -356,10 +506,16 @@
       {
         "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Pipeline.Tests/Client.Pipeline.Tests.csproj",
         "project_name": "Client.Pipeline.Tests",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Client.Pipeline.Tests.Steps"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Core.Pipeline.Tests"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.Core.Pipeline.Tests.Steps"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\Client.Pipeline\\Client.Pipeline.csproj"
         ],
@@ -368,10 +524,16 @@
       {
         "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Pipeline/Client.Pipeline.csproj",
         "project_name": "Client.Pipeline",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Client.Pipeline"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Core.Pipeline"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.Core.Pipeline"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [],
         "referenced_by": [
           "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Http/Client.Http.csproj",
@@ -381,10 +543,16 @@
       {
         "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Abstractions/TodoApi.Abstractions.csproj",
         "project_name": "TodoApi.Abstractions",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "TodoApi.Abstractions"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.TodoApi.Abstractions"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.TodoApi.Abstractions"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\..\\Core\\Client.Abstractions\\Client.Abstractions.csproj"
         ],
@@ -396,10 +564,16 @@
       {
         "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Tests/TodoApi.Tests.csproj",
         "project_name": "TodoApi.Tests",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "TodoApi.Tests.Steps"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.TodoApi.Tests"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.TodoApi.Tests.Steps"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\TodoApi\\TodoApi.csproj"
         ],
@@ -408,11 +582,17 @@
       {
         "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApi.csproj",
         "project_name": "TodoApi",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "TodoApi",
-          "TodoApi.Mock"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.TodoApi"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Client.TodoApi",
+          "TodoExampleService.Infrastructure.Client.TodoApi.Mock"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\TodoApi.Abstractions\\TodoApi.Abstractions.csproj",
           "..\\..\\Core\\Client.Http\\Client.Http.csproj"
@@ -425,10 +605,16 @@
       {
         "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Abstractions/Client.Abstractions.csproj",
         "project_name": "Client.Abstractions",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Client.Abstractions"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Core.Abstractions"
+          }
         ],
+        "declared_namespaces": [
+          "{service-namespace}.Infrastructure.Client.Core.Abstractions"
+        ],
+        "declared_service_namespace": null,
         "project_references": [],
         "referenced_by": [
           "library/architecture/dotnet/vp-http-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Http/Client.Http.csproj"
@@ -437,10 +623,16 @@
       {
         "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Http/Client.Http.csproj",
         "project_name": "Client.Http",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Client.Http"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Core.Http"
+          }
         ],
+        "declared_namespaces": [
+          "{service-namespace}.Infrastructure.Client.Core.Http"
+        ],
+        "declared_service_namespace": null,
         "project_references": [
           "..\\Client.Abstractions\\Client.Abstractions.csproj",
           "..\\Client.Pipeline\\Client.Pipeline.csproj",
@@ -451,10 +643,16 @@
       {
         "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Pipeline/Client.Pipeline.csproj",
         "project_name": "Client.Pipeline",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Client.Pipeline"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Client.Core.Pipeline"
+          }
         ],
+        "declared_namespaces": [
+          "{service-namespace}.Infrastructure.Client.Core.Pipeline"
+        ],
+        "declared_service_namespace": null,
         "project_references": [],
         "referenced_by": [
           "library/architecture/dotnet/vp-http-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Http/Client.Http.csproj"
@@ -463,10 +661,16 @@
       {
         "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres.Testing/Postgres.Testing.csproj",
         "project_name": "Postgres.Testing",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Postgres.Testing"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Database.Postgres.Testing"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Database.Postgres.Testing"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\Postgres\\Postgres.csproj"
         ],
@@ -480,10 +684,16 @@
       {
         "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres.Tests/Postgres.Tests.csproj",
         "project_name": "Postgres.Tests",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Postgres.Tests.Steps"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Database.Postgres.Tests"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Database.Postgres.Tests.Steps"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\Postgres.Testing\\Postgres.Testing.csproj",
           "..\\..\\..\\Modules\\Todo\\Todo.Application\\Todo.Application.csproj"
@@ -493,12 +703,18 @@
       {
         "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres/Postgres.csproj",
         "project_name": "Postgres",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Postgres",
-          "Postgres.Migrations",
-          "Postgres.Repositories"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Database.Postgres"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Database.Postgres",
+          "TodoExampleService.Infrastructure.Database.Postgres.Migrations",
+          "TodoExampleService.Infrastructure.Database.Postgres.Repositories"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\..\\..\\Shared\\Shared.csproj",
           "..\\..\\..\\Shared.Persistence\\Shared.Persistence.csproj",
@@ -513,10 +729,16 @@
       {
         "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/templates/src/Infrastructure/Postgres/Postgres.Testing/Postgres.Testing.csproj",
         "project_name": "Postgres.Testing",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Postgres.Testing"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Database.Postgres.Testing"
+          }
         ],
+        "declared_namespaces": [
+          "{service-namespace}.Infrastructure.Database.Postgres.Testing"
+        ],
+        "declared_service_namespace": null,
         "project_references": [
           "..\\Postgres\\Postgres.csproj"
         ],
@@ -525,10 +747,16 @@
       {
         "path": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres.Testing/Postgres.Testing.csproj",
         "project_name": "Postgres.Testing",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Postgres.Testing"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Database.Postgres.Testing"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Database.Postgres.Testing"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\Postgres\\Postgres.csproj"
         ],
@@ -542,10 +770,16 @@
       {
         "path": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres.Tests/Postgres.Tests.csproj",
         "project_name": "Postgres.Tests",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Postgres.Tests.Steps"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Database.Postgres.Tests"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Database.Postgres.Tests.Steps"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\Postgres.Testing\\Postgres.Testing.csproj",
           "..\\..\\..\\Modules\\Todo\\Todo.Application\\Todo.Application.csproj"
@@ -555,12 +789,18 @@
       {
         "path": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres/Postgres.csproj",
         "project_name": "Postgres",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Postgres",
-          "Postgres.Migrations",
-          "Postgres.Repositories"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Database.Postgres"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Database.Postgres",
+          "TodoExampleService.Infrastructure.Database.Postgres.Migrations",
+          "TodoExampleService.Infrastructure.Database.Postgres.Repositories"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\..\\..\\Shared\\Shared.csproj",
           "..\\..\\..\\Shared.Persistence\\Shared.Persistence.csproj",
@@ -575,10 +815,16 @@
       {
         "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres.Testing/Postgres.Testing.csproj",
         "project_name": "Postgres.Testing",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Postgres.Testing"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Database.Postgres.Testing"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Database.Postgres.Testing"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\Postgres\\Postgres.csproj"
         ],
@@ -592,10 +838,16 @@
       {
         "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres.Tests/Postgres.Tests.csproj",
         "project_name": "Postgres.Tests",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Postgres.Tests.Steps"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Database.Postgres.Tests"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Database.Postgres.Tests.Steps"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\Postgres.Testing\\Postgres.Testing.csproj",
           "..\\..\\..\\Modules\\Todo\\Todo.Application\\Todo.Application.csproj"
@@ -605,13 +857,19 @@
       {
         "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres/Postgres.csproj",
         "project_name": "Postgres",
-        "identity_overrides_in_project": [],
-        "declared_namespaces": [
-          "Postgres",
-          "Postgres.Migrations",
-          "Postgres.Repositories",
-          "Postgres.UnitOfWork"
+        "identity_overrides_in_project": [
+          {
+            "property": "RootNamespace",
+            "value": "$(ServiceNamespace).Infrastructure.Database.Postgres"
+          }
         ],
+        "declared_namespaces": [
+          "TodoExampleService.Infrastructure.Database.Postgres",
+          "TodoExampleService.Infrastructure.Database.Postgres.Migrations",
+          "TodoExampleService.Infrastructure.Database.Postgres.Repositories",
+          "TodoExampleService.Infrastructure.Database.Postgres.UnitOfWork"
+        ],
+        "declared_service_namespace": "TodoExampleService",
         "project_references": [
           "..\\..\\..\\Shared\\Shared.csproj",
           "..\\..\\..\\Shared.Persistence\\Shared.Persistence.csproj",
@@ -635,6 +893,7 @@
           "App.Infrastructure.Repositories",
           "App.Infrastructure.UnitOfWork"
         ],
+        "declared_service_namespace": null,
         "project_references": [
           "..\\..\\Shared\\Shared.csproj",
           "..\\..\\BuildingBlocks\\BuildingBlocks.csproj",
@@ -655,6 +914,7 @@
           "App.Infrastructure.Repositories",
           "App.Infrastructure.UnitOfWork"
         ],
+        "declared_service_namespace": null,
         "project_references": [
           "..\\..\\Shared\\Shared.csproj",
           "..\\..\\BuildingBlocks\\BuildingBlocks.csproj",
@@ -669,11 +929,1698 @@
   },
   "identity_declarations": [
     {
+      "path": "library/architecture/dotnet/base-plateau-extension-in-dotnet.skill/examples/src/App/App.Host.Tests/App.Host.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-extension-in-dotnet.skill/examples/src/App/App.Host/App.Host.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-extension-in-dotnet.skill/examples/src/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-extension-in-dotnet.skill/examples/src/BuildingBlocks/BuildingBlocks.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-extension-in-dotnet.skill/examples/src/Middleware.Tests/Middleware.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-extension-in-dotnet.skill/examples/src/Middleware/Middleware.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-extension-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Todo.Application.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-extension-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Todo.Application.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-extension-in-dotnet.skill/examples/src/Modules/Todo/Todo.Commands/Todo.Commands.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Commands"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-extension-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain.Tests/Todo.Domain.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-extension-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain/Todo.Domain.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-extension-in-dotnet.skill/examples/src/Shared/Shared.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Shared"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-in-dotnet.skill/examples/src/App/App.Host.Tests/App.Host.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-in-dotnet.skill/examples/src/App/App.Host/App.Host.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-in-dotnet.skill/examples/src/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-in-dotnet.skill/examples/src/BuildingBlocks/BuildingBlocks.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-in-dotnet.skill/examples/src/Middleware.Tests/Middleware.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-in-dotnet.skill/examples/src/Middleware/Middleware.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Todo.Application.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Todo.Application.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-in-dotnet.skill/examples/src/Modules/Todo/Todo.Commands/Todo.Commands.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Commands"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain.Tests/Todo.Domain.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain/Todo.Domain.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-in-dotnet.skill/examples/src/Shared/Shared.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Shared"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-in-dotnet.skill/templates/src/BuildingBlocks/BuildingBlocks.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/base-plateau-in-dotnet.skill/templates/src/Middleware/Middleware.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-cli-api-in-dotnet.skill/examples/src/App/App.Host.Tests/App.Host.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-cli-api-in-dotnet.skill/examples/src/App/App.Host/App.Host.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-cli-api-in-dotnet.skill/examples/src/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-cli-api-in-dotnet.skill/examples/src/BuildingBlocks/BuildingBlocks.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-cli-api-in-dotnet.skill/examples/src/Middleware.Tests/Middleware.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-cli-api-in-dotnet.skill/examples/src/Middleware/Middleware.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-cli-api-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Todo.Application.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-cli-api-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Todo.Application.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-cli-api-in-dotnet.skill/examples/src/Modules/Todo/Todo.Commands/Todo.Commands.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Commands"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-cli-api-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain.Tests/Todo.Domain.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-cli-api-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain/Todo.Domain.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-cli-api-in-dotnet.skill/examples/src/Shared/Shared.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Shared"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/App/App.Host.Tests/App.Host.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/App/App.Host/App.Host.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/BuildingBlocks/BuildingBlocks.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Abstractions/Client.Abstractions.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Core.Abstractions"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Http.Tests/Client.Http.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Core.Http.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Http/Client.Http.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Core.Http"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Pipeline.Tests/Client.Pipeline.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Core.Pipeline.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Pipeline/Client.Pipeline.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Core.Pipeline"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Middleware/Retry.Tests/Retry.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Middleware.Retry.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Middleware/Retry/Retry.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Middleware.Retry"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Abstractions/TodoApi.Abstractions.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.TodoApi.Abstractions"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Tests/TodoApi.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.TodoApi.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApi.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.TodoApi"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Middleware.Tests/Middleware.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Middleware/Middleware.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Todo.Application.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Todo.Application.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Modules/Todo/Todo.Commands/Todo.Commands.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Commands"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain.Tests/Todo.Domain.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain/Todo.Domain.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Shared/Shared.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Shared"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/templates/src/Infrastructure/Client/Middleware/Retry/Retry.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Middleware.Retry"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/examples/src/App/App.Host.Tests/App.Host.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/examples/src/App/App.Host/App.Host.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/examples/src/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/examples/src/BuildingBlocks/BuildingBlocks.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/examples/src/Middleware.Tests/Middleware.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/examples/src/Middleware/Middleware.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Todo.Application.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Todo.Application.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/examples/src/Modules/Todo/Todo.Commands/Todo.Commands.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Commands"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain.Tests/Todo.Domain.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain/Todo.Domain.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/examples/src/Shared/Shared.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Shared"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/App/App.Host.Tests/App.Host.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/App/App.Host/App.Host.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/BuildingBlocks/BuildingBlocks.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Abstractions/Client.Abstractions.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Core.Abstractions"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Grpc.Tests/Client.Grpc.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Core.Grpc.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Grpc/Client.Grpc.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Core.Grpc"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Pipeline.Tests/Client.Pipeline.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Core.Pipeline.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Pipeline/Client.Pipeline.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Core.Pipeline"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Abstractions/TodoApi.Abstractions.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.TodoApi.Abstractions"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Tests/TodoApi.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.TodoApi.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApi.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.TodoApi"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Middleware.Tests/Middleware.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Middleware/Middleware.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Todo.Application.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Todo.Application.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Commands/Todo.Commands.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Commands"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain.Tests/Todo.Domain.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain/Todo.Domain.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Shared/Shared.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Shared"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Abstractions/Client.Abstractions.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Core.Abstractions"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Grpc/Client.Grpc.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Core.Grpc"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Pipeline/Client.Pipeline.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Core.Pipeline"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-health-in-dotnet.skill/examples/src/App/App.Host.Tests/App.Host.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-health-in-dotnet.skill/examples/src/App/App.Host/App.Host.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-health-in-dotnet.skill/examples/src/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-health-in-dotnet.skill/examples/src/BuildingBlocks/BuildingBlocks.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-health-in-dotnet.skill/examples/src/Middleware.Tests/Middleware.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-health-in-dotnet.skill/examples/src/Middleware/Middleware.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-health-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Todo.Application.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-health-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Todo.Application.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-health-in-dotnet.skill/examples/src/Modules/Todo/Todo.Commands/Todo.Commands.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Commands"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-health-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain.Tests/Todo.Domain.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-health-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain/Todo.Domain.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-health-in-dotnet.skill/examples/src/Shared/Shared.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Shared"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples-proto/src/App/App.Host.Tests/App.Host.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples-proto/src/App/App.Host/App.Host.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples-proto/src/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples-proto/src/BuildingBlocks/BuildingBlocks.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples-proto/src/Middleware.Tests/Middleware.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples-proto/src/Middleware/Middleware.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples-proto/src/Modules/Todo/Todo.Application.Tests/Todo.Application.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples-proto/src/Modules/Todo/Todo.Application/Todo.Application.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples-proto/src/Modules/Todo/Todo.Commands/Todo.Commands.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Commands"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples-proto/src/Modules/Todo/Todo.Domain.Tests/Todo.Domain.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples-proto/src/Modules/Todo/Todo.Domain/Todo.Domain.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples-proto/src/Shared/Shared.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Shared"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples/src/App/App.Host.Tests/App.Host.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples/src/App/App.Host/App.Host.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples/src/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples/src/BuildingBlocks/BuildingBlocks.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples/src/Middleware.Tests/Middleware.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples/src/Middleware/Middleware.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Todo.Application.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Todo.Application.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples/src/Modules/Todo/Todo.Commands/Todo.Commands.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Commands"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain.Tests/Todo.Domain.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain/Todo.Domain.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples/src/Shared/Shared.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Shared"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/App/App.Host.Tests/App.Host.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/App/App.Host/App.Host.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/BuildingBlocks/BuildingBlocks.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Abstractions/Client.Abstractions.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Core.Abstractions"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Http.Tests/Client.Http.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Core.Http.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Http/Client.Http.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Core.Http"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Pipeline.Tests/Client.Pipeline.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Core.Pipeline.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Pipeline/Client.Pipeline.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Core.Pipeline"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Abstractions/TodoApi.Abstractions.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.TodoApi.Abstractions"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Tests/TodoApi.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.TodoApi.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApi.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.TodoApi"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Middleware.Tests/Middleware.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Middleware/Middleware.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Todo.Application.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Todo.Application.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Commands/Todo.Commands.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Commands"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain.Tests/Todo.Domain.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain/Todo.Domain.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Shared/Shared.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Shared"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Abstractions/Client.Abstractions.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Core.Abstractions"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Http/Client.Http.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Core.Http"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Pipeline/Client.Pipeline.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Client.Core.Pipeline"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-logging-in-dotnet.skill/examples/src/App/App.Host.Tests/App.Host.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-logging-in-dotnet.skill/examples/src/App/App.Host/App.Host.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-logging-in-dotnet.skill/examples/src/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-logging-in-dotnet.skill/examples/src/BuildingBlocks/BuildingBlocks.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-logging-in-dotnet.skill/examples/src/MaskedLogging.Tests/MaskedLogging.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).MaskedLogging.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-logging-in-dotnet.skill/examples/src/MaskedLogging/MaskedLogging.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).MaskedLogging"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-logging-in-dotnet.skill/examples/src/Middleware.Tests/Middleware.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-logging-in-dotnet.skill/examples/src/Middleware/Middleware.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-logging-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Todo.Application.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-logging-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Todo.Application.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-logging-in-dotnet.skill/examples/src/Modules/Todo/Todo.Commands/Todo.Commands.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Commands"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-logging-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain.Tests/Todo.Domain.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-logging-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain/Todo.Domain.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-logging-in-dotnet.skill/examples/src/Shared/Shared.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Shared"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-logging-in-dotnet.skill/templates/src/MaskedLogging/MaskedLogging.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).MaskedLogging"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/App/App.Host.Tests/App.Host.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/App/App.Host/App.Host.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/App/App.Migrate.Tests/App.Migrate.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Migrate.Tests"
+        }
+      ]
+    },
+    {
       "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/App/App.Migrate/App.Migrate.csproj",
       "declarations": [
         {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Migrate"
+        },
+        {
           "property": "AssemblyName",
           "value": "migrate"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/BuildingBlocks/BuildingBlocks.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres.Testing/Postgres.Testing.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Database.Postgres.Testing"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres.Tests/Postgres.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Database.Postgres.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres/Postgres.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Database.Postgres"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/Middleware.Tests/Middleware.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/Middleware/Middleware.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Todo.Application.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Todo.Application.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/Modules/Todo/Todo.Commands/Todo.Commands.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Commands"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain.Tests/Todo.Domain.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain/Todo.Domain.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/Shared.Persistence/Shared.Persistence.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Shared.Persistence"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/Shared/Shared.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Shared"
         }
       ]
     },
@@ -681,8 +2628,57 @@
       "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/templates/src/App/App.Migrate/App.Migrate.csproj",
       "declarations": [
         {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Migrate"
+        },
+        {
           "property": "AssemblyName",
           "value": "migrate"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/templates/src/Infrastructure/Postgres/Postgres.Testing/Postgres.Testing.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Database.Postgres.Testing"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/templates/src/Shared.Persistence/Shared.Persistence.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Shared.Persistence"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/App/App.Host.Tests/App.Host.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/App/App.Host/App.Host.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/App/App.Migrate.Tests/App.Migrate.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Migrate.Tests"
         }
       ]
     },
@@ -690,8 +2686,165 @@
       "path": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/App/App.Migrate/App.Migrate.csproj",
       "declarations": [
         {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Migrate"
+        },
+        {
           "property": "AssemblyName",
           "value": "migrate"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/BuildingBlocks/BuildingBlocks.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres.Testing/Postgres.Testing.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Database.Postgres.Testing"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres.Tests/Postgres.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Database.Postgres.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres/Postgres.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Database.Postgres"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/Middleware.Tests/Middleware.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/Middleware/Middleware.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Todo.Application.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Todo.Application.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/Modules/Todo/Todo.Commands/Todo.Commands.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Commands"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain.Tests/Todo.Domain.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain/Todo.Domain.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/Shared.Persistence/Shared.Persistence.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Shared.Persistence"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/Shared/Shared.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Shared"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/App/App.Host.Tests/App.Host.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/App/App.Host/App.Host.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Host"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/App/App.Migrate.Tests/App.Migrate.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Migrate.Tests"
         }
       ]
     },
@@ -699,8 +2852,138 @@
       "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/App/App.Migrate/App.Migrate.csproj",
       "declarations": [
         {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).App.Migrate"
+        },
+        {
           "property": "AssemblyName",
           "value": "migrate"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/BuildingBlocks/BuildingBlocks.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).BuildingBlocks"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres.Testing/Postgres.Testing.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Database.Postgres.Testing"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres.Tests/Postgres.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Database.Postgres.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres/Postgres.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Infrastructure.Database.Postgres"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Middleware.Tests/Middleware.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Middleware/Middleware.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Middleware"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Todo.Application.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Todo.Application.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Application"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Modules/Todo/Todo.Commands/Todo.Commands.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Commands"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain.Tests/Todo.Domain.Tests.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain.Tests"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Modules/Todo/Todo.Domain/Todo.Domain.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Modules.Todo.Domain"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Shared.Persistence/Shared.Persistence.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Shared.Persistence"
+        }
+      ]
+    },
+    {
+      "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Shared/Shared.csproj",
+      "declarations": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Shared"
         }
       ]
     }
@@ -726,7 +3009,7 @@
       "library/dotnet/architecture/plateau/plateau-domain-service/plateau-domain-service.skill/examples/src/App/App.Host/DependencyInjection/InfrastructureRegistration.cs",
       "library/dotnet/architecture/plateau/plateau-offline-sync-service/plateau-offline-sync-service.skill/examples/src/App/App.Host/DependencyInjection/InfrastructureRegistration.cs"
     ],
-    "Client.Abstractions": [
+    "TodoExampleService.Infrastructure.Client.Core.Abstractions": [
       "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Http.Tests/Steps/ClientSteps.cs",
       "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Http/HttpApiClient.cs",
       "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Middleware/Retry.Tests/Steps/RetrySteps.cs",
@@ -734,30 +3017,27 @@
       "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Abstractions/ITodoApi.cs",
       "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Services/Steps/RemotePlannerSteps.cs",
       "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Services/RemotePlannerService.cs",
-      "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/templates/src/Infrastructure/Client/Middleware/Retry/RetryMiddleware.cs",
       "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Grpc.Tests/Steps/ClientSteps.cs",
       "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Grpc/CallInterceptor.cs",
       "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Abstractions/ITodoApi.cs",
       "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Services/Steps/RemotePlannerSteps.cs",
       "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Services/RemotePlannerService.cs",
-      "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Grpc/CallInterceptor.cs",
       "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Http.Tests/Steps/ClientSteps.cs",
       "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Http/HttpApiClient.cs",
       "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Abstractions/ITodoApi.cs",
       "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Services/Steps/RemotePlannerSteps.cs",
-      "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Services/RemotePlannerService.cs",
-      "library/architecture/dotnet/vp-http-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Http/HttpApiClient.cs"
+      "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Services/RemotePlannerService.cs"
     ],
-    "Client.Grpc": [
+    "TodoExampleService.Infrastructure.Client.Core.Grpc": [
       "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/App/App.Host/Program.cs",
       "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Tests/Steps/TodoApiSteps.cs",
       "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApiClient.cs"
     ],
-    "Client.Grpc.Tests.Echo": [
+    "TodoExampleService.Infrastructure.Client.Core.Grpc.Tests.Echo": [
       "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Grpc.Tests/Steps/ClientSteps.cs",
       "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Grpc.Tests/Steps/TestApi.cs"
     ],
-    "Client.Http": [
+    "TodoExampleService.Infrastructure.Client.Core.Http": [
       "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/App/App.Host/Program.cs",
       "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Http.Tests/Steps/TestApi.cs",
       "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Tests/Steps/TodoApiSteps.cs",
@@ -767,34 +3047,59 @@
       "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Tests/Steps/TodoApiSteps.cs",
       "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApiClient.cs"
     ],
-    "Client.Pipeline": [
+    "TodoExampleService.Infrastructure.Client.Core.Pipeline": [
       "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/App/App.Host/Program.cs",
       "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Http.Tests/Steps/ClientSteps.cs",
       "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Http/HttpApiClient.cs",
       "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Middleware/Retry.Tests/Steps/RetrySteps.cs",
       "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/Middleware/Retry/RetryMiddleware.cs",
       "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApiClient.cs",
-      "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/templates/src/Infrastructure/Client/Middleware/Retry/RetryMiddleware.cs",
       "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/App/App.Host/Program.cs",
       "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Grpc.Tests/Steps/ClientSteps.cs",
       "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Grpc/CallInterceptor.cs",
       "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Grpc/GrpcApiClient.cs",
       "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApiClient.cs",
-      "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Grpc/CallInterceptor.cs",
-      "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Grpc/GrpcApiClient.cs",
       "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/App/App.Host/Program.cs",
       "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Http.Tests/Steps/ClientSteps.cs",
       "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Http/HttpApiClient.cs",
-      "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApiClient.cs",
-      "library/architecture/dotnet/vp-http-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Http/HttpApiClient.cs"
+      "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApiClient.cs"
     ],
-    "Postgres": [
+    "TodoExampleService.Infrastructure.Client.Middleware.Retry": [
+      "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/App/App.Host/Program.cs"
+    ],
+    "TodoExampleService.Infrastructure.Client.TodoApi": [
+      "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/App/App.Host/Program.cs",
+      "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/App/App.Host/Program.cs",
+      "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/App/App.Host/Program.cs"
+    ],
+    "TodoExampleService.Infrastructure.Client.TodoApi.Abstractions": [
+      "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/App/App.Host/Program.cs",
+      "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Tests/Steps/TodoApiSteps.cs",
+      "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApiClient.cs",
+      "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Services/Steps/RemotePlannerSteps.cs",
+      "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Services/RemotePlannerService.cs",
+      "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/App/App.Host/Program.cs",
+      "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Tests/Steps/TodoApiSteps.cs",
+      "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApiClient.cs",
+      "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Services/Steps/RemotePlannerSteps.cs",
+      "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Services/RemotePlannerService.cs",
+      "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/App/App.Host/Program.cs",
+      "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Tests/Steps/TodoApiSteps.cs",
+      "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApiClient.cs",
+      "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Services/Steps/RemotePlannerSteps.cs",
+      "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Services/RemotePlannerService.cs"
+    ],
+    "TodoExampleService.Infrastructure.Client.TodoApi.Mock": [
+      "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApiClient.cs",
+      "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApiClient.cs",
+      "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApiClient.cs"
+    ],
+    "TodoExampleService.Infrastructure.Database.Postgres": [
       "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/App/App.Host.Tests/Steps/PersistenceSteps.cs",
       "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/App/App.Host/Program.cs",
       "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/App/App.Migrate/Program.cs",
       "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres/Migrations/20261107093500_CreateListItems.Designer.cs",
       "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres/Migrations/AppDbContextModelSnapshot.cs",
-      "library/architecture/dotnet/vp-postgres-in-dotnet.skill/templates/src/App/App.Migrate/Program.cs",
       "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/App/App.Host.Tests/Steps/PersistenceSteps.cs",
       "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/App/App.Host/Program.cs",
       "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/App/App.Migrate/Program.cs",
@@ -808,11 +3113,10 @@
       "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres/Migrations/20261107093500_CreateListItems.Designer.cs",
       "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres/Migrations/AppDbContextModelSnapshot.cs"
     ],
-    "Postgres.Repositories": [
+    "TodoExampleService.Infrastructure.Database.Postgres.Repositories": [
       "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres.Tests/Steps/PostgresWorld.cs",
       "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres.Tests/Steps/SampleTables.cs",
       "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres/PostgresModule.cs",
-      "library/architecture/dotnet/vp-postgres-in-dotnet.skill/templates/src/Infrastructure/Postgres/Postgres/PostgresModule.cs",
       "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres.Tests/Steps/PostgresWorld.cs",
       "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres.Tests/Steps/RowVersionSteps.cs",
       "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres.Tests/Steps/SampleTables.cs",
@@ -821,7 +3125,7 @@
       "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres.Tests/Steps/SampleTables.cs",
       "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres/PostgresModule.cs"
     ],
-    "Postgres.Testing": [
+    "TodoExampleService.Infrastructure.Database.Postgres.Testing": [
       "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/App/App.Host.Tests/Steps/PersistenceSteps.cs",
       "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/App/App.Migrate.Tests/Steps/MigrateSteps.cs",
       "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres.Tests/Steps/InMemoryRepositorySteps.cs",
@@ -845,40 +3149,21 @@
       "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Commands/Steps/ItemListsSteps.cs",
       "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Specifications/Steps/ItemSpecificationsSteps.cs"
     ],
-    "Postgres.UnitOfWork": [
+    "TodoExampleService.Infrastructure.Database.Postgres.UnitOfWork": [
       "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/App/App.Host.Tests/Steps/UnitOfWorkSteps.cs",
       "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/App/App.Host/Program.cs",
       "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Infrastructure/Postgres/Postgres.Tests/Steps/UnitOfWorkSteps.cs"
     ],
-    "Retry": [
-      "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/App/App.Host/Program.cs"
+    "{service-namespace}.Infrastructure.Client.Core.Abstractions": [
+      "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/templates/src/Infrastructure/Client/Middleware/Retry/RetryMiddleware.cs",
+      "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Grpc/CallInterceptor.cs",
+      "library/architecture/dotnet/vp-http-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Http/HttpApiClient.cs"
     ],
-    "TodoApi": [
-      "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/App/App.Host/Program.cs",
-      "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/App/App.Host/Program.cs",
-      "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/App/App.Host/Program.cs"
-    ],
-    "TodoApi.Abstractions": [
-      "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/App/App.Host/Program.cs",
-      "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Tests/Steps/TodoApiSteps.cs",
-      "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApiClient.cs",
-      "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Services/Steps/RemotePlannerSteps.cs",
-      "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Services/RemotePlannerService.cs",
-      "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/App/App.Host/Program.cs",
-      "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Tests/Steps/TodoApiSteps.cs",
-      "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApiClient.cs",
-      "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Services/Steps/RemotePlannerSteps.cs",
-      "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Services/RemotePlannerService.cs",
-      "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/App/App.Host/Program.cs",
-      "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi.Tests/Steps/TodoApiSteps.cs",
-      "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApiClient.cs",
-      "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application.Tests/Services/Steps/RemotePlannerSteps.cs",
-      "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Modules/Todo/Todo.Application/Services/RemotePlannerService.cs"
-    ],
-    "TodoApi.Mock": [
-      "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApiClient.cs",
-      "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApiClient.cs",
-      "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApiClient.cs"
+    "{service-namespace}.Infrastructure.Client.Core.Pipeline": [
+      "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/templates/src/Infrastructure/Client/Middleware/Retry/RetryMiddleware.cs",
+      "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Grpc/CallInterceptor.cs",
+      "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Grpc/GrpcApiClient.cs",
+      "library/architecture/dotnet/vp-http-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Http/HttpApiClient.cs"
     ]
   },
   "current_infrastructure_template_identifiers": [
@@ -890,21 +3175,21 @@
     {
       "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/templates/src/Infrastructure/Client/Middleware/Retry/RetryConfig.cs",
       "namespaces": [
-        "Retry"
+        "{service-namespace}.Infrastructure.Client.Middleware.Retry"
       ],
       "path_identifier_tokens": []
     },
     {
       "path": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/templates/src/Infrastructure/Client/Middleware/Retry/RetryMiddleware.cs",
       "namespaces": [
-        "Retry"
+        "{service-namespace}.Infrastructure.Client.Middleware.Retry"
       ],
       "path_identifier_tokens": []
     },
     {
       "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Abstractions/ApiOutcomes.cs",
       "namespaces": [
-        "Client.Abstractions"
+        "{service-namespace}.Infrastructure.Client.Core.Abstractions"
       ],
       "path_identifier_tokens": []
     },
@@ -916,7 +3201,7 @@
     {
       "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Grpc/CallInterceptor.cs",
       "namespaces": [
-        "Client.Grpc"
+        "{service-namespace}.Infrastructure.Client.Core.Grpc"
       ],
       "path_identifier_tokens": []
     },
@@ -928,21 +3213,21 @@
     {
       "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Grpc/EmulatorCallInvoker.cs",
       "namespaces": [
-        "Client.Grpc"
+        "{service-namespace}.Infrastructure.Client.Core.Grpc"
       ],
       "path_identifier_tokens": []
     },
     {
       "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Grpc/GrpcApiClient.cs",
       "namespaces": [
-        "Client.Grpc"
+        "{service-namespace}.Infrastructure.Client.Core.Grpc"
       ],
       "path_identifier_tokens": []
     },
     {
       "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Grpc/GrpcApiConfig.cs",
       "namespaces": [
-        "Client.Grpc"
+        "{service-namespace}.Infrastructure.Client.Core.Grpc"
       ],
       "path_identifier_tokens": []
     },
@@ -954,14 +3239,14 @@
     {
       "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Pipeline/ClientPipeline.cs",
       "namespaces": [
-        "Client.Pipeline"
+        "{service-namespace}.Infrastructure.Client.Core.Pipeline"
       ],
       "path_identifier_tokens": []
     },
     {
       "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Abstractions/ApiOutcomes.cs",
       "namespaces": [
-        "Client.Abstractions"
+        "{service-namespace}.Infrastructure.Client.Core.Abstractions"
       ],
       "path_identifier_tokens": []
     },
@@ -978,14 +3263,14 @@
     {
       "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Http/HttpApiClient.cs",
       "namespaces": [
-        "Client.Http"
+        "{service-namespace}.Infrastructure.Client.Core.Http"
       ],
       "path_identifier_tokens": []
     },
     {
       "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Http/HttpApiConfig.cs",
       "namespaces": [
-        "Client.Http"
+        "{service-namespace}.Infrastructure.Client.Core.Http"
       ],
       "path_identifier_tokens": []
     },
@@ -997,14 +3282,14 @@
     {
       "path": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/templates/src/Infrastructure/Client/Core/Client.Pipeline/ClientPipeline.cs",
       "namespaces": [
-        "Client.Pipeline"
+        "{service-namespace}.Infrastructure.Client.Core.Pipeline"
       ],
       "path_identifier_tokens": []
     },
     {
       "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/templates/src/Infrastructure/Postgres/Postgres.Testing/InMemoryRepository.cs",
       "namespaces": [
-        "Postgres.Testing"
+        "{service-namespace}.Infrastructure.Database.Postgres.Testing"
       ],
       "path_identifier_tokens": []
     },
@@ -1016,56 +3301,56 @@
     {
       "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/templates/src/Infrastructure/Postgres/Postgres.Testing/TestDatabase.cs",
       "namespaces": [
-        "Postgres.Testing"
+        "{service-namespace}.Infrastructure.Database.Postgres.Testing"
       ],
       "path_identifier_tokens": []
     },
     {
       "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/templates/src/Infrastructure/Postgres/Postgres/AppDbContextFactory.cs",
       "namespaces": [
-        "Postgres"
+        "{service-namespace}.Infrastructure.Database.Postgres"
       ],
       "path_identifier_tokens": []
     },
     {
       "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/templates/src/Infrastructure/Postgres/Postgres/PostgresConfig.cs",
       "namespaces": [
-        "Postgres"
+        "{service-namespace}.Infrastructure.Database.Postgres"
       ],
       "path_identifier_tokens": []
     },
     {
       "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/templates/src/Infrastructure/Postgres/Postgres/PostgresFailures.cs",
       "namespaces": [
-        "Postgres"
+        "{service-namespace}.Infrastructure.Database.Postgres"
       ],
       "path_identifier_tokens": []
     },
     {
       "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/templates/src/Infrastructure/Postgres/Postgres/PostgresMigrations.cs",
       "namespaces": [
-        "Postgres"
+        "{service-namespace}.Infrastructure.Database.Postgres"
       ],
       "path_identifier_tokens": []
     },
     {
       "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/templates/src/Infrastructure/Postgres/Postgres/PostgresModule.cs",
       "namespaces": [
-        "Postgres"
+        "{service-namespace}.Infrastructure.Database.Postgres"
       ],
       "path_identifier_tokens": []
     },
     {
       "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/templates/src/Infrastructure/Postgres/Postgres/Repositories/PostgresRepository.cs",
       "namespaces": [
-        "Postgres.Repositories"
+        "{service-namespace}.Infrastructure.Database.Postgres.Repositories"
       ],
       "path_identifier_tokens": []
     },
     {
       "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/templates/src/Infrastructure/Postgres/Postgres/UnitOfWork/PostgresUnitOfWork.cs",
       "namespaces": [
-        "Postgres.UnitOfWork"
+        "{service-namespace}.Infrastructure.Database.Postgres.UnitOfWork"
       ],
       "path_identifier_tokens": []
     }
@@ -1074,37 +3359,37 @@
     {
       "path": "library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/examples/docs/integration/api/todo/todo.proto",
       "csharp_namespace": [
-        "Contracts.Todo.V1"
+        "TodoExampleService.Contracts.Todo.V1"
       ]
     },
     {
       "path": "library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/examples/src/App/App.Host.Tests/Protos/test.proto",
       "csharp_namespace": [
-        "App.Host.Tests.Steps.Grpc.Contract"
+        "TodoExampleService.App.Host.Tests.Steps.Grpc.Contract"
       ]
     },
     {
       "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/docs/integration/client/todo/todo.proto",
       "csharp_namespace": [
-        "Contracts.Todo.V1"
+        "TodoExampleService.Contracts.Todo.V1"
       ]
     },
     {
       "path": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples/src/Infrastructure/Client/Core/Client.Grpc.Tests/Protos/echo.proto",
       "csharp_namespace": [
-        "Client.Grpc.Tests.Echo"
+        "TodoExampleService.Infrastructure.Client.Core.Grpc.Tests.Echo"
       ]
     },
     {
       "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples-proto/docs/integration/api/todo/todo.proto",
       "csharp_namespace": [
-        "Contracts.Todo.V1"
+        "TodoExampleService.Contracts.Todo.V1"
       ]
     },
     {
       "path": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples-proto/src/App/App.Host.Tests/Protos/test.proto",
       "csharp_namespace": [
-        "App.Host.Tests.Steps.Grpc.Contract"
+        "TodoExampleService.App.Host.Tests.Steps.Grpc.Contract"
       ]
     }
   ],
@@ -1219,10 +3504,16 @@
     {
       "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples/src/Shared.Persistence/Shared.Persistence.csproj",
       "project_name": "Shared.Persistence",
-      "identity_overrides_in_project": [],
-      "declared_namespaces": [
-        "Shared.Persistence"
+      "identity_overrides_in_project": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Shared.Persistence"
+        }
       ],
+      "declared_namespaces": [
+        "TodoExampleService.Shared.Persistence"
+      ],
+      "declared_service_namespace": "TodoExampleService",
       "project_references": [
         "..\\Shared\\Shared.csproj"
       ],
@@ -1235,10 +3526,16 @@
     {
       "path": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/templates/src/Shared.Persistence/Shared.Persistence.csproj",
       "project_name": "Shared.Persistence",
-      "identity_overrides_in_project": [],
-      "declared_namespaces": [
-        "Shared.Persistence"
+      "identity_overrides_in_project": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Shared.Persistence"
+        }
       ],
+      "declared_namespaces": [
+        "{service-namespace}.Shared.Persistence"
+      ],
+      "declared_service_namespace": null,
       "project_references": [
         "..\\Shared\\Shared.csproj"
       ],
@@ -1247,10 +3544,16 @@
     {
       "path": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples/src/Shared.Persistence/Shared.Persistence.csproj",
       "project_name": "Shared.Persistence",
-      "identity_overrides_in_project": [],
-      "declared_namespaces": [
-        "Shared.Persistence"
+      "identity_overrides_in_project": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Shared.Persistence"
+        }
       ],
+      "declared_namespaces": [
+        "TodoExampleService.Shared.Persistence"
+      ],
+      "declared_service_namespace": "TodoExampleService",
       "project_references": [
         "..\\Shared\\Shared.csproj"
       ],
@@ -1264,10 +3567,16 @@
     {
       "path": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples/src/Shared.Persistence/Shared.Persistence.csproj",
       "project_name": "Shared.Persistence",
-      "identity_overrides_in_project": [],
-      "declared_namespaces": [
-        "Shared.Persistence"
+      "identity_overrides_in_project": [
+        {
+          "property": "RootNamespace",
+          "value": "$(ServiceNamespace).Shared.Persistence"
+        }
       ],
+      "declared_namespaces": [
+        "TodoExampleService.Shared.Persistence"
+      ],
+      "declared_service_namespace": "TodoExampleService",
       "project_references": [
         "..\\Shared\\Shared.csproj"
       ],

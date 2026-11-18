@@ -1,13 +1,13 @@
-using Client.Abstractions;
+using TodoExampleService.Infrastructure.Client.Core.Abstractions;
 using Reqnroll;
-using Shared.Errors;
-using Todo.Application.Services;
-using Todo.Domain.Entities;
-using TodoApi.Abstractions;
+using TodoExampleService.Shared.Errors;
+using TodoExampleService.Modules.Todo.Application.Services;
+using TodoExampleService.Modules.Todo.Domain.Entities;
+using TodoExampleService.Infrastructure.Client.TodoApi.Abstractions;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Todo.Application.Tests.Services.Steps;
+namespace TodoExampleService.Modules.Todo.Application.Tests.Services.Steps;
 
 /// <summary>The todo API's adapter faked: the items it answers or the technical outcome it throws.</summary>
 public sealed class FakeTodoApi : ITodoApi

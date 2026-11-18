@@ -1,9 +1,9 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using Client.Http;
+using TodoExampleService.Infrastructure.Client.Core.Http;
 
-namespace Client.Http.Tests.Steps;
+namespace TodoExampleService.Infrastructure.Client.Core.Http.Tests.Steps;
 
 /// <summary>What the test API was sent.</summary>
 public sealed record Received(string Method, string Path, string Body, string? RequestId);

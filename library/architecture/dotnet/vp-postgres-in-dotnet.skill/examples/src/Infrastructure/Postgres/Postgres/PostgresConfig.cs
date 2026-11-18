@@ -2,7 +2,7 @@
 
 using Npgsql;
 
-namespace Postgres;
+namespace TodoExampleService.Infrastructure.Database.Postgres;
 
 /// <summary>
 /// The database's settings, read from the environment. A class, not a record: a

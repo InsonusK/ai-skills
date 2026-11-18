@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>$(ServiceNamespace).Middleware</RootNamespace>
+  </PropertyGroup>
   <!-- The command middleware: the MediatR pipeline behaviors around every
        command handler, one folder each - Logging/ in the base plateau, a
        variation point's beside it. No ASP.NET: a command middleware knows no

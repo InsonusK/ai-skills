@@ -1,8 +1,8 @@
 ---
 name: api-client
-description: How an application calls another service's API — one client per API under one service, the client returning the application's values or a result type of its own and the service composing its client's operations, a change of the data's master system left to the project, every call through the client middleware of the composition root with the operations safe to repeat marked, the {API} environment group (host, a port per protocol, TLS, timeout), the consumed contract copied unchanged, every call bounded by a timeout, logged in two records, and carrying the request id, an unavailable API told from a rejected call, a mock that runs the client against an emulator inside the process, and the tests at the client's boundary
+description: How an application calls another service's API — one client per API under one service, the client returning the application's values or a result type of its own and the service composing its client's operations, a change of the data's master system left to the project, every call through the client middleware of the composition root with the operations safe to repeat marked, the {API} environment group (host, a port per protocol, TLS, timeout), the consumed wire contract preserved, every call bounded by a timeout, logged in two records, and carrying the request id, an unavailable API told from a rejected call, a mock that runs the client against an emulator inside the process, and the tests at the client's boundary
 whenToUse: when an application calls an HTTP or gRPC API of another service — adding a client, changing what it sends or how it is configured, mocking it to run without the other service, or reviewing a client of any stack
-updated: 20261030
+updated: 20261119
 tags:
   - stack
   - concern/architecture
@@ -66,11 +66,11 @@ Read every client's connection from the environment variables of its own `{API}`
 - Risk: every client invents its own names, so nobody can find or override a client's settings, and adding a second protocol renames the first one's variable.
 - Fix: one `{API}` prefix per API, named after the API (`TODO_API`); an unusable value stops the start with an error naming its variable.
 
-### Copy the consumed contract unchanged
-Copy the provider's contract file (`openapi.json`, `.proto`) as published to `docs/integration/client/{api-name}/`, replace it whole when the provider publishes a new version, and never edit it.
-- Violation: a consumed contract trimmed to the operations the client uses, edited, or kept beside the code.
-- Risk: the version in the file no longer names what the provider published, and a diff against the provider's copy shows changes nobody made.
-- Fix: adapt to the contract in the client's mappings; a scenario holds the operations the client calls against the copied file.
+### Preserve the consumed wire contract
+Copy the provider's contract file (`openapi.json`, `.proto`) to `docs/integration/client/{api-name}/` as published except for local generated-code namespace metadata explicitly prescribed by a stack extension, and replace it whole when the provider publishes a new version.
+- Violation: operations, packages, service names or fields changed or trimmed to fit a client, or a contract kept beside the code.
+- Risk: the recorded contract no longer describes the provider's wire protocol, so a client can compile against an API that does not exist.
+- Fix: confine any allowed substitution to local language-binding namespace metadata, preserve all wire definitions, and check the client's operations against that contract.
 
 ### Bound every call by its timeout
 End every call after `{API}_TIMEOUT` at the latest, or earlier when the call that caused it must end earlier, and report a call that ran out of time as unavailable.

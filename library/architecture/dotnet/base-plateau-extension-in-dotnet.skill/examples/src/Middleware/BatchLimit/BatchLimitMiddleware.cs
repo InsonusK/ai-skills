@@ -1,8 +1,8 @@
 using MediatR;
-using Middleware.Access;
-using Shared.Access;
+using TodoExampleService.Middleware.Access;
+using TodoExampleService.Shared.Access;
 
-namespace Middleware.BatchLimit;
+namespace TodoExampleService.Middleware.BatchLimit;
 
 /// <summary>
 /// The batch limit, the command middleware that decides by a value of the

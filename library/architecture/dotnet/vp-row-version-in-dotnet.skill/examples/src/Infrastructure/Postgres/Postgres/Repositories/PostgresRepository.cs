@@ -4,9 +4,9 @@ using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Shared.Persistence;
+using TodoExampleService.Shared.Persistence;
 
-namespace Postgres.Repositories;
+namespace TodoExampleService.Infrastructure.Database.Postgres.Repositories;
 
 /// <summary>
 /// The repository of every entity: Ardalis's <see cref="RepositoryBase{T}"/>

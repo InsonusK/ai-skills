@@ -1,12 +1,12 @@
 // Source: skill vp-grpc-api-in-dotnet
 
 using System.Diagnostics;
-using BuildingBlocks.Logging;
+using TodoExampleService.BuildingBlocks.Logging;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
 using Microsoft.Extensions.Logging;
 
-namespace App.Host.Api.Grpc.Middleware.CallLog;
+namespace TodoExampleService.App.Host.Api.Grpc.Middleware.CallLog;
 
 /// <summary>
 /// Writes two records per call, so the log reads top-down as the call was

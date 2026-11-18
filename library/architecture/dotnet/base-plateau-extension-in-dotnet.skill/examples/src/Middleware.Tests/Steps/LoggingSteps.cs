@@ -1,11 +1,11 @@
 using MediatR;
-using Shared.Errors;
-using Middleware.Logging;
+using TodoExampleService.Shared.Errors;
+using TodoExampleService.Middleware.Logging;
 using Reqnroll;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Middleware.Tests.Steps;
+namespace TodoExampleService.Middleware.Tests.Steps;
 
 /// <summary>A command of the scenarios; the middleware logs it by its type name.</summary>
 public sealed record PlanItemsCommand(string Title) : IRequest<string>;

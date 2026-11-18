@@ -2,7 +2,7 @@
 name: vp-health-in-dotnet
 description: The health variation point in dotnet — Api/Management copied from templates (MANAGEMENT_LISTEN_PORT, /health/live, /health/ready, /health, readiness checks read from the framework's health check registry, graceful stop) on the shared web host, and one management entry added to the EntryRunner list in Program.cs
 whenToUse: when a dotnet application built on the base plateau runs as a long-running service, when a dotnet service variation point adds a readiness check, or when you review a dotnet service's health endpoints
-updated: 20261102
+updated: 20261119
 tags:
   - stack/dotnet
   - concern/architecture
@@ -31,8 +31,13 @@ src/App/App.Host/Api/
 
 ## MUST
 
+### Fill the service namespace
+Fill `{service-namespace}` with the application's namespace root from [the namespace convention](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md#qualify-namespaces-with-the-service-name) before copying this skill's templates.
+- Risk: an unfilled identifier does not compile, while a different root in each file splits the service's types.
+- Fix: substitute the same identifier in every delivered source, preserve template logic, and verify no `{service-namespace}` remains in application sources.
+
 ### Copy the entry point from templates
-Copy, unchanged, [ManagementConfig.cs](./templates/src/App/App.Host/Api/Management/ManagementConfig.cs) and [ManagementServer.cs](./templates/src/App/App.Host/Api/Management/ManagementServer.cs) to `src/App/App.Host/Api/Management/` and [WebHost.cs](./templates/src/App/App.Host/Api/Core/Hosting/WebHost.cs) to `Api/Core/Hosting/` unless another web entry point already put it there; in `App.Host.csproj` add `<FrameworkReference Include="Microsoft.AspNetCore.App" />` and remove the `Microsoft.Extensions.DependencyInjection` and `Microsoft.Extensions.Logging` package references the framework brings.
+Copy, after [namespace substitution](#fill-the-service-namespace), [ManagementConfig.cs](./templates/src/App/App.Host/Api/Management/ManagementConfig.cs) and [ManagementServer.cs](./templates/src/App/App.Host/Api/Management/ManagementServer.cs) to `src/App/App.Host/Api/Management/` and [WebHost.cs](./templates/src/App/App.Host/Api/Core/Hosting/WebHost.cs) to `Api/Core/Hosting/` unless another web entry point already put it there; in `App.Host.csproj` add `<FrameworkReference Include="Microsoft.AspNetCore.App" />` and remove the `Microsoft.Extensions.DependencyInjection` and `Microsoft.Extensions.Logging` package references the framework brings.
 - Risk: a retyped server drifts in its readiness answer or shutdown from every other dotnet service of the catalog; a second, different `WebHost.cs` breaks the HTTP or gRPC entry point it is shared with.
 - Fix: copy the files; `bash test/check-vp-attach.sh` in this repository fails when two variation points add `WebHost.cs` differently.
 

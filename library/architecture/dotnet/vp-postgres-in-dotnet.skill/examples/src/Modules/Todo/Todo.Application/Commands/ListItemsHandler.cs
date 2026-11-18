@@ -1,11 +1,11 @@
 using MediatR;
-using Shared.Persistence;
-using Todo.Application.Specifications;
-using Todo.Commands;
-using Todo.Domain.Entities;
-using Todo.Domain.Errors;
+using TodoExampleService.Shared.Persistence;
+using TodoExampleService.Modules.Todo.Application.Specifications;
+using TodoExampleService.Modules.Todo.Commands;
+using TodoExampleService.Modules.Todo.Domain.Entities;
+using TodoExampleService.Modules.Todo.Domain.Errors;
 
-namespace Todo.Application.Commands;
+namespace TodoExampleService.Modules.Todo.Application.Commands;
 
 /// <summary>Handles <see cref="ListItemsCommand"/>: a list nobody added to is not found.</summary>
 public sealed class ListItemsHandler(IReadRepository<Item> items) : IRequestHandler<ListItemsCommand, ListItemsResult>

@@ -1,6 +1,6 @@
 // Source: skill vp-row-version-in-dotnet
 
-namespace Shared.Persistence;
+namespace TodoExampleService.Shared.Persistence;
 
 /// <summary>
 /// Marks an entity of a table whose rows never change once inserted (skill

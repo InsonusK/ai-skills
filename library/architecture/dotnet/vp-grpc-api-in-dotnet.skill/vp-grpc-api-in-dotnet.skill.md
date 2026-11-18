@@ -2,7 +2,7 @@
 name: vp-grpc-api-in-dotnet
 description: The gRPC API variation point in dotnet — Api/Grpc/Pipeline copied from templates (settings, the server on its own HTTP/2 WebApplication, reflection behind a switch, the call log and the error answers as interceptors), one class per proto service in Api/Grpc/Endpoint overriding its generated base, the registration in Api/Grpc/Services.cs with AddGrpcApi and its list of interceptors, the contract compiled by Grpc.Tools at build time, and one grpc Entry in Program.cs
 whenToUse: when a dotnet application built on the base plateau must be served over gRPC, when you serve a new command over gRPC in such an application, or when you review its Api/Grpc folders
-updated: 20261102
+updated: 20261119
 tags:
   - stack/dotnet
   - concern/architecture
@@ -40,13 +40,18 @@ src/App/App.Host/Api/
 
 ## MUST
 
+### Fill the service namespace
+Fill `{service-namespace}` with the application's namespace root from [the namespace convention](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md#qualify-namespaces-with-the-service-name) before copying this skill's templates.
+- Risk: an unfilled identifier does not compile, while a different root in each file splits the service's types.
+- Fix: substitute the same identifier in every delivered source, preserve template logic, and verify no `{service-namespace}` remains in application sources.
+
 ### Copy the entry point from templates
-Copy, unchanged, [GrpcConfig.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/GrpcConfig.cs), [GrpcServer.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/GrpcServer.cs), and [GrpcService.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/GrpcService.cs) to `src/App/App.Host/Api/Grpc/Pipeline/`, [CallLogMiddleware.cs](./templates/src/App/App.Host/Api/Grpc/Middleware/CallLog/CallLogMiddleware.cs) and [AnswerFailuresMiddleware.cs](./templates/src/App/App.Host/Api/Grpc/Middleware/AnswerFailures/AnswerFailuresMiddleware.cs) to `src/App/App.Host/Api/Grpc/Middleware/{CallLog,AnswerFailures}/`, [WebHost.cs](./templates/src/App/App.Host/Api/Core/Hosting/WebHost.cs) to `Api/Core/Hosting/`, and `RpcStatus.cs` of [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md) to `Api/Core/Errors/`, unless another entry point already put the last two there.
+Copy, after [namespace substitution](#fill-the-service-namespace), [GrpcConfig.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/GrpcConfig.cs), [GrpcServer.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/GrpcServer.cs), and [GrpcService.cs](./templates/src/App/App.Host/Api/Grpc/Pipeline/GrpcService.cs) to `src/App/App.Host/Api/Grpc/Pipeline/`, [CallLogMiddleware.cs](./templates/src/App/App.Host/Api/Grpc/Middleware/CallLog/CallLogMiddleware.cs) and [AnswerFailuresMiddleware.cs](./templates/src/App/App.Host/Api/Grpc/Middleware/AnswerFailures/AnswerFailuresMiddleware.cs) to `src/App/App.Host/Api/Grpc/Middleware/{CallLog,AnswerFailures}/`, [WebHost.cs](./templates/src/App/App.Host/Api/Core/Hosting/WebHost.cs) to `Api/Core/Hosting/`, and `RpcStatus.cs` of [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md) to `Api/Core/Errors/`, unless another entry point already put the last two there.
 - Risk: a retyped server drifts in its error answers, its call log, or its shutdown from every other dotnet service of the catalog; a second, different `WebHost.cs` breaks the HTTP or management entry point it is shared with.
 - Fix: copy the files; `bash test/check-vp-attach.sh` in this repository fails when two variation points add a shared file differently.
 
 ### Write the contract and compile it with Grpc.Tools
-Write `docs/integration/api/{contract-name}/{file}.proto` as [todo.proto](./examples/docs/integration/api/todo/todo.proto) shows — `// version:` first, `package {name}.v{major};`, `option csharp_namespace = "Contracts.{Name}.V{major}";` — per [api-develop](library/common-workflow/develop/api-develop.skill/api-develop.skill.md), and compile it in `App.Host.csproj` with `<Protobuf Include="..\..\..\docs\integration\api\{contract-name}\{file}.proto" GrpcServices="Both" Link="Api\Grpc\Contract\{file}.proto" />`, beside `Grpc.AspNetCore` and `Grpc.AspNetCore.Server.Reflection` (2.84.0 in `Directory.Packages.props`) and the `Microsoft.AspNetCore.App` framework reference. Decision recorded in [grpc-tools-at-build-time](./adr/grpc-tools-at-build-time.md).
+Write `docs/integration/api/{contract-name}/{file}.proto` as [todo.proto](./examples/docs/integration/api/todo/todo.proto) shows — `// version:` first, `package {name}.v{major};`, `option csharp_namespace = "{service-namespace}.Contracts.{Name}.V{major}";` — per [api-develop](library/common-workflow/develop/api-develop.skill/api-develop.skill.md), and compile it in `App.Host.csproj` with `<Protobuf Include="..\..\..\docs\integration\api\{contract-name}\{file}.proto" GrpcServices="Both" Link="Api\Grpc\Contract\{file}.proto" />`, beside `Grpc.AspNetCore` and `Grpc.AspNetCore.Server.Reflection` (2.84.0 in `Directory.Packages.props`) and the `Microsoft.AspNetCore.App` framework reference. Decision recorded in [grpc-tools-at-build-time](./adr/grpc-tools-at-build-time.md).
 - Violation: message types written by hand; generated `.cs` files committed or edited; buf in a dotnet repository; the proto file copied next to the code.
 - Risk: the server and its clients disagree on the wire format; a committed generated file goes stale when the proto file changes.
 - Fix: the build regenerates the code from the one proto file under `docs/integration/api/`; `GrpcServices="Both"` gives the scenarios the client they call the server with.

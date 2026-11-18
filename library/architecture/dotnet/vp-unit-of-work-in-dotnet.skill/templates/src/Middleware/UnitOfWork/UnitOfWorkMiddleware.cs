@@ -1,10 +1,10 @@
 // Source: skill vp-unit-of-work-in-dotnet
 
 using MediatR;
-using Shared.Errors;
-using Shared.UnitOfWork;
+using {service-namespace}.Shared.Errors;
+using {service-namespace}.Shared.UnitOfWork;
 
-namespace Middleware.UnitOfWork;
+namespace {service-namespace}.Middleware.UnitOfWork;
 
 /// <summary>
 /// The command middleware that keeps a command's writes together: the outermost

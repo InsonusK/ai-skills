@@ -1,8 +1,8 @@
 // Source: skill error-kinds-in-dotnet
 
-using Shared.Errors;
+using {service-namespace}.Shared.Errors;
 
-namespace App.Host.Api.Core.Errors;
+namespace {service-namespace}.App.Host.Api.Core.Errors;
 
 /// <summary>
 /// A google.rpc.Code; the numbers are those of Grpc.Core's StatusCode, so

@@ -1,6 +1,7 @@
 <Project>
   <!-- Settings every project of the solution shares. -->
   <PropertyGroup>
+    <ServiceNamespace>TodoExampleService</ServiceNamespace>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>

@@ -1,7 +1,7 @@
 using System.Globalization;
-using Todo.Domain.Errors;
+using TodoExampleService.Modules.Todo.Domain.Errors;
 
-namespace Todo.Domain.Entities;
+namespace TodoExampleService.Modules.Todo.Domain.Entities;
 
 /// <summary>
 /// One to-do item. Its state changes only through its methods, which guard the

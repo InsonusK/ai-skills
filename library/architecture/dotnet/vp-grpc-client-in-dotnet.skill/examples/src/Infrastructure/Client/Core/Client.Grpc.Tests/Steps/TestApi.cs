@@ -1,6 +1,6 @@
 using System.Net;
 using System.Net.Sockets;
-using Client.Grpc.Tests.Echo;
+using TodoExampleService.Infrastructure.Client.Core.Grpc.Tests.Echo;
 using Grpc.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Client.Grpc.Tests.Steps;
+namespace TodoExampleService.Infrastructure.Client.Core.Grpc.Tests.Steps;
 
 /// <summary>What the test API was sent.</summary>
 public sealed record Received(string Text, string? RequestId);

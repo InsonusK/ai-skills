@@ -1,14 +1,14 @@
 using System.Net;
 using System.Text.Json;
-using BuildingBlocks.Logging;
-using Client.Abstractions;
-using Client.Pipeline;
+using TodoExampleService.BuildingBlocks.Logging;
+using TodoExampleService.Infrastructure.Client.Core.Abstractions;
+using TodoExampleService.Infrastructure.Client.Core.Pipeline;
 using Microsoft.Extensions.Logging;
 using Reqnroll;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Client.Http.Tests.Steps;
+namespace TodoExampleService.Infrastructure.Client.Core.Http.Tests.Steps;
 
 /// <summary>
 /// The request and the response of the test API's one operation, POST

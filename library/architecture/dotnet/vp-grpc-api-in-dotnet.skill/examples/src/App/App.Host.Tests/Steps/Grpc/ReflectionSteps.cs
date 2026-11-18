@@ -3,7 +3,7 @@ using Grpc.Reflection.V1Alpha;
 using Reqnroll;
 using Xunit;
 
-namespace App.Host.Tests.Steps.Grpc;
+namespace TodoExampleService.App.Host.Tests.Steps.Grpc;
 
 [Binding]
 public sealed class ReflectionSteps(GrpcWorld world)

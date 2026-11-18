@@ -1,12 +1,12 @@
 // Source: skill vp-grpc-api-in-dotnet
 
-using App.Host.Api.Core.Errors;
-using BuildingBlocks.Logging;
+using {service-namespace}.App.Host.Api.Core.Errors;
+using {service-namespace}.BuildingBlocks.Logging;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
 using Microsoft.Extensions.Logging;
 
-namespace App.Host.Api.Grpc.Middleware.AnswerFailures;
+namespace {service-namespace}.App.Host.Api.Grpc.Middleware.AnswerFailures;
 
 /// <summary>
 /// Answers every exception a method lets out by its kind through the one

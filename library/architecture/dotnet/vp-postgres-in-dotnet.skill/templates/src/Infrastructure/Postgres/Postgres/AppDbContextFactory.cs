@@ -3,7 +3,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace Postgres;
+namespace {service-namespace}.Infrastructure.Database.Postgres;
 
 /// <summary>
 /// How dotnet ef builds the context to generate a migration: from the model

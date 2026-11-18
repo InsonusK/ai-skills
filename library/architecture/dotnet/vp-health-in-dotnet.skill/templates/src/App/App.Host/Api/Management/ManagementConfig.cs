@@ -1,6 +1,6 @@
 // Source: skill vp-health-in-dotnet
 
-namespace App.Host.Api.Management;
+namespace {service-namespace}.App.Host.Api.Management;
 
 /// <summary>
 /// The management entry point's own settings. They are read here, not in

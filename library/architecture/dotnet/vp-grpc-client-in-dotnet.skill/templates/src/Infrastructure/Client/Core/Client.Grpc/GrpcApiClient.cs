@@ -1,13 +1,13 @@
 // Source: skill vp-grpc-client-in-dotnet
 
-using Client.Pipeline;
+using {service-namespace}.Infrastructure.Client.Core.Pipeline;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Logging;
-using BuildingBlocks.Logging;
+using {service-namespace}.BuildingBlocks.Logging;
 
-namespace Client.Grpc;
+namespace {service-namespace}.Infrastructure.Client.Core.Grpc;
 
 /// <summary>One method of the contract an adapter calls.</summary>
 /// <param name="Name">The full method name: "/todo.v1.ItemsService/PlanItems".</param>

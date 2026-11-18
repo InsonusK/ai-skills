@@ -1,6 +1,6 @@
 // Source: skill vp-grpc-api-in-dotnet
 
-namespace App.Host.Api.Grpc.Pipeline;
+namespace TodoExampleService.App.Host.Api.Grpc.Pipeline;
 
 /// <summary>
 /// The gRPC entry point's own settings. They are read here, not in

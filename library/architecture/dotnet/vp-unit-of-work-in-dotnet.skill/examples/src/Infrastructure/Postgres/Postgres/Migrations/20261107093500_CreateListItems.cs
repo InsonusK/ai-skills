@@ -3,7 +3,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Postgres.Migrations
+namespace TodoExampleService.Infrastructure.Database.Postgres.Migrations
 {
     /// <inheritdoc />
     public partial class CreateListItems : Migration

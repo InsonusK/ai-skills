@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Postgres.Migrations
+namespace TodoExampleService.Infrastructure.Database.Postgres.Migrations
 {
     /// <inheritdoc />
     public partial class AddItemRowVersion : Migration

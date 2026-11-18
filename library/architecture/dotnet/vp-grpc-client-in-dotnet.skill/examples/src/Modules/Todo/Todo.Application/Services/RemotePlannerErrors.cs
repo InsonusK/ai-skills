@@ -1,6 +1,6 @@
-using Shared.Errors;
+using TodoExampleService.Shared.Errors;
 
-namespace Todo.Application.Services;
+namespace TodoExampleService.Modules.Todo.Application.Services;
 
 /// <summary>
 /// The errors of <see cref="RemotePlannerService"/>, one factory method each,

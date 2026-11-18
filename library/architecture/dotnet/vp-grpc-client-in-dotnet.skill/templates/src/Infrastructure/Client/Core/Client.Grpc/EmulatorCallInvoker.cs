@@ -3,7 +3,7 @@
 using Google.Protobuf;
 using Grpc.Core;
 
-namespace Client.Grpc;
+namespace {service-namespace}.Infrastructure.Client.Core.Grpc;
 
 /// <summary>
 /// The transport of a mocked client: it answers every unary call with the

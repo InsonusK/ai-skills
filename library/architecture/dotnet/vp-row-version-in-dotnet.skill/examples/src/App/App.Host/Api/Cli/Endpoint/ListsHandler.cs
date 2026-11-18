@@ -1,10 +1,10 @@
 using System.Text.Json.Serialization;
 using System.Globalization;
-using App.Host.Api.Cli.Pipeline;
+using TodoExampleService.App.Host.Api.Cli.Pipeline;
 using MediatR;
-using Todo.Commands;
+using TodoExampleService.Modules.Todo.Commands;
 
-namespace App.Host.Api.Cli.Endpoint;
+namespace TodoExampleService.App.Host.Api.Cli.Endpoint;
 
 /// <summary>The lists resource: persistent items, reached only through commands.</summary>
 public sealed class ListsHandler(ISender sender)

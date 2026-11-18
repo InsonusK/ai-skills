@@ -2,7 +2,7 @@
 
 using Ardalis.Specification;
 
-namespace Shared.Persistence;
+namespace {service-namespace}.Shared.Persistence;
 
 /// <summary>
 /// The rule every repository keeps for a page: a specification with

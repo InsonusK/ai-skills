@@ -1,7 +1,7 @@
-using Contracts.Todo.V1;
+using TodoExampleService.Contracts.Todo.V1;
 using Grpc.Core;
 
-namespace TodoApi.Mock;
+namespace TodoExampleService.Infrastructure.Client.TodoApi.Mock;
 
 /// <summary>
 /// The mock of the todo API's client (<see cref="TodoApiClient"/>): an emulator

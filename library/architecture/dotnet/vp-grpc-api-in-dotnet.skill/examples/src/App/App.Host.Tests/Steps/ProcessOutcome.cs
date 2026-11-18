@@ -1,7 +1,7 @@
 using Reqnroll;
 using Xunit;
 
-namespace App.Host.Tests.Steps;
+namespace TodoExampleService.App.Host.Tests.Steps;
 
 /// <summary>How the process (or one run of the entry points) ended; shared by the steps of one scenario.</summary>
 public sealed class ProcessOutcome

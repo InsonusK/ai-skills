@@ -1,13 +1,13 @@
-using App.Host.Api.Http;
-using App.Host.Api.Http.Endpoint;
+using TodoExampleService.App.Host.Api.Http;
+using TodoExampleService.App.Host.Api.Http.Endpoint;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Reqnroll;
-using Shared.Errors;
-using Todo.Commands;
+using TodoExampleService.Shared.Errors;
+using TodoExampleService.Modules.Todo.Commands;
 using Xunit;
 
-namespace App.Host.Tests.Steps.Http;
+namespace TodoExampleService.App.Host.Tests.Steps.Http;
 
 /// <summary>A fake handler: answers what the scenario set or fails with it, records the command.</summary>
 public sealed class FakeHandler<TCommand, TResult> : IRequestHandler<TCommand, TResult> where TCommand : IRequest<TResult>
