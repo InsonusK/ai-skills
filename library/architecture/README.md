@@ -164,6 +164,7 @@ The separate Status table above remains the roadmap for future variation points.
 |---|---|---|
 | [Revise the attach rule](backlog/attach-rule.md) | Needs decision | Before the next VP changes a shared method |
 | [Infrastructure namespaces in .NET](backlog/dotnet-namespaces.md) | Needs decision | Catalog-wide naming pass; keep current names until agreed |
+| [Reconsider Client code organization](backlog/client-code-organization.md) | Needs decision | Investigate Client/Service boundaries and model ownership; agree scope before migration |
 | [Select middleware when building the chain](backlog/middleware-selection.md) | Needs decision | Investigation can start; agree the registration contract before migration |
 | [Retire legacy client guidance](backlog/legacy-client-skills.md) | Deferred | Confirmed replacement of old catalogs and migration of their consumers |
 | [Invalid loaded entity is a service failure](backlog/invalid-loaded-entity.md) | Ready | Can start independently |
