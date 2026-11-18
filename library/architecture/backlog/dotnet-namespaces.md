@@ -47,3 +47,14 @@ consistently. Run shared structural checks.
 The naming rule, whether existing projects are renamed, and inclusion of the
 old catalog require owner approval. The previous instruction to keep current
 names is not approval for a catalog-wide rename.
+
+## Investigation
+
+[Decision brief](../agent/dotnet-namespaces/REVIEW.md) compares capability names,
+qualified namespaces alone, and qualified project/namespace identities. Its
+reproducible inventory covers 43 current infrastructure project files, fixed
+template identifiers, namespace imports, references and the old catalog's
+consumers separately. The recommendation preserves capability names and the
+existing current-catalog layout; no rename or architecture rule is approved by
+the investigation. Status remains `Needs decision` until the owner agrees the
+rule's separate axes and migration scope.
