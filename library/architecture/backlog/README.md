@@ -3,7 +3,7 @@
 The [catalog Backlog table](../README.md#backlog) is the task index. Each linked
 card contains the task's context, source locations, scope, start condition,
 expected result, validation and open decisions. The roadmap VPs remain in the
-catalog Status table; they are not silently included in this ten-task migration.
+catalog Status table; they are not silently included in a backlog task.
 
 ## Choosing a task
 
