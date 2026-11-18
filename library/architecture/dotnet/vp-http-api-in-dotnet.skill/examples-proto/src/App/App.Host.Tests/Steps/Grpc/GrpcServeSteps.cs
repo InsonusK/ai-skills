@@ -1,12 +1,12 @@
 using System.Net.Sockets;
-using App.Host.Api.Grpc.Pipeline;
-using App.Host.Tests.Steps.Grpc.Contract;
+using TodoExampleService.App.Host.Api.Grpc.Pipeline;
+using TodoExampleService.App.Host.Tests.Steps.Grpc.Contract;
 using Grpc.Net.Client;
 using Reqnroll;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace App.Host.Tests.Steps.Grpc;
+namespace TodoExampleService.App.Host.Tests.Steps.Grpc;
 
 /// <summary>The gRPC server on a real port, started and stopped as the entry runner does.</summary>
 [Binding]

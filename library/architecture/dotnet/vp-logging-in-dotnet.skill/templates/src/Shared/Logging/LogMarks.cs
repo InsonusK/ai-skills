@@ -1,6 +1,6 @@
 // Source: skill vp-logging-in-dotnet
 
-namespace Shared.Logging;
+namespace {service-namespace}.Shared.Logging;
 
 /// <summary>
 /// Marks a property whose value is secret: the logging variation point writes

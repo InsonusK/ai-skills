@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>$(ServiceNamespace).Infrastructure.Client.TodoApi</RootNamespace>
+  </PropertyGroup>
   <!-- The adapter of the todo API over HTTP and its mock. Only App.Host
        references it, to build it in [services]. -->
   <ItemGroup>

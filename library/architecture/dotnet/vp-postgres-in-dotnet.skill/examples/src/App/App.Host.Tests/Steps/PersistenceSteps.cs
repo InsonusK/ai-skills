@@ -1,11 +1,11 @@
 using System.Diagnostics;
-using Postgres;
-using Postgres.Testing;
+using TodoExampleService.Infrastructure.Database.Postgres;
+using TodoExampleService.Infrastructure.Database.Postgres.Testing;
 using Reqnroll;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace App.Host.Tests.Steps;
+namespace TodoExampleService.App.Host.Tests.Steps;
 
 /// <summary>
 /// The whole application: a separate CLI process over a real database,
@@ -30,7 +30,7 @@ public sealed class PersistenceSteps(ITestOutputHelper output)
             RedirectStandardError = true,
             UseShellExecute = false,
         };
-        start.ArgumentList.Add(typeof(App.Host.Program).Assembly.Location);
+        start.ArgumentList.Add(typeof(TodoExampleService.App.Host.Program).Assembly.Location);
         foreach (var arg in args) start.ArgumentList.Add(arg);
         using var process = Process.Start(start)!;
         var stdout = process.StandardOutput.ReadToEndAsync();

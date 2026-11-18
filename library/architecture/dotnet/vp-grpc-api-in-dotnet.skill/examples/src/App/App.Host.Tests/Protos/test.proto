@@ -4,7 +4,7 @@ syntax = "proto3";
 // command of the scenarios, so the fixed code is tested without the contract.
 package test.v1;
 
-option csharp_namespace = "App.Host.Tests.Steps.Grpc.Contract";
+option csharp_namespace = "TodoExampleService.App.Host.Tests.Steps.Grpc.Contract";
 
 service EchoService {
   rpc Echo(EchoRequest) returns (EchoResponse);

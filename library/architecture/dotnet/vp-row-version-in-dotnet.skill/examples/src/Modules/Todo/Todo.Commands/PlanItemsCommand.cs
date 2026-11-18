@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Todo.Commands;
+namespace TodoExampleService.Modules.Todo.Commands;
 
 /// <summary>Asks to plan one open to-do item per title.</summary>
 public sealed record PlanItemsCommand(IReadOnlyList<string> Titles) : IRequest<PlanItemsResult>;

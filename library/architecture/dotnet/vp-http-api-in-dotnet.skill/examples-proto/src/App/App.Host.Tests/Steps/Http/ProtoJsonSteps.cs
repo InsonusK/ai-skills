@@ -1,12 +1,12 @@
-using App.Host.Api.Http.Pipeline;
+using TodoExampleService.App.Host.Api.Http.Pipeline;
 using Google.Protobuf.WellKnownTypes;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Reqnroll;
-using Shared.Errors;
+using TodoExampleService.Shared.Errors;
 
-namespace App.Host.Tests.Steps.Http;
+namespace TodoExampleService.App.Host.Tests.Steps.Http;
 
 /// <summary>
 /// Test routes over a generated message of the protobuf runtime

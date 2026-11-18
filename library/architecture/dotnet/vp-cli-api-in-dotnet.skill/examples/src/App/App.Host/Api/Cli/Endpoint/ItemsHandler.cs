@@ -1,9 +1,9 @@
 using System.Text.Json.Serialization;
-using App.Host.Api.Cli.Pipeline;
+using TodoExampleService.App.Host.Api.Cli.Pipeline;
 using MediatR;
-using Todo.Commands;
+using TodoExampleService.Modules.Todo.Commands;
 
-namespace App.Host.Api.Cli.Endpoint;
+namespace TodoExampleService.App.Host.Api.Cli.Endpoint;
 
 // This file is the items resource (`todo items ...`): its actions, and per
 // action its flags, its output type, and its text form. A new command on

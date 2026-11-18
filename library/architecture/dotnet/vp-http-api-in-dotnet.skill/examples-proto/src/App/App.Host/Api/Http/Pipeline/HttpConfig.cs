@@ -1,6 +1,6 @@
 // Source: skill vp-http-api-in-dotnet
 
-namespace App.Host.Api.Http.Pipeline;
+namespace TodoExampleService.App.Host.Api.Http.Pipeline;
 
 /// <summary>
 /// The HTTP entry point's own settings. They are read here, not in

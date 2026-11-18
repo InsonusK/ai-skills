@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>$(ServiceNamespace).Modules.Todo.Domain</RootNamespace>
+  </PropertyGroup>
   <!-- The domain of the module: entities, their configurations (the tables the
        module owns), domain services, the rule errors. It references Shared (the
        error kinds) and EF Core's relational model API for the configurations

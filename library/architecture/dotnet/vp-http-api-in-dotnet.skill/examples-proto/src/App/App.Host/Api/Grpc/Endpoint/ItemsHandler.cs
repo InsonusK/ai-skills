@@ -1,10 +1,10 @@
-using Contracts.Todo.V1;
+using TodoExampleService.Contracts.Todo.V1;
 using Grpc.Core;
 using MediatR;
-using Todo.Commands;
-using Shared.Errors;
+using TodoExampleService.Modules.Todo.Commands;
+using TodoExampleService.Shared.Errors;
 
-namespace App.Host.Api.Grpc.Endpoint;
+namespace TodoExampleService.App.Host.Api.Grpc.Endpoint;
 
 // This file is the ItemsService of the contract (docs/integration/api/todo/todo.proto):
 // one override per rpc of its generated base, each mapping the request message

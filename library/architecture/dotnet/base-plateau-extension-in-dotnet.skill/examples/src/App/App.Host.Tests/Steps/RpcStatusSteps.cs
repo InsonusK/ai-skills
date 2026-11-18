@@ -1,10 +1,10 @@
-using App.Host.Api.Core.Errors;
+using TodoExampleService.App.Host.Api.Core.Errors;
 using Reqnroll;
-using Shared.Errors;
+using TodoExampleService.Shared.Errors;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace App.Host.Tests.Steps;
+namespace TodoExampleService.App.Host.Tests.Steps;
 
 [Binding]
 public sealed class RpcStatusSteps(ITestOutputHelper output)

@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Todo.Application;
+namespace TodoExampleService.Modules.Todo.Application;
 
 /// <summary>
 /// The Todo module as the composition root adds it: the handler of every

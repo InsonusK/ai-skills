@@ -1,24 +1,24 @@
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using App.Host.Api.Http;
-using App.Host.Api.Http.Middleware.Authentication;
-using App.Host.Api.Http.Pipeline;
-using BuildingBlocks.Pipeline;
+using TodoExampleService.App.Host.Api.Http;
+using TodoExampleService.App.Host.Api.Http.Middleware.Authentication;
+using TodoExampleService.App.Host.Api.Http.Pipeline;
+using TodoExampleService.BuildingBlocks.Pipeline;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Middleware.Access;
-using Middleware.BatchLimit;
-using Middleware.Logging;
+using TodoExampleService.Middleware.Access;
+using TodoExampleService.Middleware.BatchLimit;
+using TodoExampleService.Middleware.Logging;
 using Reqnroll;
-using Todo.Application;
+using TodoExampleService.Modules.Todo.Application;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace App.Host.Tests.Steps.Http;
+namespace TodoExampleService.App.Host.Tests.Steps.Http;
 
 /// <summary>
 /// The steps of Access.feature: the application as Program.cs builds it with

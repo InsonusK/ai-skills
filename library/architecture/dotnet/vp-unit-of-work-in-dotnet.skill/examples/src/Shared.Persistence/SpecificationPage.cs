@@ -2,7 +2,7 @@
 
 using Ardalis.Specification;
 
-namespace Shared.Persistence;
+namespace TodoExampleService.Shared.Persistence;
 
 /// <summary>
 /// The rule every repository keeps for a page: a specification with

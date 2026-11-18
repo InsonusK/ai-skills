@@ -2,7 +2,7 @@
 
 using System.Reflection;
 
-namespace App.Host.Version;
+namespace {service-namespace}.App.Host.Version;
 
 /// <summary>
 /// The version of this build: the &lt;Version&gt; of Directory.Build.props,

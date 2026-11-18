@@ -2,13 +2,13 @@
 
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using App.Host.Api.Core.Errors;
-using BuildingBlocks.Logging;
+using {service-namespace}.App.Host.Api.Core.Errors;
+using {service-namespace}.BuildingBlocks.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Shared.Errors;
+using {service-namespace}.Shared.Errors;
 
-namespace App.Host.Api.Http.Middleware.AnswerFailures;
+namespace {service-namespace}.App.Host.Api.Http.Middleware.AnswerFailures;
 
 /// <summary>
 /// Answers every exception a route lets out with a google.rpc.Status body,

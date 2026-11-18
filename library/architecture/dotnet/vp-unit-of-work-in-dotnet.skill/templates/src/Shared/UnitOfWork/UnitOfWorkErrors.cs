@@ -1,8 +1,8 @@
 // Source: skill vp-unit-of-work-in-dotnet
 
-using Shared.Errors;
+using {service-namespace}.Shared.Errors;
 
-namespace Shared.UnitOfWork;
+namespace {service-namespace}.Shared.UnitOfWork;
 
 /// <summary>The errors of the unit of work: no service stands over a commit to tell its outcome.</summary>
 public static class UnitOfWorkErrors

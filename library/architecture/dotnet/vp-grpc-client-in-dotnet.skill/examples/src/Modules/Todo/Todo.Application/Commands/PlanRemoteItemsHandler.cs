@@ -1,8 +1,8 @@
 using MediatR;
-using Todo.Application.Services;
-using Todo.Commands;
+using TodoExampleService.Modules.Todo.Application.Services;
+using TodoExampleService.Modules.Todo.Commands;
 
-namespace Todo.Application.Commands;
+namespace TodoExampleService.Modules.Todo.Application.Commands;
 
 /// <summary>
 /// Handles <see cref="PlanRemoteItemsCommand"/> with the todo service: titles

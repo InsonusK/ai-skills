@@ -1,10 +1,10 @@
-using BuildingBlocks.Pipeline;
+using TodoExampleService.BuildingBlocks.Pipeline;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Reqnroll;
 using Xunit;
 
-namespace BuildingBlocks.Tests.Steps;
+namespace TodoExampleService.BuildingBlocks.Tests.Steps;
 
 /// <summary>What lives per command: the scenarios see which instance each command got, and when it ended.</summary>
 public sealed class PerCommand(List<string> trace) : IDisposable

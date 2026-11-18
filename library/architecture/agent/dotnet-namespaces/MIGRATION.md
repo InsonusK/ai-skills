@@ -53,8 +53,17 @@ copy-as-is. No new library or runtime mechanism is introduced.
 - Wave 0: sample `AppVersion.cs` qualified and compiled in isolation (zero
   warnings/errors); `migrate.py --sample-only` passes. A separate conformance
   review confirms that the sample changes only its namespace. Contract review
-  requested; bulk edits await that review.
-- Wave 1: pending.
+  completed: owner explicitly approved this contract before wave 1.
+- Wave 1: all namespaces, generated roots and templates migrated. Namespace,
+  template (242 pairs), attach and reference checks pass. All 14 examples pass
+  their builds and tests, including PostgreSQL/UoW/row-version against the
+  isolated PostgreSQL fixture. A temporary HTTP-client example also builds and
+  passes tests with `HttpClientExampleService` as its root.
+- Wave 1 fresh-eyes audit: independent inverse-rename/XML review found no
+  changes to behavior, wire contracts, assembly identities or reference paths.
+  Its checker-gap finding was fixed: declarations must match their owning
+  project's RootNamespace. A deliberately wrong layer was rejected; the
+  restored source passes. Assembly-only attributes remain outside namespaces.
 - Wave 2: pending.
 - Evidence and fresh-eyes audit findings will be recorded here per wave.
 - All 14 examples' dependencies restored from the local cache. NuGet's remote

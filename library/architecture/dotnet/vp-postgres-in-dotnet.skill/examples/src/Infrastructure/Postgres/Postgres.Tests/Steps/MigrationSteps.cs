@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Reqnroll;
 using Xunit;
 
-namespace Postgres.Tests.Steps;
+namespace TodoExampleService.Infrastructure.Database.Postgres.Tests.Steps;
 
 [Binding]
 public sealed class MigrationSteps(PostgresWorld world)

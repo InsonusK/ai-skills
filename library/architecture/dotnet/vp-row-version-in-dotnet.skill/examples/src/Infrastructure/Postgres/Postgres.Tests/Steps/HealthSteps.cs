@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 using Reqnroll;
 using Xunit;
 
-namespace Postgres.Tests.Steps;
+namespace TodoExampleService.Infrastructure.Database.Postgres.Tests.Steps;
 
 [Binding]
 public sealed class HealthSteps(PostgresWorld world)

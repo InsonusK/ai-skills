@@ -1,7 +1,7 @@
 using MediatR;
-using Shared.Access;
+using TodoExampleService.Shared.Access;
 
-namespace Middleware.Access;
+namespace TodoExampleService.Middleware.Access;
 
 /// <summary>
 /// The access check, the command middleware that filters by the command's

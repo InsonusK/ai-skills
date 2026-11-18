@@ -1,8 +1,8 @@
 // Source: skill vp-http-api-in-dotnet
 
-using App.Host.Api.Core.Hosting;
-using App.Host.Api.Http.Middleware.RequestLog;
-using App.Host.Api.Http.Middleware.AnswerFailures;
+using {service-namespace}.App.Host.Api.Core.Hosting;
+using {service-namespace}.App.Host.Api.Http.Middleware.RequestLog;
+using {service-namespace}.App.Host.Api.Http.Middleware.AnswerFailures;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace App.Host.Api.Http.Pipeline;
+namespace {service-namespace}.App.Host.Api.Http.Pipeline;
 
 /// <summary>
 /// The fixed part of the HTTP entry point, copied from templates and never

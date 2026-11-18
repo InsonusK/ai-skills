@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Todo.Commands;
+namespace TodoExampleService.Modules.Todo.Commands;
 
 /// <summary>
 /// Asks to mark the item <paramref name="ItemId"/> of the list

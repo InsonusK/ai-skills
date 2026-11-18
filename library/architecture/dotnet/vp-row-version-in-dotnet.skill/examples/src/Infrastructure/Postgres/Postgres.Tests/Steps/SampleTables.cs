@@ -1,9 +1,9 @@
 using Ardalis.Specification;
 using Microsoft.EntityFrameworkCore;
-using Postgres.Repositories;
-using Shared.Persistence;
+using TodoExampleService.Infrastructure.Database.Postgres.Repositories;
+using TodoExampleService.Shared.Persistence;
 
-namespace Postgres.Tests.Steps;
+namespace TodoExampleService.Infrastructure.Database.Postgres.Tests.Steps;
 
 // The tables of the shared scenarios: two entities with a relation, a task
 // referring to its owner. They exist only in this project: the application

@@ -1,12 +1,12 @@
-using App.Host.Api.Core.Entry;
-using App.Host.Api.Grpc.Endpoint;
-using App.Host.Api.Grpc.Pipeline;
+using TodoExampleService.App.Host.Api.Core.Entry;
+using TodoExampleService.App.Host.Api.Grpc.Endpoint;
+using TodoExampleService.App.Host.Api.Grpc.Pipeline;
 using Grpc.Core.Interceptors;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace App.Host.Api.Grpc;
+namespace TodoExampleService.App.Host.Api.Grpc;
 
 /// <summary>
 /// The services of the proto contract this API serves, one per file of

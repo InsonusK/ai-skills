@@ -3,7 +3,7 @@ using Reqnroll;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Client.Grpc.Tests.Steps;
+namespace TodoExampleService.Infrastructure.Client.Core.Grpc.Tests.Steps;
 
 [Binding]
 public sealed class ConfigSteps(ITestOutputHelper output)

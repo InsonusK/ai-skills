@@ -1,6 +1,6 @@
-using Client.Abstractions;
+using TodoExampleService.Infrastructure.Client.Core.Abstractions;
 
-namespace TodoApi.Abstractions;
+namespace TodoExampleService.Infrastructure.Client.TodoApi.Abstractions;
 
 /// <summary>An item as the todo API answers it, the adapter's own type.</summary>
 public sealed record TodoApiItem(string Title, bool Done);

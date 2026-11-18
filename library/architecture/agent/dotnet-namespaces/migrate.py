@@ -70,10 +70,12 @@ def apply(files):
             text = source(text, prefix)
         elif path.suffix == '.csproj':
             if '<RootNamespace>' not in text:
-                root = qualify(path.stem, TOKEN if template else '$(ServiceNamespace)')
+                root = qualify(path.stem, '$(ServiceNamespace)')
                 text = text.replace('>\n', '>\n  <PropertyGroup>\n'
                                     f'    <RootNamespace>{root}</RootNamespace>\n'
                                     '  </PropertyGroup>\n', 1)
+            text = text.replace('<RootNamespace>' + TOKEN + '.',
+                                '<RootNamespace>$(ServiceNamespace).')
         elif path.suffix == '.proto':
             text = re.sub(r'(?<=csharp_namespace = ")([\w.]+)',
                           lambda m: m.group() if m.group().startswith(SAMPLE + '.')
@@ -97,8 +99,31 @@ def check(files, sample_only):
         if path.suffix == '.cs':
             text = path.read_text()
             namespaces = re.findall(r'^namespace ([^;\s]+)', text, re.M)
-            if not namespaces or any(not n.startswith(prefix + '.') for n in namespaces):
+            assembly_attributes = not namespaces and '[assembly:' in text and not re.search(
+                r'\b(class|record|struct|interface|enum)\s+\w+', re.sub(r'//[^\n]*', '', text))
+            if not assembly_attributes and (not namespaces or any(
+                    not n.startswith(prefix + '.') for n in namespaces)):
                 errors.append(f'{path.relative_to(ROOT)}: unqualified namespace {namespaces}')
+            owner_source = path
+            if template:
+                skill, relative = str(path).split('/templates/', 1)
+                examples = sorted(Path(skill).glob('examples*/' + relative)) or sorted(
+                    (ROOT / 'library/architecture/dotnet').glob('*.skill/examples*/' + relative))
+                if examples:
+                    owner_source = examples[0]
+            for parent in owner_source.parents:
+                owners = list(parent.glob('*.csproj'))
+                if owners:
+                    root = ET.fromstring(owners[0].read_text()).findtext('.//RootNamespace')
+                    expected_root = (root or '').replace('$(ServiceNamespace)', prefix)
+                    if not expected_root or any(n != expected_root and not n.startswith(
+                            expected_root + '.') for n in namespaces):
+                        errors.append(f'{path.relative_to(ROOT)}: namespace outside owning project {expected_root}')
+                    break
+                if parent == ROOT:
+                    if not sample_only:
+                        errors.append(f'{path.relative_to(ROOT)}: no owning project/example')
+                    break
             if source(text, prefix) != text:
                 errors.append(f'{path.relative_to(ROOT)}: stale type reference')
             if not template and TOKEN in text:
@@ -106,12 +131,17 @@ def check(files, sample_only):
             count += 1
         elif path.suffix == '.csproj':
             project = ET.fromstring(path.read_text())
-            expected = qualify(path.stem, TOKEN if template else '$(ServiceNamespace)')
+            expected = qualify(path.stem, '$(ServiceNamespace)')
             if project.findtext('.//RootNamespace') != expected:
                 errors.append(f'{path.relative_to(ROOT)}: RootNamespace must be {expected}')
             for ref in project.iter('ProjectReference'):
                 target = (path.parent / ref.attrib['Include'].replace('\\', '/')).resolve()
-                if not target.exists():
+                candidates = [target]
+                if template:
+                    skill, relative = str(path).split('/templates/', 1)
+                    candidates = [(example.parent / ref.attrib['Include'].replace('\\', '/')).resolve()
+                                  for example in Path(skill).glob('examples*/' + relative)]
+                if not any(p.exists() for p in candidates):
                     errors.append(f'{path.relative_to(ROOT)}: missing reference {target}')
         elif path.name == 'Directory.Build.props':
             if ET.fromstring(path.read_text()).findtext('.//ServiceNamespace') != SAMPLE:

@@ -1,6 +1,6 @@
 // Source: skill base-plateau-in-dotnet
 
-namespace App.Host.Api.Core.Entry;
+namespace {service-namespace}.App.Host.Api.Core.Entry;
 
 /// <summary>
 /// One entry point of the application.

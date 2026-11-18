@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Todo.Domain.Entities;
+using TodoExampleService.Modules.Todo.Domain.Entities;
 
-namespace Todo.Domain.Configurations;
+namespace TodoExampleService.Modules.Todo.Domain.Configurations;
 
 /// <summary>
 /// The table of <see cref="Item"/>: the id gives the order of adding, the

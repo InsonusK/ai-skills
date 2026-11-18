@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Todo.Domain.Configurations;
+using TodoExampleService.Modules.Todo.Domain.Configurations;
 
-namespace Postgres;
+namespace TodoExampleService.Infrastructure.Database.Postgres;
 
 /// <summary>
 /// The one context of the application, over every module's tables, so one

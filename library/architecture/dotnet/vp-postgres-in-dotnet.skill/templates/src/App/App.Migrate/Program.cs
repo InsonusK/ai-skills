@@ -1,10 +1,10 @@
 // Source: skill vp-postgres-in-dotnet
 
-using BuildingBlocks.Logging;
+using {service-namespace}.BuildingBlocks.Logging;
 using Microsoft.Extensions.Logging;
-using Postgres;
+using {service-namespace}.Infrastructure.Database.Postgres;
 
-namespace App.Migrate;
+namespace {service-namespace}.App.Migrate;
 
 /// <summary>
 /// The migration job of a deployment: it reads DATABASE_DSN, brings the database

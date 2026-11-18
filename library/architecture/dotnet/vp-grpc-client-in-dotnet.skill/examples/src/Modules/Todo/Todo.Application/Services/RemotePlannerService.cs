@@ -1,9 +1,9 @@
-using Client.Abstractions;
-using Shared.Errors;
-using Todo.Domain.Entities;
-using TodoApi.Abstractions;
+using TodoExampleService.Infrastructure.Client.Core.Abstractions;
+using TodoExampleService.Shared.Errors;
+using TodoExampleService.Modules.Todo.Domain.Entities;
+using TodoExampleService.Infrastructure.Client.TodoApi.Abstractions;
 
-namespace Todo.Application.Services;
+namespace TodoExampleService.Modules.Todo.Application.Services;
 
 /// <summary>
 /// The service over the todo API: it speaks the application's language and

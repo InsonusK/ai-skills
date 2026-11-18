@@ -3,7 +3,7 @@ syntax = "proto3";
 
 package todo.v1;
 
-option csharp_namespace = "Contracts.Todo.V1";
+option csharp_namespace = "TodoExampleService.Contracts.Todo.V1";
 
 // ItemsService plans and keeps to-do items.
 service ItemsService {

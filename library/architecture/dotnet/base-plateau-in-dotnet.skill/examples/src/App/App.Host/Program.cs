@@ -3,19 +3,19 @@
 // the marked sections below - never by editing another file.
 
 using System.Runtime.InteropServices;
-using App.Host.Api.Core.Entry;
-using App.Host.Api.Startup;
-using App.Host.Config;
-using App.Host.Version;
-using BuildingBlocks.Logging;
-using BuildingBlocks.Pipeline;
+using TodoExampleService.App.Host.Api.Core.Entry;
+using TodoExampleService.App.Host.Api.Startup;
+using TodoExampleService.App.Host.Config;
+using TodoExampleService.App.Host.Version;
+using TodoExampleService.BuildingBlocks.Logging;
+using TodoExampleService.BuildingBlocks.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Middleware.Logging;
-using Todo.Application;
-using Todo.Commands;
+using TodoExampleService.Middleware.Logging;
+using TodoExampleService.Modules.Todo.Application;
+using TodoExampleService.Modules.Todo.Commands;
 
-namespace App.Host;
+namespace TodoExampleService.App.Host;
 
 public static class Program
 {

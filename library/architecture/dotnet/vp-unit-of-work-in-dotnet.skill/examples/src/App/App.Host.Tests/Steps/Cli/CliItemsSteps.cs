@@ -1,12 +1,12 @@
-using App.Host.Api.Cli;
-using App.Host.Api.Cli.Endpoint;
+using TodoExampleService.App.Host.Api.Cli;
+using TodoExampleService.App.Host.Api.Cli.Endpoint;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Reqnroll;
-using Todo.Commands;
+using TodoExampleService.Modules.Todo.Commands;
 using Xunit;
 
-namespace App.Host.Tests.Steps.Cli;
+namespace TodoExampleService.App.Host.Tests.Steps.Cli;
 
 /// <summary>PlanItems faked: it returns the configured items and records the titles it was asked.</summary>
 public sealed class FakePlanItemsHandler : IRequestHandler<PlanItemsCommand, PlanItemsResult>

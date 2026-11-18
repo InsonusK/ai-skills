@@ -1,10 +1,10 @@
 // Source: skill vp-postgres-in-dotnet
 
 using Ardalis.Specification;
-using Shared.Errors;
-using Shared.Persistence;
+using {service-namespace}.Shared.Errors;
+using {service-namespace}.Shared.Persistence;
 
-namespace Postgres.Testing;
+namespace {service-namespace}.Infrastructure.Database.Postgres.Testing;
 
 /// <summary>
 /// The repository's contract in memory, for the scenarios of the handlers, which

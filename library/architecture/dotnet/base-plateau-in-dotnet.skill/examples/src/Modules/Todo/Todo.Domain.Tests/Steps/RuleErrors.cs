@@ -1,7 +1,7 @@
-using Shared.Errors;
-using Todo.Domain.Errors;
+using TodoExampleService.Shared.Errors;
+using TodoExampleService.Modules.Todo.Domain.Errors;
 
-namespace Todo.Domain.Tests.Steps;
+namespace TodoExampleService.Modules.Todo.Domain.Tests.Steps;
 
 /// <summary>The rule errors as the scenarios name them.</summary>
 public static class RuleErrors

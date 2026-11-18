@@ -2,7 +2,7 @@ using Microsoft.Extensions.Logging;
 using Reqnroll;
 using Xunit;
 
-namespace MaskedLogging.Tests.Steps;
+namespace TodoExampleService.MaskedLogging.Tests.Steps;
 
 /// <summary>The steps of settings.feature: <see cref="MaskedLogConfig.Load"/> over the environment.</summary>
 [Binding]

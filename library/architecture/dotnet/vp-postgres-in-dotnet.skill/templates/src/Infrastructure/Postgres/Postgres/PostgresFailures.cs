@@ -3,10 +3,10 @@
 using System.Text.RegularExpressions;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using Shared.Errors;
-using Shared.Persistence;
+using {service-namespace}.Shared.Errors;
+using {service-namespace}.Shared.Persistence;
 
-namespace Postgres;
+namespace {service-namespace}.Infrastructure.Database.Postgres;
 
 /// <summary>
 /// What a failure of EF Core or Npgsql means for the caller, so the codes of

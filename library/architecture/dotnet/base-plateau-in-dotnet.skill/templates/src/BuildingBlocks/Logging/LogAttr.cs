@@ -2,7 +2,7 @@
 
 using Microsoft.Extensions.Logging;
 
-namespace BuildingBlocks.Logging;
+namespace {service-namespace}.BuildingBlocks.Logging;
 
 /// <summary>
 /// The one way the application writes logs. Every part that logs - the command

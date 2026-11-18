@@ -1,4 +1,4 @@
-namespace Shared.Access;
+namespace TodoExampleService.Shared.Access;
 
 // The marks of the sample access variation point: the decorators of the
 // Access project select a command by them. They live in Shared, which

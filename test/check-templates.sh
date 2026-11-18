@@ -7,8 +7,8 @@
 # proto mode), or, for a skill with no example (error-kinds-in-go), under the
 # first example of the catalog that has it. Go templates carry placeholders
 # (fill); Python templates name the package {package}, in their imports and in
-# their path (src/{package}/...); dotnet templates (.cs, .csproj) have none and
-# are compared as they are.
+# their path (src/{package}/...); dotnet templates fill {service-namespace}
+# with the sample application's namespace root.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -21,6 +21,7 @@ fill() {
         -e 's#{contract-package}#todo#g' \
         -e 's#{api-title}#Todo#g' \
         -e 's#{package}#todo#g' \
+        -e 's#{service-namespace}#TodoExampleService#g' \
         -e 's#{version}#0.1.0#g' "$1"
 }
 

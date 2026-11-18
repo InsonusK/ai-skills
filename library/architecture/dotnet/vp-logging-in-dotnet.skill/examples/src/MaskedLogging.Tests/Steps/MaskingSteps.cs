@@ -10,7 +10,7 @@ using Reqnroll;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace MaskedLogging.Tests.Steps;
+namespace TodoExampleService.MaskedLogging.Tests.Steps;
 
 /// <summary>The steps of masking.feature: a payload given to <see cref="PayloadMask"/>, and what it wrote.</summary>
 [Binding]

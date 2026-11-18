@@ -2,14 +2,14 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
-using Client.Http;
+using TodoExampleService.Infrastructure.Client.Core.Http;
 using Microsoft.Extensions.Logging.Abstractions;
 using Reqnroll;
-using TodoApi.Abstractions;
+using TodoExampleService.Infrastructure.Client.TodoApi.Abstractions;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace TodoApi.Tests.Steps;
+namespace TodoExampleService.Infrastructure.Client.TodoApi.Tests.Steps;
 
 [Binding]
 public sealed class TodoApiSteps(ITestOutputHelper output) : IDisposable

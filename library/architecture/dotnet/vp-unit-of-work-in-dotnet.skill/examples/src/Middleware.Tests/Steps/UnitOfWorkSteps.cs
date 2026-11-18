@@ -1,11 +1,11 @@
 using MediatR;
-using Middleware.UnitOfWork;
+using TodoExampleService.Middleware.UnitOfWork;
 using Reqnroll;
-using Shared.Errors;
-using Shared.UnitOfWork;
+using TodoExampleService.Shared.Errors;
+using TodoExampleService.Shared.UnitOfWork;
 using Xunit;
 
-namespace Middleware.Tests.Steps;
+namespace TodoExampleService.Middleware.Tests.Steps;
 
 /// <summary>The unit of work faked by hand: records what the middleware asked of it.</summary>
 public sealed class FakeUnitOfWork : IUnitOfWork

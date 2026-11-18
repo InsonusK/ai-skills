@@ -1,8 +1,8 @@
 // Source: skill vp-unit-of-work-in-dotnet
 
-using Shared.Errors;
+using TodoExampleService.Shared.Errors;
 
-namespace Shared.UnitOfWork;
+namespace TodoExampleService.Shared.UnitOfWork;
 
 /// <summary>The errors of the unit of work: no service stands over a commit to tell its outcome.</summary>
 public static class UnitOfWorkErrors

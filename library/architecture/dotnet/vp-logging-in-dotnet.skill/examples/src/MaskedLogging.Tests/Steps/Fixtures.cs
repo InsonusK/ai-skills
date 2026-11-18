@@ -1,7 +1,7 @@
 using System.Text.Json.Serialization;
-using Shared.Logging;
+using TodoExampleService.Shared.Logging;
 
-namespace MaskedLogging.Tests.Steps;
+namespace TodoExampleService.MaskedLogging.Tests.Steps;
 
 // The types masking.feature gives as a payload.
 

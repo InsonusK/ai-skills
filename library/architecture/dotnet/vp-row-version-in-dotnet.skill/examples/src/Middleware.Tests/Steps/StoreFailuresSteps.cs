@@ -1,11 +1,11 @@
 using MediatR;
-using Middleware.StoreFailures;
+using TodoExampleService.Middleware.StoreFailures;
 using Reqnroll;
-using Shared.Errors;
-using Shared.Persistence;
+using TodoExampleService.Shared.Errors;
+using TodoExampleService.Shared.Persistence;
 using Xunit;
 
-namespace Middleware.Tests.Steps;
+namespace TodoExampleService.Middleware.Tests.Steps;
 
 /// <summary>The store's meaning of a failure, faked by hand: one message it knows, told as one kind.</summary>
 public sealed class FakeStoreFailures : IStoreFailures

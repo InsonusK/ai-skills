@@ -1,9 +1,9 @@
 // Source: skill vp-health-in-dotnet
 
-using App.Host.Api.Core.Entry;
-using App.Host.Api.Core.Hosting;
-using App.Host.Version;
-using BuildingBlocks.Logging;
+using {service-namespace}.App.Host.Api.Core.Entry;
+using {service-namespace}.App.Host.Api.Core.Hosting;
+using {service-namespace}.App.Host.Version;
+using {service-namespace}.BuildingBlocks.Logging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -12,7 +12,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace App.Host.Api.Management;
+namespace {service-namespace}.App.Host.Api.Management;
 
 /// <summary>
 /// One dependency the service waits for before it takes traffic: an

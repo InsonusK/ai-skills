@@ -1,10 +1,10 @@
 // Source: skill base-plateau-in-dotnet
 
-using BuildingBlocks.Logging;
+using {service-namespace}.BuildingBlocks.Logging;
 using Microsoft.Extensions.Logging;
-using Shared.Errors;
+using {service-namespace}.Shared.Errors;
 
-namespace App.Host.Api.Core.Entry;
+namespace {service-namespace}.App.Host.Api.Core.Entry;
 
 /// <summary>
 /// Runs the application's entry points - the startup command, an HTTP server,

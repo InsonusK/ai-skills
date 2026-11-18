@@ -1,9 +1,9 @@
 // Source: skill vp-cli-api-in-dotnet
 
 using System.Text.Json;
-using Shared.Errors;
+using {service-namespace}.Shared.Errors;
 
-namespace App.Host.Api.Cli.Pipeline;
+namespace {service-namespace}.App.Host.Api.Cli.Pipeline;
 
 /// <summary>One flag of an action, declared by its bind.</summary>
 /// <param name="Name">The flag as typed, without the dashes: "title".</param>

@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Sockets;
-using Client.Grpc;
-using Contracts.Todo.V1;
+using TodoExampleService.Infrastructure.Client.Core.Grpc;
+using TodoExampleService.Contracts.Todo.V1;
 using Google.Protobuf;
 using Grpc.Core;
 using Microsoft.AspNetCore.Builder;
@@ -11,11 +11,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Reqnroll;
-using TodoApi.Abstractions;
+using TodoExampleService.Infrastructure.Client.TodoApi.Abstractions;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace TodoApi.Tests.Steps;
+namespace TodoExampleService.Infrastructure.Client.TodoApi.Tests.Steps;
 
 /// <summary>The todo API as a scenario sets it: it answers PlanItems with the scenario's answer and records what it received.</summary>
 internal sealed class ScenarioTodoApi : ItemsService.ItemsServiceBase

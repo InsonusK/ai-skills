@@ -4,10 +4,10 @@ using System.Collections.Concurrent;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
-using BuildingBlocks.Logging;
+using TodoExampleService.BuildingBlocks.Logging;
 using Microsoft.Extensions.Logging;
 
-namespace MaskedLogging;
+namespace TodoExampleService.MaskedLogging;
 
 /// <summary>
 /// The logging variation point's provider: one JSON line per record, like the

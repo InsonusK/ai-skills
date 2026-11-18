@@ -1,6 +1,6 @@
-using Shared.Errors;
-using App.Host.Api.Http.Pipeline;
-using BuildingBlocks.Pipeline;
+using TodoExampleService.Shared.Errors;
+using TodoExampleService.App.Host.Api.Http.Pipeline;
+using TodoExampleService.BuildingBlocks.Pipeline;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -8,9 +8,9 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Middleware.Logging;
+using TodoExampleService.Middleware.Logging;
 
-namespace App.Host.Tests.Steps.Http;
+namespace TodoExampleService.App.Host.Tests.Steps.Http;
 
 /// <summary>A command of the scenarios, served by the test route POST /v1/echo.</summary>
 public sealed record Echo(string Text) : IRequest<string>;
@@ -26,7 +26,7 @@ public sealed class FakeEcho : IRequestHandler<Echo, string>
     public Task<string> Handle(Echo command, CancellationToken cancellationToken)
     {
         Received = command.Text;
-        ReceivedRequestId = BuildingBlocks.Logging.RequestId.Current;
+        ReceivedRequestId = TodoExampleService.BuildingBlocks.Logging.RequestId.Current;
         return Failure is null ? Task.FromResult(Answer) : throw Failure;
     }
 }

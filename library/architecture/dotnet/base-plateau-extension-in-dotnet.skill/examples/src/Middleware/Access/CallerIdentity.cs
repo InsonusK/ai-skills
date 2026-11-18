@@ -1,4 +1,4 @@
-namespace Middleware.Access;
+namespace TodoExampleService.Middleware.Access;
 
 /// <summary>
 /// The caller of a command as plain values, the way the API layer passes it to

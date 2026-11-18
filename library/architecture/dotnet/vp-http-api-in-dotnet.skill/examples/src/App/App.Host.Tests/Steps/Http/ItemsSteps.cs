@@ -1,12 +1,12 @@
-using App.Host.Api.Http;
-using App.Host.Api.Http.Endpoint;
+using TodoExampleService.App.Host.Api.Http;
+using TodoExampleService.App.Host.Api.Http.Endpoint;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Reqnroll;
-using Todo.Commands;
+using TodoExampleService.Modules.Todo.Commands;
 using Xunit;
 
-namespace App.Host.Tests.Steps.Http;
+namespace TodoExampleService.App.Host.Tests.Steps.Http;
 
 /// <summary>The fake handler of PlanItems: answers the items the scenario set, records the command.</summary>
 public sealed class FakePlanItems : IRequestHandler<PlanItemsCommand, PlanItemsResult>

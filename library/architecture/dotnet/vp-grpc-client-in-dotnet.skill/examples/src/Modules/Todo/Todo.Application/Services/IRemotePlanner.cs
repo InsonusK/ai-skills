@@ -1,6 +1,6 @@
-using Todo.Domain.Entities;
+using TodoExampleService.Modules.Todo.Domain.Entities;
 
-namespace Todo.Application.Services;
+namespace TodoExampleService.Modules.Todo.Application.Services;
 
 /// <summary>Plans items with the todo service - what <c>PlanRemoteItemsHandler</c> needs of it.</summary>
 public interface IRemotePlanner

@@ -1,14 +1,14 @@
 using Ardalis.Specification;
-using Postgres.Testing;
+using TodoExampleService.Infrastructure.Database.Postgres.Testing;
 using Reqnroll;
-using Todo.Application.Commands;
-using Todo.Application.Tests.Common.Steps;
-using Todo.Commands;
-using Todo.Domain.Entities;
+using TodoExampleService.Modules.Todo.Application.Commands;
+using TodoExampleService.Modules.Todo.Application.Tests.Common.Steps;
+using TodoExampleService.Modules.Todo.Commands;
+using TodoExampleService.Modules.Todo.Domain.Entities;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Todo.Application.Tests.Commands.Steps;
+namespace TodoExampleService.Modules.Todo.Application.Tests.Commands.Steps;
 
 /// <summary>
 /// The items in memory, recording what a handler read and saved (the handlers'
