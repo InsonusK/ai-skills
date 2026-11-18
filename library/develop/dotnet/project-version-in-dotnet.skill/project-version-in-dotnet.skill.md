@@ -2,7 +2,7 @@
 name: project-version-in-dotnet
 description: The version of a .NET solution — one <Version> in the root Directory.Build.props, applied by MSBuild to every assembly and package, reported by the running code from AssemblyInformationalVersionAttribute through one AppVersion class, overridden for a snapshot with -p:Version
 whenToUse: when a .NET program must report its version, when you add or review a <Version>, <AssemblyVersion>, or <PackageVersion> in a props or project file, or when a .NET build must carry another version than the recorded one
-updated: 20261025
+updated: 20261119
 tags:
   - stack/dotnet
   - concern/coding
@@ -18,6 +18,11 @@ tags:
 # Rule
 
 ## MUST
+
+### Fill the service namespace
+Fill `{service-namespace}` with the application's namespace root from [the namespace convention](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md#qualify-namespaces-with-the-service-name) before copying this skill's templates.
+- Risk: an unfilled identifier does not compile, while a different root in each file splits the service's types.
+- Fix: substitute the same identifier in every delivered source, preserve template logic, and verify no `{service-namespace}` remains in application sources.
 
 ### Record the version in Directory.Build.props
 Keep the version as one `<Version>` element, on one line, in a `<PropertyGroup>` of the root `Directory.Build.props`.
@@ -35,7 +40,7 @@ Keep the version as one `<Version>` element, on one line, in a `<PropertyGroup>`
 ```
 
 ### Report the version from the assembly
-Copy [AppVersion.cs](./templates/src/App/App.Host/Version/AppVersion.cs) verbatim to `src/App/App.Host/Version/AppVersion.cs`, and report the running version through `AppVersion.Value`: `AssemblyInformationalVersionAttribute` of the assembly without the commit the SDK appends after `+`.
+Copy [AppVersion.cs](./templates/src/App/App.Host/Version/AppVersion.cs) after [namespace substitution](#fill-the-service-namespace) to `src/App/App.Host/Version/AppVersion.cs`, and report the running version through `AppVersion.Value`: `AssemblyInformationalVersionAttribute` of the assembly without the commit the SDK appends after `+`.
 
 ```csharp
 logger.Write(LogLevel.Information, "starting", LogAttr.Of("version", AppVersion.Value)); // {"msg":"starting","version":"1.4.0"}
@@ -58,5 +63,5 @@ dotnet publish src/App/App.Host -c Release -p:Version=1.4.0-20261025    # AppVer
 
 # Check list
 - [ ] The root `Directory.Build.props` has exactly one `<Version>` element, on one line; no `.csproj` sets a version.
-- [ ] `src/App/App.Host/Version/AppVersion.cs` is a verbatim copy of the template; the program reports `AppVersion.Value`; no literal holds the number.
+- [ ] `src/App/App.Host/Version/AppVersion.cs` matches the filled template; the program reports `AppVersion.Value`; no literal holds the number.
 - [ ] A build with `-p:Version=9.9.9` reports `9.9.9`.

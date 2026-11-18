@@ -2,7 +2,7 @@
 name: vp-unit-of-work-in-dotnet
 description: The unit of work variation point in dotnet — IUnitOfWork in Shared, UnitOfWorkMiddleware listed last in the command middleware, and PostgresUnitOfWork, a SaveChanges interceptor scoped with the command that opens the transaction on the first save, with nested commands and notification handlers joining through ScopedSender and repositories left unchanged
 whenToUse: when a dotnet application with vp-postgres-in-dotnet has a command that writes in several places, runs nested commands, or handles a notification that writes, or when you review a dotnet unit of work
-updated: 20261114
+updated: 20261119
 tags:
   - stack/dotnet
   - concern/architecture
@@ -31,6 +31,11 @@ src/
 # Rule
 
 ## MUST
+
+### Fill the service namespace
+Fill `{service-namespace}` with the application's namespace root from [the namespace convention](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md#qualify-namespaces-with-the-service-name) before copying this skill's templates.
+- Risk: an unfilled identifier does not compile, while a different root in each file splits the service's types.
+- Fix: substitute the same identifier in every delivered source, preserve template logic, and verify no `{service-namespace}` remains in application sources.
 
 ### Copy the fixed code from templates
 Copy [templates/src](./templates/src/) over the application.
@@ -75,7 +80,7 @@ Name both `conformance/` folders in [conformance.copy](./conformance.copy): the 
 - Fix: `make conformance-sync` writes the copies; the steps of `unit-of-work.feature` are in `Postgres.Tests/Steps/UnitOfWorkSteps.cs`, on the sample table of tasks, written with no check before its unique index, so a duplicate key reaches the database inside the transaction.
 
 # Check list
-- [ ] `src/Shared/UnitOfWork`, `src/Middleware/UnitOfWork`, and `Postgres/UnitOfWork` are unchanged copies of the templates.
+- [ ] `src/Shared/UnitOfWork`, `src/Middleware/UnitOfWork`, and `Postgres/UnitOfWork` are copies of the filled templates.
 - [ ] `AddPostgresUnitOfWork()` follows `AddPostgres`; `UnitOfWorkMiddleware` is last in `AddCommandMiddleware`.
 - [ ] Only the middleware calls `IUnitOfWork`; nested commands go through `ISender`, one at a time.
 - [ ] Every write of a repository passes through `SaveChanges` or `WriteAsync`.

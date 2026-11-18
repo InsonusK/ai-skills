@@ -2,7 +2,7 @@
 name: base-plateau-in-dotnet
 description: The base plateau in dotnet — the projects of its layers, MediatR 12 handlers registered per module (AddTodoModule) with pipeline behaviors as the middleware listed once (AddCommandMiddleware), the error kinds as exceptions, the startup entry, the runner of the entry points with the exit codes, the JSON log provider that drops the payload, the composition root on a plain ServiceCollection with its three marked sections and the entry points registered as Entry, and the Reqnroll scenarios that cover each project
 whenToUse: when you create a new dotnet service from the architecture catalog, or when you attach a variation point to, or review, a dotnet application built on the base plateau
-updated: 20261102
+updated: 20261119
 tags:
   - stack/dotnet
   - concern/architecture
@@ -21,11 +21,16 @@ adr:
 # Core Principle
 - **Layers per app-layers-in-dotnet** - Projects, references, entities, and fakes follow [app-layers-in-dotnet](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md); this skill adds only what the base plateau itself contains.
 - **MediatR is the handler contract** - `IRequestHandler<TCommand, TResult>` is the one contract, `IPipelineBehavior<TCommand, TResult>` the middleware, `ISender` the way every entry point reaches a handler. Decision recorded in [mediatr-12-as-the-handler-contract](./adr/mediatr-12-as-the-handler-contract.md).
-- **Delivered, not retyped** - The fixed code (`Shared`, `BuildingBlocks`, `Api/Core/Entry`, `Api/Startup`) is copied from templates and has no placeholder; only the module with its registration method, its commands, and the composition-root lines are written per application.
+- **Delivered, not retyped** - The fixed code (`Shared`, `BuildingBlocks`, `Api/Core/Entry`, `Api/Startup`) is copied from templates and varies only by the service namespace identifier; only the module with its registration method, its commands, and the composition-root lines are written per application.
 
 # Rule
 
 ## MUST
+
+### Fill the service namespace
+Fill `{service-namespace}` with the application's namespace root from [the namespace convention](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md#qualify-namespaces-with-the-service-name) before copying this skill's templates.
+- Risk: an unfilled identifier does not compile, while a different root in each file splits the service's types.
+- Fix: substitute the same identifier in every delivered source, preserve template logic, and verify no `{service-namespace}` remains in application sources.
 
 ### Base projects
 Create the projects and folders [app-layers-in-dotnet](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md) assigns to the api, command, and domain layers, with the startup entry as the only entry point and the base settings in their own folder.
@@ -52,9 +57,9 @@ Create the projects and folders [app-layers-in-dotnet](library/develop/dotnet/ap
 - Fix: move the code to the project and folder in the table.
 
 ### Copy the fixed code
-Copy, unchanged, [BuildingBlocks.csproj](./templates/src/BuildingBlocks/BuildingBlocks.csproj), [CommandMiddleware.cs](./templates/src/BuildingBlocks/Pipeline/CommandMiddleware.cs), [Middleware.csproj](./templates/src/Middleware/Middleware.csproj), [LoggingMiddleware.cs](./templates/src/Middleware/Logging/LoggingMiddleware.cs), [LogAttr.cs](./templates/src/BuildingBlocks/Logging/LogAttr.cs), [JsonLogLine.cs](./templates/src/BuildingBlocks/Logging/JsonLogLine.cs), [JsonLogProvider.cs](./templates/src/BuildingBlocks/Logging/JsonLogProvider.cs), [RequestId.cs](./templates/src/BuildingBlocks/Logging/RequestId.cs), [Entry.cs](./templates/src/App/App.Host/Api/Core/Entry/Entry.cs), [EntryRunner.cs](./templates/src/App/App.Host/Api/Core/Entry/EntryRunner.cs), and [StartupEntry.cs](./templates/src/App/App.Host/Api/Startup/StartupEntry.cs) to the same paths under the solution root, and the `Shared` project from [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md).
+Copy, after [namespace substitution](#fill-the-service-namespace), [BuildingBlocks.csproj](./templates/src/BuildingBlocks/BuildingBlocks.csproj), [CommandMiddleware.cs](./templates/src/BuildingBlocks/Pipeline/CommandMiddleware.cs), [Middleware.csproj](./templates/src/Middleware/Middleware.csproj), [LoggingMiddleware.cs](./templates/src/Middleware/Logging/LoggingMiddleware.cs), [LogAttr.cs](./templates/src/BuildingBlocks/Logging/LogAttr.cs), [JsonLogLine.cs](./templates/src/BuildingBlocks/Logging/JsonLogLine.cs), [JsonLogProvider.cs](./templates/src/BuildingBlocks/Logging/JsonLogProvider.cs), [RequestId.cs](./templates/src/BuildingBlocks/Logging/RequestId.cs), [Entry.cs](./templates/src/App/App.Host/Api/Core/Entry/Entry.cs), [EntryRunner.cs](./templates/src/App/App.Host/Api/Core/Entry/EntryRunner.cs), and [StartupEntry.cs](./templates/src/App/App.Host/Api/Startup/StartupEntry.cs) to the same paths under the solution root, and the `Shared` project from [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md).
 - Risk: retyped code drifts from the one every variation point's behavior and entry point is written against.
-- Fix: copy the templates; the namespaces (`BuildingBlocks`, `Shared`, `App.Host`) are the same in every application, so there is nothing to fill.
+- Fix: copy the templates; apply [Fill the service namespace](#fill-the-service-namespace) consistently before copying.
 
 ### Pin MediatR below 13
 Reference `MediatR` 12.5.0 in `{Module}.Application`, `BuildingBlocks`, and `App.Host`, and `MediatR.Contracts` 2.0.1 in `{Module}.Commands`, through `Directory.Packages.props`.

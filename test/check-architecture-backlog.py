@@ -12,7 +12,7 @@ REQUIRED = (
     'Context', 'Sources and scope', 'Dependencies and start condition',
     'Expected result', 'Validation', 'Open decisions',
 )
-STATUSES = {'Ready', 'Needs decision', 'Deferred'}
+STATUSES = {'Ready', 'Needs decision', 'Deferred', 'Completed'}
 errors = []
 
 def check_links(path):

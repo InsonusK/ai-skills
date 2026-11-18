@@ -2,7 +2,7 @@
 name: error-kinds-in-dotnet
 description: The error kinds in dotnet — an ErrorKind enum and an ErrorKindException (kind, message for the caller, inner exception as the cause for the log) declared once in the Shared project, thrown through one factory method per error in each module's errors class, read by entry points only through ErrorKindException.KindOf, with exceptions rather than Result types as the one channel of errors
 whenToUse: when a dotnet command, domain service, entity, or service raises an error a caller must act on, when a dotnet entry point turns an exception into its answer, or when you review either
-updated: 20261104
+updated: 20261119
 tags:
   - stack/dotnet
   - concern/architecture
@@ -34,6 +34,11 @@ src/App/App.Host/Api/Core/Errors/RpcStatus.cs                kind → RpcCode (g
 # Rule
 
 ## MUST
+
+### Fill the service namespace
+Fill `{service-namespace}` with the application's namespace root from [the namespace convention](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md#qualify-namespaces-with-the-service-name) before copying this skill's templates.
+- Risk: an unfilled identifier does not compile, while a different root in each file splits the service's types.
+- Fix: substitute the same identifier in every delivered source, preserve template logic, and verify no `{service-namespace}` remains in application sources.
 
 ### Copy the kinds from templates
 Copy [Shared.csproj](./templates/src/Shared/Shared.csproj), [ErrorKind.cs](./templates/src/Shared/Errors/ErrorKind.cs), and [ErrorKindException.cs](./templates/src/Shared/Errors/ErrorKindException.cs) to `src/Shared/`, and reference the project from every `{Module}.Domain` and from `BuildingBlocks`.

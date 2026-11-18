@@ -2,7 +2,7 @@
 name: vp-http-api-in-dotnet
 description: The HTTP API variation point in dotnet — Api/Http/Pipeline copied from templates (settings, the server on its own WebApplication, the request log, the error answers as google.rpc.Status, the docs), one {Resource}Handler class per resource in Api/Http/Endpoint written as Minimal API routes, the registration in Api/Http/Routes.cs with AddHttpApi and its list of middlewares in Program.cs, and the contract either hand-written in OpenAPI with routes over records of their own, or, as the HTTP form of a gRPC contract, generated from the proto file's google.api.http annotations with the routes over the generated messages (ProtoJson)
 whenToUse: when a dotnet application built on the base plateau must be served over HTTP, when a dotnet service with a gRPC contract needs its HTTP form, when you serve a new command over HTTP in such an application, or when you review its Api/Http folders
-updated: 20261115
+updated: 20261119
 tags:
   - stack/dotnet
   - concern/architecture
@@ -44,10 +44,15 @@ docs/integration/api/{contract-name}/openapi.json    the hand-written contract, 
 
 ## MUST
 
+### Fill the service namespace
+Fill `{service-namespace}` with the application's namespace root from [the namespace convention](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md#qualify-namespaces-with-the-service-name) before copying this skill's templates.
+- Risk: an unfilled identifier does not compile, while a different root in each file splits the service's types.
+- Fix: substitute the same identifier in every delivered source, preserve template logic, and verify no `{service-namespace}` remains in application sources.
+
 ### Copy the entry point from templates
-Copy, unchanged, [HttpConfig.cs](./templates/src/App/App.Host/Api/Http/Pipeline/HttpConfig.cs), [HttpServer.cs](./templates/src/App/App.Host/Api/Http/Pipeline/HttpServer.cs), and [HttpDocs.cs](./templates/src/App/App.Host/Api/Http/Pipeline/HttpDocs.cs) to `src/App/App.Host/Api/Http/Pipeline/`, [RequestLogMiddleware.cs](./templates/src/App/App.Host/Api/Http/Middleware/RequestLog/RequestLogMiddleware.cs) and [AnswerFailuresMiddleware.cs](./templates/src/App/App.Host/Api/Http/Middleware/AnswerFailures/AnswerFailuresMiddleware.cs) to `src/App/App.Host/Api/Http/Middleware/{RequestLog,AnswerFailures}/`, [WebHost.cs](./templates/src/App/App.Host/Api/Core/Hosting/WebHost.cs) to `Api/Core/Hosting/`, and `RpcStatus.cs` of [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md) to `Api/Core/Errors/`, unless another entry point already put the last two there.
+Copy, after [namespace substitution](#fill-the-service-namespace), [HttpConfig.cs](./templates/src/App/App.Host/Api/Http/Pipeline/HttpConfig.cs), [HttpServer.cs](./templates/src/App/App.Host/Api/Http/Pipeline/HttpServer.cs), and [HttpDocs.cs](./templates/src/App/App.Host/Api/Http/Pipeline/HttpDocs.cs) to `src/App/App.Host/Api/Http/Pipeline/`, [RequestLogMiddleware.cs](./templates/src/App/App.Host/Api/Http/Middleware/RequestLog/RequestLogMiddleware.cs) and [AnswerFailuresMiddleware.cs](./templates/src/App/App.Host/Api/Http/Middleware/AnswerFailures/AnswerFailuresMiddleware.cs) to `src/App/App.Host/Api/Http/Middleware/{RequestLog,AnswerFailures}/`, [WebHost.cs](./templates/src/App/App.Host/Api/Core/Hosting/WebHost.cs) to `Api/Core/Hosting/`, and `RpcStatus.cs` of [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md) to `Api/Core/Errors/`, unless another entry point already put the last two there.
 - Risk: a retyped server drifts in its error answers, its request log, or its shutdown from every other dotnet service of the catalog.
-- Fix: copy the files; they hold no placeholder — the namespaces are the same in every application, and Swagger UI's title is the contract's `info.title`.
+- Fix: copy the files; fill the service namespace identifier; Swagger UI's title is the contract's `info.title`.
 
 ### Reference ASP.NET Core and embed the contract
 In `App.Host.csproj`, add `<FrameworkReference Include="Microsoft.AspNetCore.App" />`, remove the `Microsoft.Extensions.DependencyInjection` and `Microsoft.Extensions.Logging` package references the framework now brings, add `Swashbuckle.AspNetCore.SwaggerUI` (10.3.1 in `Directory.Packages.props`), and embed the contract as `<EmbeddedResource Include="..\..\..\docs\integration\api\{contract-name}\openapi.json" LogicalName="openapi.json" />`.

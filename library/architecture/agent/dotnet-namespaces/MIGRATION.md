@@ -19,6 +19,9 @@
 - Include explicit imports, fully qualified type references, test bindings and
   locally generated contract namespaces. Do not change protobuf package or
   service names, routes, DTO fields, serialization or error/retry semantics.
+- Preserve namespace identities of external types and unchanged shared
+  conformance proto fixtures (for example `Conformance.Masking`); their input
+  definitions are not service-owned code.
 - Namespace-dependent delivered templates use one identifier placeholder,
   `{service-namespace}`, filled consistently once per application. Checks fill
   it with `TodoExampleService`; no filled example retains the placeholder.
@@ -46,6 +49,9 @@ copy-as-is. No new library or runtime mechanism is introduced.
   to one application; the template parameter supports unrelated service names.
 - Namespace categories follow the owner's Database and Client/Core examples;
   this does not move directories or choose the separate Client organization task.
+- Shared conformance proto fixtures retain their source-defined namespaces,
+  just as external protobuf types do; service-owned generated namespaces are
+  qualified through local `csharp_namespace` metadata without wire changes.
 
 ## Status
 
@@ -64,8 +70,20 @@ copy-as-is. No new library or runtime mechanism is introduced.
   Its checker-gap finding was fixed: declarations must match their owning
   project's RootNamespace. A deliberately wrong layer was rejected; the
   restored source passes. Assembly-only attributes remain outside namespaces.
-- Wave 2: pending.
-- Evidence and fresh-eyes audit findings will be recorded here per wave.
+- Wave 2: owning layer convention and ADR, template-owning skills, local proto
+  namespace guidance, current inventory and completed backlog outcome updated.
+  Shared wire-contract guidance now permits only stack-prescribed local
+  language namespace metadata; no wire definitions changed.
+- Wave 2 fresh-eyes audit: fixed the stale gRPC checklist/shared-rule wording
+  and inventory parsing of the full kebab-case placeholder, including template
+  imports. Independent re-audit confirms those findings are resolved.
+- Final evidence: 1,729 tests pass across all 14 examples; alternate-service
+  fixture passes; 242 template pairs, namespace hierarchy/reference guard,
+  negative hierarchy fixture, backlog, link-direction, diagrams, conformance,
+  architecture tags and `git diff --check` pass. `bash test/test.sh` syncs 809
+  skills to two targets. Changed Markdown links, skill sections, Python syntax
+  and inventory regeneration were also checked. Testing skill guidance is
+  unchanged, so its separate guidance checker is outside this migration.
 - All 14 examples' dependencies restored from the local cache. NuGet's remote
   endpoint is unreachable; restore used `--ignore-failed-sources` and
   `-p:NuGetAudit=false`, without changing package versions or source files.
