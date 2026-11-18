@@ -53,3 +53,14 @@ examples whose registration or runtime behavior changes.
 Owner approval is required for the replacement rule, how it models ordering,
 and the extent of any migration. Investigation can begin without that choice;
 implementation of the replacement cannot.
+
+## Investigation (2026-11-15)
+
+[Decision brief](../agent/attach-rule/REVIEW.md) and its reproducible inventory
+cover all 39 allow files across the three stacks. The recommendation is to keep
+the explicit file gate, permit natural edits and describe shared-edit semantics
+using the existing visible order/dependency mechanisms. Mandatory stage methods
+and metadata dispatch are compared as alternatives. No replacement is approved
+or implemented; this card remains `Needs decision` until the owner chooses the
+rule and migration scope. Validation evidence and the proposal are in the brief;
+the implementation PR must add the owning ADR once the choice is agreed.
