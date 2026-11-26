@@ -1,6 +1,6 @@
 # Feature and VP authoring redesign
 
-Review contract, 2026-11-26. Status: awaiting owner review before bulk authoring.
+Review contract, 2026-11-26. Status: revised after owner review; implementation waves not started.
 
 ## Outcome
 
@@ -38,9 +38,16 @@ existing contracts from the owner's new client/service decision.
    explicitly supersede the conflicting return-value decision. Keep historical ADRs.
    Update HTTP/gRPC specifications, shared scenarios, templates, examples and diagrams
    together. A partial migration must be clearly marked and cannot claim conformance.
-8. The responsibility decision does not choose a top-level `src/Client` or `src/Service`
-   layout, shared cross-module entity ownership, or a configurable replacement for
-   API-specific code. Track those as separate open questions.
+8. `domain/`, `infrastructure/`, `client/` and `service/` are sibling logical
+   boundaries; client is no longer a child of infrastructure (owner decision).
+   Physical stack layouts must express these boundaries using that stack's package,
+   module or project conventions; document exact paths before migration.
+   Service normally represents one external system and may use several clients of
+   that system. Large systems may have several logically separated services.
+   Each client has one owning service by default; sharing between decomposed
+   services of that same external system is an exceptional, justified dependency
+   to avoid where possible, not permission to share clients across unrelated systems.
+   Cross-module ownership of consumer models remains explicit.
 9. Human documentation links authoritative skills/ADRs and gives each assertion a
    status: current, owner-decided pending implementation, planned, or unresolved.
    Skills contain executable instructions; documentation contains catalog navigation
@@ -50,25 +57,83 @@ existing contracts from the owner's new client/service decision.
     No library file links repository-only skills. Update local layout guidance to
     permit this design folder before adding procedures there.
 
+## Branch and review flow
+
+Implement each wave on `rethink-architecture-design-waves`, based on
+`rethink-architecture-design`, and submit its PR into `rethink-architecture-design`.
+The owner reviews and merges each wave. The agent never merges branches, enables
+auto-merge, or merges PRs. After all waves, the owner merges the existing parent
+PR from `rethink-architecture-design` into `develop`.
+
+After each owner merge, update the wave branch from the reviewed parent before
+starting the next wave; keep each PR diff limited to its wave. The first wave-branch
+PR contains this plan refinement only, so the new scope is reviewable before implementation.
+
 ## Waves and artifacts
 
 | Wave | Artifact | Classification | Acceptance |
 |---|---|---|---|
-| 0, this PR | This contract and catalog overview sample | New | Owner can review model, scope and client delta |
-| 0, this PR | `check.py` | New | Links, current-spec coverage and dependency row types checked |
-| 1 | Feature map and VP map under `docs/`, typed dependency view | New | Every current spec and every roadmap VP accounted for; no invented realizations |
-| 1 | Decision index and README navigation | New / modify | Existing ADRs linked, open questions distinguished, roadmap has one owner |
-| 2 | `architecture-feature-add` skill | New | Capability, baseline classification, evidence, VP reuse, map update and verification |
-| 2 | `architecture-vp-add` skill | New | Admission question, independence/alternatives, dependencies, status and realization plan |
-| 2 | `architecture-vp-describe` skill and template | New | Purpose, guarantees, attach contract, scenarios, diagrams, settings, errors and stack evidence |
-| 2 | Authoring layout ADR and local layout extension | New / modify | Exportable procedures separated from repository-specific placement rules |
-| Follow-up | `api-client` boundary ADR and shared client guidance | Modify | New DTO boundary replaces conflicting rules and examples explicitly |
-| Follow-up | HTTP/gRPC/retry specs and Go/.NET/Python realizations | Modify | Client returns DTO; service owns mapping; retry remains a client middleware |
-| Follow-up | Client backlog card and affected documentation | Modify | Accepted responsibility decision distinguished from remaining layout decisions |
+| 0 | Contract, sample and `check.py` | New / refine | Reviewed model, responsibilities, scope and checks |
+| 1, first implementation | `api-client`, `app-layers`, their owning ADRs and directly linked examples | Modify | Sibling client/service boundaries, API DTO returns, grouping and ownership agree; conflicting old decisions explicitly amended |
+| 1 | Dependency inventory for stack layer skills, HTTP/gRPC/retry specs and realizations | New | Every conflicting path, contract and consumer listed with migration wave; interim state marked |
+| 2 | Per-language service layout views in `docs/` and base-capability sections | New | One navigable structure per Go/.NET/Python; every element names its owner, feature and VP; alternative paths and planned elements explicit |
+| 2 | Stack layer skills, client specs, templates, scenarios and examples | Modify | Layout/DTO contract agrees with wave 1; affected executable checks pass; client backlog reflects settled responsibilities |
+| 3 | Feature and VP maps, typed dependency graph, decision index and README navigation | New / modify | All current and planned capabilities accounted for; one roadmap owner; no invented realizations |
+| 4 | `architecture-feature-add` | New | Capability, classification, evidence, VP reuse, map and layout updates, verification |
+| 4 | `architecture-vp-add` | New | Admission question, independence/alternatives, dependencies, status and realization plan |
+| 4 | `architecture-vp-describe` and template | New | Purpose, guarantees, attach contract, scenarios, diagrams, settings, errors, owned paths and stack evidence |
+| 4 | Authoring layout ADR and local layout extension | New / modify | Exportable procedures separated from repository-specific placement rules |
 
-Each wave runs the checker, receives a separate conformance audit, and is committed
-separately. Executable examples affected by the follow-up must pass their own checks;
-documentation checks alone do not validate changed client behavior.
+Each wave runs its mechanical checks, receives a separate conformance audit,
+and is committed separately. Wave 1 updates the shared contracts before architecture
+work; its inventory explicitly identifies downstream artifacts awaiting wave 2.
+Documentation must not present those examples as already migrated. Executable
+examples changed in wave 2 must pass their own checks; a link check is insufficient.
+
+## Client and service contract details
+
+Owner clarifications to encode in wave 1:
+
+- A client may implement all or only part of one Swagger/OpenAPI or proto contract.
+  Large contracts may be split into several clients. Group related operations by
+  entity responsibility (for example orders), not by contract file size or arbitrary
+  controller count; include reads needed to work with that entity, not only writes.
+- The normal provider contract is logically cohesive, but the design must cope with
+  monolithic contracts. Copy the provider contract unchanged; partial coverage is a
+  client operation selection, not deletion of operations from the copied file.
+- One client does not become an orchestrator of different external systems. Whether
+  one logical entity API spans several provider files needs explicit treatment;
+  file boundaries alone must not invent service boundaries.
+- A service adapts one external system and may compose several of its clients;
+  decompose a large system's service by cohesive responsibility when useful.
+- Make one service the normal caller/owner of each client. Record any same-system
+  sharing exception and why splitting the clients would be worse. Different services
+  still communicate through their application-facing contracts or higher orchestration.
+- Preserve technical outcomes, retry safety, cancellation, logging and emulator
+  coverage while changing return values and locations. Keep the own-store entities
+  form exception explicit rather than forcing all repositories behind API services.
+
+## Complete layout views and base capabilities
+
+Proposed documentation contract for wave 2:
+
+- One layout page per language, with a complete logical tree and exact physical
+  package/project paths. Every node lists its owning base capability or VP, status,
+  and source skill. Mark fixed/copied code versus application-specific elements.
+- Interpret "all VPs" as the full catalog overlay, with alternative branches clearly
+  marked, not one supposedly valid executable composition of incompatible choices
+  (for example PostgreSQL versus SQLite as replacement own stores).
+- Include future VPs as planned paths or explicit unresolved placement; do not pretend
+  implementation exists. The authoring procedures must update these views whenever
+  an element is added or moved, and mechanically check ownership/path collisions.
+- Add base capability sections such as `base-client`, referring to `api-client`, and
+  the corresponding service, infrastructure, domain and entry/command foundations.
+  These sections explain structural ownership and link source rules rather than
+  duplicate them. Concrete HTTP/gRPC VPs refine the common client foundation.
+- Counterproposal: use `base-client` as a documentation name, not `base-vp-client`,
+  until it has a real selectable variation and an attach contract. A shared structural
+  foundation alone is not automatically a new VP skill. This naming is proposed,
+  not an owner-approved replacement for the requested `base-vp-client` term.
 
 ## Decisions log
 
@@ -82,19 +147,30 @@ documentation checks alone do not validate changed client behavior.
 - Open: the public DTO for a gRPC client may be a generated provider message or an
   API-shaped client-owned DTO. Decide before changing the generated-message rule;
   neither choice permits returning consumer domain entities from the client.
-- Open: cross-module service/model ownership and physical Client/Service directories
-  remain separate from this accepted responsibility split.
+- Accepted by owner: sibling domain/infrastructure/client/service boundaries;
+  partial contract clients grouped by entity responsibility; a service may compose
+  multiple clients of one external system; one owning service per client by default.
+- Accepted by owner: work in the wave branch with PRs into the parent; correct
+  `api-client` and `app-layers` before architecture changes.
+- Proposed: per-stack catalog overlay layouts with explicit alternatives; base
+  capability documentation with no automatic proliferation of VP skills.
+- Open: generated versus API-shaped client-owned gRPC DTOs; physical .NET project
+  placement and cross-module model ownership; shared configuration policy when
+  multiple clients use the same provider endpoint.
 
 ## Status
 
-Wave 0: sample and review contract prepared. Waves 1–2 have not started. The executable client migration is a separately scoped
-follow-up; the requested documentation and authoring skills do not depend on
-finishing that migration.
-The checker validates the sample's structure and references, not business behavior.
+Wave 0 sample is in parent draft PR #310. This revision records the owner's review
+and proposed clarifications. The wave branch exists; implementation waves 1–4
+have not started. The earlier separate-follow-up treatment of the client changes
+is superseded: shared contracts are now wave 1 and downstream migration wave 2.
+The sample describes the pre-migration catalog and must be updated in those waves.
 
 ## Separate audit pass
 
-Reviewed the sample against the contract: corrected unit-of-work dependency to
-the shared DB abstraction, added the external-id dependency, limited wave-0 check
-claims to actual checks, and separated executable migration from this task.
-The review gate remains pending.
+Reviewed this revised plan against the owner's five proposals: both shared skills
+are in the first implementation wave; sibling folders and cardinality exceptions
+are explicit; per-language layouts distinguish alternatives and planned elements;
+base capability terminology remains a visible proposal. Removed the earlier
+claim that client migration is outside this task. Runtime validation is assigned
+to the wave that changes examples.

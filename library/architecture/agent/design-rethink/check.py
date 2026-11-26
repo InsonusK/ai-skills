@@ -32,4 +32,4 @@ for marker in ['implementation pending', 'return-value ADR', 'client-owned API D
 if errors:
     raise SystemExit('\n'.join(errors))
 print('Wave 0 OK: references resolve; 14 current specs covered; dependency rows typed; client migration qualifications present.')
-print('Graph endpoint and full roadmap coverage checks are deferred to the structured maps in wave 1.')
+print('Graph endpoint and full roadmap coverage checks are deferred to the structured maps in wave 3.')
