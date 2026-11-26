@@ -1,4 +1,4 @@
-namespace MaskedLogging.Tests.Steps;
+namespace TodoExampleService.MaskedLogging.Tests.Steps;
 
 /// <summary>
 /// "Masking is switched off" of a scenario, shared by the masking steps and

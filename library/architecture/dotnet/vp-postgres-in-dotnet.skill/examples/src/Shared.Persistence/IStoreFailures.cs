@@ -1,8 +1,8 @@
 // Source: skill vp-postgres-in-dotnet
 
-using Shared.Errors;
+using TodoExampleService.Shared.Errors;
 
-namespace Shared.Persistence;
+namespace TodoExampleService.Shared.Persistence;
 
 /// <summary>
 /// What a failure of the store means for the caller: the store's variation

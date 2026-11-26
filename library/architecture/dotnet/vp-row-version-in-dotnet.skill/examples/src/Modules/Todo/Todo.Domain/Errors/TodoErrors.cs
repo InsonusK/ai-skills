@@ -1,7 +1,7 @@
-using Shared.Errors;
-using Todo.Domain.Entities;
+using TodoExampleService.Shared.Errors;
+using TodoExampleService.Modules.Todo.Domain.Entities;
 
-namespace Todo.Domain.Errors;
+namespace TodoExampleService.Modules.Todo.Domain.Errors;
 
 /// <summary>
 /// The errors of the module's rules, one factory method each, each carrying its

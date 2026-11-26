@@ -2,7 +2,7 @@
 name: vp-grpc-client
 description: The gRPC client variation point — a client of another service's gRPC API attached to the base plateau in its infrastructure, with the service over it, calling code generated from the copied proto contract over one fixed connection (the {API} settings, the timeout, the call log, the request id, the gRPC status read as an outcome, the mock as a gRPC server inside the process) and checked against that contract
 whenToUse: when an application built on the base plateau must call a gRPC API of another service, or the HTTP form of a proto contract — adding the client, calling a further method of it, replacing the consumed proto with a new version, or reviewing such a client
-updated: 20261031
+updated: 20261119
 tags:
   - stack
   - concern/architecture
@@ -75,7 +75,7 @@ Run every file of this skill's [conformance/](./conformance/) unchanged in each 
 # Check list
 - [ ] Every file of `conformance/` runs unchanged in each stack's example; `bash test/check-conformance.sh` passes.
 - [ ] The client keeps every rule of api-client; its target comes from the `{API}` group, and it connects at the first call.
-- [ ] The stub is generated from the copied `.proto`, its types the client's; the copy is unchanged.
+- [ ] The stub is generated from the copied `.proto`, its types the client's, preserving [the consumed wire contract](library/develop/core/api-client.skill/api-client.skill.md#preserve-the-consumed-wire-contract).
 - [ ] Each method is one method of the client mapping to its own types; no generated message leaves the client.
 - [ ] One interceptor reports unavailable apart from the other statuses for every call.
 - [ ] `{API}_HOST=mock` serves the generated server's emulator inside the process behind the same interceptor.

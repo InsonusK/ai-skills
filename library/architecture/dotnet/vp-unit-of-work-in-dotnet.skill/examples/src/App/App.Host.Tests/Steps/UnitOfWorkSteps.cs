@@ -1,19 +1,19 @@
 using Npgsql;
-using BuildingBlocks.Pipeline;
+using TodoExampleService.BuildingBlocks.Pipeline;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Middleware.StoreFailures;
-using Middleware.UnitOfWork;
-using Postgres;
-using Postgres.Testing;
-using Postgres.UnitOfWork;
+using TodoExampleService.Middleware.StoreFailures;
+using TodoExampleService.Middleware.UnitOfWork;
+using TodoExampleService.Infrastructure.Database.Postgres;
+using TodoExampleService.Infrastructure.Database.Postgres.Testing;
+using TodoExampleService.Infrastructure.Database.Postgres.UnitOfWork;
 using Reqnroll;
-using Shared.Errors;
-using Todo.Application;
-using Todo.Commands;
+using TodoExampleService.Shared.Errors;
+using TodoExampleService.Modules.Todo.Application;
+using TodoExampleService.Modules.Todo.Commands;
 using Xunit;
 
-namespace App.Host.Tests.Steps;
+namespace TodoExampleService.App.Host.Tests.Steps;
 
 /// <summary>
 /// The commands over a real database, built with the lines of Program.cs that

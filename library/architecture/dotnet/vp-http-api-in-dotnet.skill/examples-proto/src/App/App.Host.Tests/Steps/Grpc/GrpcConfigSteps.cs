@@ -1,9 +1,9 @@
-using App.Host.Api.Grpc.Pipeline;
+using TodoExampleService.App.Host.Api.Grpc.Pipeline;
 using Reqnroll;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace App.Host.Tests.Steps.Grpc;
+namespace TodoExampleService.App.Host.Tests.Steps.Grpc;
 
 [Binding]
 public sealed class GrpcConfigSteps(ITestOutputHelper output)

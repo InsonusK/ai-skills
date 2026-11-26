@@ -1,12 +1,12 @@
-using BuildingBlocks.Pipeline;
+using TodoExampleService.BuildingBlocks.Pipeline;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Reqnroll;
-using Shared.Errors;
+using TodoExampleService.Shared.Errors;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace BuildingBlocks.Tests.Steps;
+namespace TodoExampleService.BuildingBlocks.Tests.Steps;
 
 /// <summary>The command of the middleware scenarios, named PlanItems, answered by <see cref="PlanItemsHandler"/>.</summary>
 public sealed record PlanItemsCommand(string Text) : IRequest<string>;

@@ -1,6 +1,6 @@
-using App.Host.Api.Grpc.Pipeline;
-using App.Host.Tests.Steps.Grpc.Contract;
-using BuildingBlocks.Pipeline;
+using TodoExampleService.App.Host.Api.Grpc.Pipeline;
+using TodoExampleService.App.Host.Tests.Steps.Grpc.Contract;
+using TodoExampleService.BuildingBlocks.Pipeline;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
 using Grpc.Net.Client;
@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Shared.Errors;
+using TodoExampleService.Shared.Errors;
 
-namespace App.Host.Tests.Steps.Grpc;
+namespace TodoExampleService.App.Host.Tests.Steps.Grpc;
 
 /// <summary>A command of the scenarios, sent by the test method EchoService.Echo.</summary>
 public sealed record GrpcEcho(string Text) : IRequest<string>;
@@ -28,7 +28,7 @@ public sealed class FakeGrpcEcho : IRequestHandler<GrpcEcho, string>
     public async Task<string> Handle(GrpcEcho command, CancellationToken cancellationToken)
     {
         Received = command.Text;
-        ReceivedRequestId = BuildingBlocks.Logging.RequestId.Current;
+        ReceivedRequestId = TodoExampleService.BuildingBlocks.Logging.RequestId.Current;
         await Task.Delay(Delay, CancellationToken.None); // a call in flight finishes even when the server stops
         return Failure is null ? Answer : throw Failure;
     }

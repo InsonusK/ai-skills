@@ -1,9 +1,9 @@
-using Postgres.Testing;
+using TodoExampleService.Infrastructure.Database.Postgres.Testing;
 using Reqnroll;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace App.Migrate.Tests.Steps;
+namespace TodoExampleService.App.Migrate.Tests.Steps;
 
 [Binding]
 public sealed class MigrateSteps(ITestOutputHelper output)

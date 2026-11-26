@@ -1,10 +1,10 @@
-using App.Host.Api.Cli.Pipeline;
+using TodoExampleService.App.Host.Api.Cli.Pipeline;
 using Microsoft.Extensions.Logging;
 using Reqnroll;
-using Shared.Errors;
+using TodoExampleService.Shared.Errors;
 using Xunit;
 
-namespace App.Host.Tests.Steps.Cli;
+namespace TodoExampleService.App.Host.Tests.Steps.Cli;
 
 [Binding]
 public sealed class AdapterSteps
@@ -27,7 +27,7 @@ public sealed class AdapterSteps
             text: result => stage == "text" ? throw new FormatException("adapter broke") : result);
         var stdout = new StringWriter();
         var stderr = new StringWriter();
-        _error = await App.Host.Api.Cli.Pipeline.Cli.RunAsync(_logs.Factory.CreateLogger("test"), "test", "1",
+        _error = await TodoExampleService.App.Host.Api.Cli.Pipeline.Cli.RunAsync(_logs.Factory.CreateLogger("test"), "test", "1",
             ["resource", "run", "--output", "text"], [new Resource("resource", "Test", [action])],
             stdout, stderr, CancellationToken.None);
         Assert.Empty(stdout.ToString());

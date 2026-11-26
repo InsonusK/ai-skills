@@ -4,11 +4,11 @@ using System.Diagnostics;
 using System.CommandLine;
 using System.CommandLine.Parsing;
 using System.Text;
-using BuildingBlocks.Logging;
+using {service-namespace}.BuildingBlocks.Logging;
 using Microsoft.Extensions.Logging;
-using Shared.Errors;
+using {service-namespace}.Shared.Errors;
 
-namespace App.Host.Api.Cli.Pipeline;
+namespace {service-namespace}.App.Host.Api.Cli.Pipeline;
 
 /// <summary>One resource of the command line - `todo items ...` - with its actions, built by <see cref="CliCommand.Command{TCommand, TResult}"/> in the resource's file of Endpoint.</summary>
 public sealed record Resource(string Name, string Short, IReadOnlyList<CliAction> Actions);

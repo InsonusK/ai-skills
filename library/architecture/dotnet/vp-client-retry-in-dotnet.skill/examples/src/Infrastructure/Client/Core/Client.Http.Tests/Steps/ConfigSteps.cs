@@ -3,7 +3,7 @@ using Reqnroll;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Client.Http.Tests.Steps;
+namespace TodoExampleService.Infrastructure.Client.Core.Http.Tests.Steps;
 
 [Binding]
 public sealed class ConfigSteps(ITestOutputHelper output)

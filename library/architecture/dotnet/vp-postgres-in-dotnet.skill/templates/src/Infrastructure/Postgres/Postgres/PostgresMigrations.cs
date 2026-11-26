@@ -2,7 +2,7 @@
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Postgres;
+namespace {service-namespace}.Infrastructure.Database.Postgres;
 
 /// <summary>Applies the migrations: App.Migrate does it as a job, App.Host at start behind MIGRATE_ON_START.</summary>
 public static class PostgresMigrations

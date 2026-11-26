@@ -1,8 +1,8 @@
 using MediatR;
-using Todo.Domain.Services;
-using Todo.Commands;
+using TodoExampleService.Modules.Todo.Domain.Services;
+using TodoExampleService.Modules.Todo.Commands;
 
-namespace Todo.Application.Commands;
+namespace TodoExampleService.Modules.Todo.Application.Commands;
 
 /// <summary>
 /// Handles <see cref="PlanItemsCommand"/>. Every service it uses would be a

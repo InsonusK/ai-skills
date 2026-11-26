@@ -1,6 +1,6 @@
-# Agree infrastructure namespace conventions in .NET
+# Qualify .NET service namespaces
 
-Status: Needs decision
+Status: Completed
 
 [Backlog index](../README.md#backlog) · [Shared execution guidance](README.md)
 
@@ -44,17 +44,32 @@ consistently. Run shared structural checks.
 
 ## Open decisions
 
-The naming rule, whether existing projects are renamed, and inclusion of the
-old catalog require owner approval. The previous instruction to keep current
-names is not approval for a catalog-wide rename.
+No decision remains open for this migration. The owner selected service-qualified
+namespaces for all current .NET layers and approved preserving project/assembly
+names, folders and the old catalog. Client/Service organization is the separate
+[Client organization task](client-code-organization.md).
 
 ## Investigation
 
-[Decision brief](../agent/dotnet-namespaces/REVIEW.md) compares capability names,
+[Historical decision brief](../agent/dotnet-namespaces/REVIEW.md) compares capability names,
 qualified namespaces alone, and qualified project/namespace identities. Its
 reproducible inventory covers 43 current infrastructure project files, fixed
 template identifiers, namespace imports, references and the old catalog's
-consumers separately. The recommendation preserves capability names and the
-existing current-catalog layout; no rename or architecture rule is approved by
-the investigation. Status remains `Needs decision` until the owner agrees the
-rule's separate axes and migration scope.
+consumers separately. Its recommendation to preserve short capability namespaces
+was rejected in favor of the service-qualified rule below.
+
+## Outcome
+
+The [owning ADR](../../develop/dotnet/app-layers-in-dotnet.skill/adr/service-qualified-namespaces.md)
+records `{ServiceName}.{Layer}.{LogicalName}`. All 14 current .NET examples use
+`TodoExampleService`; namespace-dependent templates fill `{service-namespace}`
+for each application. PostgreSQL uses `Infrastructure.Database.Postgres`, client
+core uses `Infrastructure.Client.Core`, and modules use `Modules.{Module}` below
+the service root. Project and assembly names and all folders remain unchanged.
+
+The [migration contract and evidence](../agent/dotnet-namespaces/MIGRATION.md)
+cover 920 C# files, 242 template-example comparisons, all 14 builds/test suites
+(1,729 passing tests), and an additional HTTP-client fixture using
+`HttpClientExampleService`. Database suites ran on an isolated PostgreSQL 18.
+The namespace guard is part of `test/test.sh`; shared structural/sync checks
+and the per-wave fresh-eyes audits are required before handing off the PR.

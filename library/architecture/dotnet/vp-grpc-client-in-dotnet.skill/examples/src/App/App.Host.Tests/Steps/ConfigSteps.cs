@@ -1,10 +1,10 @@
 using Microsoft.Extensions.Logging;
-using App.Host.Config;
+using TodoExampleService.App.Host.Config;
 using Reqnroll;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace App.Host.Tests.Steps;
+namespace TodoExampleService.App.Host.Tests.Steps;
 
 [Binding]
 public sealed class ConfigSteps(ITestOutputHelper output)

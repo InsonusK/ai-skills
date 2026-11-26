@@ -1,13 +1,13 @@
 using MediatR;
-using Middleware.Access;
-using Middleware.BatchLimit;
+using TodoExampleService.Middleware.Access;
+using TodoExampleService.Middleware.BatchLimit;
 using Reqnroll;
-using Shared.Access;
-using Shared.Errors;
+using TodoExampleService.Shared.Access;
+using TodoExampleService.Shared.Errors;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Middleware.Tests.Steps;
+namespace TodoExampleService.Middleware.Tests.Steps;
 
 // The commands of these scenarios: one with each mark, one with none, so the
 // middleware are tested without any command of the application. Each is named

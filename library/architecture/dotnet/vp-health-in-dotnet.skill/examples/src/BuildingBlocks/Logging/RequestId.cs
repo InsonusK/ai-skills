@@ -2,7 +2,7 @@
 
 using System.Security.Cryptography;
 
-namespace BuildingBlocks.Logging;
+namespace TodoExampleService.BuildingBlocks.Logging;
 
 /// <summary>
 /// The id of the request being served, carried along the async calls of that

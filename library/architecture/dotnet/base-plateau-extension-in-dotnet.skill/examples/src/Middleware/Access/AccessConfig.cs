@@ -1,4 +1,4 @@
-namespace Middleware.Access;
+namespace TodoExampleService.Middleware.Access;
 
 /// <summary>
 /// The access variation point's own settings, read here and never in

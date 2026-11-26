@@ -1,15 +1,15 @@
-using BuildingBlocks.Logging;
-using Client.Abstractions;
-using Client.Pipeline;
+using TodoExampleService.BuildingBlocks.Logging;
+using TodoExampleService.Infrastructure.Client.Core.Abstractions;
+using TodoExampleService.Infrastructure.Client.Core.Pipeline;
 using Google.Protobuf;
-using Client.Grpc.Tests.Echo;
+using TodoExampleService.Infrastructure.Client.Core.Grpc.Tests.Echo;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using Reqnroll;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Client.Grpc.Tests.Steps;
+namespace TodoExampleService.Infrastructure.Client.Core.Grpc.Tests.Steps;
 
 [Binding]
 public sealed class ClientSteps(ITestOutputHelper output) : IAsyncDisposable

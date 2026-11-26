@@ -1,8 +1,8 @@
 // Source: skill vp-grpc-api-in-dotnet
 
-using App.Host.Api.Core.Hosting;
-using App.Host.Api.Grpc.Middleware.CallLog;
-using App.Host.Api.Grpc.Middleware.AnswerFailures;
+using TodoExampleService.App.Host.Api.Core.Hosting;
+using TodoExampleService.App.Host.Api.Grpc.Middleware.CallLog;
+using TodoExampleService.App.Host.Api.Grpc.Middleware.AnswerFailures;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
 using Microsoft.AspNetCore.Builder;
@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace App.Host.Api.Grpc.Pipeline;
+namespace TodoExampleService.App.Host.Api.Grpc.Pipeline;
 
 /// <summary>
 /// The fixed part of the gRPC entry point, copied from templates and never

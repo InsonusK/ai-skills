@@ -1,12 +1,12 @@
 // Source: skill vp-client-retry-in-dotnet
 
 using System.Runtime.ExceptionServices;
-using BuildingBlocks.Logging;
-using Client.Abstractions;
-using Client.Pipeline;
+using {service-namespace}.BuildingBlocks.Logging;
+using {service-namespace}.Infrastructure.Client.Core.Abstractions;
+using {service-namespace}.Infrastructure.Client.Core.Pipeline;
 using Microsoft.Extensions.Logging;
 
-namespace Retry;
+namespace {service-namespace}.Infrastructure.Client.Middleware.Retry;
 
 /// <summary>
 /// Sends a retryable call again while its attempt throws

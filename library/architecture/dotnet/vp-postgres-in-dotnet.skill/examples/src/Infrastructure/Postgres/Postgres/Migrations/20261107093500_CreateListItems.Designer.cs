@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using Postgres;
+using TodoExampleService.Infrastructure.Database.Postgres;
 
 #nullable disable
 
-namespace Postgres.Migrations
+namespace TodoExampleService.Infrastructure.Database.Postgres.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20261107093500_CreateListItems")]
@@ -24,7 +24,7 @@ namespace Postgres.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Todo.Domain.Entities.Item", b =>
+            modelBuilder.Entity("TodoExampleService.Modules.Todo.Domain.Entities.Item", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()

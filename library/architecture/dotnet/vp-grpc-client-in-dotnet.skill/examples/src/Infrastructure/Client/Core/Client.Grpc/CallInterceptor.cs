@@ -1,14 +1,14 @@
 // Source: skill vp-grpc-client-in-dotnet
 
 using System.Diagnostics;
-using BuildingBlocks.Logging;
-using Client.Abstractions;
-using Client.Pipeline;
+using TodoExampleService.BuildingBlocks.Logging;
+using TodoExampleService.Infrastructure.Client.Core.Abstractions;
+using TodoExampleService.Infrastructure.Client.Core.Pipeline;
 using Grpc.Core;
 using Grpc.Core.Interceptors;
 using Microsoft.Extensions.Logging;
 
-namespace Client.Grpc;
+namespace TodoExampleService.Infrastructure.Client.Core.Grpc;
 
 /// <summary>
 /// Runs around every unary call of a <see cref="GrpcApiClient"/>. It ends the

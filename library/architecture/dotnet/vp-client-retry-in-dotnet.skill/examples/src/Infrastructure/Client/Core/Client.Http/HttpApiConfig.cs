@@ -3,7 +3,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace Client.Http;
+namespace TodoExampleService.Infrastructure.Client.Core.Http;
 
 /// <summary>
 /// The settings of one HTTP API: the {API} group of skill api-client, read by

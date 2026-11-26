@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>$(ServiceNamespace).Shared</RootNamespace>
+  </PropertyGroup>
   <!-- The error kinds: the lowest project, with no package, so the domain can
        reference it and stay free of every framework. -->
 </Project>

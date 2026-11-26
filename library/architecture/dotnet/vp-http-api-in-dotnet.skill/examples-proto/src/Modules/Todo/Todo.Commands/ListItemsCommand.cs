@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Todo.Commands;
+namespace TodoExampleService.Modules.Todo.Commands;
 
 /// <summary>Asks for the items of the list <paramref name="ListId"/>.</summary>
 public sealed record ListItemsCommand(string ListId) : IRequest<ListItemsResult>;

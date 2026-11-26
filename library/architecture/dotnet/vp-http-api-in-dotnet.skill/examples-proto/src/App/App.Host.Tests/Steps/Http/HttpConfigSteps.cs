@@ -1,9 +1,9 @@
-using App.Host.Api.Http.Pipeline;
+using TodoExampleService.App.Host.Api.Http.Pipeline;
 using Reqnroll;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace App.Host.Tests.Steps.Http;
+namespace TodoExampleService.App.Host.Tests.Steps.Http;
 
 [Binding]
 public sealed class HttpConfigSteps(ITestOutputHelper output)

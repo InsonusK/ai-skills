@@ -1,13 +1,13 @@
 using Reqnroll;
-using Shared.Errors;
-using Todo.Application.Commands;
-using Todo.Application.Services;
-using Todo.Commands;
-using Todo.Domain.Entities;
+using TodoExampleService.Shared.Errors;
+using TodoExampleService.Modules.Todo.Application.Commands;
+using TodoExampleService.Modules.Todo.Application.Services;
+using TodoExampleService.Modules.Todo.Commands;
+using TodoExampleService.Modules.Todo.Domain.Entities;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Todo.Application.Tests.Commands.Steps;
+namespace TodoExampleService.Modules.Todo.Application.Tests.Commands.Steps;
 
 /// <summary>The remote planner faked: the titles it plans or the error it throws, and the titles it was given.</summary>
 public sealed class FakeRemotePlanner : IRemotePlanner

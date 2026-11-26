@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace Todo.Commands;
+namespace TodoExampleService.Modules.Todo.Commands;
 
 /// <summary>Asks to add an open item with <paramref name="Title"/> to the list <paramref name="ListId"/>.</summary>
 public sealed record AddItemCommand(string ListId, string Title) : IRequest<AddItemResult>;

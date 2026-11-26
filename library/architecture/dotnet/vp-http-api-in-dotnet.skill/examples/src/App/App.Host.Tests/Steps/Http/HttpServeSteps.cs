@@ -1,10 +1,10 @@
 using System.Net.Sockets;
-using App.Host.Api.Http.Pipeline;
+using TodoExampleService.App.Host.Api.Http.Pipeline;
 using Reqnroll;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace App.Host.Tests.Steps.Http;
+namespace TodoExampleService.App.Host.Tests.Steps.Http;
 
 /// <summary>The HTTP server on a real port, started and stopped as the entry runner does.</summary>
 [Binding]

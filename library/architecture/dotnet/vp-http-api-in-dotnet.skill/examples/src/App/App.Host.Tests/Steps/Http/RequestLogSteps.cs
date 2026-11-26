@@ -3,7 +3,7 @@ using Reqnroll;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace App.Host.Tests.Steps.Http;
+namespace TodoExampleService.App.Host.Tests.Steps.Http;
 
 /// <summary>The records the HTTP entry point wrote, read with their payload.</summary>
 [Binding]

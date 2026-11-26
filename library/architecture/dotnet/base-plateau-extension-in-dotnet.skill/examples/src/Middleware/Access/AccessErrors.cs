@@ -1,6 +1,6 @@
-using Shared.Errors;
+using TodoExampleService.Shared.Errors;
 
-namespace Middleware.Access;
+namespace TodoExampleService.Middleware.Access;
 
 /// <summary>The errors of the access variation point, each with its kind.</summary>
 public static class AccessErrors

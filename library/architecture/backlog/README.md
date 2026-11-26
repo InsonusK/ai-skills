@@ -12,6 +12,8 @@ catalog Status table; they are not silently included in a backlog task.
   named architecture choice with the owner before implementing that choice.
 - **Deferred:** the card names the event that unlocks it. Confirm that event has
   occurred before implementing; an inventory may be prepared earlier.
+- **Completed:** the approved work and validation are finished; read its outcome
+  and owning ADR rather than starting another implementation.
 
 Check the current source and card before starting: links identify entry points,
 not an exhaustive list of copies. Search tracked sources for dependents, inspect
@@ -50,8 +52,8 @@ runtime change works.
 
 Update the card with decisions, evidence and remaining work in the implementation
 PR. Remove completed work from the active index or mark it completed consistently
-with the card; preserve a PR/ADR reference for the outcome. If the directory later
-contains completed cards, extend the checker/status vocabulary in the same PR.
+with the card; preserve a PR/ADR reference for the outcome. Keep completed cards
+and index rows marked `Completed`; the checker validates this status as well.
 Create a PR and ask the user to review and merge it. Do not merge it or enable
 auto-merge yourself. A Ready status is a requirements assessment, not a delegation
 to publish architecture decisions or merge branches.

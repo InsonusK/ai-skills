@@ -1,6 +1,6 @@
 // Source: skill error-kinds-in-dotnet
 
-namespace Shared.Errors;
+namespace {service-namespace}.Shared.Errors;
 
 /// <summary>
 /// The error kinds of the application (skill error-kinds). Every error a

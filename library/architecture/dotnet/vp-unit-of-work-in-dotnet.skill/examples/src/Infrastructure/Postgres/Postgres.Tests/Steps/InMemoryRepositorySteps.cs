@@ -1,12 +1,12 @@
 using Ardalis.Specification;
-using Postgres.Testing;
+using TodoExampleService.Infrastructure.Database.Postgres.Testing;
 using Reqnroll;
-using Shared.Errors;
-using Shared.Persistence;
+using TodoExampleService.Shared.Errors;
+using TodoExampleService.Shared.Persistence;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Postgres.Tests.Steps;
+namespace TodoExampleService.Infrastructure.Database.Postgres.Tests.Steps;
 
 /// <summary>A root of these scenarios only.</summary>
 public sealed class Note(string title)

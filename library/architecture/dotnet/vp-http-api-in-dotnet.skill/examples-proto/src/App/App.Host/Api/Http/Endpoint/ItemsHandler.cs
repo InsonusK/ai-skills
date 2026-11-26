@@ -1,11 +1,11 @@
-using Contracts.Todo.V1;
+using TodoExampleService.Contracts.Todo.V1;
 using MediatR;
-using Todo.Commands;
+using TodoExampleService.Modules.Todo.Commands;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
-namespace App.Host.Api.Http.Endpoint;
+namespace TodoExampleService.App.Host.Api.Http.Endpoint;
 
 // This file is the items resource (/v1/items/...) of the HTTP form of the
 // proto contract: each route reads the rpc's generated request message and

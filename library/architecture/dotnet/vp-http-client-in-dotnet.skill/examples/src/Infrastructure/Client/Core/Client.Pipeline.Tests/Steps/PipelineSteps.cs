@@ -1,7 +1,7 @@
 using Reqnroll;
 using Xunit;
 
-namespace Client.Pipeline.Tests.Steps;
+namespace TodoExampleService.Infrastructure.Client.Core.Pipeline.Tests.Steps;
 
 [Binding]
 public sealed class PipelineSteps

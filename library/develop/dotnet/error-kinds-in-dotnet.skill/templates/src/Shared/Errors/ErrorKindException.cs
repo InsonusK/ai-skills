@@ -1,6 +1,6 @@
 // Source: skill error-kinds-in-dotnet
 
-namespace Shared.Errors;
+namespace {service-namespace}.Shared.Errors;
 
 /// <summary>
 /// An error a caller can act on: the <see cref="Kind"/> says how every entry

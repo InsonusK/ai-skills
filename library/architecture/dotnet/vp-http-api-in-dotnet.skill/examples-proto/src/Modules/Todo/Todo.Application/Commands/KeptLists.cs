@@ -1,7 +1,7 @@
-using Todo.Domain.Entities;
-using Todo.Domain.Errors;
+using TodoExampleService.Modules.Todo.Domain.Entities;
+using TodoExampleService.Modules.Todo.Domain.Errors;
 
-namespace Todo.Application.Commands;
+namespace TodoExampleService.Modules.Todo.Application.Commands;
 
 /// <summary>
 /// The lists of this example, kept by the process while it runs and lost when

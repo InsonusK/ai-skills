@@ -3,7 +3,7 @@
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BuildingBlocks.Pipeline;
+namespace {service-namespace}.BuildingBlocks.Pipeline;
 
 /// <summary>
 /// The list of command middleware: the MediatR pipeline behaviors around every

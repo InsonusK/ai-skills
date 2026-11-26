@@ -1,11 +1,11 @@
 using System.Text.Json;
-using App.Host.Api.Http.Pipeline;
+using TodoExampleService.App.Host.Api.Http.Pipeline;
 using Microsoft.AspNetCore.Routing;
 using Reqnroll;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace App.Host.Tests.Steps.Http;
+namespace TodoExampleService.App.Host.Tests.Steps.Http;
 
 /// <summary>The routes the application maps held against the operations of its contract.</summary>
 [Binding]

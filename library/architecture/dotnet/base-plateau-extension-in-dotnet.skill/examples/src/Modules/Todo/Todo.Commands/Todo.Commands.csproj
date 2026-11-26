@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>$(ServiceNamespace).Modules.Todo.Commands</RootNamespace>
+  </PropertyGroup>
   <!-- What an entry point sees of the module: the commands and their results.
        Only MediatR.Contracts (IRequest), so an entry point referencing it
        reaches neither the handlers nor the domain. -->

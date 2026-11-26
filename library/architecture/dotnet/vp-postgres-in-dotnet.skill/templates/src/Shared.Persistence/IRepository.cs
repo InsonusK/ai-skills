@@ -2,7 +2,7 @@
 
 using Ardalis.Specification;
 
-namespace Shared.Persistence;
+namespace {service-namespace}.Shared.Persistence;
 
 /// <summary>
 /// The entities of one table, to read and to write: Ardalis's contract. A

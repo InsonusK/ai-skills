@@ -1,8 +1,8 @@
 using MediatR;
-using Todo.Commands;
-using Todo.Domain.Errors;
+using TodoExampleService.Modules.Todo.Commands;
+using TodoExampleService.Modules.Todo.Domain.Errors;
 
-namespace Todo.Application.Commands;
+namespace TodoExampleService.Modules.Todo.Application.Commands;
 
 /// <summary>Handles <see cref="ListItemsCommand"/>: a list nobody added to is not found.</summary>
 public sealed class ListItemsHandler(KeptLists lists) : IRequestHandler<ListItemsCommand, ListItemsResult>

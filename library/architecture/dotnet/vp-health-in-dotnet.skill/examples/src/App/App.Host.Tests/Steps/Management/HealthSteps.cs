@@ -1,4 +1,4 @@
-using App.Host.Api.Management;
+using TodoExampleService.App.Host.Api.Management;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -6,7 +6,7 @@ using Reqnroll;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace App.Host.Tests.Steps.Management;
+namespace TodoExampleService.App.Host.Tests.Steps.Management;
 
 /// <summary>A dependency's check that answers what the scenario set.</summary>
 public sealed class FakeHealthCheck(HealthStatus? status) : IHealthCheck

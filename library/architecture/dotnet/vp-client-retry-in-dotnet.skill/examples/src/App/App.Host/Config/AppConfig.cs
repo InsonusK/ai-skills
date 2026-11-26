@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace App.Host.Config;
+namespace TodoExampleService.App.Host.Config;
 
 /// <summary>
 /// The base plateau's own settings, read from the environment. A variation

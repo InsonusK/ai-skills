@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <RootNamespace>$(ServiceNamespace).Infrastructure.Database.Postgres.Tests</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>

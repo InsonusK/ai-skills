@@ -4,7 +4,7 @@ using System.Text.Json.Nodes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 
-namespace App.Host.Api.Http.Pipeline;
+namespace {service-namespace}.App.Host.Api.Http.Pipeline;
 
 /// <summary>
 /// The OpenAPI spec and Swagger UI, served only when HTTP_API_DOCS_ENABLED is

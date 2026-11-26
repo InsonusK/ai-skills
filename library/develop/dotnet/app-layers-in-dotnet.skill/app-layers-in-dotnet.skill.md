@@ -2,7 +2,7 @@
 name: app-layers-in-dotnet
 description: The application layers in dotnet — one project per layer of each module (Domain, Commands, Application) plus Shared, BuildingBlocks, App.Host, and the repository's contract in Shared.Persistence for the service's own store, an Abstractions and an implementation project per other infrastructure, project references that let the compiler hold the direction of the calls, entry points and other modules that see only a module's Commands, service interfaces declared beside their consumer, and entities that guard their state
 whenToUse: when you design a dotnet application or feature, when you add or change a dotnet entry point, command, handler, entity, or domain service, or when you review such a change
-updated: 20261114
+updated: 20261119
 tags:
   - stack/dotnet
   - concern/architecture
@@ -10,6 +10,7 @@ tags:
   - app-type/service
   - app-type/cli
 adr:
+  - adr/service-qualified-namespaces.md
   - adr/commands-project-and-service-interfaces.md
 ---
 
@@ -27,6 +28,24 @@ adr:
 # Rule
 
 ## MUST
+
+### Qualify namespaces with the service name
+Use `{service-namespace}.{Layer}.{LogicalName}` for every service-owned namespace according to [service-qualified-namespaces](./adr/service-qualified-namespaces.md), independently of project, assembly and folder names.
+- Violation: global `Postgres`, `Retry` or `App.Host` namespaces, or an `Infrastructure` root shared by unrelated services.
+- Risk: equally named types from different services occupy the same namespace and their ownership is unclear at call sites.
+- Fix: choose one valid C# namespace root, store it as `ServiceNamespace` in `Directory.Build.props`, fill `{service-namespace}` in delivered templates, and set each project's `RootNamespace` to `$(ServiceNamespace)` plus the logical root below; update explicit declarations/imports consistently when renaming the service.
+
+| Project / role | Namespace root after the service name |
+|---|---|
+| `App.Host`, `App.Migrate` | `App.Host`, `App.Migrate` |
+| `{Module}.Domain`, `.Commands`, `.Application` | `Modules.{Module}.Domain`, `.Commands`, `.Application` |
+| `Shared`, `Shared.Persistence`, `BuildingBlocks`, `Middleware`, `MaskedLogging` | corresponding project name |
+| `Postgres` | `Infrastructure.Database.Postgres` |
+| `Client.Http`, `.Grpc`, `.Pipeline`, `.Abstractions` | `Infrastructure.Client.Core.Http`, `.Grpc`, `.Pipeline`, `.Abstractions` |
+| `{Api}` and `{Api}.Abstractions` | `Infrastructure.Client.{Api}` and `.Abstractions` |
+| client `Retry` | `Infrastructure.Client.Middleware.Retry` |
+| tests / reusable test helpers | the subject's root plus `.Tests` / `.Testing` |
+| locally owned generated contracts | `Contracts.{Name}.V{major}`; internal tests beneath their owning test-project root |
 
 ### One project per layer
 Place each layer of [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md) in its project and folder.
@@ -155,6 +174,7 @@ Write the fake of the layer below as a small class in the test project implement
 - Fix: `sealed class FakeUsers : IUsers { public List<string> Added { get; } = []; ... }`.
 
 # Check list
+- [ ] Namespaces, imports, generated roots and `RootNamespace` follow [Qualify namespaces with the service name](#qualify-namespaces-with-the-service-name), with no unfilled `{service-namespace}` in delivered application sources.
 - [ ] Every layer is in its project and folder per [One project per layer](#one-project-per-layer); the code the entry points share is in `App.Host/Api/Core/`.
 - [ ] Every project has only the references of [Reference only downward](#reference-only-downward).
 - [ ] Another module is called only by its commands; `App.Host` references `Application` for registration, and the store references `Domain` for mapping, as [Reference only downward](#reference-only-downward) permits.

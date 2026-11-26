@@ -14,6 +14,7 @@ bash ./check-link-direction.sh
 bash ./check-vp-attach.sh
 bash ./check-vp-diagrams.sh
 bash ./check-templates.sh
+python3 ../library/architecture/agent/dotnet-namespaces/migrate.py
 bash ./check-conformance.sh
 python3 ./check-architecture-tags.py
 python3 ./check-architecture-backlog.py

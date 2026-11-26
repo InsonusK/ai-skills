@@ -1,6 +1,6 @@
 // Source: skill vp-unit-of-work-in-dotnet
 
-namespace Shared.UnitOfWork;
+namespace TodoExampleService.Shared.UnitOfWork;
 
 /// <summary>
 /// The transaction around one command and the commands it runs, as the command

@@ -1,9 +1,9 @@
-using App.Host.Api.Management;
+using TodoExampleService.App.Host.Api.Management;
 using Reqnroll;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace App.Host.Tests.Steps.Management;
+namespace TodoExampleService.App.Host.Tests.Steps.Management;
 
 [Binding]
 public sealed class ManagementConfigSteps(ITestOutputHelper output)

@@ -1,8 +1,8 @@
 using System.Collections.Concurrent;
-using BuildingBlocks.Logging;
+using TodoExampleService.BuildingBlocks.Logging;
 using Microsoft.Extensions.Logging;
 
-namespace App.Host.Tests.Steps;
+namespace TodoExampleService.App.Host.Tests.Steps;
 
 /// <summary>One record as a part wrote it: every attribute, the payload too.</summary>
 public sealed record CapturedRecord(string Category, LogLevel Level, string Message, IReadOnlyDictionary<string, object?> Attributes, Exception? Exception);

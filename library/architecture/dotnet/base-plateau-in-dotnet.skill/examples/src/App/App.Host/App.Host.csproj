@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>$(ServiceNamespace).App.Host</RootNamespace>
+  </PropertyGroup>
   <!-- The process: the composition root (Program.cs), the entry points (Api/),
        and the base settings. The only project that references every other. -->
   <PropertyGroup>

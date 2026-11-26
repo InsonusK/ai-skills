@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>$(ServiceNamespace).BuildingBlocks</RootNamespace>
+  </PropertyGroup>
   <!-- The fixed code every module's commands run through: the registration
        of the command middleware (AddCommandMiddleware) and the logging. Copied from the templates of
        base-plateau-in-dotnet, never edited by an application. -->

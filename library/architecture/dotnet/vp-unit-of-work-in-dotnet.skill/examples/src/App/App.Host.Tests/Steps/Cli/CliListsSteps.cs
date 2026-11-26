@@ -1,11 +1,11 @@
-using App.Host.Api.Cli.Endpoint;
+using TodoExampleService.App.Host.Api.Cli.Endpoint;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Reqnroll;
-using Todo.Commands;
+using TodoExampleService.Modules.Todo.Commands;
 using Xunit;
 
-namespace App.Host.Tests.Steps.Cli;
+namespace TodoExampleService.App.Host.Tests.Steps.Cli;
 
 public sealed class FakeAddItemHandler : IRequestHandler<AddItemCommand, AddItemResult>
 {
