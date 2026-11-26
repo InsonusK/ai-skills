@@ -5,6 +5,10 @@ instead of one plateau per combination of features. It is built here, beside the
 (`library/{stack}/architecture/`, `library/common-workflow/architecture/design/plateau-map/`),
 which stay untouched until this one replaces them.
 
+The [feature and VP documentation sample](docs/catalog.md) and its
+[review contract](agent/design-rethink/INVARIANTS.md) propose the authoring redesign;
+the sample explicitly distinguishes current contracts from pending decisions.
+
 ## Model
 
 The layers and who may call whom are defined once in `library/develop/core/app-layers`
