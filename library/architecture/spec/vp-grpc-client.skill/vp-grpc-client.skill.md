@@ -2,7 +2,7 @@
 name: vp-grpc-client
 description: The gRPC client variation point — a client of another service's gRPC API attached to the base plateau in its infrastructure, with the service over it, calling code generated from the copied proto contract over one fixed connection (the {API} settings, the timeout, the call log, the request id, the gRPC status read as an outcome, the mock as a gRPC server inside the process) and checked against that contract
 whenToUse: when an application built on the base plateau must call a gRPC API of another service, or the HTTP form of a proto contract — adding the client, calling a further method of it, replacing the consumed proto with a new version, or reviewing such a client
-updated: 20261119
+updated: 20261126
 tags:
   - stack
   - concern/architecture
@@ -21,6 +21,7 @@ tags:
 @import "./diagrams/concept.mmd" {as="mermaid"}
 
 # Scope
+- Migration status: the shared api-client contract now returns API DTOs to service; the old return-type rules and stack examples below await wave 2. The updated link names the target contract, not completed conformance.
 - Covers unary calls to a gRPC API whose contract is a `.proto` file (skill api-develop), and the HTTP form of a proto contract, which is called over gRPC instead.
 - A streaming call is not covered: the fixed interceptor bounds, logs, and reports unary calls only.
 - The implementation for each stack is described in its stack-specialized extension: `vp-grpc-client-in-go`, `vp-grpc-client-in-dotnet`, `vp-grpc-client-in-python`.
@@ -44,7 +45,7 @@ Generate the messages and the client stub of every consumed `.proto` from its co
 Write each method the application calls as one method of the client that calls the generated stub and maps its response to the client's own types, and list the full name of each such method in one place of the client.
 - Violation: a generated message returned to the service; a generated stub used outside the client.
 - Risk: the service depends on the provider's messages, and a new version of the contract edits the service.
-- Fix: the method returns the application's values or the client's own result type, per [Return the application's values from the client](library/develop/core/api-client.skill/api-client.skill.md#return-the-applications-values-from-the-client).
+- Fix: the method returns the application's values or the client's own result type, per [API DTO return contract](library/develop/core/api-client.skill/api-client.skill.md#return-api-dtos-from-the-client).
 
 ### Report the gRPC status as the outcome
 Report a call answered with `UNAVAILABLE` or `DEADLINE_EXCEEDED` as unavailable and any other failed call with its status code and message, from the interceptor every call of the connection passes.

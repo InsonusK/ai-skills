@@ -10,6 +10,8 @@ tags:
   - concern/documentation/adr
 ---
 
+Superseded on 2026-11-26 by [api-dtos-returned-to-service](./api-dtos-returned-to-service.md). The selected variant below is historical; current clients return API DTOs to service.
+
 # Problem
 An API `/getUserName` answers `Ann Lee`; the application wants name and surname. Later the provider answers `{nameId} Lee` and adds `/getNameById`. The owner's requirement (2026-10-30): the application knows the service, never how the API answers, so such a change edits the service and not its callers. The question is where each mapping lives, and where hiding a change stops.
 

@@ -10,6 +10,8 @@ tags:
   - concern/documentation/adr
 ---
 
+Amended on 2026-11-26 by [sibling-client-and-system-service-boundaries](./sibling-client-and-system-service-boundaries.md): a service may use several clients of one external system, and client is a sibling of infrastructure. The original strict adapter cardinality is historical; the own-store exception and cross-system orchestration rules remain.
+
 # Problem
 In tg-bot-service, commands reached stores and clients directly, and one rule ended up implemented twice, differently. The owner's requirements (2026-10-17): api parses and calls a command; a command takes plain parameters; a command never touches infrastructure — infrastructure is wrapped by a service, so replacing HTTP by gRPC or PostgreSQL by Redis changes the infrastructure and at most the service, never the application's logic. The question is how far the wrapping goes and who may call whom.
 

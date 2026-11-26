@@ -1,45 +1,46 @@
 # API change cases
 
-How the answer of an API becomes the application's values, and who changes when the API changes. The rules are [Return the application's values from the client](../api-client.skill.md#return-the-applications-values-from-the-client) and [Compose the client's operations in the service](../api-client.skill.md#compose-the-clients-operations-in-the-service); the reasoning is in [client-returns-application-values](../adr/client-returns-application-values.md).
+[API DTO returns](../api-client.skill.md#return-api-dtos-from-the-client) and
+[single-system service composition](../api-client.skill.md#compose-one-external-systems-clients-in-the-service)
+define the boundary; the [DTO decision](../adr/api-dtos-returned-to-service.md)
+replaces the historical response-count distinction.
 
-| # | What turning the answer into the application's values needs | Who does it | What the client returns | Who changes when the API changes |
-|---|---|---|---|---|
-| 1 | only the answer | client | the application's values | the client |
-| 2 | a decision of the application | service | a result type of its own | the client, and the service when its decision changes |
-| 3 | several operations of the same API | service | a result type of its own per operation | the client and the service; the callers stay |
-| 4 | data the API no longer holds: another system is now its master | outside api-client: the project | - | the project: a new client and service, a domain service or command joining them, their callers |
+| Change | Client returns | Service responsibility | Consumer impact |
+|---|---|---|---|
+| One response holds a full name | API DTO with full name | Split/map through the consumer model's APIs | None while service contract holds |
+| Response contains provider state | API DTO with provider state | Map state and use domain behavior for business decisions | None while contract holds |
+| Provider splits one operation into two | One API DTO per operation | Compose both calls, potentially through two clients of the same system | None while contract holds |
+| Data moves to an independent external system | Each client's own API DTO | Adapt each system separately | Review dependencies and orchestration at project level |
 
-## 1. One answer is enough: the client maps it
+## One answer
 
-`/getUserName` answers `Ann Lee`; the application wants name and surname. Splitting the string needs nothing but the answer, so the client does it, and the service passes the values on.
+`/getUserName` returns `Ann Lee`. Client returns the API response; service splits
+and maps it. Even this simple transformation belongs to service.
 
 @import "./diagrams/one-answer.mmd" {as="mermaid"}
 
-## 2. A decision of the application: the service decides
+## Domain decision
 
-`/getUser` answers `state: suspended`. Whether a suspended user may plan is the application's rule, not the API's. The client returns its own result type with the state in the application's words; the service decides.
+`/getUser` returns `state: suspended`. Client preserves that provider state in its
+DTO. Service maps it and uses the domain's public behavior to determine whether
+planning is allowed; it does not duplicate an invariant in a DTO mapper.
 
 @import "./diagrams/application-decision.mmd" {as="mermaid"}
 
-## 3. The API splits an operation: the service composes its client's operations
+## Several clients of one system
 
-The provider changes `/getUserName` to answer `{nameId} Lee` and adds `/getNameById`. Both are operations of the same API, so the client gets one more method and the service calls both. `UserService.UserName` still returns name and surname: no caller changes.
+The same provider replaces the name with an ID and provides `/getNameById`.
+Service can call both operations through one client, or use entity-focused user
+and name clients of that same system. Its caller still requests a user name.
+A file containing both operations does not require one giant client.
 
 @import "./diagrams/split-operation.mmd" {as="mermaid"}
 
-## 4. The data moves to another system: outside api-client
+## A second system
 
-The provider stops holding names; they now live in a Directory API. The master system of the name has changed: the application depends on one more system, with its own contract, `{API}` group, mock, and outage. That is not hidden in a client or a service:
-
-- a service never calls another service, so `UserService` cannot fetch the name from `DirectoryService`;
-- one service over two clients would join two systems inside one service and hide the new dependency.
-
-The service is redesigned at the level of the project: a client and a service for the Directory API, a domain service or a command joining the two answers, and its callers changed to call it.
-
-Before, the User API is the master system of the name:
+If names move to an independent Directory system, the application's external
+dependencies change. A command or domain service composes the answers of the two
+system services; neither service calls the other or hides a second system's client.
 
 @import "./diagrams/master-system-before.mmd" {as="mermaid"}
-
-After, the Directory API is, and the application calls two systems:
-
 @import "./diagrams/master-system-after.mmd" {as="mermaid"}

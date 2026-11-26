@@ -10,6 +10,8 @@ tags:
   - concern/documentation/adr
 ---
 
+Amended on 2026-11-26: the name Client remains; the old `infrastructure/client/` location and one-client-per-API scope are replaced by [the sibling boundary decision](../../app-layers.skill/adr/sibling-client-and-system-service-boundaries.md) and [entity-focused grouping](./entity-clients-and-system-services.md).
+
 # Problem
 The text of api-client and of the client variation points said adapter, the code said client, and the owner talks of client and service. A reader had to learn that two words name one thing. Owner decision, 2026-10-30: one word, client.
 

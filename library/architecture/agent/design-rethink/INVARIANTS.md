@@ -1,6 +1,6 @@
 # Feature and VP authoring redesign
 
-Review contract, 2026-11-26. Status: revised after owner review; implementation waves not started.
+Review contract, 2026-11-26. Status: wave 1 shared contracts prepared; waves 2–4 pending.
 
 ## Outcome
 
@@ -160,11 +160,12 @@ Proposed documentation contract for wave 2:
 
 ## Status
 
-Wave 0 sample is in parent draft PR #310. This revision records the owner's review
-and proposed clarifications. The wave branch exists; implementation waves 1–4
-have not started. The earlier separate-follow-up treatment of the client changes
-is superseded: shared contracts are now wave 1 and downstream migration wave 2.
-The sample describes the pre-migration catalog and must be updated in those waves.
+The owner merged plan refinement PR #311 into the parent branch. Wave 1 revises
+the shared contracts, ADRs and directly linked examples; see [wave-1.md](./wave-1.md)
+for its audit and validation record. Waves 2–4 remain pending. The parent PR #310
+remains a draft until the waves are complete. Architecture client specs and stack
+examples are explicitly marked as awaiting migration; this is not a conforming
+end-to-end implementation of the new contract yet.
 
 ## Separate audit pass
 

@@ -33,3 +33,10 @@ if errors:
     raise SystemExit('\n'.join(errors))
 print('Wave 0 OK: references resolve; 14 current specs covered; dependency rows typed; client migration qualifications present.')
 print('Graph endpoint and full roadmap coverage checks are deferred to the structured maps in wave 3.')
+
+# Later waves add their own check gate alongside the original sample checks.
+import subprocess
+import sys
+wave1 = Path(__file__).with_name('check-wave-1.py')
+if wave1.exists():
+    subprocess.run([sys.executable, str(wave1)], cwd=root, check=True)

@@ -1,8 +1,8 @@
 ---
 name: app-layers
-description: How an application's code is split into layers — api, command (with an optional command factory), domain (entities and domain services), service, and infrastructure — what each layer owns, what it may call, where an interface stands between them, how each is tested
-whenToUse: when you design an application or a feature, when you add or change an entry point, a command or command factory, an entity or domain service, a service, or an infrastructure adapter, or when you review such a change — in any stack
-updated: 20261026
+description: How an application's code is split into layers — api, command (with an optional command factory), domain (entities and domain services), service, client, and infrastructure — what each layer owns, what it may call, where an interface stands between them, how each is tested
+whenToUse: when you design an application or a feature, when you add or change an entry point, a command or command factory, an entity or domain service, a service, a client, or an infrastructure adapter, or when you review such a change — in any stack
+updated: 20261126
 tags:
   - stack
   - concern/architecture
@@ -11,6 +11,7 @@ tags:
   - app-type/cli
 adr:
   - adr/service-wraps-one-infrastructure.md
+  - adr/sibling-client-and-system-service-boundaries.md
   - adr/commands-named-command.md
   - adr/nested-command-through-pipeline.md
   - adr/api-runs-independent-commands.md
@@ -19,17 +20,18 @@ adr:
 # Goal
 - **Inputs parsed once** - Every input enters through the api layer, which turns it into plain parameters; no layer below knows the input's format.
 - **Commands reusable from any input** - A command takes only the plain values it needs, so the same command runs from a bot, an HTTP call, a CLI, or a test.
-- **Infrastructure replaceable** - Replacing a store or a transport (PostgreSQL by Redis, HTTP by gRPC) changes the infrastructure adapter and at most the service over it, or the repository behind its contract; no command, domain service, or entity changes.
+- **Infrastructure replaceable** - Replacing a store or a transport (PostgreSQL by Redis, HTTP by gRPC) changes the client or infrastructure adapter and at most the service over it, or the repository behind its contract; no command, domain service, or entity changes.
 - **One home per business rule** - Each business rule lives in one entity or domain-service method, and every command that needs it calls that method.
 - **Each layer tested alone** - A layer's tests replace only the layer directly below it, so a change below never breaks a test above.
 
 # Core Principle
-- **Calls go down only** - api → command factory → command → domain service → service → infrastructure; an entity is called by commands and domain services; nothing calls up. Where the stack's ORM maps the domain's entities (the entities form of `vp-postgres`: dotnet), the application's own store is reached through the repository's contract in place of a service.
+- **Calls go down only** - api → command factory → command → domain service → service → client or infrastructure; an entity is called by commands, domain services and service mapping; nothing calls up. Where the stack's ORM maps the domain's entities (the entities form of `vp-postgres`: dotnet), the application's own store is reached through the repository's contract in place of a service.
 - **Parse at the edge, decide in the middle** - The input's format is known only to api; which command runs is decided by the factory when the input alone cannot decide; the work is the command's.
-- **Services speak the application's language** - A service method names what the application wants (`AddUser`, `SaveQuizAnswer`) and hides how it is done: the calls, the requests, the transaction.
-- **Interfaces where I/O starts** - A caller reaches a service, and a service reaches its infrastructure, through an interface; code with no I/O behind it is called directly.
+- **Services speak the application's language** - A service method names what the application wants (`AddUser`, `SaveQuizAnswer`) and hides the API calls and request shapes; transaction ownership stays with the unit-of-work boundary.
+- **Interfaces where I/O starts** - A caller reaches a service, and a service reaches its clients or infrastructure, through an interface; code with no I/O behind it is called directly.
 
 # Scope
+- Migration status: shared boundaries are revised; stack extensions and architecture examples await propagation of client paths and contracts.
 - Covers the layer split of one application in any stack. The stack-specific packages and interface placement are described in its stack-specialized extensions: `app-layers-in-go`, `app-layers-in-dotnet`, `app-layers-in-python`.
 
 # Rule
@@ -41,14 +43,15 @@ Place every part of the application in one of these layers and let it call only 
 
 | Layer | Owns | May call | Never calls |
 |---|---|---|---|
-| api | parsing an input into plain parameters; turning a result or an error into the response | command factories, commands (several only when independent) | domain, services, infrastructure |
-| command factory (optional) | choosing the command from plain parameters and the application's state | domain services, services | infrastructure; never parses an input format |
-| command | the main logic of one operation | domain services, entities, services, the repositories of its own store (entities form), other commands (nested, through the command pipeline) | infrastructure, api types |
-| domain service | business logic reused by several commands | entities, services, the repositories of its own store (entities form) | infrastructure, commands |
+| api | parsing an input into plain parameters; turning a result or an error into the response | command factories, commands (several only when independent) | domain, services, clients, infrastructure |
+| command factory (optional) | choosing the command from plain parameters and the application's state | domain services, services | clients, infrastructure; never parses an input format |
+| command | the main logic of one operation | domain services, entities, services, the repositories of its own store (entities form), other commands (nested, through the command pipeline) | clients, infrastructure, api types |
+| domain service | business logic reused by several commands | entities, services, the repositories of its own store (entities form) | clients, infrastructure, commands |
 | entity | the rules of one object of the domain | other entities | anything with I/O |
-| service | methods in the application's language over one infrastructure, hiding its technique | its own infrastructure | other services, domain services, commands |
+| service | adaptation of one external system or a cohesive part of it into consumer models | that system's clients, or its own infrastructure; entity construction/behavior | other services, domain services, commands |
 | repository (entities form) | the entities of the application's own store, behind a contract of the application's side: pick them by a specification, save them | its store | every layer above |
-| infrastructure | technical access: queries, HTTP/gRPC calls, parsing a response, contract errors | external systems | every layer above |
+| client | API calls, wire parsing, API DTOs, technical outcomes and client middleware | its external API, fixed client code | services, commands, domain |
+| infrastructure | storage and other non-client technical access | its external system or engine | every layer above |
 
 - Violation: a command that runs an SQL query, or a service that calls another service to finish its method.
 - Risk: a call skipping a layer spreads the knowledge of that layer's technique upward, so replacing it means editing every caller.
@@ -95,17 +98,23 @@ Return from a command only result types of the command layer, never an entity or
 - Risk: an entry point that receives an entity depends on the domain and can change its state outside a command.
 - Fix: map the entity to a result type inside the command.
 
-### Commands never touch infrastructure
-Let a command reach storage and other systems only through services, never through infrastructure.
+### Commands never call clients or infrastructure
+Let commands reach external systems through services and their own store through services or the entities-form repository contract, never through clients or infrastructure directly.
 - Violation: a command that calls the database client or the HTTP client itself.
 - Risk: replacing the store or the transport means editing the command, and the same technique is rewritten in every command.
 - Fix: add the method to the service over that infrastructure and call it from the command.
 
-### One service per infrastructure, in the application's language
-Wrap each infrastructure adapter in exactly one service whose methods name what the application wants and hide how it is done.
-- Violation: `UserService.PostUsersV2(body)`, or a command that opens a database transaction itself around three calls of a service.
-- Risk: the technique leaks into commands, and replacing the infrastructure changes the callers too.
-- Fix: `UserService.Add(name)` hides the HTTP calls; `StorageService.UpdateXYZ` hides the statements it runs.
+### Keep client and service beside infrastructure
+Keep `domain/`, `infrastructure/`, `client/` and `service/` as sibling logical boundaries, expressed through the stack's packages or projects.
+- Violation: client code under `infrastructure/client/`; service code classified as an infrastructure subfolder.
+- Risk: the folder structure conceals a distinct API contract boundary and permits transport concerns to spread upward.
+- Fix: follow the separation recorded in [sibling-client-and-system-service-boundaries](./adr/sibling-client-and-system-service-boundaries.md); retain the own-store repository exception in the layer table.
+
+### Give services an external-system boundary
+Wrap an external system or a cohesive part of a large one in a service that may use several of that system's clients, following [api-client](library/develop/core/api-client.skill/api-client.skill.md) for client grouping, ownership and DTO conversion.
+- Violation: one service forced per Swagger file or client; a service joining two unrelated external systems; business invariants copied out of entities into service mapping.
+- Risk: provider file layout determines business boundaries, or a new external dependency is hidden from the application's orchestration.
+- Fix: let the service adapt one system into its consumer's model; use domain APIs for entity validation and construction, and let commands or domain services compose systems.
 
 ### One business rule, one method
 Keep each business rule in exactly one entity or domain-service method and call that method from every command that needs it.
@@ -113,22 +122,23 @@ Keep each business rule in exactly one entity or domain-service method and call 
 - Risk: the copies drift, and the same event is handled differently depending on the path.
 - Fix: move the rule into one domain-service method and call it from both commands.
 
-### Interfaces at service and infrastructure boundaries
-Make every caller of a service, and every service calling its infrastructure, depend on an interface; call entities and domain services directly.
+### Interfaces at service client and infrastructure boundaries
+Make every caller of a service, and every service calling its clients or infrastructure, depend on an interface; call entities and domain services directly.
 - Violation: a command holding a concrete `UserHTTPClient`, or an interface written for an entity.
 - Risk: without the interface, the layer above cannot be tested without the real system or replaced at startup; an interface over code with no I/O only adds a file.
 - Fix: the interface lists the methods the caller uses; the composition root passes the implementation.
 
 ### Test each layer at its own boundary
-Test each layer with the layer directly below it replaced by a fake, and test infrastructure against the real system or its emulator.
+Test each layer with the layer directly below it replaced by a fake, and test clients and infrastructure against their respective emulators or real engines.
 
 | Layer under test | Replaced by a fake |
 |---|---|
 | command, command factory | services |
 | domain service | services |
 | entity | nothing |
-| service | its infrastructure |
-| infrastructure | nothing — the real engine (embedded) or an emulator of the external API |
+| service | its clients or infrastructure |
+| client | nothing — an emulator of its external API |
+| infrastructure | nothing — the real engine or emulator appropriate to its integration |
 
 - Risk: a test that fakes a layer further down breaks every time that layer's contract changes, though the behaviour under test did not.
 - Fix: fake only the interface directly below; build domain services for a command's test with their own services faked.
@@ -158,9 +168,9 @@ Use a package with no I/O and no business rule — formatting, layout, conversio
 - [ ] api calls several commands only when none uses another's result or success; an order of commands is one orchestrating command.
 - [ ] Every command holds plain values, no transport object, and is named `{Operation}Command`; its result `{Operation}Result`, a part of a result `{Thing}View`.
 - [ ] Every command factory chooses by application state; no factory maps a fixed input to one command.
-- [ ] No command returns an entity; no command, domain service, or entity calls infrastructure.
-- [ ] Each infrastructure adapter is wrapped by one service whose methods use the application's language; no service calls another service.
+- [ ] No command returns an entity; no command, domain service, or entity calls clients or infrastructure directly.
+- [ ] Check [sibling boundaries](#keep-client-and-service-beside-infrastructure) and [service scope](#give-services-an-external-system-boundary); no service calls another service.
 - [ ] Each business rule touched by the change lives in one entity or domain-service method.
-- [ ] Callers of services and services calling infrastructure depend on interfaces; entities and domain services are called directly.
+- [ ] Callers of services and services calling clients or infrastructure depend on interfaces; entities and domain services are called directly.
 - [ ] Each layer's tests fake only the layer directly below it.
 - [ ] Every command writing to more than one place, or to another system, has its consistency table shown to the user, each gap closed or accepted.

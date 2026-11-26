@@ -8,6 +8,6 @@ sequenceDiagram
   Service->>+Client: UserName()
   Client->>+Api: GET /getUserName
   Api-->>-Client: "Ann Lee"
-  Note over Client: splits the answer
-  Client-->>-Service: name Ann, surname Lee
+  Note over Service: maps API DTO through domain APIs
+  Client-->>-Service: API DTO: fullName Ann Lee
   Service-->>-Command: name Ann, surname Lee

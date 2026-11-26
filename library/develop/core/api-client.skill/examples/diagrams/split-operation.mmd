@@ -8,10 +8,10 @@ sequenceDiagram
   Service->>+Client: UserName()
   Client->>+Api: GET /getUserName
   Api-->>-Client: "17 Lee"
-  Client-->>-Service: nameId 17, surname Lee
+  Client-->>-Service: API DTO: nameId 17, surname Lee
   Service->>+Client: NameById(17)
   Client->>+Api: GET /getNameById?id=17
   Api-->>-Client: "Ann"
-  Client-->>-Service: Ann
+  Client-->>-Service: API DTO: name Ann
   Note over Service: composes the two answers
   Service-->>-Command: name Ann, surname Lee - unchanged
