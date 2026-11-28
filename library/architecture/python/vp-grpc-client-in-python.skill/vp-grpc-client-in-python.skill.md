@@ -16,7 +16,7 @@ tags:
 
 # Core Principle
 - **Copied once, generated per contract, written per method** - `client/core/` is copied from templates and never edited; per API the application copies its `.proto`, generates `src/{package}/gen/client/{api-name}`, and writes a client package whose methods are calls of the generated stub over `GrpcClient.channel`, its mock, and the service over it.
-- **The service is the HTTP client's** - The service catches only the outcomes of `core/outcomes.py`, the same for an HTTP and a gRPC client ([httpx2-and-one-outcome-module](library/architecture/python/vp-http-client-in-python.skill/adr/httpx2-and-one-outcome-module.md)): the service, its errors, the command, and their scenarios are those of [vp-http-client-in-python](library/architecture/python/vp-http-client-in-python.skill/vp-http-client-in-python.skill.md), file for file.
+- **Protocol-independent adaptation** - Service consumes logical API DTOs and normalized `core/outcomes.py` errors, preserving its implementation across equivalent HTTP/gRPC clients, as [httpx2-and-one-outcome-module](library/architecture/python/vp-http-client-in-python.skill/adr/httpx2-and-one-outcome-module.md) records.
 
 ```text
 docs/integration/client/{api-name}/       provider's wire contract
@@ -37,6 +37,12 @@ src/{package}/gen/client/{api-name}/        generated wire messages and stubs
 
 ## MUST
 
+### Distinguish delivered code from illustrations
+Fill and copy explicitly delivered templates and fixed support files as instructed, and write application-specific client/service code for the selected API and consumer, treating snippets and application-specific files under `examples/` as illustrations.
+- Violation: adopting an example's provider names, operations, DTOs or error meanings without deriving them from the target application's contracts.
+- Risk: code compiles against the sample API while implementing the wrong application behavior.
+- Fix: substitute only declared identifiers in delivered fixed code; derive application-specific operations, configuration prefixes, DTOs, Domain Model mapping and error meanings from the target contracts.
+
 ### Keep logical DTOs outside the protocol implementation
 Declare API DTOs in `client/{api}/dto.py` and export only contracts from that package's `__init__.py`, importing the concrete `{api}.py` module explicitly in composition and client tests.
 - Risk: importing a service's DTOs implicitly imports a concrete protocol and its dependencies.
@@ -49,13 +55,13 @@ Copy [client/core/](./templates/src/{package}/client/core/) to `src/{package}/cl
 - Fix: copy the files; after filling, searching them for `{package}` returns nothing; `make test` and `make lint` pass.
 
 ### Generate the consumed contract with proto-gen
-Add the example's `proto-gen` target to the `Makefile`: it maps each folder of `docs/integration/client/` to the import path `{package}.gen.client.{api-name}` (`-I{package}/gen/client/{api-name}=docs/integration/client/{api-name}`), so the generated modules import each other there and the copy stays unchanged; run `make proto-gen` and commit `src/{package}/gen/client/`.
+Define a `proto-gen` target in the `Makefile`: it maps each folder of `docs/integration/client/` to the import path `{package}.gen.client.{api-name}` (`-I{package}/gen/client/{api-name}=docs/integration/client/{api-name}`), so the generated modules import each other there and the copy stays unchanged; run `make proto-gen` and commit `src/{package}/gen/client/`.
 - Violation: the generated code edited, or generated into `gen/api/`, where the gRPC API's own contracts go.
 - Risk: a consumed contract and a served one of the same package overwrite each other's generated modules.
 - Fix: with the gRPC API attached too, `proto-gen` runs both loops, `gen/api/` and `gen/client/`.
 
 ### Entity-focused client packages
-Write each selected entity-focused API client as `src/{package}/client/{api}/` holding `PREFIX` (`"TODO_API"`), `METHODS` (a `Method` - the full name and `retryable` - for every method it calls), `open_api(config, logger, middlewares)` and `new(logger, middlewares)`, both async, a client class with `aclose()` over the generated stub, and per method one method that calls the stub and maps the response to the client's own dataclasses.
+Write each selected entity-focused API client as `src/{package}/client/{api}/` holding `PREFIX` (the selected `{API}` settings group), `METHODS` (a `Method` - the full name and `retryable` - for every method it calls), `open_api(config, logger, middlewares)` and `new(logger, middlewares)`, both async, a client class with `aclose()` over the generated stub, and per method one method that calls the stub and maps the response to the client's own dataclasses.
 
 ```python
 async def plan_items(self, titles: list[str]) -> list[ItemDTO]:
@@ -66,28 +72,34 @@ async def plan_items(self, titles: list[str]) -> list[ItemDTO]:
 
 - Violation: `grpc.aio.insecure_channel` in the client; a transport-specific generated message returned to the service; a method missing from `METHODS`.
 - Risk: a channel that bypasses `GrpcClient.open` has no deadline, no log, and no request id; the contract scenario misses the method.
-- Fix: follow the example's [todo_api.py](./examples/src/todo/client/todo_api/todo_api.py); the gRPC client keeps the names the HTTP client uses (`ItemDTO`, `plan_items`), so the service over it does not change with the transport.
+- Fix: implement each consumed operation through the fixed transport code, translate its wire data into logical API DTOs, register it in `METHODS`, and implement the corresponding emulator behavior; preserve the same logical contract across equivalent transports.
 
 ### Answer every method in the mock
 Write the mock of each client as `src/{package}/client/{api}/mock/{api}_mock.py` with `emulator(server: grpc.aio.Server)` adding a servicer of the generated base that answers every method of `METHODS` as the API does, with stable data and no state, aborting with the API's status where it answers one; `{API}_HOST=mock` serves it on a `grpc.aio` server inside the process, on a port of the loopback, which the same channel reaches.
 - Risk: a method the servicer does not write answers `UNIMPLEMENTED` under `mock`, and the service cannot run without the other service.
 - Fix: the mocked scenario of the client's feature runs it and checks its answer.
 
+### Implement the adapting service for its consumer
+Write each service in `src/{package}/service/` against a consumer-owned service port and a Protocol of its system's logical client operations, constructing Domain Model through its public APIs and assigning application meanings to expected normalized outcomes.
+- Risk: provider models or transport exceptions become part of the command's contract.
+- Fix: catch `ApiUnavailableError` and expected `ApiStatusError` codes, preserve those technical causes with `raise ... from error`, let unexpected failures pass through without a kind, and raise invalid provider-data failures without a domain kind using `from None`.
+
 ### Build the client and the service in main.py
-Build the client middleware of the API in `# [client middleware]` before it - empty until a variation point (`vp-client-retry`) adds one - and pass it to `{api}.new(logger, middlewares)`; the client refuses a call of an operation not in its list, and `retryable` marks one safe to repeat, as [api-client](library/develop/core/api-client.skill/api-client.skill.md) requires. Build the client with `await {api}.new(logger, middlewares)` in `# [services]` of `main.py`, stopping the start with "startup failed" on its `ValueError`, build the service over it, pass the service to `build_handlers`, and close the client when `run_all` returns, as [vp-http-client-in-python](library/architecture/python/vp-http-client-in-python.skill/vp-http-client-in-python.skill.md) does.
+Build the client middleware of the API in `# [client middleware]` before it - empty until a variation point (`vp-client-retry`) adds one - and pass it to `{api}.new(logger, middlewares)`; the client refuses a call of an operation not in its list, and `retryable` marks one safe to repeat, as [api-client](library/develop/core/api-client.skill/api-client.skill.md) requires. Build the client with `await {api}.new(logger, middlewares)` in `# [services]` of `main.py`, stopping the start with "startup failed" on its `ValueError`, build the service over it, pass the service to `build_handlers`, and close the client when `run_all` returns.
 - Risk: a mocked client never closed leaves its emulator's server running when the loop ends.
 - Fix: one client per API, built and closed by the composition root.
 
 ### Cover the client with scenarios
-Copy the example's `grpcclient/features/` and `grpcclient/test/` unchanged but for the package: they cover the settings, the call, the outcomes, the log, and the mock through an echo API of their own, described by a generic handler over `google.protobuf.StringValue`. Write per client a feature calling each method against a `grpc.aio` server of the scenario and its emulator mocked, and its two contract scenarios: `METHODS` against the copied `.proto` compiled now with `grpc_tools.protoc --descriptor_set_out`, and the descriptor of the generated module against that compiled file, without the `json_name` compilers derive; take the service's and the command's scenarios from the HTTP client; tag them `@type/tech-check` and `@type/service`.
+Copy the example's `grpcclient/features/` and `grpcclient/test/` unchanged but for the package: they cover the settings, the call, the outcomes, the log, and the mock through an echo API of their own, described by a generic handler over `google.protobuf.StringValue`. Write per client a feature calling each method against a `grpc.aio` server of the scenario and its emulator mocked, and its two contract scenarios: `METHODS` against the copied `.proto` compiled now with `grpc_tools.protoc --descriptor_set_out`, and the descriptor of the generated module against that compiled file, without the `json_name` compilers derive; write service scenarios with the client contract faked and command scenarios with the service port faked; tag them `@type/tech-check` and `@type/service`.
 - Risk: a client feature that repeats the outcomes of the interceptor grows with every method and tests nothing new.
 - Fix: a client feature checks only its own request and mapping.
 
 # Check list
+- [ ] Code delivery follows [Distinguish delivered code from illustrations](#distinguish-delivered-code-from-illustrations).
 - [ ] `src/{package}/client/core/` is a filled copy of the templates; no placeholder is left.
 - [ ] The consumed `.proto` is unchanged under `docs/integration/client/{api-name}/`; `src/{package}/gen/client/{api-name}` is generated by `make proto-gen`.
 - [ ] Each API has its package with `PREFIX`, `METHODS`, `open_api`, `new`, a client with `aclose` and one method per method, and `mock/{api}_mock.py`; both contract scenarios pass.
-- [ ] The service, its errors, the command, and their scenarios are those of the HTTP client.
+- [ ] Service adapts logical API DTOs and normalized errors into the consumer model; equivalent transports preserve its contract and behavior.
 - [ ] `main.py` awaits the client, builds the service in `# [services]`, and closes the client after `run_all`.
 - [ ] `make test` and `make lint` pass; `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).
 
@@ -97,3 +109,7 @@ One call of the example, with its real classes:
 @import "./diagrams/example-flow.mmd" {as="mermaid"}
 
 - [examples/](./examples/README.md) — the base plateau's startup command planning with another service's todo API: `make run` against its emulator, or against the running gRPC example of [vp-grpc-api-in-python](library/architecture/python/vp-grpc-api-in-python.skill/vp-grpc-api-in-python.skill.md).
+
+- [Client implementation](./examples/src/todo/client/todo_api/todo_api.py) and [emulator](./examples/src/todo/client/todo_api/mock/todo_api_mock.py) — illustrate selected operations, wire-to-DTO mapping and mock behavior for the Todo provider.
+- [Adapting service](./examples/src/todo/service/remote_planner.py) and [service scenarios](./examples/src/todo/service/features/remote-planner.feature) — illustrate DTO-to-Domain Model adaptation and application error meanings for the sample consumer.
+- [Makefile](./examples/Makefile) — illustrates the consumed-contract generation loop for the sample package.

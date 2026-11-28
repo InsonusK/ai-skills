@@ -32,6 +32,12 @@ src/{package}/client/
 
 ## MUST
 
+### Distinguish delivered code from illustrations
+Fill and copy explicitly delivered templates and fixed support files as instructed, and write application-specific client/service code for the selected API and consumer, treating snippets and application-specific files under `examples/` as illustrations.
+- Violation: adopting an example's provider names, operations, DTOs or error meanings without deriving them from the target application's contracts.
+- Risk: code compiles against the sample API while implementing the wrong application behavior.
+- Fix: substitute only declared identifiers in delivered fixed code; derive application-specific operations, configuration prefixes, DTOs, Domain Model mapping and error meanings from the target contracts.
+
 ### Copy the middleware from templates
 Copy [middleware/retry/](./templates/src/{package}/client/middleware/retry/) to `src/{package}/client/middleware/retry/`, with the example's `features/` and `test/`, replacing `{package}` with the import name of the package.
 - Risk: a retyped retry repeats unmarked calls or statuses, swallows a cancellation, or waits without jitter.
@@ -53,9 +59,10 @@ client_middlewares: list[ClientMiddleware] = [
 ### Mark the retryable operations in the client
 Set `retryable=True` on each `Operation` or `Method` of the client's list whose repeat does what one call does, with a comment saying why, and hold the mark in the contract scenario's table.
 - Risk: an unmarked operation is never repeated, a wrongly marked one is done twice.
-- Fix: the example's `OPERATIONS` marks `POST /v1/items/plan`, which stores nothing.
+- Fix: justify retry safety from the operation contract, set the retryable mark only when repetition is safe, and verify the selected marks in the contract scenarios.
 
 # Check list
+- [ ] Code delivery follows [Distinguish delivered code from illustrations](#distinguish-delivered-code-from-illustrations).
 - [ ] `src/{package}/client/middleware/retry/` is a filled copy of the templates; no placeholder is left.
 - [ ] `main.py` loads the retry settings of each API and lists the middleware in its client middleware.
 - [ ] Only operations whose repeat does what one call does are `retryable`; the contract scenario holds the marks.
@@ -67,3 +74,6 @@ One call of the example, with its real classes:
 @import "./diagrams/example-flow.mmd" {as="mermaid"}
 
 - [examples/](./examples/README.md) — the HTTP client example with the retry attached: `TODO_API_HOST=localhost TODO_API_HTTP_PORT=1 make run` shows three attempts and two "api client call retried" warnings before the startup command fails unavailable.
+
+- [Client implementation](./examples/src/todo/client/todo_api/todo_api.py) and [emulator](./examples/src/todo/client/todo_api/mock/todo_api_mock.py) — illustrate selected operations, wire-to-DTO mapping and mock behavior for the Todo provider.
+- [Adapting service](./examples/src/todo/service/remote_planner.py) and [service scenarios](./examples/src/todo/service/features/remote-planner.feature) — illustrate DTO-to-Domain Model adaptation and application error meanings for the sample consumer.

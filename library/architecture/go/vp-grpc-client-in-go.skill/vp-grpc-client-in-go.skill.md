@@ -36,10 +36,16 @@ buf.gen.client.yaml                       generator configuration
 
 ## MUST
 
+### Distinguish delivered code from illustrations
+Fill and copy explicitly delivered templates and fixed support files as instructed, and write application-specific client/service code for the selected API and consumer, treating snippets and application-specific files under `examples/` as illustrations.
+- Violation: adopting an example's provider names, operations, DTOs or error meanings without deriving them from the target application's contracts.
+- Risk: code compiles against the sample API while implementing the wrong application behavior.
+- Fix: substitute only declared identifiers in delivered fixed code; derive application-specific operations, configuration prefixes, DTOs, Domain Model mapping and error meanings from the target contracts.
+
 ### Keep logical DTOs outside the protocol implementation
 Declare the API DTOs in `internal/client/{api}/contract`, importing that package in service and both protocol implementations without importing transport types into service.
 - Risk: a DTO or a service interface changes when the protocol client is replaced.
-- Fix: use the same contract package and names for HTTP/gRPC implementations; the example uses `todoapicontract.ItemDTO` while service constructs domain entities.
+- Fix: import the same logical contract package from each protocol implementation and service, and construct domain entities only in service.
 
 
 ### Copy the client code from templates
@@ -48,7 +54,7 @@ Fill and copy [config.go](./templates/internal/client/core/grpcclient/config.go)
 - Fix: copy the files; after filling, searching them for `{module-path}` returns nothing; `make test` passes.
 
 ### Generate the consumed contract with buf
-Add the tool lines of `buf`, `protoc-gen-go`, and `protoc-gen-go-grpc` to `go.mod`, and `buf.gen.client.yaml` with `docs/integration/client` as its input and per consumed contract a `go_package` override in its managed mode, as the example's [buf.gen.client.yaml](./examples/buf.gen.client.yaml) does; run `make proto-gen` and commit `gen/client/`. The input needs no `buf.yaml`.
+Add the tool lines of `buf`, `protoc-gen-go`, and `protoc-gen-go-grpc` to `go.mod`, and `buf.gen.client.yaml` with `docs/integration/client` as its input and per consumed contract a `go_package` override in its managed mode; run `make proto-gen` and commit `gen/client/`. The input needs no `buf.yaml`.
 
 ```yaml
 managed:
@@ -64,7 +70,7 @@ managed:
 - Fix: one override line per contract; with the gRPC API attached too, its `buf.yaml` and `buf.gen.yaml` keep generating the API's own contracts, and `make proto-gen` runs both templates.
 
 ### Entity-focused client packages
-Write each selected entity-focused API client as `internal/client/{api}/` holding `Prefix` (`"TODO_API"`), `Methods` (a `grpcclient.Method` - the generated `..._FullMethodName` and `Retryable` - for every method it calls), `New(logger, middlewares)` reading the settings and `NewClient(cfg, logger, middlewares)` taking them, `Close`, and per method one method of `Client` that calls the generated stub and maps its response to the client's own types.
+Write each selected entity-focused API client as `internal/client/{api}/` holding `Prefix` (the selected `{API}` settings group), `Methods` (a `grpcclient.Method` - the generated `..._FullMethodName` and `Retryable` - for every method it calls), `New(logger, middlewares)` reading the settings and `NewClient(cfg, logger, middlewares)` taking them, `Close`, and per method one method of `Client` that calls the generated stub and maps its response to the client's own types.
 
 ```go
 // PlanItems is ItemsService.PlanItems: one open item per title, planned by the API.
@@ -83,7 +89,7 @@ func (c *Client) PlanItems(ctx context.Context, titles []string) ([]todoapicontr
 
 - Violation: `grpc.NewClient` called in the client; a transport-specific generated message returned to the service; a method missing from `Methods`.
 - Risk: a connection that bypasses `grpcclient.New` has no timeout, no log, and no request id; the contract scenario misses the method.
-- Fix: follow the example's [todoapi.go](./examples/internal/client/todoapi/todoapi.go); a new method adds its method, its line of `Methods`, and its method in [todoapi_mock.go](./examples/internal/client/todoapi/mock/todoapi_mock.go).
+- Fix: implement each consumed operation through the fixed transport code, translate wire data into the shared logical API DTOs, register the operation in `Methods`, and implement the corresponding emulator behavior.
 
 ### Answer every method in the mock
 Write the mock of each client as `internal/client/{api}/mock/{api}_mock.go`, package `mock`, with `Emulator(grpc.ServiceRegistrar)` registering an implementation of the generated server, embedding its `Unimplemented...Server`, that answers every method of `Methods` as the API does, with stable data and no state, and pass it to `grpcclient.New`; `{API}_HOST=mock` serves it over `bufconn` inside the process. The file's name says it is a mock and of which client.
@@ -107,7 +113,7 @@ case err != nil:
 
 - Violation: an entity built from the API's answer whose error is wrapped with `%w`; the client's error formatted into the message (`"the todo service: " + err.Error()`).
 - Risk: an item the other service got wrong is answered to this service's client as its own invalid input; the transport's text, with its hosts and addresses, reaches the client.
-- Fix: the scenarios "Any other answer is a failure with no kind" and "An API that does not answer is unavailable, its failure kept as the cause" of the example's `remote-planner.feature`.
+- Fix: preserve technical dependency failures as causes with application-safe messages, and convert provider-data invariant failures into errors without an application kind or a wrapped domain-kind error.
 
 ### Build the client and the service in main.go
 Build the client with `{api}.New(logger, middlewares)` in `// [services]` of `cmd/{app}/main.go`, stopping the start with its error, close it with `defer`, build the service over it, and pass the service to `command.NewHandlers`. Build the client middleware of the API in `// [client middleware]` before it - empty until a variation point (`vp-client-retry`) adds one - and pass it to `{api}.New(logger, middlewares)`, which hands the client's `Methods` and the list to `grpcclient.New`; the client refuses a call of an operation not in `Methods`, and `Retryable` on a `grpcclient.Method` marks one safe to repeat, as [api-client](library/develop/core/api-client.skill/api-client.skill.md) requires.
@@ -132,6 +138,7 @@ Copy the example's `internal/client/core/grpcclient/features/` and `test/` uncha
 - Fix: a client feature checks only its own request and mapping.
 
 # Check list
+- [ ] Code delivery follows [Distinguish delivered code from illustrations](#distinguish-delivered-code-from-illustrations).
 - [ ] `internal/client/core/grpcclient/{config,client}.go` are filled copies of the templates; no placeholder is left.
 - [ ] The consumed `.proto` is unchanged under `docs/integration/client/{api-name}/`; `gen/client/{api-name}` is generated by `make proto-gen` with a `go_package` override.
 - [ ] Each API has its package with `Prefix`, `Methods`, `New`, `NewClient`, `Close`, and one method per method, and its mock in `mock/{api}_mock.go`; both contract scenarios pass.
@@ -146,3 +153,7 @@ One call of the example, with its real classes:
 @import "./diagrams/example-flow.mmd" {as="mermaid"}
 
 - [examples/](./examples/README.md) — the base plateau's startup command planning with another service's todo API: `make run` against its emulator, or against the running gRPC example of [vp-grpc-api-in-go](library/architecture/go/vp-grpc-api-in-go.skill/vp-grpc-api-in-go.skill.md).
+
+- [Client implementation](./examples/internal/client/todoapi/todoapi.go) and [emulator](./examples/internal/client/todoapi/mock/todoapi_mock.go) — illustrate selected operations, wire-to-DTO mapping and mock behavior for the Todo provider.
+- [Adapting service](./examples/internal/service/remote_planner.go) and [service scenarios](./examples/internal/service/features/remote-planner.feature) — illustrate DTO-to-Domain Model adaptation and application error meanings for the sample consumer.
+- [buf.gen.client.yaml](./examples/buf.gen.client.yaml) — illustrates per-contract generation options for the sample module.

@@ -110,3 +110,24 @@ move, three README paths and the retry skill's old generic path. All were fixed;
 conformance copies now match at the renamed paths. Validation explicitly checks
 that test totals remain 95/92/107, including client contract scenarios. The final
 audit reports no outstanding findings.
+
+## Application examples versus delivery instructions
+
+Owner-approved refinement: Fix gives a generic correction, while Example links
+illustrate application-specific code. Updated only the nine HTTP/gRPC/retry
+stack skills of the current catalog. Explicit template/fixed-support delivery
+remains actionable; snippets and application-specific client/service examples
+must be adapted from the actual provider and consumer contracts. Removed literal
+Todo configuration prefixes from generic rules, and made Python gRPC adaptation
+independent of HTTP sample names. No runtime source or template is changed.
+
+The .NET HTTP client is tracked at
+examples/src/Client/Todo/Todo.Client/TodoClient.cs in its owning skill. Direct
+client/emulator links in Example now expose this location across the client VPs.
+Validation covers skill structure, links/anchors, generic Fix wording, design
+invariants and library link direction; runtime suites are unchanged by this edit.
+
+Fresh-eyes review found no actionable issues: local links/anchors resolve,
+generic corrections preserve outcome causes, provider-data failures, operation
+registration, emulator coverage and retry safety. The nine edited skills pass
+structure/rationale/link checks and the design gate; library link direction passes.

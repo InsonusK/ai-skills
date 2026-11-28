@@ -34,10 +34,16 @@ internal/service/{name}.go                 consumer adaptation and error meaning
 
 ## MUST
 
+### Distinguish delivered code from illustrations
+Fill and copy explicitly delivered templates and fixed support files as instructed, and write application-specific client/service code for the selected API and consumer, treating snippets and application-specific files under `examples/` as illustrations.
+- Violation: adopting an example's provider names, operations, DTOs or error meanings without deriving them from the target application's contracts.
+- Risk: code compiles against the sample API while implementing the wrong application behavior.
+- Fix: substitute only declared identifiers in delivered fixed code; derive application-specific operations, configuration prefixes, DTOs, Domain Model mapping and error meanings from the target contracts.
+
 ### Keep logical DTOs outside the protocol implementation
 Declare the API DTOs in `internal/client/{api}/contract`, importing that package in service and both protocol implementations without importing transport types into service.
 - Risk: a DTO or a service interface changes when the protocol client is replaced.
-- Fix: use the same contract package and names for HTTP/gRPC implementations; the example uses `todoapicontract.ItemDTO` while service constructs domain entities.
+- Fix: import the same logical contract package from each protocol implementation and service, and construct domain entities only in service.
 
 
 ### Copy the client code from templates
@@ -46,7 +52,7 @@ Fill and copy [config.go](./templates/internal/client/core/httpclient/config.go)
 - Fix: copy the files; after filling, searching them for `{module-path}` returns nothing; `make test` passes.
 
 ### Entity-focused client packages
-Write each selected entity-focused API client as `internal/client/{api}/` holding `Prefix` (`"TODO_API"`), `Operations` (an `httpclient.Operation` - method, path, and `Retryable` - for every operation it calls), `New(logger, middlewares)` reading the settings and `NewClient(cfg, logger, middlewares)` taking them, and per operation one method of `Client` with an unexported request and response type and the mechanical mapping into the logical API DTO contract.
+Write each selected entity-focused API client as `internal/client/{api}/` holding `Prefix` (the selected `{API}` settings group), `Operations` (an `httpclient.Operation` - method, path, and `Retryable` - for every operation it calls), `New(logger, middlewares)` reading the settings and `NewClient(cfg, logger, middlewares)` taking them, and per operation one method of `Client` with an unexported request and response type and the mechanical mapping into the logical API DTO contract.
 
 ```go
 // PlanItems is POST /v1/items/plan: one open item per title, planned by the API.
@@ -65,7 +71,7 @@ func (c *Client) PlanItems(ctx context.Context, titles []string) ([]todoapicontr
 
 - Violation: `http.Client` used in the client beside `Call`; the client returning `entity` types or the application's kinds; an operation missing from `Operations`.
 - Risk: a call that bypasses `Call` has no timeout, no log, and no request id; the contract scenario misses the operation.
-- Fix: follow the example's [todoapi.go](./examples/internal/client/todoapi/todoapi.go); a new operation adds its method, its two types, its line of `Operations`, and its route in [todoapi_mock.go](./examples/internal/client/todoapi/mock/todoapi_mock.go).
+- Fix: implement each consumed operation through the fixed transport code, translate wire data into the shared logical API DTOs, register the operation in `Operations`, and implement the corresponding emulator behavior.
 
 ### Answer every operation in the mock
 Write the mock of each client as `internal/client/{api}/mock/{api}_mock.go`, package `mock`, with `Emulator()` returning an `http.Handler` that answers every operation of `Operations` as the API does, with stable data and no state, and pass it to `httpclient.New`; `{API}_HOST=mock` runs the client against it. The file's name says it is a mock and of which client.
@@ -89,7 +95,7 @@ case err != nil:
 
 - Violation: an entity built from the API's answer whose error is wrapped with `%w`; the client's error formatted into the message (`"the todo service: " + err.Error()`).
 - Risk: an item the other service got wrong is answered to this service's client as its own invalid input, 400 instead of 500; the transport's text, with its hosts and addresses, reaches the client.
-- Fix: the scenarios "Any other answer is a failure with no kind" and "An API that does not answer is unavailable, its failure kept as the cause" of the example's `remote-planner.feature`.
+- Fix: preserve technical dependency failures as causes with application-safe messages, and convert provider-data invariant failures into errors without an application kind or a wrapped domain-kind error.
 
 ### Build the client and the service in main.go
 Build the client with `{api}.New(logger, middlewares)` and the service over it in `// [services]` of `cmd/{app}/main.go`, stopping the start with its error, and pass the service to `command.NewHandlers`. Build the client middleware of the API in `// [client middleware]` before it - empty until a variation point (`vp-client-retry`) adds one - and pass it to `{api}.New(logger, middlewares)`, which hands the client's `Operations` and the list to `httpclient.New`; the client refuses a call of an operation not in `Operations`, and `Retryable` on a `httpclient.Operation` marks one safe to repeat, as [api-client](library/develop/core/api-client.skill/api-client.skill.md) requires.
@@ -113,6 +119,7 @@ Copy the example's `internal/client/core/httpclient/features/` and `test/` uncha
 - Fix: a client feature checks only its own request and mapping.
 
 # Check list
+- [ ] Code delivery follows [Distinguish delivered code from illustrations](#distinguish-delivered-code-from-illustrations).
 - [ ] `internal/client/core/httpclient/{config,client}.go` are filled copies of the templates; no placeholder is left.
 - [ ] Each API has its package with `Prefix`, `Operations`, `New`, `NewClient`, and one method per operation, and its mock in `mock/{api}_mock.go`; the contract scenario passes.
 - [ ] The service maps `outcome.ErrUnavailable`, the expected `outcome.StatusError` codes, and nothing else to kinds; it is the same over HTTP and gRPC.
@@ -126,3 +133,6 @@ One call of the example, with its real classes:
 @import "./diagrams/example-flow.mmd" {as="mermaid"}
 
 - [examples/](./examples/README.md) — the base plateau's startup command planning with another service's todo API: `make run` against its emulator, or against the running HTTP example of [vp-http-api-in-go](library/architecture/go/vp-http-api-in-go.skill/vp-http-api-in-go.skill.md).
+
+- [Client implementation](./examples/internal/client/todoapi/todoapi.go) and [emulator](./examples/internal/client/todoapi/mock/todoapi_mock.go) — illustrate selected operations, wire-to-DTO mapping and mock behavior for the Todo provider.
+- [Adapting service](./examples/internal/service/remote_planner.go) and [service scenarios](./examples/internal/service/features/remote-planner.feature) — illustrate DTO-to-Domain Model adaptation and application error meanings for the sample consumer.

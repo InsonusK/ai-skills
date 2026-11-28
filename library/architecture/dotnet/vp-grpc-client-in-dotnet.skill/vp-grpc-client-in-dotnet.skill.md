@@ -34,6 +34,12 @@ src/Service/{ApiServiceName}/{ApiServiceName}.Service.Tests/ service tests with 
 
 ## MUST
 
+### Distinguish delivered code from illustrations
+Fill and copy explicitly delivered templates and fixed support files as instructed, and write application-specific client/service code for the selected API and consumer, treating snippets and application-specific files under `examples/` as illustrations.
+- Violation: adopting an example's provider names, operations, DTOs or error meanings without deriving them from the target application's contracts.
+- Risk: code compiles against the sample API while implementing the wrong application behavior.
+- Fix: substitute only declared identifiers in delivered fixed code; derive application-specific operations, configuration prefixes, DTOs, Domain Model mapping and error meanings from the target contracts.
+
 ### Keep DTOs in the client abstraction project
 Declare protocol-neutral API DTOs in `{ApiName}.Client.Abstractions` without transport-specific message or library references.
 - Risk: service signatures and errors depend on the selected HTTP/gRPC implementation.
@@ -57,7 +63,7 @@ Compile the copied `.proto` in `{ApiName}.Client.csproj` with `<Protobuf Include
 - Fix: qualify only the local `csharp_namespace` as `{service-namespace}.Contracts.{Name}.V{major}`, preserving protobuf packages, service names and fields; generated types stay internal to the client assembly and are never committed, as [grpc-tools-at-build-time](library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/adr/grpc-tools-at-build-time.md) decided for the API.
 
 ### Entity-focused client contracts and implementations
-Write each selected entity-focused API client as `{ApiName}.Client.Abstractions` with `I{ApiName}Client`, referencing only `Client.Abstractions`, and `{ApiName}.Client` with `{ApiName}Client : I{ApiName}Client, IDisposable` holding `Prefix` (`"TODO_API"`), `Methods` (a `GrpcMethod` - the full name and `Retryable` where a repeat does what one call does - for every method it calls), a `GrpcApiClient` built with its mock's `Bind`, `Methods`, and the client middleware of its constructor, the generated client over its `CallInvoker`, and per method one method that calls it and maps the response.
+Write each selected entity-focused API client as `{ApiName}.Client.Abstractions` with `I{ApiName}Client`, referencing only `Client.Abstractions`, and `{ApiName}.Client` with `{ApiName}Client : I{ApiName}Client, IDisposable` holding `Prefix` (the selected `{API}` settings group), `Methods` (a `GrpcMethod` - the full name and `Retryable` where a repeat does what one call does - for every method it calls), a `GrpcApiClient` built with its mock's `Bind`, `Methods`, and the client middleware of its constructor, the generated client over its `CallInvoker`, and per method one method that calls it and maps the response.
 
 ```csharp
 public async Task<IReadOnlyList<TodoItemDto>> PlanItemsAsync(IReadOnlyList<string> titles, CancellationToken cancellationToken)
@@ -69,7 +75,7 @@ public async Task<IReadOnlyList<TodoItemDto>> PlanItemsAsync(IReadOnlyList<strin
 
 - Violation: `GrpcChannel.ForAddress` in the client; a blocking or streaming call; a method missing from `Methods`.
 - Risk: a channel that bypasses `GrpcApiClient` has no deadline, no log, and no request id; the contract scenario misses the method.
-- Fix: follow the example's [TodoClient.cs](./examples/src/Client/Todo/Todo.Client/TodoClient.cs); a new method adds its method to `I{ApiName}Client` and `{ApiName}Client`, its line of `Methods`, and its override in [TodoMock.cs](./examples/src/Client/Todo/Todo.Client/Mock/TodoMock.cs).
+- Fix: add each consumed method to `I{ApiName}Client`, implement it in `{ApiName}Client` through the fixed transport code, register it in `Methods`, and implement the corresponding mock behavior.
 
 ### Answer every method in the mock
 Write the mock of each client as `src/Client/{ApiName}/{ApiName}.Client/Mock/{ApiName}Mock.cs`, an internal class overriding the generated service base for every method of `Methods`, with stable data and no state, throwing `RpcException` where the API answers a status, and a static `Bind(ServiceBinderBase)` that binds it; `{API}_HOST=mock` serves it through `EmulatorCallInvoker` behind the same `CallInterceptor`, each message through its wire form.
@@ -80,7 +86,7 @@ Write the mock of each client as `src/Client/{ApiName}/{ApiName}.Client/Mock/{Ap
 Write the adapting implementation in `src/Service/{ApiServiceName}/{ApiServiceName}.Service/` against its consumer-owned interface and the logical client contracts, adapting operations and API DTOs to Domain Model through the domain's public APIs.
 - Violation: returning client DTOs to the handler; catching `RpcException` in service; treating invalid provider data as invalid caller input.
 - Risk: transport or provider changes reach consumers, or a broken dependency response is attributed to the caller.
-- Fix: use the local [RemotePlannerService.cs](./examples/src/Service/Todo/Todo.Service/RemotePlannerService.cs) and [RemotePlannerErrors.cs](./examples/src/Service/Todo/Todo.Service/RemotePlannerErrors.cs) as illustrations of Domain Model construction and outcome translation: `ApiUnavailableException` becomes unavailable, expected `ApiStatusException` codes receive application meanings, and other failures pass through without a kind; keep [IRemotePlanner.cs](./examples/src/Modules/Todo/Todo.Application/Services/IRemotePlanner.cs) beside its consumer, with project references governed by app-layers-in-dotnet.
+- Fix: translate `ApiUnavailableException` to unavailable and expected `ApiStatusException` codes to application meanings, let other technical failures pass through without a kind, construct Domain Model through its public APIs, and keep the service interface beside its consumer.
 
 ### Build the client and the service in Program.cs
 Load the settings with `GrpcApiConfig.Load({ApiName}Client.Prefix)` in `// [services]` of `Program.cs`, stopping the start with "startup failed" on a `FormatException`, and register the client as a singleton of `I{ApiName}Client` built with a logger of the logger factory, and the service as a singleton of its interface; the provider disposes the client, and with it the channel. Build the client middleware of the API in `// [client middleware]` inside the client's registration - empty until a variation point (`vp-client-retry`) adds one - and pass it to the client's constructor.
@@ -90,9 +96,10 @@ Load the settings with `GrpcApiConfig.Load({ApiName}Client.Prefix)` in `// [serv
 ### Cover the client with scenarios
 Copy the example's `Client.Grpc.Tests` with the chosen service namespace: it covers the settings, the call, the outcomes, the log, and the mock through an echo API of its own, served on Kestrel over HTTP/2 in plain text. Write per client an `{ApiName}.Client.Tests` calling each method against a Kestrel server of the scenario and its mock, and its contract scenario finding each of `Methods` in the descriptor compiled from the copied file (`{File}Reflection.Descriptor`); test each adapting service in `{ApiServiceName}.Service.Tests` with client contracts faked and each command with its service port faked; tag them `@type/tech-check` and `@type/service`.
 - Risk: a client feature that repeats the outcomes of the interceptor grows with every method and tests nothing new.
-- Fix: a client feature checks only its own request and mapping; the generated code cannot be stale, so no scenario compares it with the copy; the local [remote-planner.feature](./examples/src/Service/Todo/Todo.Service.Tests/features/remote-planner.feature) and [RemotePlannerSteps.cs](./examples/src/Service/Todo/Todo.Service.Tests/Steps/RemotePlannerSteps.cs) demonstrate service tests through fake client contracts.
+- Fix: check client request/wire mapping separately from service DTO-to-Domain Model mapping and application error meanings, faking the boundary below each subject; build-time-generated code needs no stale-copy comparison.
 
 # Check list
+- [ ] Code delivery follows [Distinguish delivered code from illustrations](#distinguish-delivered-code-from-illustrations).
 - [ ] `Client.Abstractions` and `Client.Grpc` are copies of the filled templates.
 - [ ] The consumed `.proto` and generated access follow [Compile the consumed contract into the client, internal](#compile-the-consumed-contract-into-the-client-internal).
 - [ ] Each API has `{ApiName}.Client.Abstractions` with `I{ApiName}Client` and `{ApiName}.Client` with `Prefix`, `Methods`, one method per method, and `Mock/{ApiName}Mock.cs`; the contract scenario passes.
@@ -110,3 +117,5 @@ One call of the example, with its real classes:
 - [RemotePlannerService.cs](./examples/src/Service/Todo/Todo.Service/RemotePlannerService.cs) and [RemotePlannerErrors.cs](./examples/src/Service/Todo/Todo.Service/RemotePlannerErrors.cs) — application-specific adaptation and error translation, written per integration rather than copied as fixed templates.
 - [IRemotePlanner.cs](./examples/src/Modules/Todo/Todo.Application/Services/IRemotePlanner.cs) — the consumer-owned service port.
 - [remote-planner.feature](./examples/src/Service/Todo/Todo.Service.Tests/features/remote-planner.feature) and [RemotePlannerSteps.cs](./examples/src/Service/Todo/Todo.Service.Tests/Steps/RemotePlannerSteps.cs) — service behavior exercised with fake clients.
+
+- [Client implementation](./examples/src/Client/Todo/Todo.Client/TodoClient.cs) and [emulator](./examples/src/Client/Todo/Todo.Client/Mock/TodoMock.cs) — illustrate selected operations, wire-to-DTO mapping and mock behavior for the Todo provider.

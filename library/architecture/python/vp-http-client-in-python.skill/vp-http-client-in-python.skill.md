@@ -38,6 +38,12 @@ src/{package}/service/{name}.py             Domain Model adaptation and error me
 
 ## MUST
 
+### Distinguish delivered code from illustrations
+Fill and copy explicitly delivered templates and fixed support files as instructed, and write application-specific client/service code for the selected API and consumer, treating snippets and application-specific files under `examples/` as illustrations.
+- Violation: adopting an example's provider names, operations, DTOs or error meanings without deriving them from the target application's contracts.
+- Risk: code compiles against the sample API while implementing the wrong application behavior.
+- Fix: substitute only declared identifiers in delivered fixed code; derive application-specific operations, configuration prefixes, DTOs, Domain Model mapping and error meanings from the target contracts.
+
 ### Keep logical DTOs outside the protocol implementation
 Declare API DTOs in `client/{api}/dto.py` and export only contracts from that package's `__init__.py`, importing the concrete `{api}.py` module explicitly in composition and client tests.
 - Risk: importing a service's DTOs implicitly imports a concrete protocol and its dependencies.
@@ -50,7 +56,7 @@ Copy [client/core/](./templates/src/{package}/client/core/) to `src/{package}/cl
 - Fix: copy the files; after filling, searching them for `{package}` returns nothing; `make test` and `make lint` pass.
 
 ### Entity-focused client packages
-Write each selected entity-focused API client as `src/{package}/client/{api}/` holding `PREFIX` (`"TODO_API"`), `OPERATIONS` (an `Operation` - method, path, and `retryable` - for every operation it calls), `new(logger, middlewares)` reading the settings, a client class taking `HttpConfig` with `aclose()`, and per operation one method that calls `HttpClient.call` with a private request dataclass and a private function reading the answer into the client's own dataclasses.
+Write each selected entity-focused API client as `src/{package}/client/{api}/` holding `PREFIX` (the selected `{API}` settings group), `OPERATIONS` (an `Operation` - method, path, and `retryable` - for every operation it calls), `new(logger, middlewares)` reading the settings, a client class taking `HttpConfig` with `aclose()`, and per operation one method that calls `HttpClient.call` with a private request dataclass and a private function reading the answer into the client's own dataclasses.
 
 ```python
 async def plan_items(self, titles: list[str]) -> list[ItemDTO]:
@@ -60,7 +66,7 @@ async def plan_items(self, titles: list[str]) -> list[ItemDTO]:
 
 - Violation: `httpx2` used in the client beside `call`; the client raising a `KindError`; an operation missing from `OPERATIONS`.
 - Risk: a call that bypasses `call` has no timeout, no log, and no request id; the contract scenario misses the operation.
-- Fix: follow the example's [todo_api.py](./examples/src/todo/client/todo_api/todo_api.py); a new operation adds its method, its request and its reading, its line of `OPERATIONS`, and its route in [todo_api_mock.py](./examples/src/todo/client/todo_api/mock/todo_api_mock.py).
+- Fix: implement each consumed operation through the fixed transport code, translate its wire data into logical API DTOs, register it in `OPERATIONS`, and implement the corresponding emulator behavior; preserve the same logical contract across equivalent transports.
 
 ### Answer every operation in the mock
 Write the mock of each client as `src/{package}/client/{api}/mock/{api}_mock.py` with `emulator(request: httpx2.Request) -> httpx2.Response` answering every operation of `OPERATIONS` as the API does, with stable data and no state, and pass it to `HttpClient`; `{API}_HOST=mock` runs the client against it through `httpx2.MockTransport`. The file's name says it is a mock and of which client.
@@ -81,7 +87,7 @@ except ApiStatusError as error:
 
 - Violation: the `KindError` of an entity built from the answer raised `from error`, which `kind_of` follows.
 - Risk: an item the other service got wrong is answered to this service's client as its own invalid input.
-- Fix: the scenario "Any other answer is a failure with no kind" of the example's `remote-planner.feature`.
+- Fix: raise provider-data invariant failures without an application kind and `from None`; retain expected technical dependency failures as the causes of their application errors.
 
 ### Build the client and the service in main.py
 Build the client middleware of the API in `# [client middleware]` before it - empty until a variation point (`vp-client-retry`) adds one - and pass it to `{api}.new(logger, middlewares)`; the client refuses a call of an operation not in its list, and `retryable` marks one safe to repeat, as [api-client](library/develop/core/api-client.skill/api-client.skill.md) requires. Build the client with `{api}.new(logger, middlewares)` in `# [services]` of `main.py`, stopping the start with "startup failed" on its `ValueError`, build the service over it, pass the service to `build_handlers` as the keyword parameter of the command that uses it, and close the client when `run_all` returns.
@@ -94,6 +100,7 @@ Copy the example's `httpclient/features/` and `httpclient/test/` unchanged but f
 - Fix: a client feature checks only its own request and reading.
 
 # Check list
+- [ ] Code delivery follows [Distinguish delivered code from illustrations](#distinguish-delivered-code-from-illustrations).
 - [ ] `src/{package}/client/core/` is a filled copy of the templates; no placeholder is left.
 - [ ] Each API has its package with `PREFIX`, `OPERATIONS`, `new`, a client with `aclose` and one method per operation, and `mock/{api}_mock.py`; the contract scenario passes.
 - [ ] The service maps `ApiUnavailableError`, the expected `ApiStatusError` codes, and nothing else to kinds.
@@ -106,3 +113,6 @@ One call of the example, with its real classes:
 @import "./diagrams/example-flow.mmd" {as="mermaid"}
 
 - [examples/](./examples/README.md) — the base plateau's startup command planning with another service's todo API: `make run` against its emulator, or against a running HTTP example of [vp-http-api-in-python](library/architecture/python/vp-http-api-in-python.skill/vp-http-api-in-python.skill.md).
+
+- [Client implementation](./examples/src/todo/client/todo_api/todo_api.py) and [emulator](./examples/src/todo/client/todo_api/mock/todo_api_mock.py) — illustrate selected operations, wire-to-DTO mapping and mock behavior for the Todo provider.
+- [Adapting service](./examples/src/todo/service/remote_planner.py) and [service scenarios](./examples/src/todo/service/features/remote-planner.feature) — illustrate DTO-to-Domain Model adaptation and application error meanings for the sample consumer.

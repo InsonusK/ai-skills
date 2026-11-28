@@ -32,6 +32,12 @@ src/Client/
 
 ## MUST
 
+### Distinguish delivered code from illustrations
+Fill and copy explicitly delivered templates and fixed support files as instructed, and write application-specific client/service code for the selected API and consumer, treating snippets and application-specific files under `examples/` as illustrations.
+- Violation: adopting an example's provider names, operations, DTOs or error meanings without deriving them from the target application's contracts.
+- Risk: code compiles against the sample API while implementing the wrong application behavior.
+- Fix: substitute only declared identifiers in delivered fixed code; derive application-specific operations, configuration prefixes, DTOs, Domain Model mapping and error meanings from the target contracts.
+
 ### Fill the service namespace
 Fill `{service-namespace}` with the application's namespace root from [the namespace convention](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md#qualify-namespaces-with-the-service-name) before copying this skill's templates.
 - Risk: an unfilled identifier does not compile, while a different root in each file splits the service's types.
@@ -59,9 +65,10 @@ IReadOnlyList<IClientMiddleware> todoApiMiddlewares =
 ### Mark the retryable operations in the adapter
 Set `Retryable: true` on each `HttpOperation` or `GrpcMethod` of the adapter's list whose repeat does what one call does, with a comment saying why, and hold the mark in the contract scenario's table.
 - Risk: an unmarked operation is never repeated, a wrongly marked one is done twice.
-- Fix: the example's `TodoClient.Operations` marks `POST /v1/items/plan`, which stores nothing.
+- Fix: justify retry safety from the operation contract, set the retryable mark only when repetition is safe, and verify the selected marks in the contract scenarios.
 
 # Check list
+- [ ] Code delivery follows [Distinguish delivered code from illustrations](#distinguish-delivered-code-from-illustrations).
 - [ ] `src/Client/Middleware/Retry` is an copy of the filled templates; `App.Host` references it.
 - [ ] `Program.cs` loads the retry settings of each API and lists the middleware in its client middleware.
 - [ ] Only operations whose repeat does what one call does are `Retryable`; the contract scenario holds the marks.
@@ -73,3 +80,6 @@ One call of the example, with its real classes:
 @import "./diagrams/example-flow.mmd" {as="mermaid"}
 
 - [examples/](./examples/README.md) — the HTTP client example with the retry attached: `TODO_API_HOST=localhost TODO_API_HTTP_PORT=1 make run` shows three attempts and two "api client call retried" warnings before the startup command fails unavailable.
+
+- [Client implementation](./examples/src/Client/Todo/Todo.Client/TodoClient.cs) and [emulator](./examples/src/Client/Todo/Todo.Client/Mock/TodoMock.cs) — illustrate selected operations, wire-to-DTO mapping and mock behavior for the Todo provider.
+- [Adapting service](./examples/src/Service/Todo/Todo.Service/RemotePlannerService.cs) and [service scenarios](./examples/src/Service/Todo/Todo.Service.Tests/features/remote-planner.feature) — illustrate DTO-to-Domain Model adaptation and application error meanings for the sample consumer.
