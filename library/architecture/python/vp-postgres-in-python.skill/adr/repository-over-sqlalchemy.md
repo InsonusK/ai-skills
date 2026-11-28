@@ -43,6 +43,10 @@ Python has no library like Ardalis.Specification. A generic `Repository[TRow]` m
 ### Description
 SQL text, and a mapping of rows to classes written by us.
 
+### Benefits
+- Full control over the SQL text — no ORM behaviors to work around, and no private fields of a query object read for the refusal.
+- The only dependency is the driver itself; no ORM release cycle to track.
+
 ### Costs
 - A builder of conditions and joins of our own, copied into every project and kept by us.
 
@@ -50,6 +54,10 @@ SQL text, and a mapping of rows to classes written by us.
 
 ### Description
 SQLAlchemy with Pydantic models as rows.
+
+### Benefits
+- Pydantic validation on the rows comes free, and a model can double as a DTO where a service needs one.
+- A familiar API for developers coming from the FastAPI ecosystem.
 
 ### Costs
 - A second layer over SQLAlchemy with its own releases. Its async support lags SQLAlchemy's, and the rows carry validation the service does already.

@@ -29,8 +29,8 @@ depends_on:
   - "[[library/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
 built_on_plateau:
 adr:
-  - "[[library/testing/dotnet/solution-conformance-testing-in-dotnet.skill/adr/testing-tool-choice|Testing tool choice]]"
-  - "[[library/testing/dotnet/solution-conformance-testing-in-dotnet.skill/adr/xunit-v2-until-stryker-supports-xunit-v3|xUnit v2 on VSTest until Stryker.NET supports xunit.v3]]"
+  - adr/testing-tool-choice.md
+  - adr/xunit-v2-until-stryker-supports-xunit-v3.md
 ---
 
 # Goal

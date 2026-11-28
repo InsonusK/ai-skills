@@ -23,6 +23,8 @@ Dexie.js is used purely as a typed, reactive storage layer for queue records —
 
 ## Dexie.js + custom orchestration on top of Facade/Client
 
+**Selected.**
+
 ### Description
 
 Dexie.js provides typed tables, transactions, and `liveQuery()` for reactive UI updates as queue records are added/removed. It carries no opinion about what "sync" means — the queue simply stores records of the form "call this Facade operation with these arguments," and a custom replay orchestrator (triggered by the `connectivity` slice from the "Offline-first" solution) works through the queue, invoking the real Facade/Client methods already established by `solution-api-http-layer`.

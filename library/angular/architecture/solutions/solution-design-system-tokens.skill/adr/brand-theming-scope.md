@@ -23,6 +23,8 @@ The design system ships one brand palette, defined once via `mat.theme()`, consu
 
 ## Single fixed brand palette, revisit later
 
+**Selected.**
+
 ### Description
 
 One `mat.theme()` definition, one brand palette, used everywhere. If a genuine need for per-tenant/multi-brand theming arises later, it becomes its own dedicated solution with its own ADR, informed by the actual requirements at that time (which tenants, how palettes are supplied, whether it's build-time or runtime-configurable).

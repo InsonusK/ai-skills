@@ -13,7 +13,7 @@ tags:
 The catalog and testing skill specify different folders for the same feature files and bindings.
 
 # Selected variant
-[Features and Steps owned by the testing skill](#features-and-steps-owned-by-the-testing-skill)
+**Selected variant:** [[#Features and Steps owned by the testing skill]]
 
 # Searched variants
 

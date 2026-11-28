@@ -34,7 +34,7 @@ depends_on:
   - "[[library/dotnet/architecture/solutions/solution-mediator-integration.skill/solution-mediator-integration.skill|solution-mediator-integration]]"
 built_on_plateau:
 adr:
-  - "[[library/dotnet/architecture/solutions/solution-http-api-publication.skill/adr/reads-require-persistence|GET actions require persistence (VP-C001); command dispatch is common]]"
+  - adr/reads-require-persistence.md
 ---
 
 # Goal
@@ -68,7 +68,7 @@ adr:
 # Boundaries
 - Optional, and independent of [[library/dotnet/architecture/solutions/solution-grpc-integration.skill/solution-grpc-integration.skill|solution-grpc-integration]] (VP9). Apply this alone for HTTP-only, gRPC alone for gRPC-only, or both — both extend the same `partial ApiRegistration` from [[library/dotnet/architecture/solutions/solution-api-project.skill/solution-api-project.skill|solution-api-project]] and dispatch through the same `ISender`.
 - `solution-repository-integration` is not a dependency — the controller never references `IRepository<T>`, only the handler behind `ISender.Send()` does. Whether persistence exists is invisible from this solution's files, except that GET actions are pointless without a query handler to back them.
-- See the ADR: this is why v3's "requires command or query integration" constraint is inert in v3.1 — command dispatch is common, and the read side is VP-C001.
+- See [reads-require-persistence](./adr/reads-require-persistence.md): this is why v3's "requires command or query integration" constraint is inert in v3.1 — command dispatch is common, and the read side is VP-C001.
 
 # Requirements
 SOLUTION:

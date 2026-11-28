@@ -17,7 +17,7 @@ navigation, while the skill loader also follows those links into implementation
 skills and their dependencies.
 
 # Selected variant
-[Implementation links in the layer table](#implementation-links-in-the-layer-table)
+**Selected variant:** [[#Implementation links in the layer table]]
 
 Owner request, 2026-11-28. This amends discovery in
 [layer-map-and-owned-rules](./layer-map-and-owned-rules.md), preserving its rule

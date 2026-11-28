@@ -23,6 +23,8 @@ Nx is selected as the base workspace tool. It provides everything a plain Angula
 
 ## Nx monorepo
 
+**Selected.**
+
 ### Description
 
 Use Nx as the workspace tool. Each app/lib is its own Nx project with a `project.json`, tagged with a `type:*`/`scope:*` taxonomy that ESLint's `@nx/enforce-module-boundaries` rule checks on every lint run.

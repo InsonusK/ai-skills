@@ -19,7 +19,7 @@ them together makes every topology review load command naming, entry dispatch an
 testing details, while transport VPs have no focused shared API contract.
 
 # Selected variant
-[Layer map with owned implementation contracts](#layer-map-with-owned-implementation-contracts)
+**Selected variant:** [[#Layer map with owned implementation contracts]]
 
 Owner decision, 2026-11-28.
 

@@ -23,6 +23,8 @@ Playwright is adopted for all end-to-end tests.
 
 ## Playwright
 
+**Selected.**
+
 ### Description
 
 A multi-browser (Chromium, Firefox, WebKit) end-to-end framework with built-in auto-waiting, network interception, and trace/video capture for debugging failures.

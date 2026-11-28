@@ -24,6 +24,8 @@ tags:
 
 ## Dedicated plateau-map-create skill
 
+**Selected.**
+
 ### Description
 A new skill owning `{catalog}/plateau/plateau-repository.md` (Plateau × VP matrix, lineage, shape notes), triggered by both plateau changes and VP changes; the constraint cross-check moves there.
 

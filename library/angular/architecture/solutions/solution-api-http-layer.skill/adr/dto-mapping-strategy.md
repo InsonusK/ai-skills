@@ -23,6 +23,8 @@ Every Client hand-writes its own `dtoToModel`/`modelToDto` functions. This is re
 
 ## Manual mapper functions
 
+**Selected.**
+
 ### Description
 
 Each Client defines explicit `{feature}.mapper.ts` functions (e.g. `orderDtoToModel(dto: OrderDto, context: MappingContext): Order`), where `MappingContext` carries whatever additional data (read from `shared-state` or elsewhere) a given mapping needs.

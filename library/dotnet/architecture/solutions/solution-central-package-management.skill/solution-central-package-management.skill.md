@@ -18,7 +18,7 @@ extends:
   - Directory.Build.props
 depends_on:
 adr:
-  - "[[library/dotnet/architecture/solutions/solution-central-package-management.skill/adr/cpm-over-inline-versions|Central Package Management over inline PackageReference versions]]"
+  - adr/cpm-over-inline-versions.md
 ---
 
 # Goal

@@ -37,7 +37,7 @@ depends_on:
   - "[[library/dotnet/architecture/solutions/solution-unit-of-work.skill/solution-unit-of-work.skill|solution-unit-of-work]]"
 built_on_plateau:
 adr:
-  - "[[library/dotnet/architecture/solutions/solution-entity-edit-timestamp.skill/adr/timestamp-handling|Timestamp handling ADR]]"
+  - adr/timestamp-handling.md
 ---
 
 # Goal

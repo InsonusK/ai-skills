@@ -23,6 +23,8 @@ Every design system component declares its public API using `input()`, `output()
 
 ## Signal-based input()/output()/model() exclusively
 
+**Selected.**
+
 ### Description
 
 `input()` exposes a bound value as a read-only `Signal`; `output()` provides a lightweight, RxJS-independent way to emit events (`OutputEmitterRef`, no `EventEmitter`); `model()` provides two-way binding without manually wiring a paired input/output.

@@ -18,6 +18,7 @@ python3 ../library/architecture/agent/dotnet-namespaces/migrate.py
 bash ./check-conformance.sh
 python3 ./check-architecture-tags.py
 python3 ./check-architecture-backlog.py
+python3 ./check-adr-conformance.py
 
 aism --version
 aism sync

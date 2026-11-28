@@ -14,7 +14,7 @@ tags:
 The generated test skills say the production boundary is mirrored, then enumerate narrower permissions. Domain and Interfaces can depend on Shared and contracts; Application can use its permitted contracts. Restating a short test list makes those two rules disagree.
 
 # Selected variant
-[Link the assembled production boundary](#link-the-assembled-production-boundary)
+**Selected variant:** [[#Link the assembled production boundary]]
 
 # Searched variants
 

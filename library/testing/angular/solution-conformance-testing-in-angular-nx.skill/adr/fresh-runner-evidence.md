@@ -16,7 +16,7 @@ tags:
 How can Nx caching avoid masking whether this run executed the tests?
 
 # Selected variant
-[Fresh isolated execution](#fresh-isolated-execution)
+**Selected variant:** [[#Fresh isolated execution]]
 
 # Searched variants
 ## Fresh isolated execution

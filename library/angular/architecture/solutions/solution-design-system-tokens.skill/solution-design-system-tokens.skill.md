@@ -23,9 +23,9 @@ extends:
 depends_on:
   - "[[library/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]"
 adr:
-  - "[[library/angular/architecture/solutions/solution-design-system-tokens.skill/adr/token-consumption-strategy.md|token-consumption-strategy]]"
-  - "[[library/angular/architecture/solutions/solution-design-system-tokens.skill/adr/light-dark-mode-strategy.md|light-dark-mode-strategy]]"
-  - "[[library/angular/architecture/solutions/solution-design-system-tokens.skill/adr/brand-theming-scope.md|brand-theming-scope]]"
+  - adr/token-consumption-strategy.md
+  - adr/light-dark-mode-strategy.md
+  - adr/brand-theming-scope.md
 ---
 
 # Goal

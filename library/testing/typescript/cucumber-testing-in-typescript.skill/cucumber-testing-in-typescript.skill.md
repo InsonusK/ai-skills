@@ -12,7 +12,7 @@ tags:
   - cucumber-js
 
 adr:
-  - "[[library/testing/typescript/cucumber-testing-in-typescript.skill/adr/test-location|Test location]]"
+  - adr/test-location.md
 ---
 
 # Goal

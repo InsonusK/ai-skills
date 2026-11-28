@@ -37,13 +37,13 @@ depends_on:
   - "[[library/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]]"
 built_on_plateau:
 adr:
-  - "library/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/test-layout-owned-by-testing-skill.md"
+  - adr/test-layout-owned-by-testing-skill.md
   - adr/feature-tag-contract.md
-  - "[[library/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/rule-as-irulebuilder-extension|Rule as bool primitive + IRuleBuilder extension]]"
-  - "[[library/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/format-semantic-domain-unification|Format/Semantic/Domain are one mechanism]]"
-  - "[[library/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/rules-project-references-interfaces-only|Domain.Rules references {Module}.Interfaces only — not gated on DomainLogic]]"
-  - "[[library/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/spec-as-exported-cross-language-contract|Domain.Rules.Spec is an exported cross-language contract]]"
-  - "[[library/dotnet/architecture/solutions/solution-domain-shared-rules.skill/adr/spec-folders-per-classification|Domain.Rules.Spec split into folders per classification]]"
+  - adr/rule-as-irulebuilder-extension.md
+  - adr/format-semantic-domain-unification.md
+  - adr/rules-project-references-interfaces-only.md
+  - adr/spec-as-exported-cross-language-contract.md
+  - adr/spec-folders-per-classification.md
 ---
 
 # Goal
@@ -76,7 +76,7 @@ adr:
 - `{Module}.Domain.Rules.Tests` proves the rule's own `IsValid()`/`Check()`/`IRuleBuilder` extension directly — it takes scenarios both from its own project (`{Module}.Domain.Rules.Tests/features/*.feature`, for rule-only edge cases no other layer needs) and, linked in, from `{Module}.Domain.Rules.Spec` (the scenarios shared with `{Module}.Domain.Tests`/`{Module}.Application.Tests`)
 
 # Boundaries
-- **Not gated on DomainLogic** - `{Module}.Domain.Rules.csproj` references only `{Module}.Interfaces` (for `Soft{ValueObject}` types) and FluentValidation — never `{Module}.Domain`. VP4 can be applied to a module with no domain layer: it centralizes conditions duplicated across the common Application-side consumers (`{ValueObject}PropertyValidator`, `{Dto}Validator`). The `extends` entries for `{Module}.Domain.ValueObjects`/`Entities` apply only when VP1/VP3 are present — this solution does **not** `depends_on solution-domain-behaviour` or `solution-value-objects`.
+- **Not gated on DomainLogic** - `{Module}.Domain.Rules.csproj` references only `{Module}.Interfaces` (for `Soft{ValueObject}` types) and FluentValidation — never `{Module}.Domain`. VP4 can be applied to a module with no domain layer: it centralizes conditions duplicated across the common Application-side consumers (`{ValueObject}PropertyValidator`, `{Dto}Validator`). The `extends` entries for `{Module}.Domain.ValueObjects`/`Entities` apply only when VP1/VP3 are present — this solution does **not** `depends_on solution-domain-behaviour` or `solution-value-objects`. Decision recorded in [rules-project-references-interfaces-only](./adr/rules-project-references-interfaces-only.md).
 - Applying this solution is optional; every consumer already works standalone with its own local condition. It does not decide *which* duplicated condition to centralize or *when* — that is the applier's judgement, based on observed duplication, not speculation.
 - `Domain.Rules` defines the predicate and its wiring; the `.extend` files redirect consumers one at a time.
 - This solution authors the `.feature` scenarios and proves them from every .NET layer; it does not own the step definitions of an external consumer that imports the spec into another repo or language — that consumer writes and maintains its own bindings.

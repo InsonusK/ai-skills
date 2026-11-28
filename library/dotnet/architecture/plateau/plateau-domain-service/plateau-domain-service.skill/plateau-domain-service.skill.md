@@ -25,7 +25,7 @@ created_by:
   - "[[library/dotnet/architecture/solutions/solution-http-api-publication.skill/solution-http-api-publication.skill|solution-http-api-publication]]"
   - "[[library/dotnet/architecture/solutions/solution-grpc-client.skill/solution-grpc-client.skill|solution-grpc-client]]"
 adr:
-  - "library/dotnet/architecture/plateau/plateau-domain-service/adr/test-boundary-mirrors-production.md"
+  - adr/test-boundary-mirrors-production.md
 standalone: true
 ---
 

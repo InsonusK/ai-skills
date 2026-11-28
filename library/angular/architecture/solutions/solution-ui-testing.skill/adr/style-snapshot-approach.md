@@ -23,6 +23,8 @@ For every component state already covered by a `spec/{component-name}.visual.spe
 
 ## Computed-style JSON snapshot per element
 
+**Selected.**
+
 ### Description
 Read `getComputedStyle()` in-page via Playwright (`page.$eval`/`locator.evaluate`), project it down to a fixed, shared list of visually meaningful properties, serialize to JSON, and commit it as a text snapshot next to the pixel baseline.
 

@@ -33,7 +33,7 @@ command/                          api/{kind}/
     └── {name}/                       └── {name}/
 ```
 
-- **The registry is where commands meet middleware** - One function of the command layer builds every handler with its services and wraps each with the same list; no handler is wrapped anywhere else.
+- **The registry is where commands meet middleware** - One function of the command layer builds every handler with its services and wraps each with the same list; no handler is wrapped anywhere else. Decision recorded in [command-registry-and-middleware-lists](./adr/command-registry-and-middleware-lists.md).
 - **The composition root reads as a list** - It shows which variation points are attached and in which order; the code of each lives in its own directories.
 
 # Scope

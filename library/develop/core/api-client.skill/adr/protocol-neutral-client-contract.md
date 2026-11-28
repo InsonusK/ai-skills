@@ -17,7 +17,7 @@ client-owned API DTOs open. Transport-specific generated signatures, HTTP status
 exceptions cannot satisfy that requirement at the service boundary.
 
 # Selected variant
-[Client-owned logical API contract](#client-owned-logical-api-contract)
+**Selected variant:** [[#Client-owned logical API contract]]
 
 Owner requirement, 2026-11-28. This resolves the DTO representation left open by
 [api-dtos-returned-to-service](./api-dtos-returned-to-service.md); consumer-model

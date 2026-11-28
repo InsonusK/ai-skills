@@ -16,7 +16,7 @@ Amended on 2026-11-26: the name Client remains; the current sibling location and
 The text of api-client and of the client variation points said adapter, the code said client, and the owner talks of client and service. A reader had to learn that two words name one thing. Owner decision, 2026-10-30: one word, client.
 
 # Selected variant
-[Client](#client)
+**Selected variant:** [[#Client]]
 
 # Searched variants
 

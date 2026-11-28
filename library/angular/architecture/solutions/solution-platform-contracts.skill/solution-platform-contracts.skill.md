@@ -18,7 +18,7 @@ creates:
 extends: []
 depends_on: []
 adr:
-  - "[[library/angular/architecture/solutions/solution-platform-contracts.skill/adr/contracts-as-published-package.md|contracts-as-published-package]]"
+  - adr/contracts-as-published-package.md
 ---
 
 # Goal

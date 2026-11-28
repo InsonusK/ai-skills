@@ -25,7 +25,7 @@ depends_on:
   - "[[library/angular/architecture/solutions/solution-logging-base.skill/solution-logging-base.skill.md|solution-logging-base]]"
   - "[[library/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
 adr:
-  - "[[library/angular/architecture/solutions/solution-logging-global.skill/adr/backend-log-sink-strategy.md|Backend Log Sink Strategy ADR]]"
+  - adr/backend-log-sink-strategy.md
 ---
 
 # Goal

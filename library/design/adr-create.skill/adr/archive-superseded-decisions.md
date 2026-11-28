@@ -18,7 +18,7 @@ makes agents and reviewers repeatedly reconcile history with the current rule.
 Deleting the predecessor loses the reason the replacement was needed.
 
 # Selected variant
-[Archive history behind the replacement](#archive-history-behind-the-replacement)
+**Selected variant:** [[#Archive history behind the replacement]]
 
 Owner agreement, 2026-11-28.
 

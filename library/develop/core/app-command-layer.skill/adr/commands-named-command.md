@@ -15,7 +15,7 @@ tags:
 Go writes `command.PlanItems`, so the package names the layer at every use; but `command.PlanItemsResult` and `command.ItemView` carry the same prefix, so the prefix says "of the command layer", not "a command". dotnet drops the namespace at the use site (`new PlanItems(...)`), and the rpc method `PlanItems` of the generated gRPC base clashed with it.
 
 # Selected variant
-[Command suffix in every stack](#command-suffix-in-every-stack)
+**Selected variant:** [[#Command suffix in every stack]]
 - Owner decision, 2026-10-22: a reader should see that `PlanItemsCommand` is a command without knowing that the codebase names commands by verbs.
 
 # Searched variants

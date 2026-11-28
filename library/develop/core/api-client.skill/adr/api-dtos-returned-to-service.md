@@ -15,7 +15,7 @@ tags:
 Should the client map a response into application values when one response is enough, or should all consumer-model mapping belong to service?
 
 # Selected variant
-[API DTOs mapped by service](#api-dtos-mapped-by-service)
+**Selected variant:** [[#API DTOs mapped by service]]
 
 Owner decision, 2026-11-26.
 

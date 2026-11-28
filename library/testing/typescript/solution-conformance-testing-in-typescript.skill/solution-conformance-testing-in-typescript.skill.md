@@ -27,7 +27,7 @@ extends:
 depends_on:
   - "[[library/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
 adr:
-  - "[[library/testing/typescript/solution-conformance-testing-in-typescript.skill/adr/testing-tool-choice|Testing tool choice]]"
+  - adr/testing-tool-choice.md
 ---
 
 # Goal

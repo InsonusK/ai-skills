@@ -26,7 +26,7 @@ depends_on:
   - "[[library/dotnet/architecture/solutions/solution-central-package-management.skill/solution-central-package-management.skill|solution-central-package-management]]"
 built_on_plateau:
 adr:
-  - "[[library/dotnet/architecture/solutions/solution-sln-structure.skill/adr/module-project-set-extensibility|Base set of two projects (Interfaces, Application), extensible by pattern solutions]]"
+  - adr/module-project-set-extensibility.md
 ---
 # Goal
 - Define a module as a self-contained bounded context that owns its domain, application logic, API surface, and public contracts

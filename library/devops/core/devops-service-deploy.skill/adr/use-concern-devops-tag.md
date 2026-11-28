@@ -1,7 +1,7 @@
 ---
 name: use-concern-devops-tag
 description: Decide which concern tag should represent deployment skills in the facet vocabulary for devops-service-deploy.
-problem: Should the skill use concern/operations, concern/ci, concern/ci, or a free-form devops tag?
+problem: Should the skill use concern/operations, concern/devops, concern/ci, or a free-form devops tag?
 decision: Use concern/ci for the devops-service-deploy skill.
 tags:
   - stack
@@ -19,12 +19,10 @@ The devops-service-deploy skill needs a `concern/*` tag from the controlled face
 
 # Searched variants
 
-## concern/ci
-
-**Selected.**
+## concern/devops
 
 ### Description
-Register `concern/ci` as the controlled facet value for skills that address the DevOps process, including deployment, infrastructure, and CI/CD.
+Register `concern/devops` as the controlled facet value for skills that address the DevOps process, including deployment, infrastructure, and CI/CD.
 
 ### Benefits
 - Matches the top-level `library/devops/` folder name, making tag-based discovery intuitive.
@@ -33,7 +31,7 @@ Register `concern/ci` as the controlled facet value for skills that address the 
 
 ### Costs
 - `devops` is an umbrella term; it is less precise than `concern/operations` for pure deployment skills.
-- Existing CI-related skills use `concern/ci`; introducing `concern/ci` creates a sibling relationship that could confuse hierarchy purists.
+- Existing CI-related skills use `concern/ci`; introducing `concern/devops` creates a sibling relationship that could confuse hierarchy purists.
 
 ## concern/operations
 
@@ -49,6 +47,8 @@ Register `concern/operations` as the controlled facet value for deployment and o
 - Does not align with the `library/devops/` folder structure.
 
 ## concern/ci
+
+**Selected.**
 
 ### Description
 Tag the skill with `concern/ci`, treating deployment as part of the CI/CD pipeline.

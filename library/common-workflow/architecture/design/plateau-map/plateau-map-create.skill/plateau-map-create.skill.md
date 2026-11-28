@@ -8,7 +8,7 @@ tags:
   - stack
   - concern/architecture
 adr:
-  - "[[library/common-workflow/architecture/design/plateau-map/plateau-map-create.skill/adr/plateau-code-by-combination|Plateaus are coded by their VP combination, not named by topic]]"
+  - adr/plateau-code-by-combination.md
 ---
 
 # Goal

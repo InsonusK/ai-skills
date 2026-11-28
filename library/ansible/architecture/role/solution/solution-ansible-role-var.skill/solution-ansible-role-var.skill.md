@@ -30,8 +30,8 @@ extends:
   - "ansible.cfg"
 depends_on:
 adr:
-  - "[[adr/three-tier-variable-precedence.md|Three-tier variable precedence]]"
-  - "[[adr/secret-tier-isolation.md|Secret tier isolation]]"
+  - adr/three-tier-variable-precedence.md
+  - adr/secret-tier-isolation.md
 ---
 
 # Goal

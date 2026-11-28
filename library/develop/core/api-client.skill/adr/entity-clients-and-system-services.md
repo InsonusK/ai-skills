@@ -14,7 +14,7 @@ tags:
 How should a large provider contract be split, and may one external-system service use several clients?
 
 # Selected variant
-[Entity clients under a system service](#entity-clients-under-a-system-service)
+**Selected variant:** [[#Entity clients under a system service]]
 
 Owner decision, 2026-11-26.
 

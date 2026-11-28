@@ -42,5 +42,9 @@ The rows are SQLAlchemy classes, so the schema is written twice: in the rows and
 ### Description
 `0001_{what}.sql` files and a table of applied versions, as goose does in Go.
 
+### Benefits
+- Migrations are plain SQL, reviewable without knowing Alembic's revision format — and named exactly what they do, never a generated drop-and-add rename.
+- No live database is needed to write a migration, so generating one needs no `DATABASE_DSN`.
+
 ### Costs
 - A runner of our own to copy and keep, and no generation from the rows.
