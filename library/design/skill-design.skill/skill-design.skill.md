@@ -2,7 +2,7 @@
 name: skill-design
 description: How a skill file is organized so an AI agent can find, load, and follow it — Human Flat vs Dir, folder and file naming, the top-level section set, cross-skill links, supporting files, and ADRs; the entry point that also requires skill-content and skill-tags
 whenToUse: when you create a new skill, or change how one is organized — its Human Flat/Dir format, file and folder layout, top-level sections, cross-skill links, or ADRs
-updated: 20261013
+updated: 20261128
 tags:
   - skill/core
   - stack
@@ -128,7 +128,7 @@ Link a skill this one needs to finish its own artifact — an input it reads, a 
 - Fix: keep links for inputs, required sub-steps, and applied standards; name a later stage or an out-of-scope boundary in plain words.
 
 ### Record decisions as ADRs
-When a choice between considered variants — each with real benefits and costs — is made while writing or updating a skill, record it as an ADR following [adr-create.skill.md](library/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md), inside the skill folder that owns the decision.
+When a choice between considered variants — each with real benefits and costs — is made while writing or updating a skill, record it as an ADR following [adr-create.skill.md](library/design/adr-create.skill/adr-create.skill.md), inside the skill folder that owns the decision.
 - Violation: choosing between approaches during the session and moving on without an ADR file, leaving the reasoning only in conversation history.
 - Risk: the rejected alternatives and trade-offs are lost, and the decision gets re-argued the next time someone touches the skill.
 - Fix: create the ADR immediately, register it in the skill's `adr:` YAML property, and link it from the skill body.
@@ -174,6 +174,6 @@ Add diagrams, templates, or ADRs inside the skill folder when they make the skil
 - [ ] The skill is split by stack only when a second, differing stack implementation exists or is planned, and then per [[library/design/skill-stack-split.skill/skill-stack-split.skill.md|skill-stack-split]]; otherwise it is one skill with no `-in-{stack}` suffix.
 - [ ] Examples referenced by this skill live in its own `examples/` folder, not another skill.
 - [ ] `description`/`whenToUse` does not join two independently-triggered procedures with "plus/also/and separately".
-- [ ] Every decision made while writing this skill is an ADR following [adr-create](library/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md), registered in `adr:` and linked from the body.
+- [ ] Every decision made while writing this skill is an ADR following [adr-create](library/design/adr-create.skill/adr-create.skill.md), registered in `adr:` and linked from the body.
 - [ ] [[library/design/skill-content.skill/skill-content.skill.md|skill-content]]'s `# Check list` passes for this skill's prose.
 - [ ] [[library/design/skill-tags.skill/skill-tags.skill.md|skill-tags]]'s `# Check list` passes for this skill's tags.

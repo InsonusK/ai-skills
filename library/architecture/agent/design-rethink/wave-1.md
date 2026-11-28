@@ -177,3 +177,15 @@ replacement path; working skill/catalog/backlog references use the current DTO
 ADR. The expanded check gate validates the authoring standard and checks that the
 archive resolves to a replacement, is not actively registered, and is referenced
 only by that replacement among the reviewed contracts.
+
+## ADR authoring skill relocation
+
+Owner request: adr-create now lives under library/design/adr-create.skill with
+its templates, example and owning ADRs. Incoming standard links, legacy authoring
+skill/template links and the mechanical gate use the new source path. Internal
+relative links are preserved by moving the whole skill directory. Generated
+agent copies are not hand-edited.
+
+Relocation validation: no old source-path references remain; the shared gate and
+repository suite pass, and 812 skills sync. Validation logs were refreshed through
+validation_queue.py (registration/pruning only, no validation dates stamped).

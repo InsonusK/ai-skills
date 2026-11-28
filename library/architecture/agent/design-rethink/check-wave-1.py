@@ -12,7 +12,7 @@ skills = [ROOT / f'library/develop/core/{name}.skill/{name}.skill.md' for name i
 skills.append(ROOT / 'library/develop/core/app-domain-layer.skill.md')
 files = [file for name in names for file in (ROOT / f'library/develop/core/{name}.skill').rglob('*.md')]
 files.append(skills[-1])
-authoring = ROOT / 'library/common-workflow/architecture/design/adr-create.skill'
+authoring = ROOT / 'library/design/adr-create.skill'
 skills.append(authoring / 'adr-create.skill.md')
 files.extend(authoring.rglob('*.md'))
 errors = []

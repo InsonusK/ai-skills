@@ -2,7 +2,7 @@
 name: plateau-update-by-solutions
 description: When a solution is added to a plateau or a solution used by a plateau is updated, propagate changes to the plateau root skill and to every skill inside the plateau's structure folder.
 whenToUse: when a solution is added to a plateau, when an existing solution referenced by a plateau is updated, or when a solution is removed from a plateau
-updated: 20260909
+updated: 20261128
 tags:
   - skill/architecture/plateau/design
   - stack
@@ -20,7 +20,7 @@ tags:
 - **Propagate every solution change through the whole plateau** - A solution added, updated, or removed must reach the plateau root skill and every `structure/**` skill assembled from that solution, or those skills go stale.
 - **An update is assembly re-run over a diff** - Discovery of affected files and name normalization use the exact rules from [[library/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill|plateau-create-by-solutions]].
 - **Reach every descendant** - A shared solution's change must follow `parent_plateaus` into every child and grandchild plateau that composed it; see [[library/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]] for merge semantics.
-- **The plateau owns update decisions** - Every conflict resolution, solution removal, and emptied-skill deletion is recorded as a plateau-level ADR following [[library/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]].
+- **The plateau owns update decisions** - Every conflict resolution, solution removal, and emptied-skill deletion is recorded as a plateau-level ADR following [[library/design/adr-create.skill/adr-create.skill|adr-create]].
 - **A Component is not a Solution** - If the input only wires in at the composition root and never touches a module, it is a Plateau Component and this workflow does not apply; see [[library/common-workflow/architecture/design/plateau-component-create.skill/plateau-component-create.skill.md|plateau-component-create]].
 
 # Workflow
@@ -31,7 +31,7 @@ Inputs:
 - `{stack}` — the plateau's target language/stack (`dotnet`, `python`, `typescript`, …); detect from `{solution}` or the existing plateau.
 - `{output}` — the folder containing the plateau. Default `library/{stack}/architecture/plateau/{plateau-name}`.
 
-Before starting, read [[library/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill|plateau-create-by-solutions]] (the same `Implementation/` file patterns, name normalization, `.create.md`/`.extend.md` semantics, and placeholder rules apply) and [[library/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]]; check `{solution}` against [[library/common-workflow/architecture/design/plateau-component-create.skill/plateau-component-create.skill.md|plateau-component-create]] first.
+Before starting, read [[library/common-workflow/architecture/design/plateau-create-by-solutions.skill/plateau-create-by-solutions.skill|plateau-create-by-solutions]] (the same `Implementation/` file patterns, name normalization, `.create.md`/`.extend.md` semantics, and placeholder rules apply) and [[library/design/adr-create.skill/adr-create.skill|adr-create]]; check `{solution}` against [[library/common-workflow/architecture/design/plateau-component-create.skill/plateau-component-create.skill.md|plateau-component-create]] first.
 
 ## Identify affected structural skills
 1. Open the plateau root skill `{output}/plateau-{plateau-name}.skill.md`.
@@ -99,7 +99,7 @@ On a removal, strip from the plateau root skill and every affected structural sk
 - Fix: remove solution-only content everywhere it appears; bump `version` on every changed skill.
 
 ### Record plateau-level decisions as ADRs
-Record every conflict resolution, solution removal, and decision to delete or keep an emptied structural skill as a plateau-level ADR in `{output}/adr/` following [[library/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]], list it in the plateau root skill's `adr:` property, and note in it which plateaus the change propagated to.
+Record every conflict resolution, solution removal, and decision to delete or keep an emptied structural skill as a plateau-level ADR in `{output}/adr/` following [[library/design/adr-create.skill/adr-create.skill|adr-create]], list it in the plateau root skill's `adr:` property, and note in it which plateaus the change propagated to.
 - Risk: the decision and its alternatives are lost once the update is merged, and the propagation trail is invisible.
 - Fix: write the ADR, register it in `adr:`, record the full propagation set.
 
