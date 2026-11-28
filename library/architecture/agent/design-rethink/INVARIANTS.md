@@ -65,10 +65,6 @@ existing contracts from the owner's new client/service decision.
     The layer table links existing implementation contracts for navigation; the
     owner accepts that these links load their transitive dependencies.
 
-12. Consumer skills and templates contain application contracts, not catalog
-    migration waves or implementation progress. Keep this status in agent/project
-    tracking; preserve real capability limits and project configuration inputs.
-
 ## Branch and review flow
 
 Implement each wave on `rethink-architecture-design-waves`, based on

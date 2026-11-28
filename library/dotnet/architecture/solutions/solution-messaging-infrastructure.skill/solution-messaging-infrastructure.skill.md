@@ -1,11 +1,10 @@
 ---
 name: solution-messaging-infrastructure
-description: Shared contract — introduces the Kafka connection, serialization, and health-check wiring in App.Infrastructure that solution-kafka-consumer (VP-C007) and solution-kafka-producer (VP-C006) both build on. Adds no consumer or producer of its own.
+description: Skeleton — introduces the Kafka connection, serialization, and health-check wiring in App.Infrastructure that solution-kafka-consumer (VP-C007) and solution-kafka-producer (VP-C006) both build on. Adds no consumer or producer of its own.
 whenToUse: when a module first needs asynchronous messaging (inbound or outbound) and the Kafka client + configuration are not wired yet, or when reviewing where broker connection settings and serializer registration live
 domain: skill
 type: architecture
-version: 20261128000000
-updated: 20261128
+version: 20260901000000
 tags:
   - skill/architecture/solution
   - concern/architecture
@@ -23,7 +22,7 @@ depends_on:
   - "[[library/dotnet/architecture/solutions/solution-app-logging.skill/solution-app-logging.skill|solution-app-logging]]"
 ---
 
-Broker registration takes the Kafka client, serializer and options schema chosen for the project and its topic contracts.
+> **Draft contract — no consumer yet.** VP-C007/VP-C006 have no realization in v3 and no service currently needs Kafka. This skeleton fixes the shape (one place for broker config, one serializer policy, one health check); the concrete `KafkaRegistration` body, the serializer choice, and the options schema are finalized when the first real consumer/producer is built.
 
 # Goal
 - Give async messaging one home for the Kafka client: connection settings (`KafkaOptions` bound from configuration), a single serializer policy, and a broker health check — all in `App.Infrastructure`.
@@ -31,7 +30,7 @@ Broker registration takes the Kafka client, serializer and options schema chosen
 
 # Core Principle
 - Broker connection details live in configuration bound to `KafkaOptions` — never hard-coded, never per-module.
-- One agreed serializer policy for every topic using the shared registration; a message envelope carries `type`, `id`, `occurredAt`, `traceId`.
+- One serializer policy (JSON with a schema-version header, pending final decision) for every topic; a message envelope carries `type`, `id`, `occurredAt`, `traceId`.
 - `App.Infrastructure` owns the client; a module never references the Kafka client library directly — it sees only the consumer/producer abstractions the VP-C007/VP-C006 solutions add.
 - Registration is one `AddKafkaMessaging(configuration)` call from `App.Host`.
 
@@ -45,8 +44,8 @@ SOLUTION:
 - [[library/dotnet/architecture/solutions/solution-infrastructure-project.skill/solution-infrastructure-project.skill|solution-infrastructure-project]]
   - [[library/dotnet/architecture/solutions/solution-infrastructure-project.skill/Implementation/App.Infrastructure.csproj.create|App.Infrastructure.csproj]] - hosts `Messaging/KafkaRegistration.cs`
 
-NUGET (selected for the project):
-- a Kafka client (for example `Confluent.Kafka`) — version in `Directory.Packages.props`
+NUGET (final choice pending):
+- a Kafka client (`Confluent.Kafka` is the likely choice) — version in `Directory.Packages.props`
 
 # Template Skill Mutations
 

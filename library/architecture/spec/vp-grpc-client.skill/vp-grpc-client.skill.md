@@ -1,6 +1,6 @@
 ---
 name: vp-grpc-client
-description: The gRPC client variation point — a client of another service's gRPC API attached to the base plateau in its client layer, with the service over it, calling code generated from the copied proto contract over one fixed connection (the {API} settings, the timeout, the call log, the request id, the gRPC status read as an outcome, the mock as a gRPC server inside the process) and checked against that contract
+description: The gRPC client variation point — a client of another service's gRPC API attached to the base plateau in its infrastructure, with the service over it, calling code generated from the copied proto contract over one fixed connection (the {API} settings, the timeout, the call log, the request id, the gRPC status read as an outcome, the mock as a gRPC server inside the process) and checked against that contract
 whenToUse: when an application built on the base plateau must call a gRPC API of another service, or the HTTP form of a proto contract — adding the client, calling a further method of it, replacing the consumed proto with a new version, or reviewing such a client
 updated: 20261128
 tags:
@@ -15,7 +15,7 @@ tags:
 - **Attached, not edited** - The client joins the [base plateau](library/architecture/spec/base-plateau.skill/base-plateau.skill.md) through its extension points: its client package and its service in `[services]` of the composition root, the commands that use it in the command registry.
 
 # Core Principle
-- **Generated from the contract, mapped by hand** - The messages and the stub come from the copied `.proto` by the generator of the stack; the client writes per method only the mapping between them and its own types, exposing the same logical API DTOs as an equivalent HTTP client; transport-specific generated messages stay inside client.
+- **Generated from the contract, mapped by hand** - The messages and the stub come from the copied `.proto` by the generator of the stack; the client writes per method only the mapping between them and its own types, so no message is retyped and none reaches the service.
 - **One connection, one interceptor** - The connection of each API carries every call through one fixed interceptor that bounds it by the timeout, sends the request id, writes the two log records, and turns the gRPC status into the client's outcome; a method of the client is one call of the generated stub.
 
 @import "./diagrams/concept.mmd" {as="mermaid"}
@@ -35,21 +35,21 @@ Connect to `{API}_HOST:{API}_GRPC_PORT`, over TLS when `{API}_TLS=true` and in p
 - Fix: the fixed client code builds the connection lazily; a call to an API that is down reports unavailable.
 
 ### Generate the stub from the copied contract
-Generate the messages and the client stub of every consumed `.proto` from its copy under `docs/integration/client/{api-name}/` — into `gen/client/{api-name}/`, committed, where the stack generates with a tool (Go, Python), or at every build where the build compiles it (dotnet) — keeping stubs and transport-specific messages inside client and exposing shared generated DTOs only when they satisfy api-client's protocol-neutral contract.
+Generate the messages and the client stub of every consumed `.proto` from its copy under `docs/integration/client/{api-name}/` — into `gen/client/{api-name}/`, committed, where the stack generates with a tool (Go, Python), or at every build where the build compiles it (dotnet) — and keep the generated types the client's: the package option the provider set for its own code replaced at generation, or the types internal to the client.
 - Violation: the provider's generated package imported; messages written by hand; the copied `.proto` edited to change its package option.
 - Risk: the application builds against another module's release cycle, or against messages that drift from the contract.
 - Fix: the generator's configuration overrides the option or the access per consumed contract; the copy stays the provider's file.
 
 ### One method per method, with its own types
 Write each method the application calls as one method of the client that calls the generated stub and maps its response to the client's own types, and list the full name of each such method in one place of the client.
-- Violation: a transport-specific generated message returned to service; a generated stub used outside client.
-- Risk: replacing the protocol changes service signatures and error handling even when the logical API stays equivalent.
-- Fix: the method returns protocol-neutral logical API DTOs and normalized outcomes, per [API DTO return contract](library/develop/core/api-client.skill/api-client.skill.md#return-api-dtos-from-the-client).
+- Violation: a generated message returned to the service; a generated stub used outside the client.
+- Risk: the service depends on the provider's messages, and a new version of the contract edits the service.
+- Fix: the method returns the application's values or the client's own result type, per [API DTO return contract](library/develop/core/api-client.skill/api-client.skill.md#return-api-dtos-from-the-client).
 
 ### Report the gRPC status as the outcome
-Normalize gRPC UNAVAILABLE and DEADLINE_EXCEEDED to unavailable and other failures to the common logical API status contract through the interceptor used by every call.
+Report a call answered with `UNAVAILABLE` or `DEADLINE_EXCEEDED` as unavailable and any other failed call with its status code and message, from the interceptor every call of the connection passes.
 - Risk: a client that reads statuses per method reports the same failure differently per method.
-- Fix: fixed client code converts the raw status/exception once and retains transport diagnostics as cause; service interprets only the normalized outcome.
+- Fix: the fixed client code converts the status once; the service maps the codes it expects.
 
 ### Mock with the generated server inside the process
 Write the emulator of an API as an implementation of its generated service server, and serve it, when `{API}_HOST=mock`, inside the process behind the same interceptor, each message through its wire form: a gRPC server inside the process that the same channel reaches - over an in-memory transport where the stack has one (Go `bufconn`), on the loopback where it has none (Python) - or a call invoker of the fixed code (dotnet).
@@ -76,7 +76,7 @@ Run every file of this skill's [conformance/](./conformance/) unchanged in each 
 - [ ] Every file of `conformance/` runs unchanged in each stack's example; `bash test/check-conformance.sh` passes.
 - [ ] The client keeps every rule of api-client; its target comes from the `{API}` group, and it connects at the first call.
 - [ ] The stub is generated from the copied `.proto`, its types the client's, preserving [the consumed wire contract](library/develop/core/api-client.skill/api-client.skill.md#preserve-the-consumed-wire-contract).
-- [ ] Each method exposes the protocol-neutral client contract; shared generated DTOs qualify only when their types and semantics stay unchanged between protocol implementations.
+- [ ] Each method is one method of the client mapping to its own types; no generated message leaves the client.
 - [ ] One interceptor reports unavailable apart from the other statuses for every call.
 - [ ] `{API}_HOST=mock` serves the generated server's emulator inside the process behind the same interceptor.
 - [ ] Scenarios hold the generated code and the client's methods against the copied contract.

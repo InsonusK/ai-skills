@@ -4,8 +4,7 @@ description: Reacts to asynchronous Kafka messages from other services — the A
 whenToUse: when a Go web-service needs to react to messages another service publishes to a Kafka topic
 domain: skill
 type: architecture
-version: 20261128000000
-updated: 20261128
+version: 20260917000000
 tags:
   - skill/architecture/solution
   - solution/kafka-consumer
@@ -21,7 +20,9 @@ built_on_plateau:
 adr:
 ---
 
-This contract supplies the inbound Kafka adapter and registration shapes; the application supplies subscription configuration and integration code for its selected Kafka client.
+> Draft contract — no consumer yet. No plateau in this catalog's first build realizes VP-C007 (see
+> `library/go/architecture/variability-map.md`). Full authoring is deferred until a real plateau
+> composes this solution.
 
 # Goal
 - Give the module an inbound channel that reacts to Kafka messages, the same way [[library/go/architecture/solutions/solution-go-http-api.skill/solution-go-http-api.skill.md|solution-go-http-api]] and [[library/go/architecture/solutions/solution-grpc-api.skill/solution-grpc-api.skill.md|solution-grpc-api]] react to HTTP/gRPC requests — a thin translation into a call on the domain service.
@@ -35,4 +36,4 @@ FILES:
 - [[./Implementation/cmd/{service}/main.go.extend.md|cmd/{service}/main.go]] - extend - add the consumer loop to the `errgroup.Group`, shape only
 
 # Check list
-- [ ] Confirm the project Kafka client library using [[library/go/architecture/solutions/solution-go-messaging-infrastructure.skill/solution-go-messaging-infrastructure.skill.md|solution-go-messaging-infrastructure]]'s configuration contract.
+- [ ] Before real authoring: confirm the Kafka client library via [[library/go/architecture/solutions/solution-go-messaging-infrastructure.skill/solution-go-messaging-infrastructure.skill.md|solution-go-messaging-infrastructure]]'s own open Boundary.

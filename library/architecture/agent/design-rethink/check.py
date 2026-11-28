@@ -40,7 +40,3 @@ import sys
 wave1 = Path(__file__).with_name('check-wave-1.py')
 if wave1.exists():
     subprocess.run([sys.executable, str(wave1)], cwd=root, check=True)
-
-consumer_status = Path(__file__).with_name('check-consumer-status.py')
-if consumer_status.exists():
-    subprocess.run([sys.executable, str(consumer_status)], cwd=root, check=True)

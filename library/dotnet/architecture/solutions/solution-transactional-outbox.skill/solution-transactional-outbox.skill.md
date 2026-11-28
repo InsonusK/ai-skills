@@ -1,11 +1,10 @@
 ---
 name: solution-transactional-outbox
-description: Shared contract — realizes OutboxPattern (VP-C010). Writes an outgoing message to an outbox table in the same DbContext transaction as the business change, then a relay background service publishes committed rows via IMessagePublisher and marks them sent. Makes outbound publishing consistent with the business write.
+description: Skeleton — realizes OutboxPattern (VP-C010). Writes an outgoing message to an outbox table in the same DbContext transaction as the business change, then a relay background service publishes committed rows via IMessagePublisher and marks them sent. Makes outbound publishing consistent with the business write.
 whenToUse: when a module publishes an asynchronous message that must not be lost or duplicated relative to the business change that caused it — replacing a direct IMessagePublisher.Publish call in a handler with an outbox write
 domain: skill
 type: architecture
-version: 20261128000000
-updated: 20261128
+version: 20260901000000
 tags:
   - skill/architecture/solution
   - concern/architecture
@@ -29,7 +28,7 @@ depends_on:
   - "[[library/dotnet/architecture/solutions/solution-unit-of-work.skill/solution-unit-of-work.skill|solution-unit-of-work]]"
 ---
 
-The deployment supplies the relay strategy (polling or CDC), ordering requirements and retention/cleanup policy.
+> **Draft contract — no realization yet.** VP-C010 has no v3 prior art. This skeleton fixes the shape (outbox row written in the business transaction; a relay publishes and marks sent). The relay's polling/CDC strategy, the ordering guarantee, and the retention/cleanup policy are finalized with the first real use.
 
 # Goal
 - Make an outbound message and the business change that produced it commit or roll back together: the handler writes an `OutboxMessage` row through `IOutboxWriter`, in the same `DbContext` as the entity change; the unit-of-work commit persists both atomically.

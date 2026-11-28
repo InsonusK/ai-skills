@@ -1,11 +1,10 @@
 ---
 name: solution-http-api-client
-description: Shared contract — realizes SyncOutboundApi over HTTP (VP-C004). A typed HttpClient per external dependency, registered with resilience (timeout, retry, circuit breaker), exposed to the module as a narrow Shared interface that returns Result<T>, never raw HttpResponseMessage.
+description: Skeleton — realizes SyncOutboundApi over HTTP (VP-C004). A typed HttpClient per external dependency, registered with resilience (timeout, retry, circuit breaker), exposed to the module as a narrow Shared interface that returns Result<T>, never raw HttpResponseMessage.
 whenToUse: when a module must make synchronous request-response calls to another service over HTTP — defining the typed client, its resilience policy, and the Result-returning contract the handler consumes
 domain: skill
 type: architecture
-version: 20261128000000
-updated: 20261128
+version: 20260901000000
 tags:
   - skill/architecture/solution
   - concern/architecture
@@ -25,7 +24,7 @@ depends_on:
   - "[[library/dotnet/architecture/solutions/solution-infrastructure-project.skill/solution-infrastructure-project.skill|solution-infrastructure-project]]"
 ---
 
-Per-API configuration includes retry/circuit-breaker thresholds and the credential/token flow required by the target API.
+> **Draft contract — no client yet.** VP-C004 has no v3 prior art. This skeleton fixes the shape (typed client in `App.Infrastructure`, narrow `I{Dependency}Client` contract in `Shared` returning `Result<T>`, resilience via the standard resilience handler). The retry/circuit-breaker defaults and the auth-token flow are finalized with the first real dependency.
 
 # Goal
 - Give a module one way to call an external HTTP service: an injected `I{Dependency}Client` (a `Shared` contract) whose methods return `Result<T>` — no `HttpClient`, no `HttpResponseMessage`, no status-code handling in the handler.

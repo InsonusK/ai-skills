@@ -4,8 +4,7 @@ description: Publishes domain events to Kafka directly, through an outbound port
 whenToUse: when a Go web-service needs to publish an event for other services to react to, and the publication is not itself triggered by a persisted-data change (otherwise see solution-go-transactional-outbox)
 domain: skill
 type: architecture
-version: 20261128000000
-updated: 20261128
+version: 20260917000000
 tags:
   - skill/architecture/solution
   - solution/kafka-producer
@@ -23,7 +22,10 @@ built_on_plateau:
 adr:
 ---
 
-This contract supplies the outbound publication port shape; the application supplies its Kafka implementation and service integration.
+> Draft contract — no consumer yet. No plateau in this catalog's first build realizes VP-C006 (see
+> `library/go/architecture/variability-map.md`). Full authoring — including the AS IS/TO BE
+> extension of `{service}.go` and a real ground-truth example — is deferred until a real plateau
+> composes this solution.
 
 # Goal
 - Give the domain a business-named outbound port for publishing one kind of event directly to Kafka.
@@ -39,4 +41,4 @@ FILES:
 - [[./Implementation/internal/domain/interfaces/{publisher-port}.go.create.md|internal/domain/interfaces/{publisher-port}.go]] - create - the outbound publish port, shape only
 
 # Check list
-- [ ] Confirm the project Kafka client library using [[library/go/architecture/solutions/solution-go-messaging-infrastructure.skill/solution-go-messaging-infrastructure.skill.md|solution-go-messaging-infrastructure]]'s configuration contract.
+- [ ] Before real authoring: confirm the Kafka client library via [[library/go/architecture/solutions/solution-go-messaging-infrastructure.skill/solution-go-messaging-infrastructure.skill.md|solution-go-messaging-infrastructure]]'s own open Boundary.

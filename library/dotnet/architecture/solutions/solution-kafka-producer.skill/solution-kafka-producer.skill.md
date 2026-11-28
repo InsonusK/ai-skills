@@ -1,11 +1,10 @@
 ---
 name: solution-kafka-producer
-description: Shared contract — realizes AsyncOutboundApi (VP-C006). An IMessagePublisher abstraction in Shared plus a Kafka implementation in App.Infrastructure that serializes a domain event into the shared envelope and publishes it to a topic. A handler publishes by calling IMessagePublisher, not the Kafka client.
+description: Skeleton — realizes AsyncOutboundApi (VP-C006). An IMessagePublisher abstraction in Shared plus a Kafka implementation in App.Infrastructure that serializes a domain event into the shared envelope and publishes it to a topic. A handler publishes by calling IMessagePublisher, not the Kafka client.
 whenToUse: when a module must publish an asynchronous message for other services to react to — emitting a domain event to a Kafka topic from a handler
 domain: skill
 type: architecture
-version: 20261128000000
-updated: 20261128
+version: 20260901000000
 tags:
   - skill/architecture/solution
   - concern/architecture
@@ -23,7 +22,7 @@ depends_on:
   - "[[library/dotnet/architecture/solutions/solution-messaging-infrastructure.skill/solution-messaging-infrastructure.skill|solution-messaging-infrastructure]]"
 ---
 
-Each publisher supplies its topic-naming contract and whether the operation publishes directly or through the transactional outbox.
+> **Draft contract — no producer yet.** VP-C006 has no v3 prior art. This skeleton fixes the shape (`IMessagePublisher` in `Shared`, Kafka impl in `App.Infrastructure`, envelope from `solution-messaging-infrastructure`). The topic-naming convention and the "publish directly vs via outbox" default are finalized with the first real publisher.
 
 # Goal
 - Give a handler one way to publish an outbound message — `IMessagePublisher.Publish(evt, topic)` — with no reference to the Kafka client.

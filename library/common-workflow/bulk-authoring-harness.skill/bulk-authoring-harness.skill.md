@@ -2,7 +2,7 @@
 name: bulk-authoring-harness
 description: How to run a large authoring or migration task that produces many interdependent artifacts, so the user reviews an anchor document and objective checks instead of every file
 whenToUse: when one task will create or migrate more artifacts than the user can realistically review file-by-file — a catalog of skills or solution skills, a plateau/solution tree, a large documentation set, or a code migration spanning many files — especially when the artifacts cross-reference each other
-updated: 20261128
+updated: 20260909
 tags:
   - skill/core
   - stack
@@ -87,7 +87,7 @@ Keep the status document current so an interrupted task can resume without re-de
 ## MAY
 
 ### Skeleton for consumer-less artifacts
-Keep consumer-less draft artifacts and their status in the authoring workspace, completing consumer-facing skill instructions before publication.
+Reduce depth on artifacts that have no consumer yet (aspirational or placeholder units): a complete skeleton plus an explicit "draft contract" marker, with full authoring deferred until a real consumer exists.
 
 ### Combine tracking files for a small task
 Combine the status document, the anchor document, and the decisions log into one file for a smaller task.
