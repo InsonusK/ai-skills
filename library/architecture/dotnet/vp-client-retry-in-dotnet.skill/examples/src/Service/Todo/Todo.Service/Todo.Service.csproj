@@ -6,6 +6,6 @@
     <!-- Consumer-owned service interface; no command dispatch from this project. -->
     <ProjectReference Include="..\..\..\Modules\Todo\Todo.Application\Todo.Application.csproj" />
     <ProjectReference Include="..\..\..\Modules\Todo\Todo.Domain\Todo.Domain.csproj" />
-    <ProjectReference Include="..\..\..\Client\TodoApi\TodoApi.Abstractions\TodoApi.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\Client\Todo\Todo.Client.Abstractions\Todo.Client.Abstractions.csproj" />
   </ItemGroup>
 </Project>

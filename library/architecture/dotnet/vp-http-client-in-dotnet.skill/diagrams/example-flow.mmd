@@ -2,9 +2,9 @@ sequenceDiagram
     autonumber
     participant Handler as PlanRemoteItemsHandler<br/>src/Modules/Todo/Todo.Application/Commands/PlanRemoteItemsHandler.cs
     participant Service as RemotePlannerService<br/>src/Service/Todo/Todo.Service/RemotePlannerService.cs
-    participant Adapter as TodoApiClient<br/>src/Client/TodoApi/TodoApi/TodoApiClient.cs
+    participant Adapter as TodoClient<br/>src/Client/Todo/Todo.Client/TodoClient.cs
     participant Client as HttpApiClient<br/>src/Client/Core/Client.Http/HttpApiClient.cs
-    participant API as Todo API, or with TODO_API_HOST=mock its emulator<br/>src/Client/TodoApi/TodoApi/Mock/TodoApiMock.cs
+    participant API as Todo API, or with TODO_API_HOST=mock its emulator<br/>src/Client/Todo/Todo.Client/Mock/TodoMock.cs
 
     Handler->>+Service: PlanAsync(titles, token)
     Service->>+Adapter: PlanItemsAsync(titles, token)
@@ -15,6 +15,6 @@ sequenceDiagram
     API-->>-Client: answer, or none
     Note over Client: record "http client response received"
     Client-->>-Adapter: the answer, or throws ApiUnavailableException or ApiStatusException
-    Adapter-->>-Service: TodoApiItemDto list, or the exception
+    Adapter-->>-Service: TodoItemDto list, or the exception
     Note over Service: ApiUnavailableException: kind Unavailable. Code InvalidArgument: kind Invalid. Anything else: no kind
     Service-->>-Handler: Item list, or an exception

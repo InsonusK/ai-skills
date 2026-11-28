@@ -1,6 +1,6 @@
 ---
 name: vp-grpc-client-in-dotnet
-description: The gRPC client variation point in dotnet — Client.Abstractions (the outcomes every client reports) and Client.Grpc (GrpcApiConfig, GrpcApiClient with a lazy GrpcChannel, CallInterceptor for the timeout, the x-request-id metadata, the call log, and the outcomes, EmulatorCallInvoker for the mock) copied from templates, the consumed proto compiled by Grpc.Tools into the client as internal types, entity-focused clients in Client/{Api} with its {Api}.Abstractions, its mock, and its contract scenario, the adapting implementation in Service/{Module}/{Module}.Service, and the lines of Program.cs that build them
+description: The gRPC client variation point in dotnet — Client.Abstractions (the outcomes every client reports) and Client.Grpc (GrpcApiConfig, GrpcApiClient with a lazy GrpcChannel, CallInterceptor for the timeout, the x-request-id metadata, the call log, and the outcomes, EmulatorCallInvoker for the mock) copied from templates, the consumed proto compiled by Grpc.Tools into the client as internal types, entity-focused clients in Client/{ApiName} with its {ApiName}.Client.Abstractions, its mock, and its contract scenario, the adapting implementation in Service/{ApiServiceName}/{ApiServiceName}.Service, and the lines of Program.cs that build them
 whenToUse: when a dotnet application built on the base plateau must call another service's gRPC API, when you call a further method of such an API or replace its proto, or when you review a dotnet gRPC client
 updated: 20261128
 tags:
@@ -15,19 +15,19 @@ tags:
 - **Attached by the listed changes only** - Attaching it adds projects and files and changes only the base files [attach.allow](./attach.allow) names, which the repository's attach check verifies against [base-plateau-in-dotnet](library/architecture/dotnet/base-plateau-in-dotnet.skill/base-plateau-in-dotnet.skill.md)'s example.
 
 # Core Principle
-- **Copied once, compiled per contract, written per method** - `Client.Abstractions` and `Client.Grpc` are copied from templates and never edited; per API the application copies its `.proto`, compiles it in the client's project, and writes `{Api}.Abstractions`, the client whose methods are calls of the generated client over `GrpcApiClient.CallInvoker`, its mock, and the service over it.
+- **Copied once, compiled per contract, written per method** - `Client.Abstractions` and `Client.Grpc` are copied from templates and never edited; per API the application copies its `.proto`, compiles it in the client's project, and writes `{ApiName}.Client.Abstractions`, the client whose methods are calls of the generated client over `GrpcApiClient.CallInvoker`, its mock, and the service over it.
 - **The service is the HTTP client's** - The service catches only the outcomes of `Client.Abstractions`, the same for an HTTP and a gRPC client ([one-outcome-project-for-every-client](library/architecture/dotnet/vp-http-client-in-dotnet.skill/adr/one-outcome-project-for-every-client.md)): the service, its interface, its errors, and its scenarios are those of [vp-http-client-in-dotnet](library/architecture/dotnet/vp-http-client-in-dotnet.skill/vp-http-client-in-dotnet.skill.md), file for file.
 
 ```text
 docs/integration/client/{api-name}/       provider's wire contract
 src/Client/
   Core/{Client.Abstractions,Client.Pipeline,Client.Grpc}/
-  {Api}/{Api}.Abstractions/                 logical API DTOs and I{Api}
-  {Api}/{Api}/                              concrete protocol implementation and Mock/
-  {Api}/{Api}.Tests/                        emulator and contract scenarios
+  {ApiName}/{ApiName}.Client.Abstractions/   logical API DTOs and I{ApiName}Client
+  {ApiName}/{ApiName}.Client/                concrete protocol implementation and Mock/
+  {ApiName}/{ApiName}.Client.Tests/          emulator and contract scenarios
 src/Modules/{Module}/{Module}.Application/Services/I{Service}.cs
-src/Service/{Module}/{Module}.Service/      adapting implementation and errors
-src/Service/{Module}/{Module}.Service.Tests/ service tests with clients faked
+src/Service/{ApiServiceName}/{ApiServiceName}.Service/      adapting implementation and errors
+src/Service/{ApiServiceName}/{ApiServiceName}.Service.Tests/ service tests with clients faked
 ```
 
 # Rule
@@ -35,7 +35,7 @@ src/Service/{Module}/{Module}.Service.Tests/ service tests with clients faked
 ## MUST
 
 ### Keep DTOs in the client abstraction project
-Declare protocol-neutral API DTOs in `{Api}.Abstractions` without transport-specific message or library references.
+Declare protocol-neutral API DTOs in `{ApiName}.Client.Abstractions` without transport-specific message or library references.
 - Risk: service signatures and errors depend on the selected HTTP/gRPC implementation.
 - Fix: keep the same interface and DTOs across transports; generated wire types and protocol error parsing remain in the implementation project.
 
@@ -51,45 +51,45 @@ Copy [Client.Abstractions](./templates/src/Client/Core/Client.Abstractions/), [C
 - Fix: copy the files unchanged after namespace substitution; `make test` passes.
 
 ### Compile the consumed contract into the client, internal
-Compile the copied `.proto` in `{Api}.csproj` with `<Protobuf Include="..\..\..\..\docs\integration\client\{api-name}\{file}.proto" GrpcServices="Both" Access="Internal" />`, with `Google.Protobuf` and `Grpc.Tools`, and give its tests `InternalsVisibleTo`.
+Compile the copied `.proto` in `{ApiName}.Client.csproj` with `<Protobuf Include="..\..\..\..\docs\integration\client\{api-name}\{file}.proto" GrpcServices="Both" Access="Internal" />`, with `Google.Protobuf` and `Grpc.Tools`, and give its tests `InternalsVisibleTo`.
 - Violation: the provider's generated package referenced; `Access="Public"`, which lets the service see the messages; the copied wire contract changed while qualifying its local namespace.
 - Risk: the service depends on the provider's messages, and a new version of the contract edits the module.
 - Fix: qualify only the local `csharp_namespace` as `{service-namespace}.Contracts.{Name}.V{major}`, preserving protobuf packages, service names and fields; generated types stay internal to the client assembly and are never committed, as [grpc-tools-at-build-time](library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/adr/grpc-tools-at-build-time.md) decided for the API.
 
 ### Entity-focused client contracts and implementations
-Write each selected entity-focused API client as `{Api}.Abstractions` with `I{Api}`, referencing only `Client.Abstractions`, and `{Api}` with `{Api}Client : I{Api}, IDisposable` holding `Prefix` (`"TODO_API"`), `Methods` (a `GrpcMethod` - the full name and `Retryable` where a repeat does what one call does - for every method it calls), a `GrpcApiClient` built with its mock's `Bind`, `Methods`, and the client middleware of its constructor, the generated client over its `CallInvoker`, and per method one method that calls it and maps the response.
+Write each selected entity-focused API client as `{ApiName}.Client.Abstractions` with `I{ApiName}Client`, referencing only `Client.Abstractions`, and `{ApiName}.Client` with `{ApiName}Client : I{ApiName}Client, IDisposable` holding `Prefix` (`"TODO_API"`), `Methods` (a `GrpcMethod` - the full name and `Retryable` where a repeat does what one call does - for every method it calls), a `GrpcApiClient` built with its mock's `Bind`, `Methods`, and the client middleware of its constructor, the generated client over its `CallInvoker`, and per method one method that calls it and maps the response.
 
 ```csharp
-public async Task<IReadOnlyList<TodoApiItemDto>> PlanItemsAsync(IReadOnlyList<string> titles, CancellationToken cancellationToken)
+public async Task<IReadOnlyList<TodoItemDto>> PlanItemsAsync(IReadOnlyList<string> titles, CancellationToken cancellationToken)
 {
     var answer = await _items.PlanItemsAsync(new PlanItemsRequest { Titles = { titles } }, cancellationToken: cancellationToken);
-    return answer.Items.Select(item => new TodoApiItemDto(item.Title, item.Done)).ToList();
+    return answer.Items.Select(item => new TodoItemDto(item.Title, item.Done)).ToList();
 }
 ```
 
 - Violation: `GrpcChannel.ForAddress` in the client; a blocking or streaming call; a method missing from `Methods`.
 - Risk: a channel that bypasses `GrpcApiClient` has no deadline, no log, and no request id; the contract scenario misses the method.
-- Fix: follow the example's [TodoApiClient.cs](./examples/src/Client/TodoApi/TodoApi/TodoApiClient.cs); a new method adds its method to `I{Api}` and `{Api}Client`, its line of `Methods`, and its override in [TodoApiMock.cs](./examples/src/Client/TodoApi/TodoApi/Mock/TodoApiMock.cs).
+- Fix: follow the example's [TodoClient.cs](./examples/src/Client/Todo/Todo.Client/TodoClient.cs); a new method adds its method to `I{ApiName}Client` and `{ApiName}Client`, its line of `Methods`, and its override in [TodoMock.cs](./examples/src/Client/Todo/Todo.Client/Mock/TodoMock.cs).
 
 ### Answer every method in the mock
-Write the mock of each client as `src/Client/{Api}/{Api}/Mock/{Api}Mock.cs`, an internal class overriding the generated service base for every method of `Methods`, with stable data and no state, throwing `RpcException` where the API answers a status, and a static `Bind(ServiceBinderBase)` that binds it; `{API}_HOST=mock` serves it through `EmulatorCallInvoker` behind the same `CallInterceptor`, each message through its wire form.
+Write the mock of each client as `src/Client/{ApiName}/{ApiName}.Client/Mock/{ApiName}Mock.cs`, an internal class overriding the generated service base for every method of `Methods`, with stable data and no state, throwing `RpcException` where the API answers a status, and a static `Bind(ServiceBinderBase)` that binds it; `{API}_HOST=mock` serves it through `EmulatorCallInvoker` behind the same `CallInterceptor`, each message through its wire form.
 - Risk: a method the mock does not override answers `UNIMPLEMENTED` under `mock`, and the service cannot run without the other service.
 - Fix: the mocked scenario of the client's feature runs it and checks its answer.
 
 ### Build the client and the service in Program.cs
-Load the settings with `GrpcApiConfig.Load({Api}Client.Prefix)` in `// [services]` of `Program.cs`, stopping the start with "startup failed" on a `FormatException`, and register the client as a singleton of `I{Api}` built with a logger of the logger factory, and the service as a singleton of its interface, as [vp-http-client-in-dotnet](library/architecture/dotnet/vp-http-client-in-dotnet.skill/vp-http-client-in-dotnet.skill.md) does; the provider disposes the client, and with it the channel. Build the client middleware of the API in `// [client middleware]` inside the client's registration - empty until a variation point (`vp-client-retry`) adds one - and pass it to the client's constructor.
+Load the settings with `GrpcApiConfig.Load({ApiName}Client.Prefix)` in `// [services]` of `Program.cs`, stopping the start with "startup failed" on a `FormatException`, and register the client as a singleton of `I{ApiName}Client` built with a logger of the logger factory, and the service as a singleton of its interface, as [vp-http-client-in-dotnet](library/architecture/dotnet/vp-http-client-in-dotnet.skill/vp-http-client-in-dotnet.skill.md) does; the provider disposes the client, and with it the channel. Build the client middleware of the API in `// [client middleware]` inside the client's registration - empty until a variation point (`vp-client-retry`) adds one - and pass it to the client's constructor.
 - Risk: a channel built per call opens a connection per call; one never disposed holds its connection until the process ends.
 - Fix: one singleton per API.
 
 ### Cover the client with scenarios
-Copy the example's `Client.Grpc.Tests` with the chosen service namespace: it covers the settings, the call, the outcomes, the log, and the mock through an echo API of its own, served on Kestrel over HTTP/2 in plain text. Write per client an `{Api}.Tests` calling each method against a Kestrel server of the scenario and its mock, and its contract scenario finding each of `Methods` in the descriptor compiled from the copied file (`{File}Reflection.Descriptor`); take the service's and the command's scenarios from the HTTP client; tag them `@type/tech-check` and `@type/service`.
+Copy the example's `Client.Grpc.Tests` with the chosen service namespace: it covers the settings, the call, the outcomes, the log, and the mock through an echo API of its own, served on Kestrel over HTTP/2 in plain text. Write per client an `{ApiName}.Client.Tests` calling each method against a Kestrel server of the scenario and its mock, and its contract scenario finding each of `Methods` in the descriptor compiled from the copied file (`{File}Reflection.Descriptor`); take the service's and the command's scenarios from the HTTP client; tag them `@type/tech-check` and `@type/service`.
 - Risk: a client feature that repeats the outcomes of the interceptor grows with every method and tests nothing new.
 - Fix: a client feature checks only its own request and mapping; the generated code cannot be stale, so no scenario compares it with the copy.
 
 # Check list
 - [ ] `Client.Abstractions` and `Client.Grpc` are copies of the filled templates.
 - [ ] The consumed `.proto` and generated access follow [Compile the consumed contract into the client, internal](#compile-the-consumed-contract-into-the-client-internal).
-- [ ] Each API has `{Api}.Abstractions` with `I{Api}` and `{Api}` with `Prefix`, `Methods`, one method per method, and `Mock/{Api}Mock.cs`; the contract scenario passes.
+- [ ] Each API has `{ApiName}.Client.Abstractions` with `I{ApiName}Client` and `{ApiName}.Client` with `Prefix`, `Methods`, one method per method, and `Mock/{ApiName}Mock.cs`; the contract scenario passes.
 - [ ] The service, its errors, and its scenarios are those of the HTTP client.
 - [ ] `Program.cs` loads the settings and registers the client and the service in `// [services]`.
 - [ ] `make test` passes; `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).

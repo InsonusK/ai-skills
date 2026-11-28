@@ -25,7 +25,7 @@ src/Client/
 │   ├── RetryConfig.cs             Load(prefix): {API}_RETRY_ATTEMPTS (3), {API}_RETRY_BACKOFF (100ms)
 │   └── RetryMiddleware.cs         Retryable + ApiUnavailableException → WARN, wait, attempt again
 ├── Middleware/Retry.Tests/        the scenarios, with attempts that end as each scenario lists
-└── {Api}/{Api}/{Api}Client.cs     Operations / Methods: Retryable where a repeat does what one call does
+└── {ApiName}/{ApiName}.Client/{ApiName}Client.cs     Operations / Methods: Retryable where a repeat does what one call does
 ```
 
 # Rule
@@ -43,7 +43,7 @@ Copy [Retry](./templates/src/Client/Middleware/Retry/) to `src/Client/Middleware
 - Fix: copy the files unchanged after namespace substitution; `make test` passes.
 
 ### List the retry in the client middleware of the API
-Load `RetryConfig.Load({Api}Client.Prefix)` beside the client's settings in `// [services]` of `Program.cs`, in the same `try` that stops the start on a `FormatException`, and add a `RetryMiddleware` with a logger of the logger factory to the list of `// [client middleware]` in the adapter's registration.
+Load `RetryConfig.Load({ApiName}Client.Prefix)` beside the client's settings in `// [services]` of `Program.cs`, in the same `try` that stops the start on a `FormatException`, and add a `RetryMiddleware` with a logger of the logger factory to the list of `// [client middleware]` in the adapter's registration.
 
 ```csharp
 IReadOnlyList<IClientMiddleware> todoApiMiddlewares =
@@ -59,7 +59,7 @@ IReadOnlyList<IClientMiddleware> todoApiMiddlewares =
 ### Mark the retryable operations in the adapter
 Set `Retryable: true` on each `HttpOperation` or `GrpcMethod` of the adapter's list whose repeat does what one call does, with a comment saying why, and hold the mark in the contract scenario's table.
 - Risk: an unmarked operation is never repeated, a wrongly marked one is done twice.
-- Fix: the example's `TodoApiClient.Operations` marks `POST /v1/items/plan`, which stores nothing.
+- Fix: the example's `TodoClient.Operations` marks `POST /v1/items/plan`, which stores nothing.
 
 # Check list
 - [ ] `src/Client/Middleware/Retry` is an copy of the filled templates; `App.Host` references it.

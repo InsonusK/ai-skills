@@ -13,6 +13,6 @@ base-plateau.skill/conformance/planner examples/src/Modules/Todo/Todo.Domain.Tes
 vp-client-retry.skill/conformance/retry examples/src/Client/Middleware/Retry.Tests/features
 vp-http-client.skill/conformance/http-client-core examples/src/Client/Core/Client.Http.Tests/features
 vp-http-client.skill/conformance/client-pipeline examples/src/Client/Core/Client.Pipeline.Tests/features
-vp-http-client.skill/conformance/http-todo-api examples/src/Client/TodoApi/TodoApi.Tests/features
+vp-http-client.skill/conformance/http-todo-api examples/src/Client/Todo/Todo.Client.Tests/features
 vp-http-client.skill/conformance/remote-planner examples/src/Service/Todo/Todo.Service.Tests/features
 vp-http-client.skill/conformance/plan-remote-items examples/src/Modules/Todo/Todo.Application.Tests/Commands/features

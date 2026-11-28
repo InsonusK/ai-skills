@@ -13,7 +13,7 @@
     <ProjectReference Include="..\..\Middleware\Middleware.csproj" />
     <ProjectReference Include="..\..\Modules\Todo\Todo.Commands\Todo.Commands.csproj" />
     <ProjectReference Include="..\..\Modules\Todo\Todo.Application\Todo.Application.csproj" />
-    <ProjectReference Include="..\..\Client\TodoApi\TodoApi\TodoApi.csproj" />
+    <ProjectReference Include="..\..\Client\Todo\Todo.Client\Todo.Client.csproj" />
     <ProjectReference Include="..\..\Client\Middleware\Retry\Retry.csproj" />
     <ProjectReference Include="..\..\Service\Todo\Todo.Service\Todo.Service.csproj" />
   </ItemGroup>

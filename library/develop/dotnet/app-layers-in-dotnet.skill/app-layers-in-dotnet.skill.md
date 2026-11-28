@@ -11,6 +11,7 @@ tags:
   - app-type/cli
 adr:
   - adr/client-and-service-sibling-projects.md
+  - adr/external-system-service-and-api-client-names.md
   - adr/service-qualified-namespaces.md
   - adr/commands-project-and-service-interfaces.md
 ---
@@ -48,11 +49,17 @@ Use `{service-namespace}.{Layer}.{LogicalName}` for every service-owned namespac
 | `Shared`, `Shared.Persistence`, `BuildingBlocks`, `Middleware`, `MaskedLogging` | corresponding project name |
 | `Postgres` | `Infrastructure.Database.Postgres` |
 | `Client.Http`, `.Grpc`, `.Pipeline`, `.Abstractions` | `Client.Core.Http`, `.Grpc`, `.Pipeline`, `.Abstractions` |
-| `{Module}.Service` | `Service.{Module}` |
-| `{Api}` and `{Api}.Abstractions` | `Client.{Api}` and `.Abstractions` |
+| `{ApiServiceName}.Service` | `Service.{ApiServiceName}` |
+| `{ApiName}.Client` and `{ApiName}.Client.Abstractions` | `Client.{ApiName}` and `.Abstractions` |
 | client `Retry` | `Client.Middleware.Retry` |
 | tests / reusable test helpers | the subject's root plus `.Tests` / `.Testing` |
 | locally owned generated contracts | `Contracts.{Name}.V{major}`; internal tests beneath their owning test-project root |
+
+### Name integration projects by external responsibility
+Name each client project `{ApiName}.Client` with adjacent `{ApiName}.Client.Abstractions` and `{ApiName}.Client.Tests`, and each adapting service `{ApiServiceName}.Service` with adjacent tests, using external-system/API responsibility independently of the consuming `{Module}`.
+- Violation: deriving service names from the consumer module; naming a concrete client project `{ApiName}` without its layer suffix.
+- Risk: module names hide which external system a service adapts, and clients of one system cannot be distinguished from their owning service.
+- Fix: use `Todo.Service` with `Todo.Client` for one client, or `Todo.Service` with `TodoTask.Client` and `TodoLog.Client` for several; retain consumer-owned ports, as [external-system-service-and-api-client-names](./adr/external-system-service-and-api-client-names.md) records.
 
 ### One project per layer
 Place each layer of [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md) in its project and folder.
@@ -68,11 +75,11 @@ Place each layer of [app-layers](library/develop/core/app-layers.skill/app-layer
 | error kinds | `src/Shared/Errors`, per [error-kinds-in-dotnet](library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md) |
 | the repository's contract — `IRepository<T>`, `IReadRepository<T>`, `IStoreFailures` | `src/Shared.Persistence`, a project beside `Shared`, per [vp-postgres-in-dotnet](library/architecture/dotnet/vp-postgres-in-dotnet.skill/vp-postgres-in-dotnet.skill.md) |
 | service — its interface, declared by its consumer | `src/Modules/{Module}/{Module}.Application/Services/I{Service}.cs` (a handler's); `{Module}.Domain/Services/I{Service}.cs` (a domain service's) |
-| service — its implementation | `src/Service/{Module}/{Module}.Service/{Service}Service.cs`, with its error translation beside it |
+| service — its implementation | `src/Service/{ApiServiceName}/{ApiServiceName}.Service/{Service}Service.cs`, with its error translation beside it |
 | infrastructure — the store of the service's own data (`Memory`, `Postgres`) | `src/Infrastructure/{Store}/{Store}`: the repository over the contract of `Shared.Persistence`, and the context that applies each module's configurations |
 | infrastructure — any other: its interface | `src/Infrastructure/{Infra}/{Infra}.Abstractions` |
 | infrastructure — any other: its implementation | `src/Infrastructure/{Infra}/{Infra}` |
-| client — another service's API | `src/Client/{Api}/{Api}.Abstractions` and `{Api}`, per [api-client](library/develop/core/api-client.skill/api-client.skill.md); the fixed code of every client in `src/Client/Core/` (`Client.Abstractions`, `Client.Pipeline`, `Client.Http`, `Client.Grpc`), each client middleware in `src/Client/Middleware/{Name}` (`Retry`) |
+| client — another service's API | `src/Client/{ApiName}/{ApiName}.Client.Abstractions` and `{ApiName}.Client`, per [api-client](library/develop/core/api-client.skill/api-client.skill.md); the fixed code of every client in `src/Client/Core/` (`Client.Abstractions`, `Client.Pipeline`, `Client.Http`, `Client.Grpc`), each client middleware in `src/Client/Middleware/{Name}` (`Retry`) |
 | entity — a row of its table | `src/Modules/{Module}/{Module}.Domain/Entities` |
 | entity configuration — the table the module owns | `src/Modules/{Module}/{Module}.Domain/Configurations` |
 | specification — which rows a handler picks | `src/Modules/{Module}/{Module}.Application/Specifications` |
@@ -94,8 +101,10 @@ Give each project only these references, so a call against [app-layers](library/
 | `{Module}.Domain` | `Shared`; `Microsoft.EntityFrameworkCore.Relational` (the model API, no provider) when the module keeps data; `Shared.Persistence` for the `INeverChanges` mark when using row version |
 | `{Module}.Commands` | the package `MediatR.Contracts`; `Shared` for the log marks (`[LogMask]`, `[LogOmit]`) of a command's fields |
 | `{Module}.Application` | `{Module}.Commands`, `{Module}.Domain`, `MediatR`; `Shared.Persistence` when the module keeps data; the `{Other}.Commands` of a module it calls; consumer-owned service interfaces, never an API client or concrete store project |
-| `{Module}.Service` | `{Module}.Application` for its consumer-owned service interfaces, `{Module}.Domain`, the client/infrastructure abstractions it adapts; no command dispatch or service-to-service calls |
-| `{Infra}.Abstractions` | `Shared` at most — no package of the technique; an `{Api}.Abstractions` also `Client.Abstractions`, the outcomes every client reports |
+| `{ApiServiceName}.Service` | `{Module}.Application` for its consumer-owned service interfaces, `{Module}.Domain`, the client/infrastructure abstractions it adapts; no command dispatch or service-to-service calls |
+| `{ApiName}.Client.Abstractions` | `Client.Abstractions`; protocol-neutral API DTOs and client interface, no transport implementation |
+| `{ApiName}.Client` | `{ApiName}.Client.Abstractions`, the fixed client pipeline/transport projects and protocol packages |
+| `{Infra}.Abstractions` | `Shared` at most — no package of the technique |
 | `{Infra}` | `{Infra}.Abstractions`, the packages of the technique (a client SDK) |
 | `{Store}` | `Shared`, `Shared.Persistence`, every `{Module}.Domain` whose entities it maps, the packages of the technique (Npgsql, EF Core) |
 | `BuildingBlocks` | `Shared`, `MediatR`, `Microsoft.Extensions.Logging.Abstractions` |
@@ -113,7 +122,7 @@ Write code under `App.Host/Api` against a module's `{Module}.Commands` types, `I
 - Fix: send the command through `ISender`; answer an exception by `ErrorKindException.KindOf`.
 
 ### Keep concrete integration services outside the consumer assembly
-Place concrete integration services in `src/Service/{Module}/{Module}.Service`, referencing the consumer's service interfaces without calling its command handlers.
+Place concrete integration services in `src/Service/{ApiServiceName}/{ApiServiceName}.Service`, referencing the consumer's service interfaces without calling its command handlers.
 - Risk: Application depends on client DTOs and transport assemblies solely to host integration adaptation, or a Service reference becomes permission to dispatch commands.
 - Fix: retain service interfaces beside their consumers; let Service reference those contracts, Domain and client abstractions, and let Host wire implementations, as [client-and-service-sibling-projects](./adr/client-and-service-sibling-projects.md) records.
 
@@ -140,12 +149,12 @@ Infrastructure/Postgres/Postgres.Testing         InMemoryRepository<T> : IReposi
 - Fix: the handler takes the contract, never the store, so its scenarios run over the repository in memory; the store's failures become kinds in a command middleware ([vp-postgres-in-dotnet](library/architecture/dotnet/vp-postgres-in-dotnet.skill/vp-postgres-in-dotnet.skill.md)).
 
 ### Declare a service's interface beside its consumer
-Declare the interface a handler uses to reach a service — another system's API, a computation with I/O — in `{Module}.Application/Services/`, with its implementation in `src/Service/{Module}/{Module}.Service/`, listing only the methods the module's handlers call; declare the interface a service uses to reach its infrastructure in `{Infra}.Abstractions`, in the technique's terms; build both implementations in `// [services]` of `Program.cs`.
+Declare the interface a handler uses to reach a service — another system's API, a computation with I/O — in `{Module}.Application/Services/`, with its implementation in `src/Service/{ApiServiceName}/{ApiServiceName}.Service/`, listing only the methods the module's handlers call; declare the interface a service uses to reach its infrastructure in `{Infra}.Abstractions`, in the technique's terms; build both implementations in `// [services]` of `Program.cs`.
 
 ```
 Todo.Application/Services/IRemotePlanner.cs        Plan(titles)      — the application's language
 Service/Todo/Todo.Service/RemotePlannerService.cs  over the client of the planner's API: its outcomes → kinds
-Client/TodoApi/TodoApi.Abstractions  the client's interface, in the API's terms
+Client/Todo/Todo.Client.Abstractions  the client's interface, in the API's terms
 ```
 
 - Violation: `IRemotePlanner` in `{Module}.Commands`, where entry points see it; a handler using the client's interface; `new RemotePlannerService(...)` inside a handler.
@@ -189,10 +198,11 @@ Write the fake of the layer below as a small class in the test project implement
 # Check list
 - [ ] Namespaces, imports, generated roots and `RootNamespace` follow [Qualify namespaces with the service name](#qualify-namespaces-with-the-service-name), with no unfilled `{service-namespace}` in delivered application sources.
 - [ ] Every layer is in its project and folder per [One project per layer](#one-project-per-layer); the code the entry points share is in `App.Host/Api/Core/`.
+- [ ] Integration project names follow [Name integration projects by external responsibility](#name-integration-projects-by-external-responsibility).
 - [ ] Every project has only the references of [Reference only downward](#reference-only-downward).
 - [ ] Another module is called only by its commands; `App.Host` references `Application` for registration, and the store references `Domain` for mapping, as [Reference only downward](#reference-only-downward) permits.
 - [ ] A handler reaches its module's entities through `IRepository<T>`; configurations are in the module's Domain, specifications in its Application.
-- [ ] Each service interface is in its consumer's project (`Application/Services`, or `Domain/Services` for a domain service); each infrastructure interface is in `{Infra}.Abstractions`; implementations reside in `{Module}.Service` and are built only in `// [services]`.
+- [ ] Each service interface is in its consumer's project (`Application/Services`, or `Domain/Services` for a domain service); each infrastructure interface is in `{Infra}.Abstractions`; implementations reside in `{ApiServiceName}.Service` and are built only in `// [services]`.
 - [ ] Code under `App.Host/Api` uses only `{Module}.Commands`, `ISender`, `Shared`, and `BuildingBlocks`.
 - [ ] Every entry point is split into `Pipeline/`, `Endpoint/`, and one registration file.
 - [ ] Entities have no public setters, a validating constructor, and guarded state-change methods.

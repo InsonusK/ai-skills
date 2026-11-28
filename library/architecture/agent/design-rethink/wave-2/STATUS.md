@@ -95,3 +95,18 @@ A final owner-side audit also aligned the catalog topology diagram, clarified th
 generated logical DTO exception, and made the planned-cache conflict explicit.
 Legacy catalogs were not migrated. Full feature/VP graphs and authoring procedures
 remain waves 3–4, not implied deliverables of these placement overlays.
+
+## Naming refinement
+
+The owner approved external-responsibility names after reviewing this wave;
+[NAMING.md](./NAMING.md) records the scope and invariants. HTTP/gRPC/retry .NET
+projects now use Todo.Client, Todo.Client.Abstractions and Todo.Client.Tests,
+alongside Todo.Service. Source types/imports, assembly friend declarations,
+references, diagrams, scenario manifests and layout docs follow those names.
+The consumer module does not determine the external service name.
+
+A fresh-eyes audit caught six scenario files omitted from the initial test-project
+move, three README paths and the retry skill's old generic path. All were fixed;
+conformance copies now match at the renamed paths. Validation explicitly checks
+that test totals remain 95/92/107, including client contract scenarios. The final
+audit reports no outstanding findings.

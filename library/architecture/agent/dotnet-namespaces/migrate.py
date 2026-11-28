@@ -23,7 +23,7 @@ MAPPING = {
     'Client.Pipeline': 'Client.Core.Pipeline',
     'Client.Http': 'Client.Core.Http',
     'Client.Grpc': 'Client.Core.Grpc',
-    'TodoApi': 'Client.TodoApi',
+    'Todo.Client': 'Client.Todo',
     'Retry': 'Client.Middleware.Retry',
     'Contracts.Todo.V1': 'Contracts.Todo.V1',
 }

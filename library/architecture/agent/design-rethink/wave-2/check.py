@@ -8,7 +8,7 @@ source_paths=set(subprocess.check_output(["git","ls-files","--cached","--others"
 contracts={
 'go':['internal/service/remote_planner.go','internal/client/todoapi/contract/dto.go','internal/client/core/outcome/outcome.go'],
 'python':['src/todo/service/remote_planner.py','src/todo/client/todo_api/dto.py','src/todo/client/core/outcomes.py'],
-'dotnet':['src/Service/Todo/Todo.Service/RemotePlannerService.cs','src/Client/TodoApi/TodoApi.Abstractions/ITodoApi.cs','src/Client/TodoApi/TodoApi.Abstractions/TodoApiItemDto.cs','src/Client/Core/Client.Abstractions/ApiOutcomes.cs']}
+'dotnet':['src/Service/Todo/Todo.Service/RemotePlannerService.cs','src/Client/Todo/Todo.Client.Abstractions/ITodoClient.cs','src/Client/Todo/Todo.Client.Abstractions/TodoItemDto.cs','src/Client/Core/Client.Abstractions/ApiOutcomes.cs']}
 for stack,relatives in contracts.items():
  examples=[ROOT/f'library/architecture/{stack}/{name}-in-{stack}.skill/examples' for name in ('vp-http-client','vp-grpc-client','vp-client-retry')]
  for relative in relatives:
@@ -16,7 +16,7 @@ for stack,relatives in contracts.items():
   if not all(p.is_file() for p in files):errors.append(f'{stack}: missing common contract {relative}');continue
   if len({p.read_bytes() for p in files})!=1:errors.append(f'{stack}: transport/retry changes shared contract {relative}')
  for example in examples:
-  for old in ('internal/infrastructure/client','src/todo/infrastructure/client','src/Infrastructure/Client'):
+  for old in ('internal/infrastructure/client','src/todo/infrastructure/client','src/Infrastructure/Client','src/Client/TodoApi'):
    if any(p.is_file() and p.relative_to(ROOT).as_posix() in source_paths for p in (example/old).rglob('*')):errors.append(f'Old client root still populated: {example/old}')
   if stack=='dotnet':
    application=example/'src/Modules/Todo/Todo.Application/Todo.Application.csproj'
@@ -25,13 +25,22 @@ for stack,relatives in contracts.items():
    service=example/'src/Service/Todo/Todo.Service/Todo.Service.csproj'
    refs=[r.attrib['Include'].replace('\\','/') for r in ET.fromstring(service.read_text()).iter('ProjectReference')]
    if not any('Todo.Application.csproj' in r for r in refs):errors.append(f'{service}: missing consumer-owned port reference')
-   if any('Client.Http/' in r or 'Client.Grpc/' in r or '/TodoApi/TodoApi.csproj' in r for r in refs):errors.append(f'{service}: concrete protocol reference')
+   if any('Client.Http/' in r or 'Client.Grpc/' in r or '/Todo.Client/Todo.Client.csproj' in r for r in refs):errors.append(f'{service}: concrete protocol reference')
   if stack=='python':
    init=example/'src/todo/client/todo_api/__init__.py'
    if re.search(r'from .*todo_api\.todo_api|import grpc|import httpx',init.read_text()):errors.append(f'{init}: logical import loads transport')
   for relative in relatives[:2]:
    s=(example/relative).read_text()
    if re.search(r'httpclient|grpcclient|using Grpc|from grpc|import grpc|httpx2|HttpStatus',s):errors.append(f'{example/relative}: service/DTO contract knows transport')
+# Naming is owned by the .NET layer contract, independently of consumer modules.
+naming_owner=ROOT/'library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md'
+for file in [naming_owner, ROOT/'library/architecture/docs/layouts/dotnet.md', *[
+ ROOT/f'library/architecture/dotnet/{vp}-in-dotnet.skill/{vp}-in-dotnet.skill.md'
+ for vp in ('vp-http-client','vp-grpc-client')]]:
+ text=file.read_text()
+ for required in ('{ApiServiceName}.Service','{ApiName}.Client','{ApiName}.Client.Abstractions'):
+  if required not in text:errors.append(f'{file.relative_to(ROOT)}: missing integration naming {required}')
+ if '{Module}.Service' in text:errors.append(f'{file.relative_to(ROOT)}: service named after consuming module')
 # Every current spec and stack implementation is navigable from each layout page.
 for stack in contracts:
  page=ROOT/f'library/architecture/docs/layouts/{stack}.md';text=page.read_text()

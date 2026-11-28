@@ -34,14 +34,14 @@ src/
       Services/                          # domain behavior and its service ports
       Configurations/                    # entity mappings owned by the module
       Errors/
-  Service/{Module}/{Module}.Service/      # concrete integration services
+  Service/{ApiServiceName}/{ApiServiceName}.Service/      # concrete integration services
                                          # references consumer ports, Domain,
                                          # Client abstractions, never handlers
   Client/
     Core/{Client.Abstractions,Client.Pipeline,Client.Http,Client.Grpc}/
     Middleware/Retry/
-    {Api}/{Api}.Abstractions/             # logical API DTOs and client contract
-    {Api}/{Api}/                         # protocol implementation and Mock/
+    {ApiName}/{ApiName}.Client.Abstractions/             # logical API DTOs and client contract
+    {ApiName}/{ApiName}.Client/                         # protocol implementation and Mock/
   Infrastructure/Postgres/Postgres/      # own-store context, repositories,
                                          # migrations, readiness and UoW hook
   Shared.Persistence/                    # own-store repository contracts
@@ -51,8 +51,14 @@ src/
   MaskedLogging/
 docs/integration/{api,client}/{contract}/ # generated proto at build time
 {Project}.Tests/                         # beside each subject project;
-                                         # service tests beside Module.Service
+                                         # service tests beside ApiServiceName.Service
 ```
+
+ApiServiceName identifies the external system or its coherent subsystem; ApiName
+identifies the API/entity responsibility. Neither derives from the consuming module.
+For one client use Todo.Service and Todo.Client; for several use Todo.Service with
+TodoTask.Client and TodoLog.Client. The shared prefix aids navigation; constructor
+dependencies establish ownership. See the owning [.NET naming rule](../../../develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md#name-integration-projects-by-external-responsibility).
 
 ## VP ownership and placement
 
@@ -68,8 +74,8 @@ links define behavior; the tree defines where its elements fit together.
 | CLI entry and action registration | `App.Host/Api/Cli` | [vp-cli-api](../../spec/vp-cli-api.skill/vp-cli-api.skill.md) · [.NET](../../dotnet/vp-cli-api-in-dotnet.skill/vp-cli-api-in-dotnet.skill.md) |
 | Management entry and readiness contract | `App.Host/Api/Management` | [vp-health](../../spec/vp-health.skill/vp-health.skill.md) · [.NET](../../dotnet/vp-health-in-dotnet.skill/vp-health-in-dotnet.skill.md) |
 | Payload masking and request-id logging | `MaskedLogging, BuildingBlocks/Logging` | [vp-logging](../../spec/vp-logging.skill/vp-logging.skill.md) · [.NET](../../dotnet/vp-logging-in-dotnet.skill/vp-logging-in-dotnet.skill.md) |
-| HTTP mechanics, entity client/DTOs, emulator, adapting service | `Client/Core/Client.Http, Client/{Api}, Service/{Module}` | [vp-http-client](../../spec/vp-http-client.skill/vp-http-client.skill.md) · [.NET](../../dotnet/vp-http-client-in-dotnet.skill/vp-http-client-in-dotnet.skill.md) |
-| gRPC mechanics/generated wire code, same logical DTO/service contract | `Client/Core/Client.Grpc, Client/{Api}, Service/{Module}` | [vp-grpc-client](../../spec/vp-grpc-client.skill/vp-grpc-client.skill.md) · [.NET](../../dotnet/vp-grpc-client-in-dotnet.skill/vp-grpc-client-in-dotnet.skill.md) |
+| HTTP mechanics, entity client/DTOs, emulator, adapting service | `Client/Core/Client.Http, Client/{ApiName}, Service/{ApiServiceName}` | [vp-http-client](../../spec/vp-http-client.skill/vp-http-client.skill.md) · [.NET](../../dotnet/vp-http-client-in-dotnet.skill/vp-http-client-in-dotnet.skill.md) |
+| gRPC mechanics/generated wire code, same logical DTO/service contract | `Client/Core/Client.Grpc, Client/{ApiName}, Service/{ApiServiceName}` | [vp-grpc-client](../../spec/vp-grpc-client.skill/vp-grpc-client.skill.md) · [.NET](../../dotnet/vp-grpc-client-in-dotnet.skill/vp-grpc-client-in-dotnet.skill.md) |
 | Optional client middleware, settings and safe-operation marks | `Client/Middleware/Retry` | [vp-client-retry](../../spec/vp-client-retry.skill/vp-client-retry.skill.md) · [.NET](../../dotnet/vp-client-retry-in-dotnet.skill/vp-client-retry-in-dotnet.skill.md) |
 | Own-store repository, mappings/specifications, migrations and readiness | `Infrastructure/Postgres, Shared.Persistence, Domain/Configurations, Application/Specifications, App.Migrate` | [vp-postgres](../../spec/vp-postgres.skill/vp-postgres.skill.md) · [.NET](../../dotnet/vp-postgres-in-dotnet.skill/vp-postgres-in-dotnet.skill.md) |
 | Command transaction middleware and store interception | `Middleware/UnitOfWork, Infrastructure/Postgres, Shared/UnitOfWork` | [vp-unit-of-work](../../spec/vp-unit-of-work.skill/vp-unit-of-work.skill.md) · [.NET](../../dotnet/vp-unit-of-work-in-dotnet.skill/vp-unit-of-work-in-dotnet.skill.md) |

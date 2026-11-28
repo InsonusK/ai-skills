@@ -27,7 +27,8 @@ The same ownership question applies to `App.Host`, `Shared` and module types.
 The owner selected `{ServiceName}.{Layer}.{LogicalName}` and approved the
 migration plan: one `TodoExampleService` root for variants of the same Todo
 example, an application-selected root in real services, and preserved project,
-assembly and folder names. Client/Service organization remains a separate choice.
+assembly and folder names. Client/Service organization remains a separate choice; current project names follow
+[external-system-service-and-api-client-names](./external-system-service-and-api-client-names.md).
 
 # Searched variants
 

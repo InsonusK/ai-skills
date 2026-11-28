@@ -19,8 +19,8 @@ using TodoExampleService.Client.Middleware.Retry;
 using TodoExampleService.Modules.Todo.Application;
 using TodoExampleService.Modules.Todo.Application.Services;
 using TodoExampleService.Modules.Todo.Commands;
-using TodoExampleService.Client.TodoApi;
-using TodoExampleService.Client.TodoApi.Abstractions;
+using TodoExampleService.Client.Todo;
+using TodoExampleService.Client.Todo.Abstractions;
 
 namespace TodoExampleService.App.Host;
 
@@ -67,9 +67,9 @@ public static class Program
         RetryConfig todoApiRetry;
         try
         {
-            todoApiConfig = HttpApiConfig.Load(TodoApiClient.Prefix);
+            todoApiConfig = HttpApiConfig.Load(TodoClient.Prefix);
             // The retry of the todo API: TODO_API_RETRY_ATTEMPTS, TODO_API_RETRY_BACKOFF.
-            todoApiRetry = RetryConfig.Load(TodoApiClient.Prefix);
+            todoApiRetry = RetryConfig.Load(TodoClient.Prefix);
         }
         catch (FormatException configError)
         {
@@ -77,7 +77,7 @@ public static class Program
             bootLogging.CreateLogger("App.Host").Write(LogLevel.Error, "startup failed", configError);
             return EntryRunner.ExitFailure;
         }
-        services.AddSingleton<ITodoApi>(provider =>
+        services.AddSingleton<ITodoClient>(provider =>
         {
             var loggers = provider.GetRequiredService<ILoggerFactory>();
             // [client middleware] - run around the attempts of every call of
@@ -87,7 +87,7 @@ public static class Program
             [
                 new RetryMiddleware(todoApiRetry, loggers.CreateLogger("Client.Retry")),
             ];
-            return new TodoApiClient(todoApiConfig, loggers.CreateLogger("Client.TodoApi"), todoApiMiddlewares);
+            return new TodoClient(todoApiConfig, loggers.CreateLogger("Client.Todo"), todoApiMiddlewares);
         });
         services.AddSingleton<IRemotePlanner, RemotePlannerService>();
 

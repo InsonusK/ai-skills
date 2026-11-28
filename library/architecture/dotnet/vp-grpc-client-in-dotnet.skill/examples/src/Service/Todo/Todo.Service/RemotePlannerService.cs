@@ -2,7 +2,7 @@ using TodoExampleService.Modules.Todo.Application.Services;
 using TodoExampleService.Client.Core.Abstractions;
 using TodoExampleService.Shared.Errors;
 using TodoExampleService.Modules.Todo.Domain.Entities;
-using TodoExampleService.Client.TodoApi.Abstractions;
+using TodoExampleService.Client.Todo.Abstractions;
 
 namespace TodoExampleService.Service.Todo;
 
@@ -12,11 +12,11 @@ namespace TodoExampleService.Service.Todo;
 /// not answer is unavailable; titles the API rejects are invalid, with its
 /// message; any other answer is a failure of this service.
 /// </summary>
-public sealed class RemotePlannerService(ITodoApi api) : IRemotePlanner
+public sealed class RemotePlannerService(ITodoClient api) : IRemotePlanner
 {
     public async Task<IReadOnlyList<Item>> PlanAsync(IReadOnlyList<string> titles, CancellationToken cancellationToken)
     {
-        IReadOnlyList<TodoApiItemDto> answered;
+        IReadOnlyList<TodoItemDto> answered;
         try
         {
             answered = await api.PlanItemsAsync(titles, cancellationToken);
@@ -32,7 +32,7 @@ public sealed class RemotePlannerService(ITodoApi api) : IRemotePlanner
         return answered.Select(ToItem).ToList();
     }
 
-    private static Item ToItem(TodoApiItemDto answered)
+    private static Item ToItem(TodoItemDto answered)
     {
         Item item;
         try

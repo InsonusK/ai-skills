@@ -1,8 +1,8 @@
 ---
 name: one outcome project for every client
 description: Where a dotnet service finds the technical outcomes of a client - one Client.Abstractions for HTTP and gRPC, or an abstractions project per transport as Go's packages
-problem: A service in {Module}.Application may reference only an {Infra}.Abstractions project, so the outcomes it catches (unavailable, a status) must live in one; should every transport have its own, as Go's httpclient and grpcclient packages, or should one project serve both?
-decision: One project, src/Client/Core/Client.Abstractions, holds ApiUnavailableException, ApiStatusException, and ApiStatusCode (google.rpc.Code, which is also the gRPC status code) for every client; each API's {Api}.Abstractions references it, so the service over a client catches the same types whichever transport the client uses.
+problem: An adapting service in {ApiServiceName}.Service references the logical {ApiName}.Client.Abstractions contract, so the outcomes it catches (unavailable, a status) must live in one; should every transport have its own, as Go's httpclient and grpcclient packages, or should one project serve both?
+decision: One project, src/Client/Core/Client.Abstractions, holds ApiUnavailableException, ApiStatusException, and ApiStatusCode (google.rpc.Code, which is also the gRPC status code) for every client; each API's {ApiName}.Client.Abstractions references it, so the service over a client catches the same types whichever transport the client uses.
 tags:
   - stack/dotnet
   - concern/architecture
@@ -11,7 +11,7 @@ tags:
 ---
 
 # Problem
-In Go the service imports the client package of its transport and checks `httpclient.ErrUnavailable` or `grpcclient.ErrUnavailable`. In dotnet the service's project may reference only abstractions without packages of a technique (app-layers-in-dotnet), so the outcome types need an abstractions project of their own.
+The earlier Go examples placed outcomes in transport packages; the current Go catalog uses a shared outcome package. In dotnet the service's project may reference only abstractions without packages of a technique (app-layers-in-dotnet), so the outcome types need an abstractions project of their own.
 
 # Selected variant
 [[#One Client.Abstractions]]
@@ -24,14 +24,14 @@ In Go the service imports the client package of its transport and checks `httpcl
 **Selected.**
 
 ### Description
-`Client.Abstractions` (no package) beside `Client.Http` and `Client.Grpc` under `Client/Core/`; `ApiStatusException` carries the google.rpc code, its message, and the HTTP status when there is one.
+`Client.Abstractions` (no package) beside `Client.Http` and `Client.Grpc` under `Client/Core/`; `ApiStatusException` carries the google.rpc code and message, with HTTP/gRPC diagnostics retained as an inner exception.
 
 ### Benefits
 - The service over a client is the same for HTTP and gRPC; moving an API from one transport to the other changes the client only.
 - google.rpc.Code and the gRPC status codes are one numbering, so one enum names both.
 
 ### Costs
-- A departure from Go, where each transport's package has its outcomes.
+- At selection time this differed from Go's transport-specific outcome packages.
 - The common status has no HTTP field; transport diagnostics are retained only as the inner exception.
 
 ## An abstractions project per transport

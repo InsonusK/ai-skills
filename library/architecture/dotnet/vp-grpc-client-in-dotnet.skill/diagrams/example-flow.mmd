@@ -1,10 +1,10 @@
 sequenceDiagram
     autonumber
     participant Service as RemotePlannerService<br/>src/Service/Todo/Todo.Service/RemotePlannerService.cs
-    participant Adapter as TodoApiClient<br/>src/Client/TodoApi/TodoApi/TodoApiClient.cs
+    participant Adapter as TodoClient<br/>src/Client/Todo/Todo.Client/TodoClient.cs
     participant Stub as ItemsServiceClient, generated at build<br/>docs/integration/client/todo/todo.proto
     participant Interceptor as CallInterceptor<br/>src/Client/Core/Client.Grpc/CallInterceptor.cs
-    participant API as Todo API, or with TODO_API_HOST=mock its emulator<br/>src/Client/TodoApi/TodoApi/Mock/TodoApiMock.cs
+    participant API as Todo API, or with TODO_API_HOST=mock its emulator<br/>src/Client/Todo/Todo.Client/Mock/TodoMock.cs
 
     Service->>+Adapter: PlanItemsAsync(titles, token)
     Adapter->>+Stub: PlanItemsAsync(request, token)
@@ -16,5 +16,5 @@ sequenceDiagram
     Note over Interceptor: record "grpc client call answered"
     Interceptor-->>-Stub: the response, or throws ApiUnavailableException or ApiStatusException
     Stub-->>-Adapter: the generated response, or the outcome
-    Adapter-->>-Service: TodoApiItemDto list, or the exception
+    Adapter-->>-Service: TodoItemDto list, or the exception
     Note over Service: ApiUnavailableException: kind Unavailable. Code InvalidArgument: kind Invalid. Anything else: no kind

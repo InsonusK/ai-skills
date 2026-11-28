@@ -20,7 +20,7 @@ Go, Python and .NET. Remaining questions below concern reuse and configuration.
 - [Protocol-neutral contract](../../develop/core/api-client.skill/adr/protocol-neutral-client-contract.md)
 - [Entity clients and system services](../../develop/core/api-client.skill/adr/entity-clients-and-system-services.md)
 - [.NET sibling projects](../../develop/dotnet/app-layers-in-dotnet.skill/adr/client-and-service-sibling-projects.md)
-- [HTTP client](../dotnet/vp-http-client-in-dotnet.skill/examples/src/Client/TodoApi/TodoApi/TodoApiClient.cs)
+- [HTTP client](../dotnet/vp-http-client-in-dotnet.skill/examples/src/Client/Todo/Todo.Client/TodoClient.cs)
 - [Adapting service](../dotnet/vp-http-client-in-dotnet.skill/examples/src/Service/Todo/Todo.Service/RemotePlannerService.cs)
 - [Per-language layouts](../docs/base-capabilities.md)
 

@@ -18,8 +18,8 @@ using TodoExampleService.Middleware.Logging;
 using TodoExampleService.Modules.Todo.Application;
 using TodoExampleService.Modules.Todo.Application.Services;
 using TodoExampleService.Modules.Todo.Commands;
-using TodoExampleService.Client.TodoApi;
-using TodoExampleService.Client.TodoApi.Abstractions;
+using TodoExampleService.Client.Todo;
+using TodoExampleService.Client.Todo.Abstractions;
 
 namespace TodoExampleService.App.Host;
 
@@ -65,7 +65,7 @@ public static class Program
         GrpcApiConfig todoApiConfig;
         try
         {
-            todoApiConfig = GrpcApiConfig.Load(TodoApiClient.Prefix);
+            todoApiConfig = GrpcApiConfig.Load(TodoClient.Prefix);
         }
         catch (FormatException configError)
         {
@@ -73,14 +73,14 @@ public static class Program
             bootLogging.CreateLogger("App.Host").Write(LogLevel.Error, "startup failed", configError);
             return EntryRunner.ExitFailure;
         }
-        services.AddSingleton<ITodoApi>(provider =>
+        services.AddSingleton<ITodoClient>(provider =>
         {
             var loggers = provider.GetRequiredService<ILoggerFactory>();
             // [client middleware] - run around the attempts of every call of
             // the todo API, the first the outermost. A variation point (the
             // retry) adds its middleware to this list.
             IReadOnlyList<IClientMiddleware> todoApiMiddlewares = [];
-            return new TodoApiClient(todoApiConfig, loggers.CreateLogger("Client.TodoApi"), todoApiMiddlewares);
+            return new TodoClient(todoApiConfig, loggers.CreateLogger("Client.Todo"), todoApiMiddlewares);
         });
         services.AddSingleton<IRemotePlanner, RemotePlannerService>();
 

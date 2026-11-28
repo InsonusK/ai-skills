@@ -18,10 +18,10 @@
     <Project Path="src/Client/Core/Client.Grpc/Client.Grpc.csproj" />
     <Project Path="src/Client/Core/Client.Grpc.Tests/Client.Grpc.Tests.csproj" />
   </Folder>
-  <Folder Name="/src/Client/TodoApi/">
-    <Project Path="src/Client/TodoApi/TodoApi.Abstractions/TodoApi.Abstractions.csproj" />
-    <Project Path="src/Client/TodoApi/TodoApi/TodoApi.csproj" />
-    <Project Path="src/Client/TodoApi/TodoApi.Tests/TodoApi.Tests.csproj" />
+  <Folder Name="/src/Client/Todo/">
+    <Project Path="src/Client/Todo/Todo.Client.Abstractions/Todo.Client.Abstractions.csproj" />
+    <Project Path="src/Client/Todo/Todo.Client/Todo.Client.csproj" />
+    <Project Path="src/Client/Todo/Todo.Client.Tests/Todo.Client.Tests.csproj" />
   </Folder>
   <Folder Name="/src/Modules/Todo/">
     <Project Path="src/Modules/Todo/Todo.Domain/Todo.Domain.csproj" />

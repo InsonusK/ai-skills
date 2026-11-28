@@ -3,20 +3,20 @@ using Reqnroll;
 using TodoExampleService.Shared.Errors;
 using TodoExampleService.Service.Todo;
 using TodoExampleService.Modules.Todo.Domain.Entities;
-using TodoExampleService.Client.TodoApi.Abstractions;
+using TodoExampleService.Client.Todo.Abstractions;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace TodoExampleService.Service.Todo.Tests.Steps;
 
 /// <summary>The todo API's adapter faked: the items it answers or the technical outcome it throws.</summary>
-public sealed class FakeTodoApi : ITodoApi
+public sealed class FakeTodoApi : ITodoClient
 {
-    public List<TodoApiItemDto> Items { get; } = [];
+    public List<TodoItemDto> Items { get; } = [];
     public Exception? Error { get; set; }
 
-    public Task<IReadOnlyList<TodoApiItemDto>> PlanItemsAsync(IReadOnlyList<string> titles, CancellationToken cancellationToken) =>
-        Error is null ? Task.FromResult<IReadOnlyList<TodoApiItemDto>>(Items) : throw Error;
+    public Task<IReadOnlyList<TodoItemDto>> PlanItemsAsync(IReadOnlyList<string> titles, CancellationToken cancellationToken) =>
+        Error is null ? Task.FromResult<IReadOnlyList<TodoItemDto>>(Items) : throw Error;
 }
 
 [Binding]
@@ -27,7 +27,7 @@ public sealed class RemotePlannerSteps(ITestOutputHelper output)
     private Exception? _error;
 
     [Given("the todo API plans {string}")]
-    public void GivenTheTodoApiPlans(string titles) => _api.Items.AddRange(titles.Split('|').Select(title => new TodoApiItemDto(title, false)));
+    public void GivenTheTodoApiPlans(string titles) => _api.Items.AddRange(titles.Split('|').Select(title => new TodoItemDto(title, false)));
 
     [Given("the todo API is unavailable")]
     public void GivenTheTodoApiIsUnavailable() => _api.Error = new ApiUnavailableException("todo-api", "connection refused");
