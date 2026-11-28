@@ -16,7 +16,7 @@ tags:
 
 # Core Principle
 - **Copied once, compiled per contract, written per method** - `Client.Abstractions` and `Client.Grpc` are copied from templates and never edited; per API the application copies its `.proto`, compiles it in the client's project, and writes `{ApiName}.Client.Abstractions`, the client whose methods are calls of the generated client over `GrpcApiClient.CallInvoker`, its mock, and the service over it.
-- **The service is the HTTP client's** - The service catches only the outcomes of `Client.Abstractions`, the same for an HTTP and a gRPC client ([one-outcome-project-for-every-client](library/architecture/dotnet/vp-http-client-in-dotnet.skill/adr/one-outcome-project-for-every-client.md)): the service, its interface, its errors, and its scenarios are those of [vp-http-client-in-dotnet](library/architecture/dotnet/vp-http-client-in-dotnet.skill/vp-http-client-in-dotnet.skill.md), file for file.
+- **Protocol-independent adaptation** - Service depends on logical API DTOs and `Client.Abstractions` outcomes, preserving its implementation when an equivalent HTTP/gRPC client is exchanged, as [one-outcome-project-for-every-client](library/architecture/dotnet/vp-http-client-in-dotnet.skill/adr/one-outcome-project-for-every-client.md) records.
 
 ```text
 docs/integration/client/{api-name}/       provider's wire contract
@@ -76,21 +76,27 @@ Write the mock of each client as `src/Client/{ApiName}/{ApiName}.Client/Mock/{Ap
 - Risk: a method the mock does not override answers `UNIMPLEMENTED` under `mock`, and the service cannot run without the other service.
 - Fix: the mocked scenario of the client's feature runs it and checks its answer.
 
+### Implement the adapting service for its consumer
+Write the adapting implementation in `src/Service/{ApiServiceName}/{ApiServiceName}.Service/` against its consumer-owned interface and the logical client contracts, adapting operations and API DTOs to Domain Model through the domain's public APIs.
+- Violation: returning client DTOs to the handler; catching `RpcException` in service; treating invalid provider data as invalid caller input.
+- Risk: transport or provider changes reach consumers, or a broken dependency response is attributed to the caller.
+- Fix: use the local [RemotePlannerService.cs](./examples/src/Service/Todo/Todo.Service/RemotePlannerService.cs) and [RemotePlannerErrors.cs](./examples/src/Service/Todo/Todo.Service/RemotePlannerErrors.cs) as illustrations of Domain Model construction and outcome translation: `ApiUnavailableException` becomes unavailable, expected `ApiStatusException` codes receive application meanings, and other failures pass through without a kind; keep [IRemotePlanner.cs](./examples/src/Modules/Todo/Todo.Application/Services/IRemotePlanner.cs) beside its consumer, with project references governed by app-layers-in-dotnet.
+
 ### Build the client and the service in Program.cs
-Load the settings with `GrpcApiConfig.Load({ApiName}Client.Prefix)` in `// [services]` of `Program.cs`, stopping the start with "startup failed" on a `FormatException`, and register the client as a singleton of `I{ApiName}Client` built with a logger of the logger factory, and the service as a singleton of its interface, as [vp-http-client-in-dotnet](library/architecture/dotnet/vp-http-client-in-dotnet.skill/vp-http-client-in-dotnet.skill.md) does; the provider disposes the client, and with it the channel. Build the client middleware of the API in `// [client middleware]` inside the client's registration - empty until a variation point (`vp-client-retry`) adds one - and pass it to the client's constructor.
+Load the settings with `GrpcApiConfig.Load({ApiName}Client.Prefix)` in `// [services]` of `Program.cs`, stopping the start with "startup failed" on a `FormatException`, and register the client as a singleton of `I{ApiName}Client` built with a logger of the logger factory, and the service as a singleton of its interface; the provider disposes the client, and with it the channel. Build the client middleware of the API in `// [client middleware]` inside the client's registration - empty until a variation point (`vp-client-retry`) adds one - and pass it to the client's constructor.
 - Risk: a channel built per call opens a connection per call; one never disposed holds its connection until the process ends.
 - Fix: one singleton per API.
 
 ### Cover the client with scenarios
-Copy the example's `Client.Grpc.Tests` with the chosen service namespace: it covers the settings, the call, the outcomes, the log, and the mock through an echo API of its own, served on Kestrel over HTTP/2 in plain text. Write per client an `{ApiName}.Client.Tests` calling each method against a Kestrel server of the scenario and its mock, and its contract scenario finding each of `Methods` in the descriptor compiled from the copied file (`{File}Reflection.Descriptor`); take the service's and the command's scenarios from the HTTP client; tag them `@type/tech-check` and `@type/service`.
+Copy the example's `Client.Grpc.Tests` with the chosen service namespace: it covers the settings, the call, the outcomes, the log, and the mock through an echo API of its own, served on Kestrel over HTTP/2 in plain text. Write per client an `{ApiName}.Client.Tests` calling each method against a Kestrel server of the scenario and its mock, and its contract scenario finding each of `Methods` in the descriptor compiled from the copied file (`{File}Reflection.Descriptor`); test each adapting service in `{ApiServiceName}.Service.Tests` with client contracts faked and each command with its service port faked; tag them `@type/tech-check` and `@type/service`.
 - Risk: a client feature that repeats the outcomes of the interceptor grows with every method and tests nothing new.
-- Fix: a client feature checks only its own request and mapping; the generated code cannot be stale, so no scenario compares it with the copy.
+- Fix: a client feature checks only its own request and mapping; the generated code cannot be stale, so no scenario compares it with the copy; the local [remote-planner.feature](./examples/src/Service/Todo/Todo.Service.Tests/features/remote-planner.feature) and [RemotePlannerSteps.cs](./examples/src/Service/Todo/Todo.Service.Tests/Steps/RemotePlannerSteps.cs) demonstrate service tests through fake client contracts.
 
 # Check list
 - [ ] `Client.Abstractions` and `Client.Grpc` are copies of the filled templates.
 - [ ] The consumed `.proto` and generated access follow [Compile the consumed contract into the client, internal](#compile-the-consumed-contract-into-the-client-internal).
 - [ ] Each API has `{ApiName}.Client.Abstractions` with `I{ApiName}Client` and `{ApiName}.Client` with `Prefix`, `Methods`, one method per method, and `Mock/{ApiName}Mock.cs`; the contract scenario passes.
-- [ ] The service, its errors, and its scenarios are those of the HTTP client.
+- [ ] Service follows [Implement the adapting service for its consumer](#implement-the-adapting-service-for-its-consumer); its tests exercise DTO mapping and outcome translation through fake clients.
 - [ ] `Program.cs` loads the settings and registers the client and the service in `// [services]`.
 - [ ] `make test` passes; `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).
 
@@ -100,3 +106,7 @@ One call of the example, with its real classes:
 @import "./diagrams/example-flow.mmd" {as="mermaid"}
 
 - [examples/](./examples/README.md) — the base plateau's startup command planning with another service's todo API: `make run` against its emulator, or against the running gRPC example of [vp-grpc-api-in-dotnet](library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/vp-grpc-api-in-dotnet.skill.md).
+
+- [RemotePlannerService.cs](./examples/src/Service/Todo/Todo.Service/RemotePlannerService.cs) and [RemotePlannerErrors.cs](./examples/src/Service/Todo/Todo.Service/RemotePlannerErrors.cs) — application-specific adaptation and error translation, written per integration rather than copied as fixed templates.
+- [IRemotePlanner.cs](./examples/src/Modules/Todo/Todo.Application/Services/IRemotePlanner.cs) — the consumer-owned service port.
+- [remote-planner.feature](./examples/src/Service/Todo/Todo.Service.Tests/features/remote-planner.feature) and [RemotePlannerSteps.cs](./examples/src/Service/Todo/Todo.Service.Tests/Steps/RemotePlannerSteps.cs) — service behavior exercised with fake clients.
