@@ -1,14 +1,14 @@
 using System.Collections.Concurrent;
-using App.Host.Api.Cli;
-using App.Host.Api.Cli.Pipeline;
-using CliPipeline = App.Host.Api.Cli.Pipeline.Cli;
-using BuildingBlocks.Logging;
+using TodoExampleService.App.Host.Api.Cli;
+using TodoExampleService.App.Host.Api.Cli.Pipeline;
+using CliPipeline = TodoExampleService.App.Host.Api.Cli.Pipeline.Cli;
+using TodoExampleService.BuildingBlocks.Logging;
 using Microsoft.Extensions.Logging;
 using Reqnroll;
-using Shared.Errors;
+using TodoExampleService.Shared.Errors;
 using Xunit;
 
-namespace App.Host.Tests.Steps.Cli;
+namespace TodoExampleService.App.Host.Tests.Steps.Cli;
 
 /// <summary>One record as a part wrote it: every attribute, the payload too.</summary>
 public sealed record CapturedRecord(string Category, LogLevel Level, string Message, IReadOnlyDictionary<string, object?> Attributes, Exception? Exception);

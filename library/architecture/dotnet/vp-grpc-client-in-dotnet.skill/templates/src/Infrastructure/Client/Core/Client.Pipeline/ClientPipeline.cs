@@ -1,6 +1,6 @@
 // Source: skill vp-http-client-in-dotnet
 
-namespace Client.Pipeline;
+namespace {service-namespace}.Infrastructure.Client.Core.Pipeline;
 
 /// <summary>One call of an operation of an API, as every client middleware sees it.</summary>
 /// <param name="Api">How the log names the API: "todo-api".</param>

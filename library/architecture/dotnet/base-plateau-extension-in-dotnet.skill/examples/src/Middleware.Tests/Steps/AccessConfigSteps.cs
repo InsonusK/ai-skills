@@ -1,8 +1,8 @@
-using Middleware.Access;
+using TodoExampleService.Middleware.Access;
 using Reqnroll;
 using Xunit;
 
-namespace Middleware.Tests.Steps;
+namespace TodoExampleService.Middleware.Tests.Steps;
 
 /// <summary>The steps of AccessConfig.feature: <see cref="AccessConfig.Load"/> over the environment.</summary>
 [Binding]

@@ -1,7 +1,7 @@
 using Reqnroll;
 using Xunit;
 
-namespace Retry.Tests.Steps;
+namespace TodoExampleService.Infrastructure.Client.Middleware.Retry.Tests.Steps;
 
 [Binding]
 public sealed class ConfigSteps

@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
-using Middleware.Access;
+using TodoExampleService.Middleware.Access;
 
-namespace App.Host.Api.Http.Middleware.Authentication;
+namespace TodoExampleService.App.Host.Api.Http.Middleware.Authentication;
 
 /// <summary>
 /// The HTTP middleware of the sample access variation point: it identifies

@@ -1,13 +1,13 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using BuildingBlocks.Logging;
+using TodoExampleService.BuildingBlocks.Logging;
 using Microsoft.Extensions.Logging;
 using Reqnroll;
-using Shared.Errors;
+using TodoExampleService.Shared.Errors;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace BuildingBlocks.Tests.Steps;
+namespace TodoExampleService.BuildingBlocks.Tests.Steps;
 
 [Binding]
 public sealed partial class JsonLogSteps(ITestOutputHelper output)

@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
-using Postgres.Repositories;
-using Postgres.Testing;
+using TodoExampleService.Infrastructure.Database.Postgres.Repositories;
+using TodoExampleService.Infrastructure.Database.Postgres.Testing;
 using Reqnroll;
-using Shared.Persistence;
+using TodoExampleService.Shared.Persistence;
 
-namespace Postgres.Tests.Steps;
+namespace TodoExampleService.Infrastructure.Database.Postgres.Tests.Steps;
 
 /// <summary>
 /// The database of one scenario, built as the composition root builds it. Each
@@ -68,7 +68,7 @@ public sealed class PostgresWorld
     public TaskRepository Tasks() => new(Session());
 
     /// <summary>The repository of the application's items, over a context of its own, as a command gets it.</summary>
-    public PostgresRepository<Todo.Domain.Entities.Item> Items()
+    public PostgresRepository<TodoExampleService.Modules.Todo.Domain.Entities.Item> Items()
     {
         var scope = _provider!.CreateAsyncScope();
         _scopes.Add(scope);

@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>$(ServiceNamespace).Infrastructure.Client.Core.Http</RootNamespace>
+  </PropertyGroup>
   <!-- The fixed part of every client of another service's HTTP API: the {API}
        settings and HttpApiClient.CallAsync with the timeout, the call log, the
        request id, the outcomes, and the mock. Copied from the templates of

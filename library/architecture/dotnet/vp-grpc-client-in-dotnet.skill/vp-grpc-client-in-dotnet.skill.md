@@ -2,7 +2,7 @@
 name: vp-grpc-client-in-dotnet
 description: The gRPC client variation point in dotnet — Client.Abstractions (the outcomes every client reports) and Client.Grpc (GrpcApiConfig, GrpcApiClient with a lazy GrpcChannel, CallInterceptor for the timeout, the x-request-id metadata, the call log, and the outcomes, EmulatorCallInvoker for the mock) copied from templates, the consumed proto compiled by Grpc.Tools into the client as internal types, one client per API in Infrastructure/Client/{Api} with its {Api}.Abstractions, its mock, and its contract scenario, the service over it in {Module}.Application/Services, and the lines of Program.cs that build them
 whenToUse: when a dotnet application built on the base plateau must call another service's gRPC API, when you call a further method of such an API or replace its proto, or when you review a dotnet gRPC client
-updated: 20261102
+updated: 20261119
 tags:
   - stack/dotnet
   - concern/architecture
@@ -19,7 +19,7 @@ tags:
 - **The service is the HTTP client's** - The service catches only the outcomes of `Client.Abstractions`, the same for an HTTP and a gRPC client ([one-outcome-project-for-every-client](library/architecture/dotnet/vp-http-client-in-dotnet.skill/adr/one-outcome-project-for-every-client.md)): the service, its interface, its errors, and its scenarios are those of [vp-http-client-in-dotnet](library/architecture/dotnet/vp-http-client-in-dotnet.skill/vp-http-client-in-dotnet.skill.md), file for file.
 
 ```
-docs/integration/client/{api-name}/{name}.proto       the provider's contract, copied unchanged
+docs/integration/client/{api-name}/{name}.proto       the provider's contract, only its local C# namespace qualified
 src/Infrastructure/Client/                             every client of another service's API, and nothing else
 ├── Core/                                              copied from templates, never edited
 │   ├── Client.Abstractions/   ApiOutcomes.cs          ApiUnavailableException, ApiStatusException, ApiStatusCode; no package
@@ -40,16 +40,21 @@ src/Infrastructure/Client/                             every client of another s
 
 ## MUST
 
+### Fill the service namespace
+Fill `{service-namespace}` with the application's namespace root from [the namespace convention](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md#qualify-namespaces-with-the-service-name) before copying this skill's templates.
+- Risk: an unfilled identifier does not compile, while a different root in each file splits the service's types.
+- Fix: substitute the same identifier in every delivered source, preserve template logic, and verify no `{service-namespace}` remains in application sources.
+
 ### Copy the client code from templates
 Copy [Client.Abstractions](./templates/src/Infrastructure/Client/Core/Client.Abstractions/), [Client.Pipeline](./templates/src/Infrastructure/Client/Core/Client.Pipeline/), and [Client.Grpc](./templates/src/Infrastructure/Client/Core/Client.Grpc/) to `src/Infrastructure/Client/Core/`, with the example's `Client.Pipeline.Tests` and `Client.Grpc.Tests`, add the five projects to the solution, and `Grpc.Net.Client`, `Google.Protobuf`, `Grpc.Tools`, and, for the scenarios, `Grpc.AspNetCore` to `Directory.Packages.props`. With the HTTP client attached too, `Client.Abstractions` and `Client.Pipeline` are already there, unchanged.
 - Risk: a retyped client drifts in its deadline, its outcomes, or its log from every other dotnet client of the catalog.
-- Fix: copy the files unchanged; `make test` passes.
+- Fix: copy the files unchanged after namespace substitution; `make test` passes.
 
 ### Compile the consumed contract into the client, internal
 Compile the copied `.proto` in `{Api}.csproj` with `<Protobuf Include="..\..\..\..\..\docs\integration\client\{api-name}\{file}.proto" GrpcServices="Both" Access="Internal" />`, with `Google.Protobuf` and `Grpc.Tools`, and give its tests `InternalsVisibleTo`.
-- Violation: the provider's generated package referenced; `Access="Public"`, which lets the service see the messages; the copy edited to change `csharp_namespace`.
+- Violation: the provider's generated package referenced; `Access="Public"`, which lets the service see the messages; the copied wire contract changed while qualifying its local namespace.
 - Risk: the service depends on the provider's messages, and a new version of the contract edits the module.
-- Fix: the generated types live in the provider's namespace (`Contracts.Todo.V1`) inside the client's assembly only; nothing generated is committed, as [grpc-tools-at-build-time](library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/adr/grpc-tools-at-build-time.md) decided for the API.
+- Fix: qualify only the local `csharp_namespace` as `{service-namespace}.Contracts.{Name}.V{major}`, preserving protobuf packages, service names and fields; generated types stay internal to the client assembly and are never committed, as [grpc-tools-at-build-time](library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/adr/grpc-tools-at-build-time.md) decided for the API.
 
 ### One client per API, behind its abstractions
 Write each API as `{Api}.Abstractions` with `I{Api}`, referencing only `Client.Abstractions`, and `{Api}` with `{Api}Client : I{Api}, IDisposable` holding `Prefix` (`"TODO_API"`), `Methods` (a `GrpcMethod` - the full name and `Retryable` where a repeat does what one call does - for every method it calls), a `GrpcApiClient` built with its mock's `Bind`, `Methods`, and the client middleware of its constructor, the generated client over its `CallInvoker`, and per method one method that calls it and maps the response.
@@ -77,13 +82,13 @@ Load the settings with `GrpcApiConfig.Load({Api}Client.Prefix)` in `// [services
 - Fix: one singleton per API.
 
 ### Cover the client with scenarios
-Copy the example's `Client.Grpc.Tests` unchanged: it covers the settings, the call, the outcomes, the log, and the mock through an echo API of its own, served on Kestrel over HTTP/2 in plain text. Write per client an `{Api}.Tests` calling each method against a Kestrel server of the scenario and its mock, and its contract scenario finding each of `Methods` in the descriptor compiled from the copied file (`{File}Reflection.Descriptor`); take the service's and the command's scenarios from the HTTP client; tag them `@type/tech-check` and `@type/service`.
+Copy the example's `Client.Grpc.Tests` with the chosen service namespace: it covers the settings, the call, the outcomes, the log, and the mock through an echo API of its own, served on Kestrel over HTTP/2 in plain text. Write per client an `{Api}.Tests` calling each method against a Kestrel server of the scenario and its mock, and its contract scenario finding each of `Methods` in the descriptor compiled from the copied file (`{File}Reflection.Descriptor`); take the service's and the command's scenarios from the HTTP client; tag them `@type/tech-check` and `@type/service`.
 - Risk: a client feature that repeats the outcomes of the interceptor grows with every method and tests nothing new.
 - Fix: a client feature checks only its own request and mapping; the generated code cannot be stale, so no scenario compares it with the copy.
 
 # Check list
-- [ ] `Client.Abstractions` and `Client.Grpc` are unchanged copies of the templates.
-- [ ] The consumed `.proto` is unchanged under `docs/integration/client/{api-name}/` and compiled in `{Api}.csproj` with `Access="Internal"`.
+- [ ] `Client.Abstractions` and `Client.Grpc` are copies of the filled templates.
+- [ ] The consumed `.proto` and generated access follow [Compile the consumed contract into the client, internal](#compile-the-consumed-contract-into-the-client-internal).
 - [ ] Each API has `{Api}.Abstractions` with `I{Api}` and `{Api}` with `Prefix`, `Methods`, one method per method, and `Mock/{Api}Mock.cs`; the contract scenario passes.
 - [ ] The service, its errors, and its scenarios are those of the HTTP client.
 - [ ] `Program.cs` loads the settings and registers the client and the service in `// [services]`.

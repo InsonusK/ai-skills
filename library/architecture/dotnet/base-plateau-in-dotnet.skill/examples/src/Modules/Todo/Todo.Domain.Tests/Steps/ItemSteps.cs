@@ -1,10 +1,10 @@
 using Reqnroll;
-using Shared.Errors;
-using Todo.Domain.Entities;
+using TodoExampleService.Shared.Errors;
+using TodoExampleService.Modules.Todo.Domain.Entities;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Todo.Domain.Tests.Steps;
+namespace TodoExampleService.Modules.Todo.Domain.Tests.Steps;
 
 [Binding]
 public sealed class ItemSteps(ITestOutputHelper output)

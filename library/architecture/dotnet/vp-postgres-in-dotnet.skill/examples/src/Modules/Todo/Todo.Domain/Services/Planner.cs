@@ -1,7 +1,7 @@
-using Todo.Domain.Entities;
-using Todo.Domain.Errors;
+using TodoExampleService.Modules.Todo.Domain.Entities;
+using TodoExampleService.Modules.Todo.Domain.Errors;
 
-namespace Todo.Domain.Services;
+namespace TodoExampleService.Modules.Todo.Domain.Services;
 
 /// <summary>
 /// A domain service: it holds the rules that span several items, which no

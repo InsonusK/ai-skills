@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>$(ServiceNamespace).Infrastructure.Client.Middleware.Retry</RootNamespace>
+  </PropertyGroup>
   <!-- The client middleware that sends a call again when the API did not
        answer. Copied from the templates of vp-client-retry-in-dotnet, never
        edited. Only App.Host references it, to list it in the client

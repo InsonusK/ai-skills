@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>$(ServiceNamespace).Infrastructure.Database.Postgres</RootNamespace>
+  </PropertyGroup>
   <!-- The application's PostgreSQL: the one AppDbContext, the mapping of every
        module's entities, the repository, the translation of failures, and the
        migrations. It sees the modules' domains, which it maps; only the

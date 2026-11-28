@@ -3,7 +3,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace Client.Grpc;
+namespace TodoExampleService.Infrastructure.Client.Core.Grpc;
 
 /// <summary>
 /// The settings of one gRPC API: the {API} group of skill api-client, read by

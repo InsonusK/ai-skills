@@ -1,8 +1,8 @@
 using System.Text.Json;
-using BuildingBlocks.Logging;
+using TodoExampleService.BuildingBlocks.Logging;
 using Microsoft.Extensions.Logging;
 
-namespace Middleware.Tests.Steps;
+namespace TodoExampleService.Middleware.Tests.Steps;
 
 /// <summary>
 /// Keeps every record as the JSON line <see cref="JsonLogLine"/> writes it,

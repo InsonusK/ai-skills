@@ -3,9 +3,9 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using Shared.Errors;
+using {service-namespace}.Shared.Errors;
 
-namespace BuildingBlocks.Logging;
+namespace {service-namespace}.BuildingBlocks.Logging;
 
 /// <summary>
 /// One record as one JSON line on <paramref name="output"/>: <c>time</c>,

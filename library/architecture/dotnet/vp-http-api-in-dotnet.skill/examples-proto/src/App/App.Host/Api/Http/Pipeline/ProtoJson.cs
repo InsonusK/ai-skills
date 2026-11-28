@@ -4,9 +4,9 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using Google.Protobuf;
 using Microsoft.AspNetCore.Http;
-using Shared.Errors;
+using TodoExampleService.Shared.Errors;
 
-namespace App.Host.Api.Http.Pipeline;
+namespace TodoExampleService.App.Host.Api.Http.Pipeline;
 
 /// <summary>
 /// Copied only when the contract is a proto file: the routes then read and

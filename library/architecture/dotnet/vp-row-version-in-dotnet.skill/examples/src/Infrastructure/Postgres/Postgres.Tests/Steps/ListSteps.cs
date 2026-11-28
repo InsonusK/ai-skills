@@ -1,9 +1,9 @@
 using Reqnroll;
-using Todo.Application.Specifications;
-using Todo.Domain.Entities;
+using TodoExampleService.Modules.Todo.Application.Specifications;
+using TodoExampleService.Modules.Todo.Domain.Entities;
 using Xunit;
 
-namespace Postgres.Tests.Steps;
+namespace TodoExampleService.Infrastructure.Database.Postgres.Tests.Steps;
 
 /// <summary>The items of the application, kept and read through the repository as the handlers do.</summary>
 [Binding]

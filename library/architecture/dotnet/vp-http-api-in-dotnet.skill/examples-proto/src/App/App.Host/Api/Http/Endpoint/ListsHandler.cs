@@ -1,12 +1,12 @@
-using Contracts.Todo.V1;
+using TodoExampleService.Contracts.Todo.V1;
 using MediatR;
-using Todo.Commands;
+using TodoExampleService.Modules.Todo.Commands;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using Shared.Errors;
+using TodoExampleService.Shared.Errors;
 
-namespace App.Host.Api.Http.Endpoint;
+namespace TodoExampleService.App.Host.Api.Http.Endpoint;
 
 // This file is the lists resource (/v1/lists/{listId}/...). The path parameter
 // is named as the generated spec names it - listId, the lowerCamelCase form of

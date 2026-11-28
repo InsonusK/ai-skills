@@ -1,8 +1,8 @@
-using App.Host.Tests.Steps.Grpc.Contract;
+using TodoExampleService.App.Host.Tests.Steps.Grpc.Contract;
 using Reqnroll;
 using Xunit;
 
-namespace App.Host.Tests.Steps.Grpc;
+namespace TodoExampleService.App.Host.Tests.Steps.Grpc;
 
 /// <summary>The records the gRPC entry point wrote, read with their payload.</summary>
 [Binding]

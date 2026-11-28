@@ -1,13 +1,13 @@
 using System.Collections.Concurrent;
-using App.Host.Api.Core.Entry;
-using BuildingBlocks.Logging;
+using TodoExampleService.App.Host.Api.Core.Entry;
+using TodoExampleService.BuildingBlocks.Logging;
 using Microsoft.Extensions.Logging;
 using Reqnroll;
-using Shared.Errors;
+using TodoExampleService.Shared.Errors;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace App.Host.Tests.Steps;
+namespace TodoExampleService.App.Host.Tests.Steps;
 
 [Binding]
 public sealed class EntryRunnerSteps(ProcessOutcome outcome, ITestOutputHelper output)

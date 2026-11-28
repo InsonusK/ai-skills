@@ -1,11 +1,11 @@
 using MediatR;
 using Reqnroll;
-using Shared.Errors;
-using Todo.Application.Commands;
-using Todo.Commands;
+using TodoExampleService.Shared.Errors;
+using TodoExampleService.Modules.Todo.Application.Commands;
+using TodoExampleService.Modules.Todo.Commands;
 using Xunit;
 
-namespace Todo.Application.Tests.Commands.Steps;
+namespace TodoExampleService.Modules.Todo.Application.Tests.Commands.Steps;
 
 /// <summary>The nested commands faked by hand: records each AddItem, and rejects the title the scenario set.</summary>
 public sealed class FakeSender : ISender

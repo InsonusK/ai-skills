@@ -1,6 +1,6 @@
 // Source: skill vp-http-api-in-dotnet, vp-health-in-dotnet, vp-grpc-api-in-dotnet
 
-using BuildingBlocks.Logging;
+using {service-namespace}.BuildingBlocks.Logging;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace App.Host.Api.Core.Hosting;
+namespace {service-namespace}.App.Host.Api.Core.Hosting;
 
 /// <summary>
 /// The web host every web entry point is built on - the HTTP API, the

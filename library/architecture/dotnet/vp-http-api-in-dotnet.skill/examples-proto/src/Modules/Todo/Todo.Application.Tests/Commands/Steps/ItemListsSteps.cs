@@ -1,12 +1,12 @@
 using Reqnroll;
-using Shared.Errors;
-using Todo.Application.Commands;
-using Todo.Application.Tests.Common.Steps;
-using Todo.Commands;
+using TodoExampleService.Shared.Errors;
+using TodoExampleService.Modules.Todo.Application.Commands;
+using TodoExampleService.Modules.Todo.Application.Tests.Common.Steps;
+using TodoExampleService.Modules.Todo.Commands;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Todo.Application.Tests.Commands.Steps;
+namespace TodoExampleService.Modules.Todo.Application.Tests.Commands.Steps;
 
 /// <summary>The handlers over the lists of one scenario; the lists are read back through ListItems.</summary>
 [Binding]

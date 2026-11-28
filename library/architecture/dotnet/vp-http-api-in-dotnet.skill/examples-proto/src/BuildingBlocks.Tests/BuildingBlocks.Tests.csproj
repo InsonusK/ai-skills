@@ -1,5 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <RootNamespace>$(ServiceNamespace).BuildingBlocks.Tests</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>

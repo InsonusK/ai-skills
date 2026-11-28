@@ -1,12 +1,12 @@
 // Source: skill base-plateau-in-dotnet
 
 using System.Diagnostics;
-using BuildingBlocks.Logging;
-using BuildingBlocks.Pipeline;
+using TodoExampleService.BuildingBlocks.Logging;
+using TodoExampleService.BuildingBlocks.Pipeline;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace Middleware.Logging;
+namespace TodoExampleService.Middleware.Logging;
 
 /// <summary>
 /// The command middleware that logs every command - a MediatR pipeline

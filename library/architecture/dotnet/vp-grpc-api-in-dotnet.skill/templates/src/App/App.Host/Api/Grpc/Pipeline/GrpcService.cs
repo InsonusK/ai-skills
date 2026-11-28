@@ -3,7 +3,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 
-namespace App.Host.Api.Grpc.Pipeline;
+namespace {service-namespace}.App.Host.Api.Grpc.Pipeline;
 
 /// <summary>
 /// One service of the published contract as the server registers it: the

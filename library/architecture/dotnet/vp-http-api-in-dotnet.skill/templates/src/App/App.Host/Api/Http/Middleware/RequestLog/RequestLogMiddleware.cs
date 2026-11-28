@@ -1,11 +1,11 @@
 // Source: skill vp-http-api-in-dotnet
 
 using System.Diagnostics;
-using BuildingBlocks.Logging;
+using {service-namespace}.BuildingBlocks.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-namespace App.Host.Api.Http.Middleware.RequestLog;
+namespace {service-namespace}.App.Host.Api.Http.Middleware.RequestLog;
 
 /// <summary>
 /// Writes two records per request, so the log reads top-down as the request

@@ -1,14 +1,14 @@
-using App.Host.Api.Grpc;
-using App.Host.Api.Grpc.Endpoint;
-using Contracts.Todo.V1;
+using TodoExampleService.App.Host.Api.Grpc;
+using TodoExampleService.App.Host.Api.Grpc.Endpoint;
+using TodoExampleService.Contracts.Todo.V1;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Reqnroll;
-using Todo.Commands;
+using TodoExampleService.Modules.Todo.Commands;
 using Xunit;
-using PlanItemsRequest = Contracts.Todo.V1.PlanItemsRequest;
+using PlanItemsRequest = TodoExampleService.Contracts.Todo.V1.PlanItemsRequest;
 
-namespace App.Host.Tests.Steps.Grpc;
+namespace TodoExampleService.App.Host.Tests.Steps.Grpc;
 
 /// <summary>The fake handler of PlanItems: answers the items the scenario set, records the command.</summary>
 public sealed class FakeGrpcPlanItems : IRequestHandler<PlanItemsCommand, PlanItemsResult>

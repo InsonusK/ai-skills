@@ -1,13 +1,13 @@
-using App.Host.Tests.Steps.Grpc.Contract;
+using TodoExampleService.App.Host.Tests.Steps.Grpc.Contract;
 using Grpc.Core;
 using Reqnroll;
-using Shared.Errors;
+using TodoExampleService.Shared.Errors;
 using Xunit;
 using Xunit.Abstractions;
-using BuildingBlocks.Pipeline;
-using Middleware.Logging;
+using TodoExampleService.BuildingBlocks.Pipeline;
+using TodoExampleService.Middleware.Logging;
 
-namespace App.Host.Tests.Steps.Grpc;
+namespace TodoExampleService.App.Host.Tests.Steps.Grpc;
 
 /// <summary>Calls of the test method and what the server answered; the echo command's fakes.</summary>
 [Binding]

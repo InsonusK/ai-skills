@@ -1,9 +1,9 @@
 using Reqnroll;
-using Shared.Errors;
+using TodoExampleService.Shared.Errors;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Postgres.Tests.Steps;
+namespace TodoExampleService.Infrastructure.Database.Postgres.Tests.Steps;
 
 /// <summary>
 /// The steps of the shared scenarios on the repository and its outcomes. In

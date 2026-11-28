@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>$(ServiceNamespace).MaskedLogging</RootNamespace>
+  </PropertyGroup>
   <!-- The logging variation point: the provider that writes the payload
        masked, cut, and with the request id. Copied from the templates of
        vp-logging-in-dotnet, never edited by an application. -->

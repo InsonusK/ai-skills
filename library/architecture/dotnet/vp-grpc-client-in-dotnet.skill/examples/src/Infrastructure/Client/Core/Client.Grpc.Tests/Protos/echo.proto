@@ -5,7 +5,7 @@ syntax = "proto3";
 // application.
 package test.v1;
 
-option csharp_namespace = "Client.Grpc.Tests.Echo";
+option csharp_namespace = "TodoExampleService.Infrastructure.Client.Core.Grpc.Tests.Echo";
 
 service EchoService {
   rpc Echo(EchoMessage) returns (EchoMessage);

@@ -2,7 +2,7 @@
 name: vp-cli-api-in-dotnet
 description: The CLI API variation point in dotnet — Api/Cli/Pipeline copied from templates (System.CommandLine parsing the command tree with --version and help at every level, usage errors as the invalid kind, a crash of the action's glue as a failure with no kind, the generic command adapter with --output json|text, the run log), one {Resource}Handler per resource in Api/Cli/Endpoint, Commands.cs with the endpoints and the entry factory, and the startup entry replaced in Program.cs
 whenToUse: when a dotnet application built on the base plateau must be run from a command line, when you offer a new command as an action of such an application, or when you review its Api/Cli package
-updated: 20261114
+updated: 20261119
 tags:
   - stack/dotnet
   - concern/architecture
@@ -34,6 +34,11 @@ src/App/App.Host/Api/Cli/
 # Rule
 
 ## MUST
+
+### Fill the service namespace
+Fill `{service-namespace}` with the application's namespace root from [the namespace convention](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md#qualify-namespaces-with-the-service-name) before copying this skill's templates.
+- Risk: an unfilled identifier does not compile, while a different root in each file splits the service's types.
+- Fix: substitute the same identifier in every delivered source, preserve template logic, and verify no `{service-namespace}` remains in application sources.
 
 ### Install the parsing dependency
 Add `System.CommandLine` to the host's package references and pin version `2.0.14` in `Directory.Packages.props`, as the example does.
@@ -93,7 +98,7 @@ Name both `conformance/` folders in [conformance.copy](./conformance.copy): the 
 Offer a further command of an existing resource by adding its action line and its `flags`, `read`, `encode`, and `text` to the resource's file, and its scenario to the resource's feature; `Program.cs` does not change. A new resource adds its file and feature, one property of `CliEndpoints`, and one line of `Resources`.
 
 # Check list
-- [ ] `Api/Cli/Pipeline/{Cli,CliCommand,RunLog}.cs` are unchanged copies of the templates.
+- [ ] `Api/Cli/Pipeline/{Cli,CliCommand,RunLog}.cs` are copies of the filled templates.
 - [ ] Each resource has its own file in `Endpoint/` with its actions built by `CliCommand.Command`; `Commands.cs` holds only `CliEndpoints`, `Resources`, `AddCliEntry`, and `Run`.
 - [ ] The `// [entries]` list of `Program.cs` has `AddCliEntry("todo", AppVersion.Value, args, ...)`; `Api/Startup/` is deleted.
 - [ ] `make test` passes with the fixed code's feature and one feature per resource.

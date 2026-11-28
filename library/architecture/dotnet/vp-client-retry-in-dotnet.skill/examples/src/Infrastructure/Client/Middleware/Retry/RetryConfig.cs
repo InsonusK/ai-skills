@@ -3,7 +3,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 
-namespace Retry;
+namespace TodoExampleService.Infrastructure.Client.Middleware.Retry;
 
 /// <summary>The retry settings of one API, beside the {API} group of skill api-client.</summary>
 /// <param name="Attempts">{API}_RETRY_ATTEMPTS: the attempts a call gets in all, the first included; 1 sends no repeat. Default 3.</param>

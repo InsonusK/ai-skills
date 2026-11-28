@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Routing;
-using Todo.Commands;
+using TodoExampleService.Modules.Todo.Commands;
 
-namespace App.Host.Api.Http.Endpoint;
+namespace TodoExampleService.App.Host.Api.Http.Endpoint;
 
 // This file is the items resource (/v1/items/...): its routes, and the request
 // and response types of each route with their mappings - the counterpart of a

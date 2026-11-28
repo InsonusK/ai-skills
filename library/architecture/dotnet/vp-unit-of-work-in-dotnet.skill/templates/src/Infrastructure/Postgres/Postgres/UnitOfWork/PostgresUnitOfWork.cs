@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
-using Shared.UnitOfWork;
+using {service-namespace}.Shared.UnitOfWork;
 
-namespace Postgres.UnitOfWork;
+namespace {service-namespace}.Infrastructure.Database.Postgres.UnitOfWork;
 
 /// <summary>
 /// The unit of work over <see cref="AppDbContext"/>, one per command scope. It

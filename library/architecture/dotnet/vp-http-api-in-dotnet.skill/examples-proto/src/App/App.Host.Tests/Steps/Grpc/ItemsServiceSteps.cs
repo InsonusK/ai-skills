@@ -1,19 +1,19 @@
-using App.Host.Api.Grpc;
-using App.Host.Api.Grpc.Endpoint;
-using App.Host.Tests.Steps.Http;
-using Contracts.Todo.V1;
+using TodoExampleService.App.Host.Api.Grpc;
+using TodoExampleService.App.Host.Api.Grpc.Endpoint;
+using TodoExampleService.App.Host.Tests.Steps.Http;
+using TodoExampleService.Contracts.Todo.V1;
 using Grpc.Core;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Reqnroll;
-using Shared.Errors;
-using Todo.Commands;
+using TodoExampleService.Shared.Errors;
+using TodoExampleService.Modules.Todo.Commands;
 using Xunit;
-using AddItemRequest = Contracts.Todo.V1.AddItemRequest;
-using ListItemsRequest = Contracts.Todo.V1.ListItemsRequest;
-using PlanItemsRequest = Contracts.Todo.V1.PlanItemsRequest;
+using AddItemRequest = TodoExampleService.Contracts.Todo.V1.AddItemRequest;
+using ListItemsRequest = TodoExampleService.Contracts.Todo.V1.ListItemsRequest;
+using PlanItemsRequest = TodoExampleService.Contracts.Todo.V1.PlanItemsRequest;
 
-namespace App.Host.Tests.Steps.Grpc;
+namespace TodoExampleService.App.Host.Tests.Steps.Grpc;
 
 /// <summary>The application's own services (Services.cs, Endpoint/) over fake handlers.</summary>
 [Binding]
@@ -119,7 +119,7 @@ public sealed class ItemsServiceSteps(GrpcWorld world)
     [When("I call ItemsService.PlanItems with no titles")]
     public async Task WhenICallPlanItemsWithNoTitles()
     {
-        var response = await new ItemsService.ItemsServiceClient(await world.ChannelAsync()).PlanItemsAsync(new Contracts.Todo.V1.PlanItemsRequest());
+        var response = await new ItemsService.ItemsServiceClient(await world.ChannelAsync()).PlanItemsAsync(new TodoExampleService.Contracts.Todo.V1.PlanItemsRequest());
         _items = response.Items.ToList();
     }
 

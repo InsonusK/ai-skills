@@ -1,4 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>$(ServiceNamespace).App.Migrate</RootNamespace>
+  </PropertyGroup>
   <!-- The job that applies the migrations and ends; published beside App.Host,
        it is the image's /app/migrate. Only App.Host and this project are
        composition roots. -->

@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace App.Host.Tests.Steps;
+namespace TodoExampleService.App.Host.Tests.Steps;
 
 /// <summary>Ports for the scenarios that start a real server.</summary>
 public static class FreePort

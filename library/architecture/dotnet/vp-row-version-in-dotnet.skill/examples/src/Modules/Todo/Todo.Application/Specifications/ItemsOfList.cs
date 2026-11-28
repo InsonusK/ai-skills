@@ -1,7 +1,7 @@
 using Ardalis.Specification;
-using Todo.Domain.Entities;
+using TodoExampleService.Modules.Todo.Domain.Entities;
 
-namespace Todo.Application.Specifications;
+namespace TodoExampleService.Modules.Todo.Application.Specifications;
 
 /// <summary>The items of one list, in the order they were added.</summary>
 public sealed class ItemsOfList : Specification<Item>

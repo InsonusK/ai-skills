@@ -1,10 +1,10 @@
-using Postgres.Testing;
+using TodoExampleService.Infrastructure.Database.Postgres.Testing;
 using Reqnroll;
-using Todo.Application.Specifications;
-using Todo.Domain.Entities;
+using TodoExampleService.Modules.Todo.Application.Specifications;
+using TodoExampleService.Modules.Todo.Domain.Entities;
 using Xunit;
 
-namespace Todo.Application.Tests.Specifications.Steps;
+namespace TodoExampleService.Modules.Todo.Application.Tests.Specifications.Steps;
 
 /// <summary>
 /// The specifications of the items, evaluated over the repository in memory, as

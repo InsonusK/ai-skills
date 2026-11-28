@@ -1,11 +1,11 @@
-using App.Host.Api.Cli.Endpoint;
-using App.Host.Api.Cli.Pipeline;
-using App.Host.Api.Core.Entry;
+using TodoExampleService.App.Host.Api.Cli.Endpoint;
+using TodoExampleService.App.Host.Api.Cli.Pipeline;
+using TodoExampleService.App.Host.Api.Core.Entry;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace App.Host.Api.Cli;
+namespace TodoExampleService.App.Host.Api.Cli;
 
 /// <summary>The resources of the command line, one property per resource file of Endpoint - the same resources as an HTTP API of the application would have. A new resource adds a property here and a line to <see cref="Resources"/>; a new action of an existing resource changes only that resource's file.</summary>
 public sealed record CliEndpoints(ItemsHandler Items, ListsHandler Lists)

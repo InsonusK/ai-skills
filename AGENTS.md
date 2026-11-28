@@ -10,6 +10,7 @@ The following skills MUST be applied to all work in this project:
 
 ## General rules
 
+- Agents MUST NOT merge branches or pull requests on their own, including enabling auto-merge. After completing and validating changes, create a pull request, give the user its link, and ask the user to review and merge it. The user performs the merge; a request to complete work does not authorize the agent to merge.
 - `library/` is the source of truth for every skill in this repository. Always edit a skill under `library/` (e.g. `library/design/skill-design.skill/skill-design.skill.md`). Never hand-edit a skill under `.claude/skills/` or `.agents/skill/` — those are local, generated copies that `ai-skill-manager sync` regenerates from `library/`; an edit made there is silently overwritten (or drifts unnoticed) on the next sync.
 - `skills/` holds this repository's own skills — rules that are true only here, written as extensions of `library/` skills. A file under `library/` never links a file under `skills/`; other repositories sync `library/` and never receive `skills/`. When you create, move, or link a skill, apply [library-layout](skills/design/library-layout.skill/library-layout.skill.md) together with `skill-design`.
 - Apply all mandatory skills before starting any task.

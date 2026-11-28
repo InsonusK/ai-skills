@@ -1,9 +1,9 @@
 // Source: skill vp-cli-api-in-dotnet
 
-using BuildingBlocks.Logging;
+using {service-namespace}.BuildingBlocks.Logging;
 using Microsoft.Extensions.Logging;
 
-namespace App.Host.Api.Cli.Pipeline;
+namespace {service-namespace}.App.Host.Api.Cli.Pipeline;
 
 /// <summary>
 /// The run log of the command line: two records per run through the

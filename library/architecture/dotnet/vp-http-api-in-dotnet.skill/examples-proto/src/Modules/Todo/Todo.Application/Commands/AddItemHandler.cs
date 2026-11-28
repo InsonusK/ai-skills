@@ -1,8 +1,8 @@
 using MediatR;
-using Todo.Commands;
-using Todo.Domain.Entities;
+using TodoExampleService.Modules.Todo.Commands;
+using TodoExampleService.Modules.Todo.Domain.Entities;
 
-namespace Todo.Application.Commands;
+namespace TodoExampleService.Modules.Todo.Application.Commands;
 
 /// <summary>
 /// Handles <see cref="AddItemCommand"/>: keeps the item in its list. An invalid

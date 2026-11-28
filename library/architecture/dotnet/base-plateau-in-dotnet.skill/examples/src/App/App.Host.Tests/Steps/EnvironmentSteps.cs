@@ -1,6 +1,6 @@
 using Reqnroll;
 
-namespace App.Host.Tests.Steps;
+namespace TodoExampleService.App.Host.Tests.Steps;
 
 /// <summary>Sets environment variables for one scenario and unsets them after it.</summary>
 [Binding]

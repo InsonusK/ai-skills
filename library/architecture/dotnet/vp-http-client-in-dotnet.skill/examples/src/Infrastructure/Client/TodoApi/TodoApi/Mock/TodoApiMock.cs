@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 
-namespace TodoApi.Mock;
+namespace TodoExampleService.Infrastructure.Client.TodoApi.Mock;
 
 /// <summary>
 /// The mock of the todo API's client (<see cref="TodoApiClient"/>): an emulator

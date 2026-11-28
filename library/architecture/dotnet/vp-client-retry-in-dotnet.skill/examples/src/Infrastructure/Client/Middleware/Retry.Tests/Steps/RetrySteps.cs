@@ -1,11 +1,11 @@
-using Client.Abstractions;
-using Client.Pipeline;
+using TodoExampleService.Infrastructure.Client.Core.Abstractions;
+using TodoExampleService.Infrastructure.Client.Core.Pipeline;
 using Microsoft.Extensions.Logging;
 using Reqnroll;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Retry.Tests.Steps;
+namespace TodoExampleService.Infrastructure.Client.Middleware.Retry.Tests.Steps;
 
 [Binding]
 public sealed class RetrySteps(ITestOutputHelper output)
