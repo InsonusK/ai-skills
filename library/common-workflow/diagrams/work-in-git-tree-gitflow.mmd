@@ -3,6 +3,11 @@ gitGraph
     commit id: "develop HEAD"
     branch task-name
     checkout task-name
+    commit id: "task changes"
+    branch task-name-review
+    commit id: "review fixes (task)"
+    checkout task-name
+    merge task-name-review id: "PR: task review fixes"
     branch task-name-step-1
     commit id: "stage 1 changes"
     checkout task-name
@@ -10,9 +15,9 @@ gitGraph
     branch task-name-step-2
     commit id: "stage 2 changes"
     branch task-name-step-2-review
-    commit id: "review fixes"
+    commit id: "review fixes (stage 2)"
     checkout task-name-step-2
-    merge task-name-step-2-review id: "PR: review fixes"
+    merge task-name-step-2-review id: "PR: stage 2 review fixes"
     checkout task-name
     merge task-name-step-2 id: "PR: stage 2"
     checkout develop
