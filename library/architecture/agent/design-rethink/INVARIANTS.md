@@ -57,6 +57,12 @@ existing contracts from the owner's new client/service decision.
     No library file links repository-only skills. Update local layout guidance to
     permit this design folder before adding procedures there.
 
+11. Keep app-layers limited to responsibilities, dependency directions, logical
+    boundaries and interfaces. API, command/factory and domain implementation rules
+    belong to app-api-layer, app-command-layer and app-domain-layer. The providing
+    mechanism owns an integration service's implementation; api-client owns its
+    API-adapting service. Do not introduce app-service-layer (owner accepted).
+
 ## Branch and review flow
 
 Implement each wave on `rethink-architecture-design-waves`, based on
@@ -75,6 +81,7 @@ PR contains this plan refinement only, so the new scope is reviewable before imp
 |---|---|---|---|
 | 0 | Contract, sample and `check.py` | New / refine | Reviewed model, responsibilities, scope and checks |
 | 1, first implementation | `api-client`, `app-layers`, their owning ADRs and directly linked examples | Modify | Sibling client/service boundaries, API DTO returns, grouping and ownership agree; conflicting old decisions explicitly amended |
+| 1 refinement | Three owned layer contracts, relocated ADRs/diagrams and consumer links | New / move / modify | app-layers stays topology-only; API VPs and stack consumers retain implementation rules; no standalone service skill |
 | 1 | Dependency inventory for stack layer skills, HTTP/gRPC/retry specs and realizations | New | Every conflicting path, contract and consumer listed with migration wave; interim state marked |
 | 2 | Per-language service layout views in `docs/` and base-capability sections | New | One navigable structure per Go/.NET/Python; every element names its owner, feature and VP; alternative paths and planned elements explicit |
 | 2 | Stack layer skills, client specs, templates, scenarios and examples | Modify | Layout/DTO contract agrees with wave 1; affected executable checks pass; client backlog reflects settled responsibilities |
@@ -136,6 +143,11 @@ Proposed documentation contract for wave 2:
   not an owner-approved replacement for the requested `base-vp-client` term.
 
 ## Decisions log
+
+- Accepted by owner, 2026-11-28: separate API, command and domain implementation
+  contracts from app-layers; keep integration-service rules in the providing
+  mechanism, with no app-service-layer skill.
+
 
 - Accepted by owner: service adapts API and maps DTOs; client calls API, owns retry
   execution and returns API DTOs (2026-11-26).

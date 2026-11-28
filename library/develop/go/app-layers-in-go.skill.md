@@ -2,7 +2,7 @@
 name: app-layers-in-go
 description: The application layers in Go — one package per layer under internal/, interfaces declared by their consumer so that only cmd/{app}/main.go imports both sides, entities with unexported fields, and hand-written fakes for the layer below
 whenToUse: when you design a Go application or feature, when you add or change a Go entry point, command, entity, domain service, service, or infrastructure adapter, or when you review such a change
-updated: 20261026
+updated: 20261128
 tags:
   - stack/go
   - concern/architecture
@@ -21,6 +21,11 @@ tags:
 # Rule
 
 ## MUST
+
+### Apply the implementation contract of each layer
+Apply [app-api-layer](library/develop/core/app-api-layer.skill/app-api-layer.skill.md), [app-command-layer](library/develop/core/app-command-layer.skill/app-command-layer.skill.md) and [app-domain-layer](library/develop/core/app-domain-layer.skill.md) when implementing their respective layers, using app-layers for topology only.
+- Risk: moving rules out of the topology skill silently drops them from stack implementations.
+- Fix: use these common contracts for behavior and this stack extension for physical organization and language mechanisms.
 
 ### One package per layer
 Place each layer of [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md) in its package.

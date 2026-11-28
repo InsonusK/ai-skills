@@ -2,7 +2,7 @@
 name: vp-http-api
 description: The HTTP API variation point — an entry point attached to the base plateau that serves commands as versioned HTTP routes, answers errors by their kind, publishes its OpenAPI contract and Swagger UI, stops gracefully, and replaces the startup entry without editing any other base file
 whenToUse: when an application built on the base plateau must be reachable over HTTP — adding the HTTP entry point, serving a new command over HTTP, or reviewing the HTTP entry point of such an application
-updated: 20261115
+updated: 20261128
 tags:
   - stack
   - concern/architecture
@@ -32,6 +32,11 @@ adr:
 # Rule
 
 ## MUST
+
+### Apply the common API layer contract
+Apply [app-api-layer](library/develop/core/app-api-layer.skill/app-api-layer.skill.md) for input translation, command dispatch and outcome mapping before adding this transport's requirements.
+- Risk: transport-specific endpoints take ownership of business orchestration or expose domain entities.
+- Fix: keep shared entry behavior in the API layer contract and specialize only the protocol-specific mechanisms here.
 
 ### Keep shared contract checks independent of sample operations
 Compare served operations with OpenAPI in the shared scenario, and pin each example's intended operations in its own native feature.

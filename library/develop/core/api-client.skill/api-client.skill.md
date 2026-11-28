@@ -2,7 +2,7 @@
 name: api-client
 description: How to split external API access into entity-focused clients returning API DTOs and a consumer-facing service per external system, with sibling client and service boundaries, technical outcomes, client middleware, configuration, timeouts, logging and emulator tests
 whenToUse: when an application calls an HTTP or gRPC API of another service — adding a client, changing what it sends or how it is configured, mocking it to run without the other service, or reviewing a client of any stack
-updated: 20261126
+updated: 20261128
 tags:
   - stack
   - concern/architecture
@@ -56,10 +56,10 @@ Return API-shaped response DTOs and technical outcomes from client methods, leav
 - Fix: parse and validate the wire representation in client; let service map the DTO through public domain construction and behavior APIs; treat malformed provider data as a technical failure, never automatically as invalid caller input.
 
 ### Compose one external system's clients in the service
-Build service answers from its parameters and the operations of one or more clients belonging to one external system, decomposing a large system into cohesive services where useful.
+Create an integration service under the service boundary of app-layers and build service answers from its parameters and the operations of one or more clients belonging to one external system, decomposing a large system into cohesive services where useful.
 - Violation: a service joins unrelated external systems; every client is forced to have a separate service even when those clients form one integration.
 - Risk: an integration dependency is hidden or provider orchestration spreads into command code.
-- Fix: one service normally adapts one system, with several clients when needed; commands or domain services compose different systems, following [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md).
+- Fix: one service normally adapts one system, with several clients when needed; commands or domain services compose different systems, following [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md); invoke domain behavior for invariants rather than reimplementing it in a mapper.
 
 ### Keep fixed client code beside entity clients
 Place shared transport, configuration, middleware and outcome code under `client/core/`, beside entity-specific client packages rather than under `infrastructure/`.
@@ -131,7 +131,7 @@ Add no readiness check for an API the application calls; let the calls that need
 - Fix: the commands that need the API fail fast with unavailable; the readiness check is for this service's own stores.
 
 ### Test the client against an emulator
-Test the fixed client code once through an emulator of a test API of its own, each client through an emulator of its API serving the answers each scenario sets, the contract scenario against the copied contract, and the service with its client faked.
+Test the fixed client code once through an emulator of a test API of its own, each client through an emulator of its API serving the answers each scenario sets, the contract scenario against the copied contract, and the service with its clients faked.
 - Risk: a test against the real other service fails when it is down or its data changes; a service test through the real transport tests the client again.
 - Fix: an in-process HTTP server or gRPC server per client feature; a fake class per client in the service's tests.
 

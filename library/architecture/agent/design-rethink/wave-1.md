@@ -72,3 +72,43 @@ outside this documentation/contract wave because executable files are unchanged.
 Validation result: the shared/sample check gate and `bash test/test.sh` passed.
 `aism sync` synchronized 809 skills to two isolated test targets.
 `git diff --check` passed.
+
+## Accepted refinement: owned layer contracts
+
+The owner accepted the split on 2026-11-28. `app-layers` now owns only the
+responsibility/dependency map, sibling boundaries, interfaces and the call diagram.
+`app-api-layer`, `app-command-layer` and `app-domain-layer` own implementation rules.
+Integration-service realization stays in the providing mechanism (`api-client`
+for API adaptation); no `app-service-layer` is introduced.
+
+| Former app-layers requirement | Current owner |
+|---|---|
+| API parses and maps outcomes; independent dispatch | app-api-layer |
+| Plain command input, names, result types | app-command-layer |
+| Command factory, nested pipeline dispatch, consistency, identity | app-command-layer |
+| One business invariant owner; public domain construction | app-domain-layer |
+| Service adaptation of one external system and its clients | api-client |
+| Layer testing boundaries | API/command/domain contracts and api-client; concrete engines remain covered by their existing VP tests |
+| Allowed calls, own-store exception, interfaces, sibling folders, pure helpers | app-layers |
+
+The independent-command ADR and its four diagrams moved to app-api-layer; the
+command naming and nested-dispatch ADRs moved to app-command-layer. Their original
+choices and dates are preserved. A new topology-owned ADR records the split.
+The common handler contract previously defined by the base plateau now belongs
+to app-command-layer; the plateau links it rather than defining another copy.
+
+HTTP/gRPC/CLI API specs apply the common API contract. The base plateau and all
+three stack layer extensions explicitly consume their implementation contracts,
+so shortening app-layers does not silently remove requirements from consumers.
+The develop README supplies navigation without reverse links from the layer map.
+
+A separate audit of the final split found and corrected a downstream .NET storage
+ADR link hidden in the topology's historical ADR: it would otherwise load the
+implementation catalog back into app-layers. The reference is retained by name,
+and the gate now rejects outgoing implementation links anywhere in the topology
+skill's markdown/ADRs. The audit also corrected a migrated reference still labeled
+app-layers and verified ownership of every former rule against the table above.
+
+Validation: the expanded gate passes for five common contracts and 78 inventoried
+consumers. The repository test suite passes; aism synchronized 812 skills. No
+executable example is changed by this refinement.

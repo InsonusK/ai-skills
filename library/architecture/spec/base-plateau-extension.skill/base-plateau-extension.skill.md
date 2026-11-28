@@ -2,7 +2,7 @@
 name: base-plateau-extension
 description: How a variation point extends the base plateau without editing it — the extension points of the composition root (the services, the command registry with its ordered list of command middleware, the entries with each API's ordered list of API middleware), every middleware in a directory of its own named {Name}Middleware, the fixed request log and answer-failures middleware outermost, the three kinds of command middleware (every command, by a command's mark, by a value of the command), authentication at the transport and the access check in the command layer, the variation point's own settings, and the attach list that proves no other base file changed
 whenToUse: when you write, attach, or review a variation point of the architecture catalog, when you add a middleware around commands or around the requests of an API, when you add a command to an application built on the base plateau, or when you decide where a cross-cutting step (authentication, access, a limit, a transaction, a metric, logging) goes
-updated: 20261102
+updated: 20261128
 tags:
   - stack
   - concern/architecture
@@ -79,7 +79,7 @@ Build every handler in one function of the command layer, which takes the list o
 - Fix: a new command adds its field and its line to the registry; a middleware that must skip some commands filters them itself (see [Filter commands by their mark](#filter-commands-by-their-mark)).
 
 ### Give a nested command's wrapped handler to the handler that runs it
-Build the handler of a command that another command runs before that other handler, in the command registry, and pass it the wrapped one as a constructor parameter typed by the handler contract, as [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md#run-a-nested-command-through-the-command-pipeline) requires.
+Build the handler of a command that another command runs before that other handler, in the command registry, and pass it the wrapped one as a constructor parameter typed by the handler contract, as [app-command-layer](library/develop/core/app-command-layer.skill/app-command-layer.skill.md#run-a-nested-command-through-the-command-pipeline) requires.
 - Violation: a handler that builds the nested command's handler itself; the registry passing the handler before wrapping it.
 - Risk: the nested command runs without the middleware, so its log line, its access check, and its unit of work depend on who started it.
 - Fix: the registry wraps the nested handler once, stores it in its field, and passes the same value to the outer handler; every middleware is written to run again inside an outer command — a unit of work joins the open one.

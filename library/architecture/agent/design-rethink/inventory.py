@@ -6,7 +6,7 @@ import subprocess
 
 ROOT = Path(__file__).resolve().parents[4]
 HERE = Path(__file__).resolve().parent
-SHARED = ('api-client', 'app-layers')
+SHARED = ('api-client', 'app-layers', 'app-api-layer', 'app-command-layer', 'app-domain-layer')
 OLD_PATHS = ('infrastructure/client', 'Infrastructure/Client')
 
 def derive():
@@ -23,7 +23,7 @@ def derive():
                 reasons = ['current-catalog-conformance-review']
             else:
                 continue
-        if str(rel).startswith('library/develop/core/') and rel.parent.name in ('api-client.skill', 'app-layers.skill'):
+        if str(rel).startswith('library/develop/core/') and (rel.parent.name in tuple(name + '.skill' for name in SHARED) or rel.name == 'app-domain-layer.skill.md'):
             state = 'wave-1-shared-contract'
         elif str(rel).startswith(('library/architecture/', 'library/develop/')):
             state = 'wave-2-review'

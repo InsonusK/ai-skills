@@ -7,9 +7,11 @@ import sys
 
 ROOT = Path(__file__).resolve().parents[4]
 HERE = Path(__file__).resolve().parent
-skills = [ROOT / f'library/develop/core/{name}.skill/{name}.skill.md' for name in ('api-client', 'app-layers')]
-files = list((ROOT / 'library/develop/core/api-client.skill').rglob('*.md'))
-files += list((ROOT / 'library/develop/core/app-layers.skill').rglob('*.md'))
+names = ('api-client', 'app-layers', 'app-api-layer', 'app-command-layer')
+skills = [ROOT / f'library/develop/core/{name}.skill/{name}.skill.md' for name in names]
+skills.append(ROOT / 'library/develop/core/app-domain-layer.skill.md')
+files = [file for name in names for file in (ROOT / f'library/develop/core/{name}.skill').rglob('*.md')]
+files.append(skills[-1])
 errors = []
 def slug(s):
     return re.sub(r'[^\w\- ]', '', s.lower()).replace(' ', '-')
@@ -28,6 +30,16 @@ for file in files:
     for path in re.findall(r'@import "([^"]+)"', text):
         if not (file.parent / path).exists():
             errors.append(f'{file.relative_to(ROOT)}: missing diagram {path}')
+# Any outgoing link in the topology skill or its supporting ADRs would load
+# another implementation skill transitively. Navigation belongs in README.
+topology = ROOT / 'library/develop/core/app-layers.skill'
+for file in topology.rglob('*.md'):
+    for target in re.findall(r'\[[^\]]*\]\(([^)]+)\)', file.read_text()):
+        path = target.split('#', 1)[0]
+        if not path or '://' in path: continue
+        resolved = (ROOT / path if path.startswith('library/') else file.parent / path).resolve()
+        if not resolved.is_relative_to(topology.resolve()):
+            errors.append(f'Topology pulls a downstream dependency: {file.relative_to(ROOT)} -> {target}')
 for skill in skills:
     text = skill.read_text()
     top = re.findall(r'^# (.+)$', text, re.M)
@@ -41,7 +53,9 @@ for skill in skills:
     rule = text.split('# Rule\n',1)[1].split('# Check list',1)[0].split('# Example',1)[0]
     for heading, body in re.findall(r'^### ([^\n]+)\n(.*?)(?=^### |^## |\Z)', rule, re.S | re.M):
         # All current rules before SHOULD/MAY are mandatory.
-        must = rule.find('### '+heading) < rule.find('## SHOULD') if '## SHOULD' in rule else True
+        preceding = rule[:rule.find('### '+heading)]
+        strengths = re.findall(r'^## (MUST|SHOULD|MAY)$', preceding, re.M)
+        must = bool(strengths) and strengths[-1] == 'MUST'
         if must and ('- Risk:' not in body or '- Fix:' not in body):
             errors.append(f'{skill.name}: missing rule rationale: {heading}')
     for entry in re.findall(r'^  - (adr/[^\n]+)',text,re.M):

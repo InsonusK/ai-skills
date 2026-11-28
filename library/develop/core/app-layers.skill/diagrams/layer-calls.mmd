@@ -4,7 +4,7 @@ flowchart TB
     command["Command"]
     domainService["Domain service"]
     entity["Entity"]
-    service["Service<br/>one external system or cohesive part"]
+    service["Service<br/>consumer-facing adaptation"]
     client["Client<br/>API DTOs and technical outcomes"]
     clientCore["Fixed client code<br/>transport and middleware"]
     infrastructure["Infrastructure<br/>non-client technical access"]
@@ -20,12 +20,12 @@ flowchart TB
     command --> domainService
     command --> entity
     command -. "interface" .-> service
-    command -->|nested command through its pipeline| command
+    command -->|other commands| command
     domainService --> entity
     domainService -. "interface" .-> service
     entity -->|other entities| entity
     service -->|construction and behavior APIs| entity
-    service -. "interface; one or more clients of its system" .-> client
+    service -. "interface" .-> client
     service -. "interface" .-> infrastructure
     client --> clientCore
     client --> provider

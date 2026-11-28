@@ -488,7 +488,8 @@
       "skill": "library/architecture/spec/base-plateau-extension.skill/base-plateau-extension.skill.md",
       "state": "wave-2-review",
       "evidence": [
-        "app-layers"
+        "app-layers",
+        "app-command-layer"
       ],
       "owned_file_count": 8,
       "example_roots": []
@@ -497,7 +498,10 @@
       "skill": "library/architecture/spec/base-plateau.skill/base-plateau.skill.md",
       "state": "wave-2-review",
       "evidence": [
-        "app-layers"
+        "app-layers",
+        "app-api-layer",
+        "app-command-layer",
+        "app-domain-layer"
       ],
       "owned_file_count": 11,
       "example_roots": []
@@ -506,7 +510,8 @@
       "skill": "library/architecture/spec/vp-cli-api.skill/vp-cli-api.skill.md",
       "state": "wave-2-review",
       "evidence": [
-        "app-layers"
+        "app-api-layer",
+        "app-command-layer"
       ],
       "owned_file_count": 3,
       "example_roots": []
@@ -533,7 +538,8 @@
       "skill": "library/architecture/spec/vp-grpc-api.skill/vp-grpc-api.skill.md",
       "state": "wave-2-review",
       "evidence": [
-        "app-layers"
+        "app-layers",
+        "app-api-layer"
       ],
       "owned_file_count": 10,
       "example_roots": []
@@ -560,7 +566,8 @@
       "skill": "library/architecture/spec/vp-http-api.skill/vp-http-api.skill.md",
       "state": "wave-2-review",
       "evidence": [
-        "app-layers"
+        "app-layers",
+        "app-api-layer"
       ],
       "owned_file_count": 16,
       "example_roots": []
@@ -641,14 +648,44 @@
       ]
     },
     {
+      "skill": "library/develop/core/app-api-layer.skill/app-api-layer.skill.md",
+      "state": "wave-1-shared-contract",
+      "evidence": [
+        "app-layers",
+        "app-api-layer",
+        "app-command-layer"
+      ],
+      "owned_file_count": 5,
+      "example_roots": []
+    },
+    {
+      "skill": "library/develop/core/app-command-layer.skill/app-command-layer.skill.md",
+      "state": "wave-1-shared-contract",
+      "evidence": [
+        "app-layers",
+        "app-command-layer"
+      ],
+      "owned_file_count": 2,
+      "example_roots": []
+    },
+    {
+      "skill": "library/develop/core/app-domain-layer.skill.md",
+      "state": "wave-1-shared-contract",
+      "evidence": [
+        "app-layers",
+        "app-domain-layer"
+      ],
+      "owned_file_count": 0,
+      "example_roots": []
+    },
+    {
       "skill": "library/develop/core/app-layers.skill/app-layers.skill.md",
       "state": "wave-1-shared-contract",
       "evidence": [
-        "api-client",
         "app-layers",
         "infrastructure/client"
       ],
-      "owned_file_count": 10,
+      "owned_file_count": 4,
       "example_roots": []
     },
     {
@@ -657,6 +694,9 @@
       "evidence": [
         "api-client",
         "app-layers",
+        "app-api-layer",
+        "app-command-layer",
+        "app-domain-layer",
         "Infrastructure/Client"
       ],
       "owned_file_count": 2,
@@ -689,6 +729,9 @@
       "state": "wave-2-review",
       "evidence": [
         "app-layers",
+        "app-api-layer",
+        "app-command-layer",
+        "app-domain-layer",
         "infrastructure/client"
       ],
       "owned_file_count": 0,
@@ -699,6 +742,9 @@
       "state": "wave-2-review",
       "evidence": [
         "app-layers",
+        "app-api-layer",
+        "app-command-layer",
+        "app-domain-layer",
         "infrastructure/client"
       ],
       "owned_file_count": 0,

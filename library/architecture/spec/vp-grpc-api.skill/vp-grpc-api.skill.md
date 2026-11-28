@@ -2,7 +2,7 @@
 name: vp-grpc-api
 description: The gRPC API variation point — an entry point attached to the base plateau that serves commands as methods of a versioned proto contract, answers errors by their kind, survives a panicking method, offers server reflection behind a switch, stops gracefully, and replaces the startup entry without editing any other base file
 whenToUse: when an application built on the base plateau must be reachable over gRPC — adding the gRPC entry point, serving a new command over gRPC, or reviewing the gRPC entry point of such an application
-updated: 20261102
+updated: 20261128
 tags:
   - stack
   - concern/architecture
@@ -30,6 +30,11 @@ tags:
 # Rule
 
 ## MUST
+
+### Apply the common API layer contract
+Apply [app-api-layer](library/develop/core/app-api-layer.skill/app-api-layer.skill.md) for input translation, command dispatch and outcome mapping before adding this transport's requirements.
+- Risk: transport-specific endpoints take ownership of business orchestration or expose domain entities.
+- Fix: keep shared entry behavior in the API layer contract and specialize only the protocol-specific mechanisms here.
 
 ### Follow api-develop for the contract
 Version and place the proto contract per [api-develop](library/common-workflow/develop/api-develop.skill/api-develop.skill.md): the major version in the proto package (`todo.v1`), `// version: {major}.{minor}.{patch}` as the file's first line, the file under `docs/integration/api/{contract-name}/`, and a recorded decision whether the contract has an HTTP form.

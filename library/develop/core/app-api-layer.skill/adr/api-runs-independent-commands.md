@@ -15,7 +15,7 @@ tags:
 A job archives old items and sends reminders; an HTTP handler creates an order and reserves stock for it. Both need several commands per input. Nothing said whether api may line them up itself.
 
 # Selected variant
-[[#Independent commands in api, an order in an orchestrating command]]
+[Independent commands in api, an order in an orchestrating command](#independent-commands-in-api-an-order-in-an-orchestrating-command)
 - Owner decision, 2026-10-26: api may call several commands without an order between them; when an order is required, api calls a command orchestrator; a job gets no exception for being "in fact a command".
 
 # Searched variants

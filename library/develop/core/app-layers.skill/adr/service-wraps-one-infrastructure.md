@@ -16,9 +16,9 @@ Amended on 2026-11-26 by [sibling-client-and-system-service-boundaries](./siblin
 In tg-bot-service, commands reached stores and clients directly, and one rule ended up implemented twice, differently. The owner's requirements (2026-10-17): api parses and calls a command; a command takes plain parameters; a command never touches infrastructure — infrastructure is wrapped by a service, so replacing HTTP by gRPC or PostgreSQL by Redis changes the infrastructure and at most the service, never the application's logic. The question is how far the wrapping goes and who may call whom.
 
 # Selected variant
-[[#Service per infrastructure, domain services above it]]
+[Service per infrastructure, domain services above it](#service-per-infrastructure-domain-services-above-it)
 - Owner decision, 2026-10-17: a domain service holds reusable business logic and may call services for nested operations; a simple command may call a service directly.
-- Amended by the owner (2026-11-06): in a stack whose ORM maps the domain's entities (the entities form of `vp-postgres`, dotnet), the application's own store is not an external system behind a service; a command takes the repository's contract of an entity, and one command middleware turns the store's failures into error kinds ([entities-mapped-by-ef-core](library/architecture/dotnet/vp-postgres-in-dotnet.skill/adr/entities-mapped-by-ef-core.md)). A service still wraps one infrastructure for everything else.
+- Amended by the owner (2026-11-06): in a stack whose ORM maps the domain's entities (the entities form of `vp-postgres`, dotnet), the application's own store is not an external system behind a service; a command takes the repository's contract of an entity, and one command middleware turns the store's failures into error kinds (implementation decision: `entities-mapped-by-ef-core` in `vp-postgres-in-dotnet`). A service still wraps one infrastructure for everything else.
 
 # Searched variants
 
