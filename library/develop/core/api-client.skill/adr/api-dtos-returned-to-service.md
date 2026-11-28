@@ -3,6 +3,7 @@ name: api-dtos-returned-to-service
 description: Where provider responses become consumer entities
 problem: Should the client map a response into application values when one response is enough, or should all consumer-model mapping belong to service?
 decision: Client returns API DTOs and technical outcomes; service maps every response into consumer models through domain APIs.
+status: accepted
 tags:
   - stack
   - concern/architecture
@@ -25,7 +26,7 @@ Owner decision, 2026-11-26.
 **Selected.**
 
 ### Description
-Client parses the provider response into an API-shaped DTO; service adapts that DTO, composing calls of its external system where necessary, and constructs consumer entities through domain APIs. This supersedes the selection in [client-returns-application-values](./client-returns-application-values.md), including its prohibition on response DTOs reaching service. API DTOs do not escape service into commands or domain logic. The representation question is resolved by [protocol-neutral-client-contract](./protocol-neutral-client-contract.md): service receives client-owned logical API DTOs, while transport-specific generated messages remain inside client; consumer-model mapping remains in service.
+Client parses the provider response into an API-shaped DTO; service adapts that DTO, composing calls of its external system where necessary, and constructs consumer entities through domain APIs. This supersedes the selection in [the superseded historical decision](./superseded/client-returns-application-values.md), including its prohibition on response DTOs reaching service. API DTOs do not escape service into commands or domain logic. The representation question is resolved by [protocol-neutral-client-contract](./protocol-neutral-client-contract.md): service receives client-owned logical API DTOs, while transport-specific generated messages remain inside client; consumer-model mapping remains in service.
 
 ### Benefits
 - One explicit boundary owns adaptation, even when a single response suffices.

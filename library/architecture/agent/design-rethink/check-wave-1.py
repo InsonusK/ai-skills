@@ -12,6 +12,9 @@ skills = [ROOT / f'library/develop/core/{name}.skill/{name}.skill.md' for name i
 skills.append(ROOT / 'library/develop/core/app-domain-layer.skill.md')
 files = [file for name in names for file in (ROOT / f'library/develop/core/{name}.skill').rglob('*.md')]
 files.append(skills[-1])
+authoring = ROOT / 'library/common-workflow/architecture/design/adr-create.skill'
+skills.append(authoring / 'adr-create.skill.md')
+files.extend(authoring.rglob('*.md'))
 errors = []
 def slug(s):
     return re.sub(r'[^\w\- ]', '', s.lower()).replace(' ', '-')
@@ -36,7 +39,7 @@ topology = ROOT / 'library/develop/core/app-layers.skill'
 map_file = topology / 'app-layers.skill.md'
 map_text = map_file.read_text()
 layer_table = map_text.split('| Layer |', 1)[1].split('\n\n', 1)[0]
-allowed_contracts = {skill.resolve() for skill in skills if skill != map_file}
+allowed_contracts = {skill.resolve() for skill in skills if skill != map_file and skill.parent != authoring}
 for file in topology.rglob('*.md'):
     for target in re.findall(r'\[[^\]]*\]\(([^)]+)\)', file.read_text()):
         path = target.split('#', 1)[0]
@@ -75,6 +78,28 @@ for folder, name in [('api-client','api-dtos-returned-to-service'),('api-client'
     for variant in re.split(r'^## ', variants, flags=re.M)[1:]:
         for section in ('Description','Benefits','Costs'):
             if f'### {section}' not in variant: errors.append(f'{name}: {section}')
+# Superseded records retain history but only the replacing ADR links to them.
+for archived in (ROOT / 'library/develop/core/api-client.skill/adr/superseded').glob('*.md'):
+    history = archived.read_text()
+    replacement_path = re.search(r'^superseded_by: (.+)$', history, re.M)
+    if 'status: superseded' not in history or not replacement_path:
+        errors.append(f'{archived.name}: archive status/replacement missing')
+        continue
+    replacement = (archived.parent / replacement_path.group(1).strip()).resolve()
+    if not replacement.exists():
+        errors.append(f'{archived.name}: replacement path does not resolve')
+    for file in files:
+        for target in re.findall(r'\[[^\]]*\]\(([^)]+)\)', file.read_text()):
+            path = target.split('#', 1)[0]
+            if not path or '://' in path: continue
+            resolved = (ROOT / path if path.startswith('library/') else file.parent / path).resolve()
+            if resolved == archived.resolve() and file.resolve() != replacement:
+                errors.append(f'Archive linked outside its replacement: {file.relative_to(ROOT)}')
+    for skill in skills:
+        header = skill.read_text().split('---', 2)[1]
+        for entry in re.findall(r'^  - (adr/[^\n]+)', header, re.M):
+            if (skill.parent / entry).resolve() == archived.resolve():
+                errors.append(f'{skill.name}: superseded ADR remains registered')
 if errors: raise SystemExit('\n'.join(errors))
 subprocess.run([sys.executable, str(HERE / 'inventory.py'), '--check'], cwd=ROOT, check=True)
 print('Wave 1 OK: shared skill structure, ADR registration, links/anchors, diagrams and downstream inventory.')

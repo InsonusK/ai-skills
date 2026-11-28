@@ -2,7 +2,9 @@
 name: client returns application values
 description: Superseded historical decision allowing client-side application mapping; current API-to-Domain Model mapping belongs to service
 problem: The application should not know how an API answers, but turning an answer into the application's values sometimes needs a decision of the application, a second operation, or data from another system; which of client, service, and the layers above does each, and what does the service no longer hide?
-decision: Superseded by api-dtos-returned-to-service; current clients return API DTOs and service performs all Domain Model mapping, including transformations requiring only one response.
+decision: The client returns the application's values when they follow from one answer, otherwise a result type of its own; the service composes any operations of its own client and its parameters into its answer, so a change inside the API edits only the service; data of another infrastructure is joined by a domain service or a command; a change that moves the data to another system - its master system - is a redesign at the level of the project.
+status: superseded
+superseded_by: ../api-dtos-returned-to-service.md
 tags:
   - stack
   - concern/architecture
@@ -11,10 +13,8 @@ tags:
 ---
 
 > **Superseded — historical record, not the current implementation contract.**
-> Replaced on 2026-11-26 by [api-dtos-returned-to-service](./api-dtos-returned-to-service.md).
-> Service always maps API DTOs into Domain Model, even when one answer is enough:
-> client returns `fullName: Ann Lee`; service produces `name: Ann, surname: Lee`.
-> The alternatives and original selection below preserve the earlier reasoning only.
+> Replaced on 2026-11-26; the relative `superseded_by` metadata identifies the
+> accepted replacement. The original selection and alternatives below are history.
 
 # Problem
 An API `/getUserName` answers `Ann Lee`; the application wants name and surname. Later the provider answers `{nameId} Lee` and adds `/getNameById`. The owner's requirement (2026-10-30): the application knows the service, never how the API answers, so such a change edits the service and not its callers. The question is where each mapping lives, and where hiding a change stops.

@@ -160,3 +160,20 @@ selection as history, but its description, decision metadata, leading notice
 and selection paragraph explicitly mark it superseded. The current rule is
 service-owned API DTO to Domain Model mapping even for a single-response
 full-name conversion. The owning skill labels the historical ADR link accordingly.
+
+## ADR lifecycle standard and applied archive
+
+The owner requested that the reusable adr-create skill formalize archive handling.
+It now distinguishes accepted and superseded records, moves fully replaced ADRs
+and their exclusive assets under adr/superseded, removes active registration and
+working references, and preserves history only behind the replacing ADR. Partial
+amendments remain active for unaffected decisions. New/updated records carry
+status; older unmarked records need no bulk migration. Moving alone does not
+promise loader context exclusion.
+
+The old client-side mapping record is archived accordingly. Its original decision
+metadata and alternatives are preserved, with superseded status and a relative
+replacement path; working skill/catalog/backlog references use the current DTO
+ADR. The expanded check gate validates the authoring standard and checks that the
+archive resolves to a replacement, is not actively registered, and is referenced
+only by that replacement among the reviewed contracts.

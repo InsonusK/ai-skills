@@ -74,9 +74,8 @@ belongs to the layers that own that composition.
 
 The shared contract has been revised in wave 1. The
 [api-client skill](../../develop/core/api-client.skill/api-client.skill.md) and
-[return-value ADR](../../develop/core/api-client.skill/adr/client-returns-application-values.md)
-now identify that old mapping rule as superseded by
-[API DTOs mapped by service](../../develop/core/api-client.skill/adr/api-dtos-returned-to-service.md).
+[API DTOs mapped by service](../../develop/core/api-client.skill/adr/api-dtos-returned-to-service.md)
+assign all API-to-Domain Model mapping to service.
 The architecture specifications for both
 [HTTP](../spec/vp-http-client.skill/vp-http-client.skill.md) and
 [gRPC](../spec/vp-grpc-client.skill/vp-grpc-client.skill.md) prohibit returning

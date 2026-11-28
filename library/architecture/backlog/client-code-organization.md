@@ -56,12 +56,11 @@ Existing decisions to evaluate explicitly:
   services. It also explains the old Client/Integration terminology and the
   separate .NET own-store exception.
 - [Client, not adapter](../../develop/core/api-client.skill/adr/client-not-adapter.md)
-  chooses Client as the name for API-calling code under `infrastructure/client`;
+  chooses Client as the name for API-calling code under the sibling `client/` boundary;
   the older catalogs use Client for what is now called Service.
-- [Client returns application values](../../develop/core/api-client.skill/adr/client-returns-application-values.md)
-  separates mapping derivable from one response from composition of API calls
-  and application parameters; it also discusses the boundary when data moves
-  to another system.
+- [API DTOs mapped by service](../../develop/core/api-client.skill/adr/api-dtos-returned-to-service.md)
+  assigns API-to-Domain Model mapping to service for every response; its historical
+  reference preserves the superseded response-count distinction.
 - [One outcome project for every client](../dotnet/vp-http-client-in-dotnet.skill/adr/one-outcome-project-for-every-client.md)
   puts shared HTTP/gRPC technical failures in `Client.Abstractions` so the
   application-facing service does not depend on transport packages.
