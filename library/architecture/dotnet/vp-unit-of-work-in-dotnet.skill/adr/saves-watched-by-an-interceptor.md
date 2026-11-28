@@ -37,6 +37,10 @@ The variation point must attach with no change to a repository, and a transactio
 ### Description
 Each write of a repository asks the unit of work for a transaction first.
 
+### Benefits
+- The transaction-opening call is explicit in the repository code, readable without knowing EF Core's interceptor pipeline.
+- A bulk statement (`ExecuteUpdate`, `ExecuteDelete`, raw SQL) could join the transaction by the same explicit call.
+
 ### Costs
 - Every repository changes when the variation point attaches, and a forgotten call writes outside the transaction unnoticed.
 

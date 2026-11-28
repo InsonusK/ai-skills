@@ -27,6 +27,8 @@ Not every request the application makes has the same tolerance for staleness or 
 
 ## Five strategies by content type
 
+**Selected.**
+
 ### Description
 
 See "Selected variant" above.

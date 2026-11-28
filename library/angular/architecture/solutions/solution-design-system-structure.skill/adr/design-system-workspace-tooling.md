@@ -21,6 +21,8 @@ The design system lives in its own repository, separate from the platform monore
 
 ## Angular CLI multi-project workspace
 
+**Selected.**
+
 ### Description
 
 A single `angular.json` lists the library and demo app projects. No additional tool sits on top of the Angular CLI.

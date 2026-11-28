@@ -86,6 +86,11 @@ A `provideAppInitializer` reads every persisted key from storage and dispatches 
 
 Each component that cares reads storage in an `effect()` / `ngOnInit` and patches the store.
 
+### Benefits
+
+- No persistence infrastructure to build or register — each consumer reads storage with the primitives it already has.
+- A component decides its own rehydration timing, independent of any global mechanism.
+
 ### Costs
 
 - Runs after the component is on screen — maximal flash. Also scatters the persistence contract across every consumer and makes "which state is persisted" un-answerable without reading every component. Rejected outright.

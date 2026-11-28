@@ -21,7 +21,7 @@ depends_on:
   - "[[library/go/architecture/solutions/solution-go-domain-ports.skill/solution-go-domain-ports.skill.md|solution-go-domain-ports]]"
 built_on_plateau:
 adr:
-  - "[[library/go/architecture/solutions/solution-cached-db.skill/adr/business-named-port-not-generic-cache.md|A business-named port, not a generic Cache interface]]"
+  - adr/business-named-port-not-generic-cache.md
 ---
 
 # Goal

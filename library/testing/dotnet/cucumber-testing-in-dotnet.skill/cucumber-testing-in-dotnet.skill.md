@@ -12,8 +12,8 @@ tags:
   - reqnroll
 
 adr:
-  - "library/testing/dotnet/cucumber-testing-in-dotnet.skill/adr/features-and-steps-layout.md"
-  - "library/testing/dotnet/cucumber-testing-in-dotnet.skill/adr/test-location.md"
+  - adr/features-and-steps-layout.md
+  - adr/test-location.md
 
 ---
 

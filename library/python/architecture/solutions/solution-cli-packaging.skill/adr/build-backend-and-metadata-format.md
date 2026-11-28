@@ -3,6 +3,11 @@ name: build-backend-and-metadata-format
 description: Which tool describes and builds a Python CLI application's package metadata
 problem: Decide how a CLI application declares its project metadata, build system, and console entry point, and which tool builds the installable package from it
 decision: Use a single pyproject.toml with the PEP 621 [project] table and the standard-library-adjacent setuptools.build_meta backend
+tags:
+  - solution/cli-packaging
+  - stack/python
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem
@@ -18,6 +23,8 @@ Use one `pyproject.toml` at the repository root: a `[build-system]` table naming
 # Searched variants
 
 ## PEP 621 pyproject.toml with setuptools.build_meta
+
+**Selected.**
 
 ### Description
 A single `pyproject.toml` file with a `[build-system]` table (`setuptools.build_meta`) and a `[project]` table following PEP 621's standardized field names (`name`, `version`, `dependencies`, `[project.scripts]`, ...).

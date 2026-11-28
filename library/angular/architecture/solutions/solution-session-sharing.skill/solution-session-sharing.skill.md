@@ -23,7 +23,7 @@ depends_on:
   - "[[library/angular/architecture/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]]"
   - "[[library/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]]"
 adr:
-  - "[[library/angular/architecture/solutions/solution-session-sharing.skill/adr/session-contract-ownership.md|session-contract-ownership]]"
+  - adr/session-contract-ownership.md
 ---
 
 # Goal

@@ -38,6 +38,9 @@ A variation point must attach without editing the entry points, and nested comma
 ### Description
 Each endpoint creates a scope and takes `ISender` from it.
 
+### Benefits
+- The scope is explicit and visible in every entry point — no `AsyncLocal` or sender-wrapper indirection to understand.
+
 ### Costs
 - Every API variation point changes, and the next one must remember.
 

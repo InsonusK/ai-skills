@@ -8,6 +8,6 @@ sequenceDiagram
   Service->>+Client: User()
   Client->>+Api: GET /getUser
   Api-->>-Client: state: suspended
-  Client-->>-Service: UserRecord: suspended
-  Note over Service: decides: a suspended user may not plan
+  Client-->>-Service: API DTO: state suspended
+  Note over Service: maps DTO, asks domain behavior whether planning is allowed
   Service-->>-Command: false

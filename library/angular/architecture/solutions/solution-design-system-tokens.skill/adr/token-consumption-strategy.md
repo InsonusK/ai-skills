@@ -23,6 +23,8 @@ Design system components consume `--mat-sys-*` tokens directly for anything Mate
 
 ## Hybrid: --mat-sys-* directly + custom --ds-* tokens for gaps only
 
+**Selected.**
+
 ### Description
 
 Components reference `--mat-sys-primary`, `--mat-sys-on-surface`, `--mat-sys-headline-medium`, etc. directly in their styles, exactly as Angular Material's own components do and as the framework's own guidance recommends ("your custom components should consume these tokens too"). A separate, small token set — `--ds-color-priority-high`, `--ds-color-status-in-progress`, `--ds-spacing-*`, `--ds-radius-*` — covers only what M3 doesn't model, defined once at the theme root alongside the `mat.theme()` mixin's output.

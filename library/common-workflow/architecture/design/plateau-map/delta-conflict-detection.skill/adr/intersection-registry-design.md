@@ -36,7 +36,9 @@ One file per conflicting element (`{catalog}/registry/{element-name}.md`), at th
 - A per-plateau ground-truth verification note ("verified by building this plateau's own `examples/`") can no longer be a single freeform paragraph per file — it becomes one growth-history table row per plateau instead. Mitigated: the table format is arguably clearer than N nearly-identical paragraphs were.
 - Existing catalogs built under the previous (per-plateau) variant needed migration — done for `dotnet`, `angular`, and `go` as part of adopting this decision; any future catalog starts directly in this shape.
 
-## Per-element files inside the owning plateau's registry folder (previously selected, superseded)
+## Per-element files inside the owning plateau's registry folder
+
+*Previously selected; superseded by the variant above.*
 
 ### Description
 One file per conflicting element (`registry/{element-name}.md`), placed inside the plateau where every intersecting solution is first simultaneously present in `created_by` (directly or via `parent_plateaus`) — the same placement rule `plateau-create-by-solutions` already uses for its own conflict ADRs. Listed in that plateau root skill's `registry:` YAML property, exactly mirroring how `adr:` already lists that plateau's ADR files.

@@ -20,7 +20,7 @@ registry:
   - "[[library/dotnet/architecture/registry/command-cs|registry-command-cs]]"
   - "[[library/dotnet/architecture/registry/pipelineregistration-cs|registry-pipelineregistration-cs]]"
 adr:
-  - "library/dotnet/architecture/plateau/plateau-offline-sync-service/adr/test-boundary-mirrors-production.md"
+  - adr/test-boundary-mirrors-production.md
 standalone: true
 ---
 

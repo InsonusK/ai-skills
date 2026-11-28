@@ -52,6 +52,7 @@ After the sync finishes, the configured skills appear under `.agents/skills/` an
 
 - [Installation and setup](docs/installation.md) — detailed setup for Windows, Linux, and macOS.
 - [API reference](docs/api/reference.md) — commands, configuration, and testing.
+- [Application development contracts](library/develop/README.md) — the layer map and owned API, command, domain and client rules.
 
 ## Project structure
 

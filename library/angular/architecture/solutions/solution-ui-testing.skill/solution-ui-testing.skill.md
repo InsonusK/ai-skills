@@ -27,9 +27,9 @@ depends_on:
   - "[[library/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
   - "[[library/angular/architecture/solutions/solution-forms.skill/solution-forms.skill.md|solution-forms]]"
 adr:
-  - "[[library/angular/architecture/solutions/solution-ui-testing.skill/adr/visual-regression-approach.md|visual-regression-approach]]"
-  - "[[library/angular/architecture/solutions/solution-ui-testing.skill/adr/accessibility-testing-approach.md|accessibility-testing-approach]]"
-  - "[[library/angular/architecture/solutions/solution-ui-testing.skill/adr/style-snapshot-approach.md|style-snapshot-approach]]"
+  - adr/visual-regression-approach.md
+  - adr/accessibility-testing-approach.md
+  - adr/style-snapshot-approach.md
 ---
 
 # Goal

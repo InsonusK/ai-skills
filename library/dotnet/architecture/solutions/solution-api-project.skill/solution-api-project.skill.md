@@ -21,7 +21,7 @@ depends_on:
   - "[[library/dotnet/architecture/solutions/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]"
   - "[[library/dotnet/architecture/solutions/solution-mediator-integration.skill/solution-mediator-integration.skill|solution-mediator-integration]]"
 adr:
-  - "[[library/dotnet/architecture/solutions/solution-api-project.skill/adr/api-project-shared-by-transports|One {Module}.Api project shared by REST and gRPC transports]]"
+  - adr/api-project-shared-by-transports.md
 ---
 
 # Goal

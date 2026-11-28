@@ -23,7 +23,7 @@ depends_on:
   - "[[library/go/architecture/solutions/solution-go-domain-ports.skill/solution-go-domain-ports.skill.md|solution-go-domain-ports]]"
 built_on_plateau:
 adr:
-  - "[[library/go/architecture/solutions/solution-persistent-db.skill/adr/postgres-via-pgx.md|PostgreSQL via pgx]]"
+  - adr/postgres-via-pgx.md
 ---
 
 # Goal

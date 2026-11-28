@@ -109,6 +109,8 @@ Because the owning module cannot register `IPropertyValidator<TheirDto, SoftEmai
 
 ## Use `AbstractValidator<Soft{ValueObject}>` for SoftVO validators
 
+**Selected.**
+
 ### Description
 
 Implement `{ValueObject}PropertyValidator : AbstractValidator<Soft{ValueObject}>`. This makes the validator a first-class `IValidator<Soft{ValueObject}>` that is independent of any parent DTO.

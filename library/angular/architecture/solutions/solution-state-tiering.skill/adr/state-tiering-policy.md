@@ -23,6 +23,8 @@ Match the tool to the scope of the state: Angular Signals for anything owned by 
 
 ## Three-tier: Signals / NgRx Signal Store / classical NgRx Store
 
+**Selected.**
+
 ### Description
 
 - **Component-local state** (dialog visibility, selected tab, form draft, loading flags scoped to one component): plain Angular Signals declared directly in the component, no store of any kind.

@@ -16,7 +16,7 @@ The previous test lists also contradicted their mirrored-boundary promise: Domai
 Catalog test templates duplicate testing rules and conflict with the stack-owned folder convention.
 
 # Selected variant
-[Catalog keeps project selection and layer contracts](#catalog-keeps-project-selection-and-layer-contracts)
+**Selected variant:** [[#Catalog keeps project selection and layer contracts]]
 
 # Searched variants
 

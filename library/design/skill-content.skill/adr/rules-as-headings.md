@@ -21,6 +21,8 @@ Skills reference their own rules from workflow steps and checklists by quoting t
 
 ## Rules as level-3 headings
 
+**Selected.**
+
 ### Description
 Each rule under `# Rule` is a `###` heading carrying the rule's name; the imperative statement follows as a paragraph; `Violation`/`Risk`/`Fix` are bullets under it. `## MUST`/`## SHOULD`/`## MAY` remain the only `##` headings under `# Rule`.
 

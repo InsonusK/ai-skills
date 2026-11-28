@@ -23,6 +23,8 @@ Workbox is adopted as the service worker tooling, integrated into the Nx/esbuild
 
 ## Workbox
 
+**Selected.**
+
 ### Description
 
 A set of libraries and build tools (`workbox-build`, `workbox-routing`, `workbox-strategies`, etc.) for authoring and generating a service worker with fine-grained, per-route caching strategies (cache-first, network-first, stale-while-revalidate, network-only), plus precaching for build-time-known assets and runtime caching for URLs only known at request time.

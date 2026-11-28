@@ -23,6 +23,8 @@ Only `warn`/`error` level entries, plus entries from an explicit `LoggerService.
 
 ## Selective levels, batched sending, bounded IndexedDB-persisted retry queue, global ErrorHandler
 
+**Selected.**
+
 ### Description
 
 - **Levels sent**: `warn`, `error`, and explicit `report()` calls only — `debug`/`info` never leave the browser via this sink (they may still reach `ConsoleLogSink` per the base solution's level filtering).

@@ -25,9 +25,9 @@ depends_on:
   - "[[library/testing/dotnet/solution-conformance-testing-in-dotnet.skill/solution-conformance-testing-in-dotnet.skill.md|solution-conformance-testing-in-dotnet]]"
 built_on_plateau:
 adr:
-  - "library/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/adr/testing-rules-owned-by-testing-skills.md"
-  - "[[library/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/adr/test-project-per-production-project|One test project per production project, not per module]]"
-  - "[[library/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/adr/tooling-moved-to-stack-testing-skill|Test tooling moved to solution-conformance-testing-in-dotnet]]"
+  - adr/testing-rules-owned-by-testing-skills.md
+  - adr/test-project-per-production-project.md
+  - adr/tooling-moved-to-stack-testing-skill.md
 ---
 
 # Goal

@@ -45,7 +45,7 @@ depends_on:
   - "[[library/dotnet/architecture/solutions/solution-pipeline-registration.skill/solution-pipeline-registration.skill|solution-pipeline-registration]]"
 built_on_plateau:
 adr:
-  - "[[library/dotnet/architecture/solutions/solution-external-created-entity.skill/adr/use-conflict-result-for-duplicate-guid|Use ConflictResult<T> for duplicate Guid handling]]"
+  - adr/use-conflict-result-for-duplicate-guid.md
 ---
 
 # Goal

@@ -2,7 +2,7 @@
 name: plateau-map-creation-workflow
 description: Orientation for the plateau-map pipeline — the fixed order in which feature-map-create, variability-map-create, delta-conflict-detection, plateau assembly, and plateau-map-create turn a Program Family's common/variable split into named, buildable plateaus, so an agent knows where to start instead of inferring it from cross-links scattered across the skill files
 whenToUse: when starting work on a new plateau/solution catalog from scratch and unsure which skill to run first, when asked what the plateau-map pipeline is or what this directory contains, or when reviewing whether a catalog change skipped a required earlier or later stage
-updated: 20260918
+updated: 20261128
 tags:
   - skill/architecture/variability/design
   - stack
@@ -53,7 +53,7 @@ tags:
 ## Not part of this pipeline
 - [[library/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]] — Solution vs. Plateau vs. Plateau Component: which shape a new architectural unit should take.
 - [[library/common-workflow/architecture/design/plateau-component-create.skill/plateau-component-create.skill.md|plateau-component-create]] — building a Plateau Component (an optional, cross-cutting capability attached after composition, never part of `created_by`).
-- [[library/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md|adr-create]] — recording an architecture decision as an ADR; used throughout every step above, not specific to this pipeline.
+- [[library/design/adr-create.skill/adr-create.skill.md|adr-create]] — recording an architecture decision as an ADR; used throughout every step above, not specific to this pipeline.
 
 # Rule
 

@@ -20,7 +20,7 @@ extends:
 depends_on:
   - "[[library/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
 adr:
-  - "[[library/angular/architecture/solutions/solution-logging-base.skill/adr/logging-architecture.md|Logging Architecture ADR]]"
+  - adr/logging-architecture.md
 ---
 
 # Goal

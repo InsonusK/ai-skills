@@ -63,6 +63,8 @@ Key constraints:
 
 ## Return ConflictResult<T> from the resolver
 
+**Selected.**
+
 ### Description
 `IGuidResolver<TResponse>` returns `Task<TResponse?>`. When the Guid exists, the resolver returns `ConflictResult<TResponse>` carrying the existing entity result. `GuidResolvingBehavior` returns the resolver's result directly. The API layer detects `ConflictResult<T>` by type and returns HTTP 409 with the result body.
 

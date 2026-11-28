@@ -20,8 +20,8 @@ extends:
 depends_on:
   - "[[library/angular/architecture/solutions/solution-federation-host.skill/solution-federation-host.skill.md|solution-federation-host]]"
 adr:
-  - "[[library/angular/architecture/solutions/solution-host-design-system-consumption.skill/adr/design-system-version-negotiation.md|design-system-version-negotiation]]"
-  - "[[library/angular/architecture/solutions/solution-host-design-system-consumption.skill/adr/theme-application-scope.md|theme-application-scope]]"
+  - adr/design-system-version-negotiation.md
+  - adr/theme-application-scope.md
 ---
 
 # Goal

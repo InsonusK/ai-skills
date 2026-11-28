@@ -22,7 +22,7 @@ created_by:
   - "[[library/dotnet/architecture/solutions/solution-app-logging.skill/solution-app-logging.skill|solution-app-logging]]"
   - "[[library/dotnet/architecture/solutions/solution-dotnet-conformance-testing.skill/solution-dotnet-conformance-testing.skill|solution-dotnet-conformance-testing]]"
 adr:
-  - "library/dotnet/architecture/plateau/plateau-core/adr/test-boundary-mirrors-production.md"
+  - adr/test-boundary-mirrors-production.md
 standalone: false
 ---
 

@@ -1,6 +1,6 @@
 # Feature and VP authoring redesign
 
-Review contract, 2026-11-26. Status: revised after owner review; implementation waves not started.
+Review contract, 2026-11-26. Status: wave 1 shared contracts prepared; waves 2–4 pending.
 
 ## Outcome
 
@@ -57,6 +57,14 @@ existing contracts from the owner's new client/service decision.
     No library file links repository-only skills. Update local layout guidance to
     permit this design folder before adding procedures there.
 
+11. Keep app-layers limited to responsibilities, dependency directions, logical
+    boundaries and interfaces. API, command/factory and domain implementation rules
+    belong to app-api-layer, app-command-layer and app-domain-layer. The providing
+    mechanism owns an integration service's implementation; api-client owns its
+    API-adapting service. Do not introduce app-service-layer (owner accepted).
+    The layer table links existing implementation contracts for navigation; the
+    owner accepts that these links load their transitive dependencies.
+
 ## Branch and review flow
 
 Implement each wave on `rethink-architecture-design-waves`, based on
@@ -75,6 +83,7 @@ PR contains this plan refinement only, so the new scope is reviewable before imp
 |---|---|---|---|
 | 0 | Contract, sample and `check.py` | New / refine | Reviewed model, responsibilities, scope and checks |
 | 1, first implementation | `api-client`, `app-layers`, their owning ADRs and directly linked examples | Modify | Sibling client/service boundaries, API DTO returns, grouping and ownership agree; conflicting old decisions explicitly amended |
+| 1 refinement | Three owned layer contracts, relocated ADRs/diagrams and consumer links | New / move / modify | app-layers stays topology-only; API VPs and stack consumers retain implementation rules; no standalone service skill |
 | 1 | Dependency inventory for stack layer skills, HTTP/gRPC/retry specs and realizations | New | Every conflicting path, contract and consumer listed with migration wave; interim state marked |
 | 2 | Per-language service layout views in `docs/` and base-capability sections | New | One navigable structure per Go/.NET/Python; every element names its owner, feature and VP; alternative paths and planned elements explicit |
 | 2 | Stack layer skills, client specs, templates, scenarios and examples | Modify | Layout/DTO contract agrees with wave 1; affected executable checks pass; client backlog reflects settled responsibilities |
@@ -137,6 +146,11 @@ Proposed documentation contract for wave 2:
 
 ## Decisions log
 
+- Accepted by owner, 2026-11-28: separate API, command and domain implementation
+  contracts from app-layers; keep integration-service rules in the providing
+  mechanism, with no app-service-layer skill.
+
+
 - Accepted by owner: service adapts API and maps DTOs; client calls API, owns retry
   execution and returns API DTOs (2026-11-26).
 - Derived from current catalog: keep the single base and attachable VP model.
@@ -144,9 +158,10 @@ Proposed documentation contract for wave 2:
   do not fold implementation into admission or require all stacks to exist at once.
 - Proposed: reusable authoring skills in `library/architecture/design/`; keep the old
   design pipeline available to its existing consumers.
-- Open: the public DTO for a gRPC client may be a generated provider message or an
-  API-shaped client-owned DTO. Decide before changing the generated-message rule;
-  neither choice permits returning consumer domain entities from the client.
+- Resolved by owner requirement, 2026-11-28: protocol replacement for an equivalent
+  logical API must not change service; client-owned protocol-neutral API DTOs and
+  normalized outcomes define the contract; generated DTOs qualify only when
+  shared unchanged by the protocol implementations.
 - Accepted by owner: sibling domain/infrastructure/client/service boundaries;
   partial contract clients grouped by entity responsibility; a service may compose
   multiple clients of one external system; one owning service per client by default.
@@ -154,17 +169,19 @@ Proposed documentation contract for wave 2:
   `api-client` and `app-layers` before architecture changes.
 - Proposed: per-stack catalog overlay layouts with explicit alternatives; base
   capability documentation with no automatic proliferation of VP skills.
-- Open: generated versus API-shaped client-owned gRPC DTOs; physical .NET project
-  placement and cross-module model ownership; shared configuration policy when
-  multiple clients use the same provider endpoint.
+- Open: physical .NET project placement, cross-module model ownership and shared
+  configuration policy when several clients use one provider endpoint.
+- Confirmed by owner, 2026-11-28: retain the prohibition on service-to-service
+  calls; cross-system composition stays in commands or domain services.
 
 ## Status
 
-Wave 0 sample is in parent draft PR #310. This revision records the owner's review
-and proposed clarifications. The wave branch exists; implementation waves 1–4
-have not started. The earlier separate-follow-up treatment of the client changes
-is superseded: shared contracts are now wave 1 and downstream migration wave 2.
-The sample describes the pre-migration catalog and must be updated in those waves.
+The owner merged plan refinement PR #311 into the parent branch. Wave 1 revises
+the shared contracts, ADRs and directly linked examples; see [wave-1.md](./wave-1.md)
+for its audit and validation record. Waves 2–4 remain pending. The parent PR #310
+remains a draft until the waves are complete. Architecture client specs and stack
+examples are explicitly marked as awaiting migration; this is not a conforming
+end-to-end implementation of the new contract yet.
 
 ## Separate audit pass
 

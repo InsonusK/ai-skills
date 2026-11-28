@@ -25,7 +25,7 @@ extends:
 depends_on:
   - "[Angular conformance testing](../solution-conformance-testing-in-angular.skill/solution-conformance-testing-in-angular.skill.md)"
 adr:
-  - "[Demo host](./adr/demo-host.md)"
+  - adr/demo-host.md
 ---
 
 # Goal

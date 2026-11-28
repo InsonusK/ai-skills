@@ -44,6 +44,10 @@ The variation point must attach with no change to a repository. Python has no sc
 ### Description
 Listeners on the session, `do_orm_execute` and `before_flush`, rebind a session to the unit's connection.
 
+### Benefits
+- No router seam in vp-postgres — the unit of work is self-contained in its own listeners.
+- Only public SQLAlchemy hooks are used, no private query fields.
+
 ### Costs
 - By the first flush, a session may already hold a connection of the pool from a read; the rebinding rests on the order of SQLAlchemy's internals.
 
@@ -51,6 +55,10 @@ Listeners on the session, `do_orm_execute` and `before_flush`, rebind a session 
 
 ### Description
 A handler creates a session, and every service and repository takes it as a parameter.
+
+### Benefits
+- The transaction is explicit in every call signature — no context variable or router to reason about.
+- A read-only command never opens a transaction, by construction.
 
 ### Costs
 - Every service and repository changes to attach the variation point, which [vp-unit-of-work](library/architecture/spec/vp-unit-of-work.skill/vp-unit-of-work.skill.md) forbids.

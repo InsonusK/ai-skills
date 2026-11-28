@@ -41,6 +41,10 @@ A federation host and every independently deployed remote need exactly one build
 ### Description
 The contract is a normal Nx lib; remotes depend on it via a published snapshot or a git dependency.
 
+### Benefits
+- No separate repository or publish pipeline to maintain — the contract ships with the Nx tooling the platform already uses.
+- Host and remotes consume the lib directly in the monorepo during development, without an npm round-trip.
+
 ### Costs
 - Remote teams must track the platform monorepo's versioning and release cadence — the coupling this whole architecture exists to avoid.
 - No clean semver boundary; "what version of the contract" becomes "what platform commit".
@@ -49,6 +53,10 @@ The contract is a normal Nx lib; remotes depend on it via a published snapshot o
 
 ### Description
 Same as selected, but `strictVersion: false`.
+
+### Benefits
+- A remote never fails to load over a major-version mismatch — the most forgiving compatibility posture.
+- Lets a lagging remote keep working while it upgrades its contract dependency.
 
 ### Costs
 - An incompatible major loads a second, non-shared instance of the contract package — state sharing silently breaks with no error. The failure mode is invisible until a user hits it.

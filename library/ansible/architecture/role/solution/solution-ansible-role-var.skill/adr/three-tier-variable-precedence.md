@@ -1,8 +1,13 @@
 ---
-name: architecture decision record
+name: three-tier-variable-precedence
 description: How to structure a role's variables so each role owns an isolated namespace and still supports layered overrides
 problem: How should an Ansible role structure its variables so that (a) different roles never collide on the same variable name in inventory, and (b) a value can still be overridden per-group and per-host without editing the role itself?
 decision: Give every role a single {{ role_name }} prefix and three input tiers (`_{{ role_name }}_defaults`, `{{ role_name }}_group`, `{{ role_name }}`) merged with `combine(recursive=True)` into one effective variable, `_{{ role_name }}_config`
+tags:
+  - solution/ansible-role-var
+  - stack/ansible
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

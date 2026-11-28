@@ -1,10 +1,11 @@
 ---
 name: adr-create
-description: Define how to record an architecture decision as an ADR (architecture decision record) inside the skill that owns the decision
-whenToUse: when an architecture decision is made while building or editing a skill and the selected variant together with the considered alternatives must be recorded
-updated: 20261006
+description: Record architecture decisions beside their owning skill and archive superseded decisions without leaving historical rules in the active contract
+whenToUse: when recording or replacing an architecture decision in a skill, including preserving alternatives and archiving a fully superseded ADR
+updated: 20261128
 adr:
   - adr/selected-marker-inside-section.md
+  - adr/archive-superseded-decisions.md
 tags:
   - skill/architecture/design
   - stack
@@ -13,22 +14,24 @@ tags:
 ---
 
 # Goal
-- One ADR file per decision, created from [adr.template.md](./templates/adr.template.md) under the owning skill's `adr/` folder, recording the problem, the selected variant, and every considered alternative with its `Description`/`Benefits`/`Costs`.
-- The selected variant listed in `# Searched variants` alongside the rejected ones, marked by a `**Selected.**` line inside its section (never in its heading), and linked from `# Selected variant` by a link whose text equals that heading verbatim.
+- **Decision record** - One ADR file per decision, created from [adr.template.md](./templates/adr.template.md) under the owning skill's `adr/` folder, recording the problem, the selected variant, and every considered alternative with its `Description`/`Benefits`/`Costs`.
+- **Comparable alternatives** - The selected variant listed in `# Searched variants` alongside the rejected ones, marked by a `**Selected.**` line inside its section (never in its heading), and linked from `# Selected variant` by a link whose text equals that heading verbatim.
 - The ADR's YAML `tags` list carrying `concern/documentation/adr`.
 - No `hint`/`example`/`code example` block left in the final ADR file.
-- Every ADR registered in the owning skill's `adr:` YAML property and linked from its body.
+- Active ADRs registered in the owning skill's `adr:` property and linked from its body.
+- Superseded ADRs archived under `adr/superseded/`, with replacement metadata and a historical link only from the replacing ADR.
 
 # Core Principle
 - **One file per decision** - Exactly one ADR file per decision, in an `adr/` folder inside the skill folder that owns the decision, so it is reviewed and versioned with that skill.
 - **Record the rejected options** - An ADR records what was rejected as well as what was decided, so future maintainers can weigh the trade-offs and revisit the decision when the context changes.
+- **Current rules and history** - The skill states current instructions; an archived ADR preserves why an earlier decision was replaced, not an alternative instruction to follow.
 
 # Workflow
 1. Create an `adr/` folder inside the owning skill folder if it does not exist yet.
-2. Add one ADR file per decision from [adr.template.md](./templates/adr.template.md) and fill it with real content: the YAML header (`name`, `description`, `problem`, `decision`, `tags`), `# Problem` (the question the decision solves), `# Selected variant` (the chosen variant, named and linked to its `# Searched variants` entry), and `# Searched variants` (every considered variant including the selected one, each with `Description`, `Benefits`, `Costs`).
+2. Add one ADR file per decision from [adr.template.md](./templates/adr.template.md) and fill it with real content: the YAML header (`name`, `description`, `problem`, `decision`, `status`, `tags`), `# Problem` (the question the decision solves), `# Selected variant` (the chosen variant, named and linked to its `# Searched variants` entry), and `# Searched variants` (every considered variant including the selected one, each with `Description`, `Benefits`, `Costs`).
 3. Remove every `hint`, `example`, and `code example` block from the final ADR file.
-4. List every created ADR in the `adr:` property of the owning skill's YAML header.
-5. In the owning skill's body, briefly summarize the decision and link to the ADR file.
+4. Register the accepted ADR per [Register and link active ADRs](#register-and-link-active-adrs).
+5. When replacing a decision, apply [Archive a fully superseded decision](#archive-a-fully-superseded-decision) and [Repair history references](#repair-history-references) in the same change.
 
 See a complete filled example: [examples/example.adr.md](./examples/example.adr.md).
 
@@ -59,11 +62,28 @@ Describe every variant with `Description`, `Benefits`, and `Costs` subsections.
 - Risk: an unevenly described variant cannot be compared against the others.
 - Fix: give each variant all three subsections.
 
-### Register and link every ADR
-List every created ADR in the `adr:` property of the owning skill's YAML header and link it from the skill body — an ADR registered in neither place is considered missing.
-- Violation: `adr/mutation-tool-choice.md` exists but is absent from the `adr:` YAML property and no body section links to it.
-- Risk: the decision is invisible to an agent reading the skill.
-- Fix: register every ADR in the `adr:` property and link it from the skill body.
+### Register and link active ADRs
+List each accepted ADR in the owning skill's `adr:` property and link it from the skill body, keeping superseded records out of both active locations.
+- Violation: a superseded ADR remains in `adr:` or a working rule links both the current decision and its contradictory predecessor.
+- Risk: an agent treats historical instructions as current, or cannot discover the accepted decision.
+- Fix: register and link the current decision only; preserve its predecessor through the replacement's historical reference.
+
+### Mark decision status
+Set `status: accepted` on new or substantively revised active ADRs and `status: superseded` with `superseded_by` on archived ADRs.
+- Risk: an original selected variant in an archive looks like an active instruction.
+- Fix: resolve `superseded_by` relative to the archived file, mark its leading text as historical, and treat older unmarked ADRs as accepted until reviewed rather than requiring a catalog-wide metadata migration.
+
+### Archive a fully superseded decision
+Move a fully replaced ADR and its exclusively owned supporting assets into `adr/superseded/`, preserving its original decision, alternatives and selection as history.
+- Violation: the old selected variant is rewritten to claim the new choice was made originally, or an obsolete record remains among active decisions.
+- Risk: the reason for the transition is lost or a reader follows contradictory rules.
+- Fix: apply [archive-superseded-decisions](./adr/archive-superseded-decisions.md); record the replacement separately, use a clear superseded notice and retain shared assets where active consumers still need them.
+
+### Repair history references
+Link an archived ADR only from the replacing ADR as explicitly historical context, and update paths, metadata and incoming references in the same change.
+- Violation: a working skill, example or catalog page links directly to a superseded instruction, or a moved file's relative links stop resolving.
+- Risk: stale guidance remains on the active reading path or archive history becomes inaccessible.
+- Fix: point working guidance at the replacement, remove the predecessor from active `adr:` registration, and check archive links and `superseded_by`; keep a partially amended ADR active when it still owns current decisions, identifying the amended scope and replacement explicitly.
 
 ### Tag the ADR
 Include a `tags` list in the ADR's YAML header with the mandatory tag `concern/documentation/adr`, and keep the other tags the template carries (for example the bare `stack` tag for stack-agnostic decisions).
@@ -86,7 +106,7 @@ Write one ADR per decision instead of mixing several decisions into one file.
 
 # Check list
 - [ ] ADR file is created from [adr.template.md](./templates/adr.template.md) inside the owning skill's `adr/` folder.
-- [ ] YAML header is filled: `name`, `description`, `problem`, `decision`, `tags`.
+- [ ] YAML header is filled: `name`, `description`, `problem`, `decision`, `status`, `tags`.
 - [ ] The selected variant's heading carries no marker, its section starts with `**Selected.**`, and the `# Selected variant` link text equals that heading verbatim.
 - [ ] The `tags` list contains the mandatory tag `concern/documentation/adr`.
 - [ ] `# Problem` states the problem or question the decision solves.
@@ -94,5 +114,5 @@ Write one ADR per decision instead of mixing several decisions into one file.
 - [ ] The selected variant appears in `# Searched variants` and is clearly marked as selected.
 - [ ] Every variant has `Description`, `Benefits`, and `Costs` subsections.
 - [ ] All `hint`, `example`, and `code example` blocks are removed from the final ADR file.
-- [ ] The ADR is registered in the owning skill's `adr:` YAML property.
-- [ ] The skill body briefly summarizes the decision and links to the ADR file.
+- [ ] Check [active registration](#register-and-link-active-adrs) and [status](#mark-decision-status).
+- [ ] For a replacement, check [archive preservation](#archive-a-fully-superseded-decision) and [reference repair](#repair-history-references).

@@ -15,7 +15,7 @@ tags:
 A command that imports items reuses `AddItem` for each one. Taken as `NewAddItemHandler(lists)`, the nested call writes no log line, passes no access check, and opens or joins no unit of work; taken from the registry, it gets all of them. Without a rule each stack — and each handler — chose for itself.
 
 # Selected variant
-[[#Through the command pipeline]]
+**Selected variant:** [[#Through the command pipeline]]
 - Owner decision, 2026-10-26: a nested command goes through the middleware and no other way.
 
 # Searched variants

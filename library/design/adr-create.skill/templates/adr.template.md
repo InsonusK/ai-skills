@@ -3,6 +3,7 @@ name: architecture decision record
 description: What problem is solved
 problem: Define problem or question
 decision: What decision was chosen
+status: accepted
 tags:
   - solution/{solution-name}
   - stack

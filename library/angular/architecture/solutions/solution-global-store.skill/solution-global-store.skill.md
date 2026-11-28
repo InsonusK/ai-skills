@@ -22,8 +22,8 @@ depends_on:
   - "[[library/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
   - "[[library/angular/architecture/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]"
 adr:
-  - "[[library/angular/architecture/solutions/solution-global-store.skill/adr/classical-ngrx-for-the-global-tier.md|classical-ngrx-for-the-global-tier]]"
-  - "[[library/angular/architecture/solutions/solution-global-store.skill/adr/stateful-vps-build-on-the-global-store.md|stateful-vps-build-on-the-global-store]]"
+  - adr/classical-ngrx-for-the-global-tier.md
+  - adr/stateful-vps-build-on-the-global-store.md
 ---
 
 # Goal

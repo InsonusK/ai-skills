@@ -1,8 +1,8 @@
 ---
 name: api-client
-description: How an application calls another service's API — one client per API under one service, the client returning the application's values or a result type of its own and the service composing its client's operations, a change of the data's master system left to the project, every call through the client middleware of the composition root with the operations safe to repeat marked, the {API} environment group (host, a port per protocol, TLS, timeout), the consumed wire contract preserved, every call bounded by a timeout, logged in two records, and carrying the request id, an unavailable API told from a rejected call, a mock that runs the client against an emulator inside the process, and the tests at the client's boundary
+description: How to split external API access into entity-focused clients hiding protocols behind API DTOs and a service hiding API realization behind a consumer-facing contract, with sibling client and service boundaries, technical outcomes, client middleware, configuration, timeouts, logging and emulator tests
 whenToUse: when an application calls an HTTP or gRPC API of another service — adding a client, changing what it sends or how it is configured, mocking it to run without the other service, or reviewing a client of any stack
-updated: 20261119
+updated: 20261128
 tags:
   - stack
   - concern/architecture
@@ -10,8 +10,10 @@ tags:
   - app-type/service
   - app-type/cli
 adr:
-  - adr/client-returns-application-values.md
   - adr/client-not-adapter.md
+  - adr/api-dtos-returned-to-service.md
+  - adr/entity-clients-and-system-services.md
+  - adr/protocol-neutral-client-contract.md
 ---
 
 # Goal
@@ -21,36 +23,72 @@ adr:
 - **Runnable without the other service** - Setting `{API}_HOST=mock` runs the whole client against an emulator inside the process, so the service starts, and its flows run, with no other service reachable.
 
 # Core Principle
-- **A client is infrastructure** - The client, the code that calls one API, is the infrastructure of [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md): it knows the transport and the contract and reports technical outcomes; the one service over it speaks the application's language and decides what each outcome means. Decision recorded in [client-not-adapter](./adr/client-not-adapter.md).
-- **The contract is the provider's** - The consumed contract is copied as published, and the client maps it for the operations it calls; the rest of the application never sees the contract's types.
-- **Fixed once, written per API** - Configuration, the timeout, the call log, the request id, the error report, and the mock switch are fixed code the same for every API of every application; per API the application writes its client's methods, their mappings, its emulator's sample answers, and its service.
+- **Two change boundaries** - Client hides protocol mechanics; service hides how the external API fulfills the application operation, with the responsibility contract defined [below](#separate-protocol-mechanics-from-api-adaptation).
+- **Sibling boundaries** - Place client and service according to [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md); [client-not-adapter](./adr/client-not-adapter.md) retains the naming decision.
+- **The contract is the provider's** - The consumed contract is copied as published, and clients select the operations they call without trimming that contract; API DTOs stop at the service boundary.
+- **Fixed once, written per API** - Configuration, the timeout, the call log, the request id, the error report, and the mock switch are fixed code the same for every API of every application; the application writes entity-focused client methods, API DTO parsing, emulator answers, and the service's consumer-model mapping.
 
 # Scope
 - Covers the calls an application makes to HTTP and gRPC APIs of other services. The transport-specific parts are the variation points `vp-http-client` and `vp-grpc-client` and their stack extensions.
 - A retry of a failed call is not here: it comes from its own variation point, `vp-client-retry`, a client middleware, so no call is repeated unless the application attached it and the client marked the operation safe to repeat.
-- A change of the API that moves data the application uses to another system - the master system of that data changes - is not covered: the application gains a dependency, and the service is redesigned at the level of the project, not hidden in its client or service (the cases are in [api-change-cases](./examples/api-change-cases.md)).
+- A split into independent external systems changes project dependencies, failure and consistency boundaries; cross-system composition is a project design question, distinct from splitting one system's API (see [api-change-cases](./examples/api-change-cases.md)).
 
 # Rule
 
 ## MUST
 
-### One client per API, one service over it
-Write each API the application calls as one client in a package of its own under `infrastructure/client/` (`infrastructure/client/{api}`), with the fixed client code of every API beside them in `infrastructure/client/core/`, with one method per operation it calls, and one service over it whose methods say what the application wants.
-- Violation: a command or a domain service calling the client; a service named after the API's operations (`PostItemsPlan`); two APIs behind one client; a client beside the stores in `infrastructure/`.
-- Risk: the contract's shapes and errors spread into the application, and a change of the provider's API edits commands.
-- Fix: the service method (`RemotePlanner.Plan`) hides the call; the command calls the service through an interface, per app-layers; `infrastructure/client/` shows at a glance every other service the application calls.
+### Separate protocol mechanics from API adaptation
+Assign implementation work to client or service according to this responsibility contract.
 
-### Return the application's values from the client
-Return from each client method the application's values when they follow from the answer alone, and otherwise a result type of the client's own holding only the fields the service uses, named in the application's language. Decision recorded in [client-returns-application-values](./adr/client-returns-application-values.md).
-- Violation: the response type shaped by the provider's JSON or messages returned to the service; an entity of the application passed into the client to build its answer from; a client method calling another API.
-- Risk: the provider's shapes spread into the application, and a business rule placed in the client is lost when the transport is replaced.
-- Fix: the client splits, renames, and converts what one answer holds (`Ann Lee` into name and surname); what needs a decision of the application or another call is left to the service in the client's result type.
+| Boundary | Owns | Change it absorbs |
+|---|---|---|
+| Client | Endpoint paths/verbs or RPC method names, serialization, protocol-error parsing into common technical outcomes, configured authentication and call policies such as retry | HTTP to gRPC for the same logical operations, DTO meaning and API error semantics, without changing service code or its client contract |
+| Service | API DTO to Domain Model mapping through domain APIs, interpretation of remote outcomes, composition of API operations and of its system's entity-focused clients | Request/response changes, renamed or split operations, and API partitioning within the same external system, while preserving the consumer-facing contract when the required behavior remains available |
 
-### Compose the client's operations in the service
-Build each answer of the service from as many operations of its own client as it needs and from the parameters of its method, and from nothing else.
-- Violation: the provider splits one operation in two and every caller of the service now makes the second call itself; the service calling another service for the missing data.
-- Risk: a change of how the API answers edits every caller instead of one service, or the service hides a second system the application now depends on.
-- Fix: `UserService.UserName` calls both operations of its client and still returns name and surname; data of another infrastructure is joined by a domain service or a command, per [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md).
+- Violation: a service catches gRPC exceptions or chooses HTTP paths; a client splits a full name into the application's name model or orchestrates several logical API operations to fulfill a service method.
+- Risk: changing the protocol edits API adaptation, or changing the provider's API edits every consumer.
+- Fix: keep one client method at the logical API-operation boundary; let service compose those operations and map their meaning, with invariants enforced by domain behavior.
+
+### Keep the client contract independent of the protocol
+Expose client-owned, protocol-neutral request/response API DTOs and technical outcomes at the service boundary, as decided in [protocol-neutral-client-contract](./adr/protocol-neutral-client-contract.md).
+- Violation: HTTP response objects, numeric HTTP statuses, gRPC exceptions or transport-specific generated message types that change on a protocol swap form the service's client contract.
+- Risk: replacing HTTP with gRPC changes service imports, signatures and error handling even when the logical API is unchanged.
+- Fix: client translates wire representations and failures into its stable logical API contract; retain provider field meanings, not consumer-domain transformations, and keep raw transport diagnostics inside the technical failure cause; shared generated DTOs are suitable only when both transport implementations expose the identical logical contract.
+
+### Preserve the consumer contract across API realization changes
+Keep the service's consumer-facing methods and Domain Model answers stable when the same business capability is realized through changed API operations, DTO shapes or several APIs of the same system.
+- Violation: a provider splits a lookup and each command now performs two client calls; a second API file creates a second application-facing service solely because of file packaging.
+- Risk: consumers depend on the provider's implementation choices rather than the application operation.
+- Fix: adapt the clients and the service implementation; distinguish the same-system cases from [a second independent system](./examples/api-change-cases.md#a-second-system), and report when changed semantics make the existing consumer contract impossible to honor.
+
+### Group clients by an entity's API responsibility
+Implement the operations needed to work with one external entity or cohesive resource in a client under `client/{name}/`, allowing partial contract coverage and several clients for a large Swagger/OpenAPI or proto file.
+- Violation: one giant client solely because the provider publishes one file; unrelated controllers grouped together; only writes grouped while related reads are scattered arbitrarily.
+- Risk: provider packaging determines application boundaries, and unrelated changes reach every client consumer.
+- Fix: an OrderClient groups order operations, including needed reads; reference the provider contract and list supported operations, following [entity-clients-and-system-services](./adr/entity-clients-and-system-services.md) and preserving the complete wire file under [Preserve the consumed wire contract](#preserve-the-consumed-wire-contract).
+
+### Give each client one owning service
+Assign each client to one service of its external system, permitting shared use only as an explicitly justified exception between decomposed services of that same system.
+- Violation: unrelated services call a shared client as a shortcut; a client coordinates different external systems.
+- Risk: adaptation is duplicated and ownership of API changes becomes ambiguous.
+- Fix: keep one owner normally; first split an overly broad client by entity responsibility, and document why any remaining same-system sharing is preferable.
+
+### Return API DTOs from the client
+Return the API-shaped response DTOs and technical outcomes of [the protocol-neutral client contract](#keep-the-client-contract-independent-of-the-protocol) from client methods, leaving conversion into consumer entities or models to the service, as decided in [api-dtos-returned-to-service](./adr/api-dtos-returned-to-service.md).
+- Violation: splitting a full-name field into the consumer's name model in the client; returning a consumer entity; passing a domain entity into client code to populate.
+- Risk: application semantics enter transport code, and replacing the provider rewrites domain mapping in several places.
+- Fix: parse and validate the wire representation in client; let service map the DTO through public domain construction and behavior APIs; treat malformed provider data as a technical failure, never automatically as invalid caller input.
+
+### Compose one external system's clients in the service
+Create an integration service under the service boundary of app-layers and build service answers from its parameters and the operations of one or more clients belonging to one external system, decomposing a large system into cohesive services where useful.
+- Violation: a service joins unrelated external systems; every client is forced to have a separate service even when those clients form one integration.
+- Risk: an integration dependency is hidden or provider orchestration spreads into command code.
+- Fix: one service normally adapts one system, with several clients when needed; commands or domain services compose different systems, following [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md); invoke domain behavior for invariants rather than reimplementing it in a mapper.
+
+### Keep fixed client code beside entity clients
+Place shared transport, configuration, middleware and outcome code under `client/core/`, beside entity-specific client packages rather than under `infrastructure/`.
+- Risk: moving an entity client duplicates transport mechanics or leaves its role ambiguous.
+- Fix: keep `domain/`, `infrastructure/`, `client/` and `service/` as sibling logical boundaries, using stack conventions for their physical packages or projects.
 
 ### Configure every client by its {API} group
 Read every client's connection from the environment variables of its own `{API}` prefix, in the client's package:
@@ -78,10 +116,10 @@ End every call after `{API}_TIMEOUT` at the latest, or earlier when the call tha
 - Fix: the fixed client code sets the deadline of each call; nothing per operation.
 
 ### Tell an unavailable API from a rejected call
-Report from the client, as technical outcomes, an API that cannot be reached or did not answer in time — no connection, a timeout, an HTTP 502, 503, or 504, a gRPC `UNAVAILABLE` or `DEADLINE_EXCEEDED` — as unavailable, and any other failure with the API's status (its code and message); let the service turn unavailable into the kind unavailable of [error-kinds](library/develop/core/error-kinds.skill/error-kinds.skill.md), a status it expects into an error of its own with the kind that fits the application, and anything else into an error with no kind.
+Normalize connection failures, timeouts, HTTP 502/503/504 and gRPC UNAVAILABLE/DEADLINE_EXCEEDED to unavailable, and other remote failures to a protocol-neutral API status with its semantic code and message, leaving service to assign application error meanings through [error-kinds](library/develop/core/error-kinds.skill/error-kinds.skill.md).
 - Violation: the client returning the application's kinds; the service passing the API's `INVALID_ARGUMENT` on as the caller's invalid input without deciding it; every remote error answered `INTERNAL`.
 - Risk: a client of this service is told to fix input it never sent, or to give up on an outage a retry would ride out.
-- Fix: the service maps only the statuses its method expects (the API rejected the titles this application sent it: invalid with the API's message); the rest is a failure of this service.
+- Fix: client translates raw statuses/exceptions once; equivalent HTTP and gRPC errors yield the same logical status when their API contracts define the same meaning, while service maps unavailable to its unavailable error kind, maps only expected remote statuses into its own errors, and treats unexpected failures as service failures.
 
 ### Log every call in two records
 Write two records per call through the composition root's logger — one when it is sent, with what was sent as the payload, one when it is answered, with the API, the operation, the status, the duration, whether it failed, and as the payload what was received and, for a failed call, what was sent again.
@@ -97,13 +135,13 @@ Send the request id of the call being served with every call it causes — `X-Re
 Run the client, when `{API}_HOST=mock`, against an emulator of the API inside the process — the same client code, the transport answering from the emulator — that answers every operation the client calls with stable sample data, and write one WARN record `api client mocked` with the API's name when the client is built.
 - Violation: a `USE_MOCK_X` flag; a mock class beside the client that skips its mapping and its log; a mock that answers empty or random data.
 - Risk: two switches disagree; a mocked integration answers unnoticed in an environment where a real one was expected; the service cannot start where the other service is not running.
-- Fix: one emulator per API in its client's `mock/` folder, in a file named after the client (`infrastructure/client/todo_api/mock/todo_api_mock.go` beside `todo_api.go`), so the file says it is a mock and of which client; the fixed client code chooses it from the host.
+- Fix: one emulator per API in its client's `mock/` folder, in a file named after the client (`client/todo_api/mock/todo_api_mock.go` beside `todo_api.go`), so the file says it is a mock and of which client; the fixed client code chooses it from the host.
 
 ### Run every call through the client middleware
 Send every call of every client through the client middleware the composition root lists for its API, the first the outermost, around the attempts of the call - each attempt with its own timeout and its two log records - and refuse a call of an operation the client does not list.
 - Violation: a step added to every call (a retry, a circuit breaker, a metric) written into the fixed client code or into each client method.
 - Risk: the step is repeated per client and per stack, and adding it edits code every application copies unchanged.
-- Fix: the fixed client code runs the list, empty in an application that attaches no client middleware; a variation point adds its middleware to the list in the composition root.
+- Fix: the fixed client code runs the list, empty when no middleware is attached; configured retry, authentication/credentials and other technical call policies belong to this boundary, not service, while application access decisions remain outside client.
 
 ### Mark the operations safe to repeat
 Mark, in the client's list of its operations, each operation that does what one call does when it is sent again (it reads, or it sets what it sets regardless of how often), and leave every other unmarked.
@@ -117,21 +155,22 @@ Add no readiness check for an API the application calls; let the calls that need
 - Fix: the commands that need the API fail fast with unavailable; the readiness check is for this service's own stores.
 
 ### Test the client against an emulator
-Test the fixed client code once through an emulator of a test API of its own, each client through an emulator of its API serving the answers each scenario sets, the contract scenario against the copied contract, and the service with its client faked.
+Test the fixed client code once through an emulator of a test API of its own, each client through an emulator of its API serving the answers each scenario sets, the contract scenario against the copied contract, and the service with its clients faked.
 - Risk: a test against the real other service fails when it is down or its data changes; a service test through the real transport tests the client again.
-- Fix: an in-process HTTP server or gRPC server per client feature; a fake class per client in the service's tests.
+- Fix: exercise each protocol implementation against the same logical client contract and its emulator; test service DTO mapping and one/many-client composition with those client contracts faked, without protocol objects in service tests.
 
 # Example
 - [api-change-cases](./examples/api-change-cases.md) - how a change of the API is absorbed by the client, by the service, or, when the data's master system changes, by the project.
 
 # Check list
-- [ ] Each API has its client in `infrastructure/client/{api}` and one service over it; no command or domain service calls the client.
-- [ ] No response type leaves the client; it returns the application's values or a result type of its own.
-- [ ] The service builds its answers from its client's operations and its parameters alone; data of another infrastructure is joined above it.
+- [ ] Check [responsibilities](#separate-protocol-mechanics-from-api-adaptation), [transport independence](#keep-the-client-contract-independent-of-the-protocol) and [consumer stability](#preserve-the-consumer-contract-across-api-realization-changes).
+- [ ] Check [client grouping](#group-clients-by-an-entitys-api-responsibility), [ownership](#give-each-client-one-owning-service), and [fixed code placement](#keep-fixed-client-code-beside-entity-clients).
+- [ ] Check [API DTO returns](#return-api-dtos-from-the-client).
+- [ ] Check [single-system service composition](#compose-one-external-systems-clients-in-the-service).
 - [ ] Every connection setting is a variable of the API's `{API}` group; `{API}_TIMEOUT` bounds every call.
 - [ ] The consumed contract is the provider's file under `docs/integration/client/{api-name}/`; a scenario holds the client's operations against it.
 - [ ] Unavailable is reported apart from the API's other statuses; the service maps them to its own errors.
 - [ ] Every call is logged in two records and carries the request id.
-- [ ] `{API}_HOST=mock` runs the client against its emulator in `infrastructure/client/{api}/mock/{api}_mock`, warned once.
+- [ ] `{API}_HOST=mock` runs the client against its emulator in `client/{api}/mock/{api}_mock`, warned once.
 - [ ] Every call runs through the client middleware of its API; only operations safe to repeat are marked so.
 - [ ] No readiness check names another service's API.

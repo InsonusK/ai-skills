@@ -1,0 +1,6 @@
+flowchart LR
+    service["UserService<br/>unchanged"] --> contract["UsersClient contract<br/>GetUser / UserDto / normalized outcomes"]
+    contract -->|alternative implementation| http["HTTP client<br/>paths, JSON, statuses, configured policies"]
+    contract -->|alternative implementation| grpc["gRPC client<br/>stub, messages, exceptions, configured policies"]
+    http --> api["Same logical Users API"]
+    grpc --> api

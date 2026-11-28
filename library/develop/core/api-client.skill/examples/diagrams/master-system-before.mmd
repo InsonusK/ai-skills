@@ -9,5 +9,5 @@ sequenceDiagram
   Service->>+Client: UserName()
   Client->>+Api: GET /getUserName
   Api-->>-Client: "Ann Lee"
-  Client-->>-Service: name Ann, surname Lee
+  Client-->>-Service: API DTO: fullName Ann Lee
   Service-->>-Command: name Ann, surname Lee

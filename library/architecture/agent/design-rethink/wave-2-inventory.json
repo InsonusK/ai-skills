@@ -1,0 +1,866 @@
+{
+  "integration_surfaces": [
+    "library/architecture/README.md",
+    "library/architecture/docs/catalog.md",
+    "library/architecture/backlog/client-code-organization.md",
+    "test/check-vp-attach.sh",
+    "test/check-conformance.sh",
+    "test/check-templates.sh",
+    "test/check-vp-diagrams.sh"
+  ],
+  "scope": "Current develop/architecture consumers migrate in wave 2; legacy catalogs are inventoried for review only.",
+  "ownership": "A directory skill owns its ADRs, diagrams, templates, examples, manifests and project files; child assets are covered by their owning root, not individually reviewed here.",
+  "entries": [
+    {
+      "skill": "library/architecture/dotnet/base-plateau-extension-in-dotnet.skill/base-plateau-extension-in-dotnet.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers"
+      ],
+      "owned_file_count": 111,
+      "example_roots": [
+        "library/architecture/dotnet/base-plateau-extension-in-dotnet.skill/examples"
+      ]
+    },
+    {
+      "skill": "library/architecture/dotnet/base-plateau-in-dotnet.skill/base-plateau-in-dotnet.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers"
+      ],
+      "owned_file_count": 86,
+      "example_roots": [
+        "library/architecture/dotnet/base-plateau-in-dotnet.skill/examples",
+        "library/architecture/dotnet/base-plateau-in-dotnet.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/dotnet/vp-cli-api-in-dotnet.skill/vp-cli-api-in-dotnet.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers"
+      ],
+      "owned_file_count": 80,
+      "example_roots": [
+        "library/architecture/dotnet/vp-cli-api-in-dotnet.skill/examples",
+        "library/architecture/dotnet/vp-cli-api-in-dotnet.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/vp-client-retry-in-dotnet.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers",
+        "Infrastructure/Client"
+      ],
+      "owned_file_count": 119,
+      "example_roots": [
+        "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples",
+        "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/vp-grpc-api-in-dotnet.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers"
+      ],
+      "owned_file_count": 103,
+      "example_roots": [
+        "library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/examples",
+        "library/architecture/dotnet/vp-grpc-api-in-dotnet.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/vp-grpc-client-in-dotnet.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "api-client",
+        "app-layers",
+        "Infrastructure/Client"
+      ],
+      "owned_file_count": 117,
+      "example_roots": [
+        "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples",
+        "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/dotnet/vp-health-in-dotnet.skill/vp-health-in-dotnet.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers"
+      ],
+      "owned_file_count": 86,
+      "example_roots": [
+        "library/architecture/dotnet/vp-health-in-dotnet.skill/examples",
+        "library/architecture/dotnet/vp-health-in-dotnet.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/dotnet/vp-http-api-in-dotnet.skill/vp-http-api-in-dotnet.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers"
+      ],
+      "owned_file_count": 242,
+      "example_roots": [
+        "library/architecture/dotnet/vp-http-api-in-dotnet.skill/examples",
+        "library/architecture/dotnet/vp-http-api-in-dotnet.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/dotnet/vp-http-client-in-dotnet.skill/vp-http-client-in-dotnet.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "api-client",
+        "app-layers",
+        "Infrastructure/Client"
+      ],
+      "owned_file_count": 113,
+      "example_roots": [
+        "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples",
+        "library/architecture/dotnet/vp-http-client-in-dotnet.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/dotnet/vp-logging-in-dotnet.skill/vp-logging-in-dotnet.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers"
+      ],
+      "owned_file_count": 92,
+      "example_roots": [
+        "library/architecture/dotnet/vp-logging-in-dotnet.skill/examples",
+        "library/architecture/dotnet/vp-logging-in-dotnet.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/dotnet/vp-postgres-in-dotnet.skill/vp-postgres-in-dotnet.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers"
+      ],
+      "owned_file_count": 169,
+      "example_roots": [
+        "library/architecture/dotnet/vp-postgres-in-dotnet.skill/examples",
+        "library/architecture/dotnet/vp-postgres-in-dotnet.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/dotnet/vp-row-version-in-dotnet.skill/vp-row-version-in-dotnet.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "current-catalog-conformance-review"
+      ],
+      "owned_file_count": 154,
+      "example_roots": [
+        "library/architecture/dotnet/vp-row-version-in-dotnet.skill/examples"
+      ]
+    },
+    {
+      "skill": "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/vp-unit-of-work-in-dotnet.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers"
+      ],
+      "owned_file_count": 163,
+      "example_roots": [
+        "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/examples",
+        "library/architecture/dotnet/vp-unit-of-work-in-dotnet.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/go/base-plateau-extension-in-go.skill/base-plateau-extension-in-go.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "current-catalog-conformance-review"
+      ],
+      "owned_file_count": 110,
+      "example_roots": [
+        "library/architecture/go/base-plateau-extension-in-go.skill/examples"
+      ]
+    },
+    {
+      "skill": "library/architecture/go/base-plateau-in-go.skill/base-plateau-in-go.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers"
+      ],
+      "owned_file_count": 76,
+      "example_roots": [
+        "library/architecture/go/base-plateau-in-go.skill/examples",
+        "library/architecture/go/base-plateau-in-go.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/go/vp-cli-api-in-go.skill/vp-cli-api-in-go.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers"
+      ],
+      "owned_file_count": 71,
+      "example_roots": [
+        "library/architecture/go/vp-cli-api-in-go.skill/examples",
+        "library/architecture/go/vp-cli-api-in-go.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/go/vp-client-retry-in-go.skill/vp-client-retry-in-go.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "infrastructure/client"
+      ],
+      "owned_file_count": 97,
+      "example_roots": [
+        "library/architecture/go/vp-client-retry-in-go.skill/examples",
+        "library/architecture/go/vp-client-retry-in-go.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/go/vp-grpc-api-in-go.skill/vp-grpc-api-in-go.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers"
+      ],
+      "owned_file_count": 97,
+      "example_roots": [
+        "library/architecture/go/vp-grpc-api-in-go.skill/examples",
+        "library/architecture/go/vp-grpc-api-in-go.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/go/vp-grpc-client-in-go.skill/vp-grpc-client-in-go.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "api-client",
+        "infrastructure/client"
+      ],
+      "owned_file_count": 98,
+      "example_roots": [
+        "library/architecture/go/vp-grpc-client-in-go.skill/examples",
+        "library/architecture/go/vp-grpc-client-in-go.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/go/vp-health-in-go.skill/vp-health-in-go.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "current-catalog-conformance-review"
+      ],
+      "owned_file_count": 73,
+      "example_roots": [
+        "library/architecture/go/vp-health-in-go.skill/examples",
+        "library/architecture/go/vp-health-in-go.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/go/vp-http-api-in-go.skill/vp-http-api-in-go.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers"
+      ],
+      "owned_file_count": 230,
+      "example_roots": [
+        "library/architecture/go/vp-http-api-in-go.skill/examples",
+        "library/architecture/go/vp-http-api-in-go.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/go/vp-http-client-in-go.skill/vp-http-client-in-go.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "api-client",
+        "infrastructure/client"
+      ],
+      "owned_file_count": 92,
+      "example_roots": [
+        "library/architecture/go/vp-http-client-in-go.skill/examples",
+        "library/architecture/go/vp-http-client-in-go.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/go/vp-logging-in-go.skill/vp-logging-in-go.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "current-catalog-conformance-review"
+      ],
+      "owned_file_count": 72,
+      "example_roots": [
+        "library/architecture/go/vp-logging-in-go.skill/examples",
+        "library/architecture/go/vp-logging-in-go.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/go/vp-postgres-in-go.skill/vp-postgres-in-go.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "current-catalog-conformance-review"
+      ],
+      "owned_file_count": 182,
+      "example_roots": [
+        "library/architecture/go/vp-postgres-in-go.skill/examples",
+        "library/architecture/go/vp-postgres-in-go.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/go/vp-row-version-in-go.skill/vp-row-version-in-go.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "current-catalog-conformance-review"
+      ],
+      "owned_file_count": 183,
+      "example_roots": [
+        "library/architecture/go/vp-row-version-in-go.skill/examples"
+      ]
+    },
+    {
+      "skill": "library/architecture/go/vp-unit-of-work-in-go.skill/vp-unit-of-work-in-go.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "current-catalog-conformance-review"
+      ],
+      "owned_file_count": 186,
+      "example_roots": [
+        "library/architecture/go/vp-unit-of-work-in-go.skill/examples",
+        "library/architecture/go/vp-unit-of-work-in-go.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/python/base-plateau-extension-in-python.skill/base-plateau-extension-in-python.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "current-catalog-conformance-review"
+      ],
+      "owned_file_count": 106,
+      "example_roots": [
+        "library/architecture/python/base-plateau-extension-in-python.skill/examples"
+      ]
+    },
+    {
+      "skill": "library/architecture/python/base-plateau-in-python.skill/base-plateau-in-python.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers"
+      ],
+      "owned_file_count": 77,
+      "example_roots": [
+        "library/architecture/python/base-plateau-in-python.skill/examples",
+        "library/architecture/python/base-plateau-in-python.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/python/vp-cli-api-in-python.skill/vp-cli-api-in-python.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "current-catalog-conformance-review"
+      ],
+      "owned_file_count": 71,
+      "example_roots": [
+        "library/architecture/python/vp-cli-api-in-python.skill/examples",
+        "library/architecture/python/vp-cli-api-in-python.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/python/vp-client-retry-in-python.skill/vp-client-retry-in-python.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "infrastructure/client"
+      ],
+      "owned_file_count": 104,
+      "example_roots": [
+        "library/architecture/python/vp-client-retry-in-python.skill/examples",
+        "library/architecture/python/vp-client-retry-in-python.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/python/vp-grpc-api-in-python.skill/vp-grpc-api-in-python.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "current-catalog-conformance-review"
+      ],
+      "owned_file_count": 110,
+      "example_roots": [
+        "library/architecture/python/vp-grpc-api-in-python.skill/examples",
+        "library/architecture/python/vp-grpc-api-in-python.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/python/vp-grpc-client-in-python.skill/vp-grpc-client-in-python.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "api-client",
+        "app-layers",
+        "infrastructure/client"
+      ],
+      "owned_file_count": 107,
+      "example_roots": [
+        "library/architecture/python/vp-grpc-client-in-python.skill/examples",
+        "library/architecture/python/vp-grpc-client-in-python.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/python/vp-health-in-python.skill/vp-health-in-python.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "current-catalog-conformance-review"
+      ],
+      "owned_file_count": 75,
+      "example_roots": [
+        "library/architecture/python/vp-health-in-python.skill/examples",
+        "library/architecture/python/vp-health-in-python.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/python/vp-http-api-in-python.skill/vp-http-api-in-python.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "current-catalog-conformance-review"
+      ],
+      "owned_file_count": 258,
+      "example_roots": [
+        "library/architecture/python/vp-http-api-in-python.skill/examples",
+        "library/architecture/python/vp-http-api-in-python.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/python/vp-http-client-in-python.skill/vp-http-client-in-python.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "api-client",
+        "app-layers",
+        "infrastructure/client"
+      ],
+      "owned_file_count": 100,
+      "example_roots": [
+        "library/architecture/python/vp-http-client-in-python.skill/examples",
+        "library/architecture/python/vp-http-client-in-python.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/python/vp-logging-in-python.skill/vp-logging-in-python.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "current-catalog-conformance-review"
+      ],
+      "owned_file_count": 76,
+      "example_roots": [
+        "library/architecture/python/vp-logging-in-python.skill/examples",
+        "library/architecture/python/vp-logging-in-python.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/python/vp-postgres-in-python.skill/vp-postgres-in-python.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "current-catalog-conformance-review"
+      ],
+      "owned_file_count": 212,
+      "example_roots": [
+        "library/architecture/python/vp-postgres-in-python.skill/examples",
+        "library/architecture/python/vp-postgres-in-python.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/python/vp-row-version-in-python.skill/vp-row-version-in-python.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "current-catalog-conformance-review"
+      ],
+      "owned_file_count": 208,
+      "example_roots": [
+        "library/architecture/python/vp-row-version-in-python.skill/examples"
+      ]
+    },
+    {
+      "skill": "library/architecture/python/vp-unit-of-work-in-python.skill/vp-unit-of-work-in-python.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "current-catalog-conformance-review"
+      ],
+      "owned_file_count": 216,
+      "example_roots": [
+        "library/architecture/python/vp-unit-of-work-in-python.skill/examples",
+        "library/architecture/python/vp-unit-of-work-in-python.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/architecture/spec/base-plateau-extension.skill/base-plateau-extension.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers",
+        "app-command-layer"
+      ],
+      "owned_file_count": 8,
+      "example_roots": []
+    },
+    {
+      "skill": "library/architecture/spec/base-plateau.skill/base-plateau.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers",
+        "app-command-layer"
+      ],
+      "owned_file_count": 11,
+      "example_roots": []
+    },
+    {
+      "skill": "library/architecture/spec/vp-cli-api.skill/vp-cli-api.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-api-layer",
+        "app-command-layer"
+      ],
+      "owned_file_count": 3,
+      "example_roots": []
+    },
+    {
+      "skill": "library/architecture/spec/vp-client-retry.skill/vp-client-retry.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "api-client"
+      ],
+      "owned_file_count": 3,
+      "example_roots": []
+    },
+    {
+      "skill": "library/architecture/spec/vp-external-id.skill/vp-external-id.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "current-catalog-conformance-review"
+      ],
+      "owned_file_count": 4,
+      "example_roots": []
+    },
+    {
+      "skill": "library/architecture/spec/vp-grpc-api.skill/vp-grpc-api.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers",
+        "app-api-layer"
+      ],
+      "owned_file_count": 10,
+      "example_roots": []
+    },
+    {
+      "skill": "library/architecture/spec/vp-grpc-client.skill/vp-grpc-client.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "api-client"
+      ],
+      "owned_file_count": 7,
+      "example_roots": []
+    },
+    {
+      "skill": "library/architecture/spec/vp-health.skill/vp-health.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "current-catalog-conformance-review"
+      ],
+      "owned_file_count": 5,
+      "example_roots": []
+    },
+    {
+      "skill": "library/architecture/spec/vp-http-api.skill/vp-http-api.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers",
+        "app-api-layer"
+      ],
+      "owned_file_count": 16,
+      "example_roots": []
+    },
+    {
+      "skill": "library/architecture/spec/vp-http-client.skill/vp-http-client.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "api-client"
+      ],
+      "owned_file_count": 10,
+      "example_roots": []
+    },
+    {
+      "skill": "library/architecture/spec/vp-logging.skill/vp-logging.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "current-catalog-conformance-review"
+      ],
+      "owned_file_count": 8,
+      "example_roots": []
+    },
+    {
+      "skill": "library/architecture/spec/vp-postgres.skill/vp-postgres.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers"
+      ],
+      "owned_file_count": 17,
+      "example_roots": []
+    },
+    {
+      "skill": "library/architecture/spec/vp-row-version.skill/vp-row-version.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "current-catalog-conformance-review"
+      ],
+      "owned_file_count": 5,
+      "example_roots": []
+    },
+    {
+      "skill": "library/architecture/spec/vp-unit-of-work.skill/vp-unit-of-work.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers"
+      ],
+      "owned_file_count": 5,
+      "example_roots": []
+    },
+    {
+      "skill": "library/common-workflow/architecture/design/vp-diagrams.skill.md",
+      "state": "legacy-review-only-no-migration",
+      "evidence": [
+        "infrastructure/client"
+      ],
+      "owned_file_count": 0,
+      "example_roots": []
+    },
+    {
+      "skill": "library/common-workflow/develop/api-client-develop.skill.md",
+      "state": "legacy-review-only-no-migration",
+      "evidence": [
+        "api-client"
+      ],
+      "owned_file_count": 0,
+      "example_roots": []
+    },
+    {
+      "skill": "library/develop/core/api-client.skill/api-client.skill.md",
+      "state": "wave-1-shared-contract",
+      "evidence": [
+        "api-client",
+        "app-layers"
+      ],
+      "owned_file_count": 13,
+      "example_roots": [
+        "library/develop/core/api-client.skill/examples"
+      ]
+    },
+    {
+      "skill": "library/develop/core/app-api-layer.skill/app-api-layer.skill.md",
+      "state": "wave-1-shared-contract",
+      "evidence": [
+        "app-layers",
+        "app-api-layer",
+        "app-command-layer"
+      ],
+      "owned_file_count": 5,
+      "example_roots": []
+    },
+    {
+      "skill": "library/develop/core/app-command-layer.skill/app-command-layer.skill.md",
+      "state": "wave-1-shared-contract",
+      "evidence": [
+        "app-layers",
+        "app-command-layer"
+      ],
+      "owned_file_count": 2,
+      "example_roots": []
+    },
+    {
+      "skill": "library/develop/core/app-domain-layer.skill.md",
+      "state": "wave-1-shared-contract",
+      "evidence": [
+        "app-layers",
+        "app-domain-layer"
+      ],
+      "owned_file_count": 0,
+      "example_roots": []
+    },
+    {
+      "skill": "library/develop/core/app-layers.skill/app-layers.skill.md",
+      "state": "wave-1-shared-contract",
+      "evidence": [
+        "api-client",
+        "app-layers",
+        "app-api-layer",
+        "app-command-layer",
+        "app-domain-layer",
+        "infrastructure/client"
+      ],
+      "owned_file_count": 5,
+      "example_roots": []
+    },
+    {
+      "skill": "library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "api-client",
+        "app-layers",
+        "Infrastructure/Client"
+      ],
+      "owned_file_count": 2,
+      "example_roots": []
+    },
+    {
+      "skill": "library/develop/dotnet/error-kinds-in-dotnet.skill/error-kinds-in-dotnet.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers"
+      ],
+      "owned_file_count": 5,
+      "example_roots": [
+        "library/develop/dotnet/error-kinds-in-dotnet.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/develop/dotnet/project-version-in-dotnet.skill/project-version-in-dotnet.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers"
+      ],
+      "owned_file_count": 1,
+      "example_roots": [
+        "library/develop/dotnet/project-version-in-dotnet.skill/templates"
+      ]
+    },
+    {
+      "skill": "library/develop/go/app-layers-in-go.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers",
+        "infrastructure/client"
+      ],
+      "owned_file_count": 0,
+      "example_roots": []
+    },
+    {
+      "skill": "library/develop/python/app-layers-in-python.skill.md",
+      "state": "wave-2-review",
+      "evidence": [
+        "app-layers",
+        "infrastructure/client"
+      ],
+      "owned_file_count": 0,
+      "example_roots": []
+    },
+    {
+      "skill": "library/devops/core/devops-ci-changes.skill.md",
+      "state": "legacy-review-only-no-migration",
+      "evidence": [
+        "api-client"
+      ],
+      "owned_file_count": 0,
+      "example_roots": []
+    },
+    {
+      "skill": "library/dotnet/architecture/plateau/plateau-domain-service/structure/App.Infrastructure/classes/plateau-domain-service--class-dependency-grpc-client.skill.md",
+      "state": "legacy-review-only-no-migration",
+      "evidence": [
+        "Infrastructure/Client"
+      ],
+      "owned_file_count": 0,
+      "example_roots": []
+    },
+    {
+      "skill": "library/dotnet/architecture/plateau/plateau-domain-service/structure/App.Infrastructure/classes/plateau-domain-service--class-grpc-status-extensions.skill.md",
+      "state": "legacy-review-only-no-migration",
+      "evidence": [
+        "Infrastructure/Client"
+      ],
+      "owned_file_count": 0,
+      "example_roots": []
+    },
+    {
+      "skill": "library/dotnet/architecture/plateau/plateau-offline-sync-service/structure/App.Infrastructure/classes/plateau-offline-sync-service--class-dependency-grpc-client.skill.md",
+      "state": "legacy-review-only-no-migration",
+      "evidence": [
+        "Infrastructure/Client"
+      ],
+      "owned_file_count": 0,
+      "example_roots": []
+    },
+    {
+      "skill": "library/dotnet/architecture/plateau/plateau-offline-sync-service/structure/App.Infrastructure/classes/plateau-offline-sync-service--class-grpc-status-extensions.skill.md",
+      "state": "legacy-review-only-no-migration",
+      "evidence": [
+        "Infrastructure/Client"
+      ],
+      "owned_file_count": 0,
+      "example_roots": []
+    },
+    {
+      "skill": "library/dotnet/architecture/solutions/solution-grpc-client.skill/solution-grpc-client.skill.md",
+      "state": "legacy-review-only-no-migration",
+      "evidence": [
+        "api-client",
+        "Infrastructure/Client"
+      ],
+      "owned_file_count": 9,
+      "example_roots": []
+    },
+    {
+      "skill": "library/dotnet/architecture/solutions/solution-http-api-client.skill/solution-http-api-client.skill.md",
+      "state": "legacy-review-only-no-migration",
+      "evidence": [
+        "api-client",
+        "Infrastructure/Client"
+      ],
+      "owned_file_count": 1,
+      "example_roots": []
+    },
+    {
+      "skill": "library/go/architecture/plateau/gw009-001/structure/plateau-gw009-001--package-docs-integration-client.skill.md",
+      "state": "legacy-review-only-no-migration",
+      "evidence": [
+        "api-client"
+      ],
+      "owned_file_count": 0,
+      "example_roots": []
+    },
+    {
+      "skill": "library/go/architecture/plateau/plateau-cached-service/structure/plateau-cached-service--package-docs-integration-client.skill.md",
+      "state": "legacy-review-only-no-migration",
+      "evidence": [
+        "api-client"
+      ],
+      "owned_file_count": 0,
+      "example_roots": []
+    },
+    {
+      "skill": "library/go/architecture/plateau/plateau-integrated-service/structure/plateau-integrated-service--package-docs-integration-client.skill.md",
+      "state": "legacy-review-only-no-migration",
+      "evidence": [
+        "api-client"
+      ],
+      "owned_file_count": 0,
+      "example_roots": []
+    },
+    {
+      "skill": "library/go/architecture/plateau/plateau-persistent-service/structure/plateau-persistent-service--package-docs-integration-client.skill.md",
+      "state": "legacy-review-only-no-migration",
+      "evidence": [
+        "api-client"
+      ],
+      "owned_file_count": 0,
+      "example_roots": []
+    },
+    {
+      "skill": "library/go/architecture/solutions/solution-external-integration.skill/solution-external-integration.skill.md",
+      "state": "legacy-review-only-no-migration",
+      "evidence": [
+        "api-client"
+      ],
+      "owned_file_count": 9,
+      "example_roots": []
+    },
+    {
+      "skill": "library/testing/core/cucumber-testing.skill/cucumber-testing.skill.md",
+      "state": "legacy-review-only-no-migration",
+      "evidence": [
+        "infrastructure/client"
+      ],
+      "owned_file_count": 0,
+      "example_roots": []
+    }
+  ]
+}

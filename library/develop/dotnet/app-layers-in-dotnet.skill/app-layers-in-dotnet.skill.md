@@ -2,7 +2,7 @@
 name: app-layers-in-dotnet
 description: The application layers in dotnet — one project per layer of each module (Domain, Commands, Application) plus Shared, BuildingBlocks, App.Host, and the repository's contract in Shared.Persistence for the service's own store, an Abstractions and an implementation project per other infrastructure, project references that let the compiler hold the direction of the calls, entry points and other modules that see only a module's Commands, service interfaces declared beside their consumer, and entities that guard their state
 whenToUse: when you design a dotnet application or feature, when you add or change a dotnet entry point, command, handler, entity, or domain service, or when you review such a change
-updated: 20261119
+updated: 20261128
 tags:
   - stack/dotnet
   - concern/architecture
@@ -28,6 +28,11 @@ adr:
 # Rule
 
 ## MUST
+
+### Apply the implementation contract of each layer
+For every layer being implemented, apply the requirements identified in the `Implementation contract` column of the [app-layers table](library/develop/core/app-layers.skill/app-layers.skill.md#keep-each-part-in-its-layer-and-its-calls-downward).
+- Risk: a duplicated skill list becomes stale when a layer or its implementation contract is added or changed.
+- Fix: follow the linked contract or the providing mechanism/VP identified by that row, and use this stack extension for physical organization and language mechanisms.
 
 ### Qualify namespaces with the service name
 Use `{service-namespace}.{Layer}.{LogicalName}` for every service-owned namespace according to [service-qualified-namespaces](./adr/service-qualified-namespaces.md), independently of project, assembly and folder names.

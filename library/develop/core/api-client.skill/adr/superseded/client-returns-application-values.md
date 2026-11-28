@@ -1,8 +1,10 @@
 ---
 name: client returns application values
-description: What a client returns to its service, where an answer that needs more than one call or a decision is turned into the application's values, and where that stops
+description: Superseded historical decision allowing client-side application mapping; current API-to-Domain Model mapping belongs to service
 problem: The application should not know how an API answers, but turning an answer into the application's values sometimes needs a decision of the application, a second operation, or data from another system; which of client, service, and the layers above does each, and what does the service no longer hide?
 decision: The client returns the application's values when they follow from one answer, otherwise a result type of its own; the service composes any operations of its own client and its parameters into its answer, so a change inside the API edits only the service; data of another infrastructure is joined by a domain service or a command; a change that moves the data to another system - its master system - is a redesign at the level of the project.
+status: superseded
+superseded_by: ../api-dtos-returned-to-service.md
 tags:
   - stack
   - concern/architecture
@@ -10,11 +12,15 @@ tags:
   - concern/documentation/adr
 ---
 
+> **Superseded — historical record, not the current implementation contract.**
+> Replaced on 2026-11-26; the relative `superseded_by` metadata identifies the
+> accepted replacement. The original selection and alternatives below are history.
+
 # Problem
 An API `/getUserName` answers `Ann Lee`; the application wants name and surname. Later the provider answers `{nameId} Lee` and adds `/getNameById`. The owner's requirement (2026-10-30): the application knows the service, never how the API answers, so such a change edits the service and not its callers. The question is where each mapping lives, and where hiding a change stops.
 
 # Selected variant
-[[#Client maps one answer, service composes its client's operations]]
+Original selection, now superseded: [Client maps one answer, service composes its client's operations](#client-maps-one-answer-service-composes-its-clients-operations).
 - Owner decision, 2026-10-30: a change that moves the data to another API changes the master system of that data; it is redesigned at the level of the project, and the callers of the service change with it.
 
 # Searched variants
@@ -22,6 +28,8 @@ An API `/getUserName` answers `Ann Lee`; the application wants name and surname.
 ## Client maps one answer, service composes its client's operations
 
 **Selected.**
+
+Historical selection from 2026-10-30; superseded by the replacement ADR above.
 
 ### Description
 The client returns the application's values when one answer is enough (splitting `Ann Lee`), and a result type of its own otherwise: only the fields the service uses, named in the application's language, nothing of the contract's shape. The service builds its answer from any operations of its client and its own parameters (`/getUserName`, then `/getNameById`). Data of another infrastructure is joined by a domain service or a command, as [service-wraps-one-infrastructure](library/develop/core/app-layers.skill/adr/service-wraps-one-infrastructure.md) requires.

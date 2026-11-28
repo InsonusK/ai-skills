@@ -2,7 +2,7 @@
 name: vp-http-client
 description: The HTTP client variation point — a client of another service's HTTP API attached to the base plateau in its infrastructure, with the service over it, built on fixed client code (the {API} settings, the timeout, JSON in and out, google.rpc.Status read from an error, the call log, the request id, the mock against an emulator) and checked against the copied OpenAPI contract
 whenToUse: when an application built on the base plateau must call an HTTP API of another service — adding the client, calling a further operation of it, or reviewing such a client
-updated: 20261031
+updated: 20261128
 tags:
   - stack
   - concern/architecture
@@ -37,7 +37,7 @@ Call `http://` or, with `{API}_TLS=true`, `https://` `{API}_HOST:{API}_HTTP_PORT
 Write each operation the application calls as one method of the client with a request type and a response type of the client's own — only the fields it uses, the others ignored when they arrive — and the mapping to and from the values of the service's method.
 - Violation: the client's response type returned to the service; a map of strings passed as the body; every operation of the contract written though the application calls two.
 - Risk: the service depends on the provider's shapes; unused operations are code nobody tests.
-- Fix: the method returns the application's values or the client's own result type, per [Return the application's values from the client](library/develop/core/api-client.skill/api-client.skill.md#return-the-applications-values-from-the-client).
+- Fix: the method returns the application's values or the client's own result type, per [API DTO return contract](library/develop/core/api-client.skill/api-client.skill.md#return-api-dtos-from-the-client).
 
 ### Read the error from google.rpc.Status
 Report an answer of 400 or above that is not 502, 503, or 504 with its HTTP status and the code and message of its `google.rpc.Status` body, or the status alone when the body is not one.

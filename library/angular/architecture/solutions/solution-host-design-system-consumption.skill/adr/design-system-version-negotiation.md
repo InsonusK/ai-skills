@@ -23,6 +23,8 @@ The design system is declared as a federation shared dependency with `singleton:
 
 ## Version-negotiated singleton
 
+**Selected.**
+
 ### Description
 
 `singleton: true` establishes the intent to share one instance when possible; `strictVersion: false` means a version mismatch does not hard-error the whole application — instead, the mismatched consumer's own bundled copy is used for that consumer alone. Each side's `requiredVersion` (the platform's target, each embeddable app's declared supported range) drives whether sharing happens for that specific pairing.

@@ -53,6 +53,8 @@ Require a `{Dto}Validator` for every DTO in `{Module}.Interfaces`, including Req
 
 ## Create validators only for RequestDto by default
 
+**Selected.**
+
 ### Description
 
 Require a `{Dto}Validator` only for RequestDto. ResponseDto validators are created only when explicitly required.
