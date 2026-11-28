@@ -698,9 +698,6 @@
       "evidence": [
         "api-client",
         "app-layers",
-        "app-api-layer",
-        "app-command-layer",
-        "app-domain-layer",
         "Infrastructure/Client"
       ],
       "owned_file_count": 2,
@@ -733,9 +730,6 @@
       "state": "wave-2-review",
       "evidence": [
         "app-layers",
-        "app-api-layer",
-        "app-command-layer",
-        "app-domain-layer",
         "infrastructure/client"
       ],
       "owned_file_count": 0,
@@ -746,9 +740,6 @@
       "state": "wave-2-review",
       "evidence": [
         "app-layers",
-        "app-api-layer",
-        "app-command-layer",
-        "app-domain-layer",
         "infrastructure/client"
       ],
       "owned_file_count": 0,

@@ -24,9 +24,9 @@ tags:
 ## MUST
 
 ### Apply the implementation contract of each layer
-Apply [app-api-layer](library/develop/core/app-api-layer.skill/app-api-layer.skill.md), [app-command-layer](library/develop/core/app-command-layer.skill/app-command-layer.skill.md) and [app-domain-layer](library/develop/core/app-domain-layer.skill.md) when implementing their respective layers, using app-layers for topology only.
-- Risk: moving rules out of the topology skill silently drops them from stack implementations.
-- Fix: use these common contracts for behavior and this stack extension for physical organization and language mechanisms.
+For every layer being implemented, apply the requirements identified in the `Implementation contract` column of the [app-layers table](library/develop/core/app-layers.skill/app-layers.skill.md#keep-each-part-in-its-layer-and-its-calls-downward).
+- Risk: a duplicated skill list becomes stale when a layer or its implementation contract is added or changed.
+- Fix: follow the linked contract or the providing mechanism/VP identified by that row, and use this stack extension for physical organization and language mechanisms.
 
 ### One package per layer
 Place each layer of [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md) in its package under `src/{package}/`.
