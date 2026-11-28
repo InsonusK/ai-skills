@@ -1,11 +1,15 @@
 sequenceDiagram
     autonumber
+    box App
     participant Consumer as Consumer
     participant Service as UserService
     participant Users as UsersClient
-    participant UsersAPI as Identity Users API
     participant Names as NamesClient
+    end
+    box Identity Service
+    participant UsersAPI as Identity Users API
     participant NamesAPI as Identity Names API
+    end
     Note over UsersAPI,NamesAPI: Two APIs of the same external Identity system
     Consumer->>+Service: UserName(42) - unchanged
     Service->>+Users: GetUser(42)
