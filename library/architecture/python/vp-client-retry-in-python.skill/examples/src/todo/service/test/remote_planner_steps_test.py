@@ -5,8 +5,8 @@ import pytest
 from pytest_bdd import given, parsers, scenarios, then, when
 
 from todo.domain.entity import Item
-from todo.infrastructure.client.core.outcomes import ApiStatusError, ApiUnavailableError, StatusCode
-from todo.infrastructure.client.todo_api import Item as AnsweredItem
+from todo.client.core.outcomes import ApiStatusError, ApiUnavailableError, StatusCode
+from todo.client.todo_api.dto import ItemDTO as AnsweredItem
 from todo.service import RemotePlanner
 from todo.shared.errors import Kind, cause_of, kind_of
 

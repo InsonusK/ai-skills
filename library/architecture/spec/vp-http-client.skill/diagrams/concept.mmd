@@ -1,8 +1,8 @@
 flowchart LR
     contract["openapi.json<br/>the provider's, copied unchanged"]
     scenario["contract scenario"]
-    service["service<br/>outcomes to kinds"]
-    adapter["adapter of the API<br/>one method per operation, own types"]
+    service["service<br/>API DTOs to Domain Model, outcomes to kinds"]
+    adapter["entity-focused client<br/>selected operations, logical API DTOs"]
     fixed["fixed client code<br/>URL, timeout, JSON, log, request id, outcomes"]
     middleware["client middleware<br/>around each attempt, optional"]
     api["the other service's API"]

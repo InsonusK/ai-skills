@@ -50,10 +50,9 @@
       "skill": "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/vp-client-retry-in-dotnet.skill.md",
       "state": "wave-2-review",
       "evidence": [
-        "app-layers",
-        "Infrastructure/Client"
+        "app-layers"
       ],
-      "owned_file_count": 119,
+      "owned_file_count": 122,
       "example_roots": [
         "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/examples",
         "library/architecture/dotnet/vp-client-retry-in-dotnet.skill/templates"
@@ -76,10 +75,9 @@
       "state": "wave-2-review",
       "evidence": [
         "api-client",
-        "app-layers",
-        "Infrastructure/Client"
+        "app-layers"
       ],
-      "owned_file_count": 117,
+      "owned_file_count": 120,
       "example_roots": [
         "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/examples",
         "library/architecture/dotnet/vp-grpc-client-in-dotnet.skill/templates"
@@ -114,10 +112,9 @@
       "state": "wave-2-review",
       "evidence": [
         "api-client",
-        "app-layers",
-        "Infrastructure/Client"
+        "app-layers"
       ],
-      "owned_file_count": 113,
+      "owned_file_count": 116,
       "example_roots": [
         "library/architecture/dotnet/vp-http-client-in-dotnet.skill/examples",
         "library/architecture/dotnet/vp-http-client-in-dotnet.skill/templates"
@@ -209,9 +206,9 @@
       "skill": "library/architecture/go/vp-client-retry-in-go.skill/vp-client-retry-in-go.skill.md",
       "state": "wave-2-review",
       "evidence": [
-        "infrastructure/client"
+        "current-catalog-conformance-review"
       ],
-      "owned_file_count": 97,
+      "owned_file_count": 98,
       "example_roots": [
         "library/architecture/go/vp-client-retry-in-go.skill/examples",
         "library/architecture/go/vp-client-retry-in-go.skill/templates"
@@ -233,10 +230,9 @@
       "skill": "library/architecture/go/vp-grpc-client-in-go.skill/vp-grpc-client-in-go.skill.md",
       "state": "wave-2-review",
       "evidence": [
-        "api-client",
-        "infrastructure/client"
+        "api-client"
       ],
-      "owned_file_count": 98,
+      "owned_file_count": 99,
       "example_roots": [
         "library/architecture/go/vp-grpc-client-in-go.skill/examples",
         "library/architecture/go/vp-grpc-client-in-go.skill/templates"
@@ -270,10 +266,9 @@
       "skill": "library/architecture/go/vp-http-client-in-go.skill/vp-http-client-in-go.skill.md",
       "state": "wave-2-review",
       "evidence": [
-        "api-client",
-        "infrastructure/client"
+        "api-client"
       ],
-      "owned_file_count": 92,
+      "owned_file_count": 93,
       "example_roots": [
         "library/architecture/go/vp-http-client-in-go.skill/examples",
         "library/architecture/go/vp-http-client-in-go.skill/templates"
@@ -365,9 +360,9 @@
       "skill": "library/architecture/python/vp-client-retry-in-python.skill/vp-client-retry-in-python.skill.md",
       "state": "wave-2-review",
       "evidence": [
-        "infrastructure/client"
+        "current-catalog-conformance-review"
       ],
-      "owned_file_count": 104,
+      "owned_file_count": 105,
       "example_roots": [
         "library/architecture/python/vp-client-retry-in-python.skill/examples",
         "library/architecture/python/vp-client-retry-in-python.skill/templates"
@@ -390,10 +385,9 @@
       "state": "wave-2-review",
       "evidence": [
         "api-client",
-        "app-layers",
-        "infrastructure/client"
+        "app-layers"
       ],
-      "owned_file_count": 107,
+      "owned_file_count": 108,
       "example_roots": [
         "library/architecture/python/vp-grpc-client-in-python.skill/examples",
         "library/architecture/python/vp-grpc-client-in-python.skill/templates"
@@ -428,10 +422,9 @@
       "state": "wave-2-review",
       "evidence": [
         "api-client",
-        "app-layers",
-        "infrastructure/client"
+        "app-layers"
       ],
-      "owned_file_count": 100,
+      "owned_file_count": 101,
       "example_roots": [
         "library/architecture/python/vp-http-client-in-python.skill/examples",
         "library/architecture/python/vp-http-client-in-python.skill/templates"
@@ -695,10 +688,9 @@
       "state": "wave-2-review",
       "evidence": [
         "api-client",
-        "app-layers",
-        "Infrastructure/Client"
+        "app-layers"
       ],
-      "owned_file_count": 2,
+      "owned_file_count": 4,
       "example_roots": []
     },
     {
@@ -727,8 +719,7 @@
       "skill": "library/develop/go/app-layers-in-go.skill.md",
       "state": "wave-2-review",
       "evidence": [
-        "app-layers",
-        "infrastructure/client"
+        "app-layers"
       ],
       "owned_file_count": 0,
       "example_roots": []
@@ -737,8 +728,7 @@
       "skill": "library/develop/python/app-layers-in-python.skill.md",
       "state": "wave-2-review",
       "evidence": [
-        "app-layers",
-        "infrastructure/client"
+        "app-layers"
       ],
       "owned_file_count": 0,
       "example_roots": []

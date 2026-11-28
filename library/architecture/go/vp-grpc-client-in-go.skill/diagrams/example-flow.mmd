@@ -1,10 +1,10 @@
 sequenceDiagram
     autonumber
     participant Service as service.RemotePlanner<br/>internal/service/remote_planner.go
-    participant Adapter as todoapi.Client<br/>internal/infrastructure/client/todoapi/todoapi.go
+    participant Adapter as todoapi.Client<br/>internal/client/todoapi/todoapi.go
     participant Stub as todo.ItemsServiceClient<br/>gen/client/todo/todo_grpc.pb.go
-    participant Interceptor as grpcclient interceptor and attempt<br/>internal/infrastructure/client/core/grpcclient/client.go
-    participant API as Todo API, or with TODO_API_HOST=mock its emulator<br/>internal/infrastructure/client/todoapi/mock/todoapi_mock.go
+    participant Interceptor as grpcclient interceptor and attempt<br/>internal/client/core/grpcclient/client.go
+    participant API as Todo API, or with TODO_API_HOST=mock its emulator<br/>internal/client/todoapi/mock/todoapi_mock.go
 
     Service->>+Adapter: PlanItems(ctx, titles)
     Adapter->>+Stub: PlanItems(ctx, request)
@@ -16,5 +16,5 @@ sequenceDiagram
     Note over Interceptor: record "grpc client call answered"
     Interceptor-->>-Stub: response, or outcome.ErrUnavailable, or outcome.StatusError
     Stub-->>-Adapter: the generated response, or the outcome
-    Adapter-->>-Service: []todoapi.Item, or the outcome
+    Adapter-->>-Service: []todoapicontract.ItemDTO, or the outcome
     Note over Service: ErrUnavailable: errorkind.Wrap(ErrUnavailable, message, err). Code INVALID_ARGUMENT: errorkind.Wrap(ErrInvalid, ...). Anything else: no kind

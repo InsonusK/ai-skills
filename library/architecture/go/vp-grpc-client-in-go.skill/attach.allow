@@ -15,4 +15,4 @@ change README.md
 # The todo API's adapter is written per API: the HTTP and the gRPC client
 # examples each show their own. The service over it checks only the outcomes
 # of client/core/outcome, the same for both.
-sample internal/infrastructure/client/todoapi/*
+sample internal/client/todoapi/*

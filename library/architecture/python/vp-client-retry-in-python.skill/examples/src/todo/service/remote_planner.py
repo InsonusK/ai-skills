@@ -3,14 +3,14 @@
 from typing import Protocol
 
 from todo.domain.entity import Item
-from todo.infrastructure.client.core.outcomes import ApiStatusError, ApiUnavailableError, StatusCode
-from todo.infrastructure.client.todo_api import Item as AnsweredItem
+from todo.client.core.outcomes import ApiStatusError, ApiUnavailableError, StatusCode
+from todo.client.todo_api.dto import ItemDTO as AnsweredItem
 from todo.service.errors import TitlesRejectedError, TodoServiceUnavailableError
 from todo.shared.errors import KindError
 
 
 class TodoApi(Protocol):
-    """What RemotePlanner needs of its infrastructure; todo_api.TodoApi has it."""
+    """What RemotePlanner needs of its logical API client; todo_api.TodoApi has it."""
 
     async def plan_items(self, titles: list[str]) -> list[AnsweredItem]: ...
 

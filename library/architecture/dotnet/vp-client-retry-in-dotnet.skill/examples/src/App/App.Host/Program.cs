@@ -1,3 +1,4 @@
+using TodoExampleService.Service.Todo;
 // The composition root: the one place that builds concrete types and wires
 // them together. A variation point joins the application by adding lines to
 // the marked sections below - never by editing another file.
@@ -9,17 +10,17 @@ using TodoExampleService.App.Host.Config;
 using TodoExampleService.App.Host.Version;
 using TodoExampleService.BuildingBlocks.Logging;
 using TodoExampleService.BuildingBlocks.Pipeline;
-using TodoExampleService.Infrastructure.Client.Core.Http;
-using TodoExampleService.Infrastructure.Client.Core.Pipeline;
+using TodoExampleService.Client.Core.Http;
+using TodoExampleService.Client.Core.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using TodoExampleService.Middleware.Logging;
-using TodoExampleService.Infrastructure.Client.Middleware.Retry;
+using TodoExampleService.Client.Middleware.Retry;
 using TodoExampleService.Modules.Todo.Application;
 using TodoExampleService.Modules.Todo.Application.Services;
 using TodoExampleService.Modules.Todo.Commands;
-using TodoExampleService.Infrastructure.Client.TodoApi;
-using TodoExampleService.Infrastructure.Client.TodoApi.Abstractions;
+using TodoExampleService.Client.Todo;
+using TodoExampleService.Client.Todo.Abstractions;
 
 namespace TodoExampleService.App.Host;
 
@@ -66,9 +67,9 @@ public static class Program
         RetryConfig todoApiRetry;
         try
         {
-            todoApiConfig = HttpApiConfig.Load(TodoApiClient.Prefix);
+            todoApiConfig = HttpApiConfig.Load(TodoClient.Prefix);
             // The retry of the todo API: TODO_API_RETRY_ATTEMPTS, TODO_API_RETRY_BACKOFF.
-            todoApiRetry = RetryConfig.Load(TodoApiClient.Prefix);
+            todoApiRetry = RetryConfig.Load(TodoClient.Prefix);
         }
         catch (FormatException configError)
         {
@@ -76,7 +77,7 @@ public static class Program
             bootLogging.CreateLogger("App.Host").Write(LogLevel.Error, "startup failed", configError);
             return EntryRunner.ExitFailure;
         }
-        services.AddSingleton<ITodoApi>(provider =>
+        services.AddSingleton<ITodoClient>(provider =>
         {
             var loggers = provider.GetRequiredService<ILoggerFactory>();
             // [client middleware] - run around the attempts of every call of
@@ -86,7 +87,7 @@ public static class Program
             [
                 new RetryMiddleware(todoApiRetry, loggers.CreateLogger("Client.Retry")),
             ];
-            return new TodoApiClient(todoApiConfig, loggers.CreateLogger("Client.TodoApi"), todoApiMiddlewares);
+            return new TodoClient(todoApiConfig, loggers.CreateLogger("Client.Todo"), todoApiMiddlewares);
         });
         services.AddSingleton<IRemotePlanner, RemotePlannerService>();
 

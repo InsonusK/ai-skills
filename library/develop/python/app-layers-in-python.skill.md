@@ -17,7 +17,7 @@ tags:
 
 # Core Principle
 - **The consumer owns the protocol** - A `typing.Protocol` is declared where it is used and lists only the methods used there; the implementing class names no protocol, and the type checker matches it by its methods.
-- **A package re-exports its names** - Each package's `__init__.py` imports the public names of its modules, so a caller writes `from {package}.command import PlanItemsCommand`, never the module inside.
+- **Contract-only exports** - Re-export public contracts from `__init__.py`; a client package exports its logical DTOs without importing a concrete transport, which only composition and client tests import explicitly.
 
 # Rule
 
@@ -41,7 +41,8 @@ Place each layer of [app-layers](library/develop/core/app-layers.skill/app-layer
 | entity | `domain/entity` |
 | domain service | `domain/service` |
 | service | `service` |
-| infrastructure | `infrastructure/{kind}` (`postgres`, `memory`, ...); a client of another service's API in `infrastructure/client/{api}` (`user_api`), the fixed code of every client in `infrastructure/client/core/`, each client middleware in `infrastructure/client/middleware/{name}` (`retry`) |
+| client | `client/{api}/dto.py` for logical DTOs and `{api}.py` for the concrete client; `client/core/` for shared mechanics and `client/middleware/{name}` for policies |
+| infrastructure | `infrastructure/{kind}` (`postgres`, `memory`, ...) |
 | composition root | `main.py`, run by `__main__.py` and the `[project.scripts]` entry |
 
 - Violation: entities and domain services in one `domain` module; a `utils` package holding a service.
@@ -71,7 +72,7 @@ Put the fixed code that serves several entry points and belongs to none of them 
 - Fix: `core/` holds only code copied from templates; each part appears with the base plateau (`entry`) or with the first variation point that needs it (`rpcstatus`).
 
 ### Declare a protocol in the consumer's module
-Declare the `Protocol` a command, factory, or domain service uses to reach a service in that consumer's module, and the protocol a service uses to reach its infrastructure in `service`, each listing only the methods that consumer calls.
+Declare the `Protocol` a command, factory, or domain service uses to reach a service in that consumer's module, and the protocol a service uses to reach its clients or infrastructure in `service`, each listing only the methods that consumer calls.
 
 ```python
 # command/add_user.py - the command declares what it needs
@@ -82,7 +83,7 @@ class Users(Protocol):
 
 # service/user_service.py - a class; no protocol declared for itself
 class UserService:
-    def __init__(self, api: UserApi) -> None:  # UserApi: declared here, implemented in infrastructure/client/user_api
+    def __init__(self, api: UserApi) -> None:  # UserApi: declared here, implemented in client/user_api
         self._api = api
 ```
 
@@ -91,7 +92,7 @@ class UserService:
 - Fix: one small protocol per consumer; `mypy --strict` checks that the class passed in `main.py` satisfies it.
 
 ### Wire implementations only in main
-Import `service` only from `main.py`, and `infrastructure/{kind}` only from `main.py` and from the one service over it — for the types its methods return — and pass each implementation to its consumer's constructor in `main.py`.
+Import `service` only from `main.py`, and concrete `client/{api}/{api}.py` or `infrastructure/{kind}` only from `main.py` and from the one service over it — using its protocol-neutral DTO contract — and pass each implementation to its consumer's constructor in `main.py`.
 - Violation: a command module importing `service` to construct a `UserService`, or a service constructing its HTTP client itself.
 - Risk: the consumer depends on the concrete implementation, so it cannot be tested with a fake or given another implementation without editing it.
 - Fix: the consumer's constructor takes the protocol; `main.py` builds the class and passes it.
@@ -121,7 +122,7 @@ Check `src/` — the tests included — with `mypy --strict` in the `lint` targe
 # Check list
 - [ ] Every layer is in its package per [One package per layer](#one-package-per-layer); the code the entry points share is in `api/core/`.
 - [ ] Every protocol to a service or an infrastructure adapter is declared in its consumer's module and lists only the methods that consumer calls.
-- [ ] `service` is imported only by `main.py`; `infrastructure/{kind}` only by `main.py` and the one service over it.
+- [ ] `service` is imported only by `main.py`; concrete clients and `infrastructure/{kind}` are wired only by `main.py`; services consume their contracts and DTOs.
 - [ ] Entities keep private slotted attributes, read-only properties, a validating constructor, and guarded state-change methods.
 - [ ] Commands and results are frozen dataclasses; tests fake the layer below with hand-written classes.
 - [ ] `mypy --strict` passes over `src/`.

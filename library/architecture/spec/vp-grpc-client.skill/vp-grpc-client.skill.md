@@ -1,6 +1,6 @@
 ---
 name: vp-grpc-client
-description: The gRPC client variation point — a client of another service's gRPC API attached to the base plateau in its infrastructure, with the service over it, calling code generated from the copied proto contract over one fixed connection (the {API} settings, the timeout, the call log, the request id, the gRPC status read as an outcome, the mock as a gRPC server inside the process) and checked against that contract
+description: The gRPC client variation point — a client of another service's gRPC API attached to the base plateau in its client layer, with the service over it, calling code generated from the copied proto contract over one fixed connection (the {API} settings, the timeout, the call log, the request id, the gRPC status read as an outcome, the mock as a gRPC server inside the process) and checked against that contract
 whenToUse: when an application built on the base plateau must call a gRPC API of another service, or the HTTP form of a proto contract — adding the client, calling a further method of it, replacing the consumed proto with a new version, or reviewing such a client
 updated: 20261128
 tags:
@@ -42,9 +42,9 @@ Generate the messages and the client stub of every consumed `.proto` from its co
 
 ### One method per method, with its own types
 Write each method the application calls as one method of the client that calls the generated stub and maps its response to the client's own types, and list the full name of each such method in one place of the client.
-- Violation: a generated message returned to the service; a generated stub used outside the client.
+- Violation: a transport-specific generated message returned to the service; a generated stub used outside the client.
 - Risk: the service depends on the provider's messages, and a new version of the contract edits the service.
-- Fix: the method returns the application's values or the client's own result type, per [API DTO return contract](library/develop/core/api-client.skill/api-client.skill.md#return-api-dtos-from-the-client).
+- Fix: the method returns client-owned logical API DTOs; service maps them into the Domain Model, per [API DTO return contract](library/develop/core/api-client.skill/api-client.skill.md#return-api-dtos-from-the-client).
 
 ### Report the gRPC status as the outcome
 Report a call answered with `UNAVAILABLE` or `DEADLINE_EXCEEDED` as unavailable and any other failed call with its status code and message, from the interceptor every call of the connection passes.
@@ -76,7 +76,7 @@ Run every file of this skill's [conformance/](./conformance/) unchanged in each 
 - [ ] Every file of `conformance/` runs unchanged in each stack's example; `bash test/check-conformance.sh` passes.
 - [ ] The client keeps every rule of api-client; its target comes from the `{API}` group, and it connects at the first call.
 - [ ] The stub is generated from the copied `.proto`, its types the client's, preserving [the consumed wire contract](library/develop/core/api-client.skill/api-client.skill.md#preserve-the-consumed-wire-contract).
-- [ ] Each method is one method of the client mapping to its own types; no generated message leaves the client.
+- [ ] Each method is one method of the client mapping to its own types; no transport-specific generated message leaves the client.
 - [ ] One interceptor reports unavailable apart from the other statuses for every call.
 - [ ] `{API}_HOST=mock` serves the generated server's emulator inside the process behind the same interceptor.
 - [ ] Scenarios hold the generated code and the client's methods against the copied contract.

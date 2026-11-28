@@ -14,8 +14,8 @@ from todo.api import startup
 from todo.api.core.entry import Entry, exit_code, run_all
 from todo.command import PlanRemoteItemsCommand, build_handlers
 from todo.command.middleware.logging import LoggingMiddleware
-from todo.infrastructure.client import todo_api
-from todo.infrastructure.client.core.pipeline import Middleware as ClientMiddleware
+from todo.client.todo_api import todo_api
+from todo.client.core.pipeline import Middleware as ClientMiddleware
 from todo.log import attrs, new_logger
 from todo.service import RemotePlanner
 
