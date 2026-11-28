@@ -72,6 +72,10 @@ tags:
    git branch -d {task-name}
    ```
 
+The full merge chain — base branch, task branch, stage branches, and a review branch (created only when fixes touch files the reviewed PR changed, see [Review fixes go on a review branch](#review-fixes-go-on-a-review-branch)):
+
+@import "./diagrams/work-in-git-tree-gitflow.mmd" {as="mermaid"}
+
 # Rule
 ## MUST
 
