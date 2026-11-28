@@ -27,6 +27,14 @@ A job archives old items and sends reminders; an HTTP handler creates an order a
 ### Description
 api calls each independent command and answers each result or error on its own; an order of commands — one using another's result, or running only after another succeeded — is a command of its own that runs the others as nested commands.
 
+Independent operations (sequential dispatch here does not imply a dependency):
+
+@import "./diagrams/independent-commands.mmd" {as="mermaid"}
+
+Dependent operations, owned by an orchestrating command:
+
+@import "./diagrams/orchestrating-command.mmd" {as="mermaid"}
+
 ### Benefits
 - The process lives in one command, so every entry point runs the same process and it runs in one unit of work.
 - api keeps only parsing and mapping, for HTTP and for a job alike.
@@ -39,6 +47,8 @@ api calls each independent command and answers each result or error on its own; 
 ### Description
 The entry point calls the commands in order, passes results along, and stops on a failure.
 
+@import "./diagrams/api-chains-commands.mmd" {as="mermaid"}
+
 ### Benefits
 - No extra command.
 
@@ -49,6 +59,8 @@ The entry point calls the commands in order, passes results along, and stops on 
 
 ### Description
 A job, having no request to parse, is put in the command layer and calls other commands as nested ones.
+
+@import "./diagrams/job-as-command.mmd" {as="mermaid"}
 
 ### Benefits
 - The job's sequence runs in one unit of work without a separate command.

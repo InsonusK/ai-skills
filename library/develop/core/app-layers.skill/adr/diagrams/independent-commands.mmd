@@ -1,0 +1,12 @@
+sequenceDiagram
+    autonumber
+    participant API as API / job entry point
+    participant Archive as ArchiveItemsCommand
+    participant Remind as SendRemindersCommand
+    Note over API,Remind: Independent operations: no shared result or success condition
+    API->>+Archive: Dispatch through command pipeline
+    Archive-->>-API: Result or error
+    Note over API: A failure does not suppress the other command
+    API->>+Remind: Dispatch through command pipeline
+    Remind-->>-API: Result or error
+    Note over API: Map each outcome independently; calls need not run in parallel
