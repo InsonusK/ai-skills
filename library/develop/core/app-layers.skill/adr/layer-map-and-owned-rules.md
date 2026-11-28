@@ -10,6 +10,9 @@ tags:
   - concern/documentation/adr
 ---
 
+Navigation amendment: [layer-contract-links](./layer-contract-links.md) replaces
+the README-only discovery policy below; separation of rule ownership remains.
+
 # Problem
 The dependency map and layer implementation change for different reasons. Keeping
 them together makes every topology review load command naming, entry dispatch and

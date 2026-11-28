@@ -30,16 +30,21 @@ for file in files:
     for path in re.findall(r'@import "([^"]+)"', text):
         if not (file.parent / path).exists():
             errors.append(f'{file.relative_to(ROOT)}: missing diagram {path}')
-# Any outgoing link in the topology skill or its supporting ADRs would load
-# another implementation skill transitively. Navigation belongs in README.
+# The owner allows shared implementation links in the layer table; supporting
+# ADRs must not introduce unrelated downstream implementations.
 topology = ROOT / 'library/develop/core/app-layers.skill'
+map_file = topology / 'app-layers.skill.md'
+map_text = map_file.read_text()
+layer_table = map_text.split('| Layer |', 1)[1].split('\n\n', 1)[0]
+allowed_contracts = {skill.resolve() for skill in skills if skill != map_file}
 for file in topology.rglob('*.md'):
     for target in re.findall(r'\[[^\]]*\]\(([^)]+)\)', file.read_text()):
         path = target.split('#', 1)[0]
         if not path or '://' in path: continue
         resolved = (ROOT / path if path.startswith('library/') else file.parent / path).resolve()
-        if not resolved.is_relative_to(topology.resolve()):
-            errors.append(f'Topology pulls a downstream dependency: {file.relative_to(ROOT)} -> {target}')
+        if resolved.is_relative_to(topology.resolve()): continue
+        if file == map_file and target in layer_table and resolved in allowed_contracts: continue
+        errors.append(f'Unapproved topology dependency: {file.relative_to(ROOT)} -> {target}')
 for skill in skills:
     text = skill.read_text()
     top = re.findall(r'^# (.+)$', text, re.M)

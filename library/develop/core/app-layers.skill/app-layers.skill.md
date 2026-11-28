@@ -13,6 +13,7 @@ adr:
   - adr/service-wraps-one-infrastructure.md
   - adr/sibling-client-and-system-service-boundaries.md
   - adr/layer-map-and-owned-rules.md
+  - adr/layer-contract-links.md
 ---
 
 # Goal
@@ -21,6 +22,7 @@ adr:
 
 # Core Principle
 - **Topology ownership** - Keep the layer map here and implementation requirements in their owning layer skills, as decided in [layer-map-and-owned-rules](./adr/layer-map-and-owned-rules.md).
+- **Contract discovery** - Use the layer table to locate its implementation contract, accepting linked-skill loading as recorded in [layer-contract-links](./adr/layer-contract-links.md).
 - **Logical peers** - Directory siblings do not imply permission to call each other; the dependency table determines allowed calls.
 
 # Scope
@@ -34,17 +36,17 @@ adr:
 ### Keep each part in its layer and its calls downward
 Place every part of the application in one of these layers and let it call only what its row allows.
 
-| Layer | Owns | May call | Never calls |
-|---|---|---|---|
-| api | parsing an input into plain parameters; turning a result or an error into the response | command factories, commands | domain, services, clients, infrastructure |
-| command factory (optional) | choosing the command from plain parameters and the application's state | domain services, services | clients, infrastructure |
-| command | the main logic of one operation | domain services, entities, services, the repositories of its own store (entities form), other commands | clients, infrastructure, api types |
-| domain service | business logic reused by several commands | entities, services, the repositories of its own store (entities form) | clients, infrastructure, commands |
-| entity | the rules of one object of the domain | other entities | anything with I/O |
-| service | adaptation of a provided technical capability into consumer models | clients or its own infrastructure; entity construction/behavior | other services, domain services, commands |
-| repository (entities form) | the entities of the application's own store, behind a contract of the application's side: pick them by a specification, save them | its store | every layer above |
-| client | API calls, wire parsing, API DTOs, technical outcomes and client middleware | its external API, fixed client code | services, commands, domain |
-| infrastructure | storage and other non-client technical access | its external system or engine | every layer above |
+| Layer | Owns | May call | Never calls | Implementation contract |
+|---|---|---|---|---|
+| api | parsing an input into plain parameters; turning a result or an error into the response | command factories, commands | domain, services, clients, infrastructure | [app-api-layer](../app-api-layer.skill/app-api-layer.skill.md) |
+| command factory (optional) | choosing the command from plain parameters and the application's state | domain services, services | clients, infrastructure | [app-command-layer](../app-command-layer.skill/app-command-layer.skill.md) |
+| command | the main logic of one operation | domain services, entities, services, the repositories of its own store (entities form), other commands | clients, infrastructure, api types | [app-command-layer](../app-command-layer.skill/app-command-layer.skill.md) |
+| domain service | business logic reused by several commands | entities, services, the repositories of its own store (entities form) | clients, infrastructure, commands | [app-domain-layer](../app-domain-layer.skill.md) |
+| entity | the rules of one object of the domain | other entities | anything with I/O | [app-domain-layer](../app-domain-layer.skill.md) |
+| service | adaptation of a provided technical capability into consumer models | clients or its own infrastructure; entity construction/behavior | other services, domain services, commands | Providing mechanism; API adaptation: [api-client](../api-client.skill/api-client.skill.md) |
+| repository (entities form) | the entities of the application's own store, behind a contract of the application's side: pick them by a specification, save them | its store | every layer above | Concrete own-store VP; no common implementation skill |
+| client | API calls, wire parsing, API DTOs, technical outcomes and client middleware | its external API, fixed client code | services, commands, domain | [api-client](../api-client.skill/api-client.skill.md) |
+| infrastructure | storage and other non-client technical access | its external system or engine | every layer above | Concrete integration VP; no common implementation skill |
 
 @import "./diagrams/layer-calls.mmd" {as="mermaid"}
 

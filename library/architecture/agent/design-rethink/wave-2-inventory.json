@@ -682,10 +682,14 @@
       "skill": "library/develop/core/app-layers.skill/app-layers.skill.md",
       "state": "wave-1-shared-contract",
       "evidence": [
+        "api-client",
         "app-layers",
+        "app-api-layer",
+        "app-command-layer",
+        "app-domain-layer",
         "infrastructure/client"
       ],
-      "owned_file_count": 4,
+      "owned_file_count": 5,
       "example_roots": []
     },
     {

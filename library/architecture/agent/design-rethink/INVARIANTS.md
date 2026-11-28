@@ -62,6 +62,8 @@ existing contracts from the owner's new client/service decision.
     belong to app-api-layer, app-command-layer and app-domain-layer. The providing
     mechanism owns an integration service's implementation; api-client owns its
     API-adapting service. Do not introduce app-service-layer (owner accepted).
+    The layer table links existing implementation contracts for navigation; the
+    owner accepts that these links load their transitive dependencies.
 
 ## Branch and review flow
 

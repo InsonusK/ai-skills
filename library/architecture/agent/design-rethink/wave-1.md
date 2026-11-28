@@ -112,3 +112,13 @@ app-layers and verified ownership of every former rule against the table above.
 Validation: the expanded gate passes for five common contracts and 78 inventoried
 consumers. The repository test suite passes; aism synchronized 812 skills. No
 executable example is changed by this refinement.
+
+## Layer-table navigation amendment
+
+Owner request, 2026-11-28: the layer map now links shared implementation contracts
+in its table. This supersedes the previous minimal-loading navigation policy;
+rule ownership stays separated. The new layer-contract-links ADR records the
+navigation benefit and the cost of transitive loads/cycles. Service identifies
+api-client only for API adaptation; repository/infrastructure have no invented
+generic implementation contract. The gate allows these table links while still
+rejecting unrelated outgoing dependencies hidden in topology ADRs.
