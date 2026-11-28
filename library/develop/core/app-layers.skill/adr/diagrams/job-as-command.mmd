@@ -2,14 +2,14 @@ sequenceDiagram
     autonumber
     participant Timer as Timer / message trigger
     participant Job as Job in command layer
-    participant Create as CreateOrderCommand
+    participant CreateCmd as CreateOrderCommand
     participant Reserve as ReserveStockCommand
     participant HTTP as HTTP entry point
     Timer->>+Job: Trigger-specific input
     Note over Job: Rejected: scheduling / trigger concerns enter the command layer
-    Job->>+Create: Nested dispatch through pipeline
-    Create-->>-Job: Order ID
+    Job->>+CreateCmd: Nested dispatch through pipeline
+    CreateCmd-->>-Job: Order ID
     Job->>+Reserve: Nested dispatch with Order ID
     Reserve-->>-Job: Result
     Job-->>-Timer: Completion
-    Note over HTTP,Job: HTTP needs this process without the trigger-specific contract; otherwise it duplicates the sequence
+    Note over HTTP,Job: HTTP needs this process without the trigger-specific contract, otherwise it duplicates the sequence

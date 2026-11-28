@@ -1,19 +1,19 @@
 sequenceDiagram
     autonumber
     participant API as API / job entry point
-    participant Place as PlaceOrderCommand
-    participant Create as CreateOrderCommand
-    participant Reserve as ReserveStockCommand
-    API->>+Place: Dispatch through command pipeline
-    Note over Place,Reserve: Nested commands use their wrapped handlers / command pipeline
-    Place->>+Create: Create order
-    Create-->>-Place: Order ID or error
+    participant PlaceCmd as PlaceOrderCommand
+    participant CreateCmd as CreateOrderCommand
+    participant ReserveCmd as ReserveStockCommand
+    API->>+PlaceCmd: Dispatch through command pipeline
+    Note over PlaceCmd,ReserveCmd: Nested commands use their wrapped handlers / command pipeline
+    PlaceCmd->>+CreateCmd: Create order
+    CreateCmd-->>-PlaceCmd: Order ID or error
     alt Order created
-        Place->>+Reserve: Reserve stock for Order ID
-        Reserve-->>-Place: Result or error
+        PlaceCmd->>+ReserveCmd: Reserve stock for Order ID
+        ReserveCmd-->>-PlaceCmd: Result or error
     else Creation failed
-        Note over Place: Skip reservation and report failure
+        Note over PlaceCmd: Skip reservation and report failure
     end
-    Place-->>-API: One process result or error
-    Note over API: Map the outcome; no business sequencing here
-    Note over Place,Reserve: With unit of work attached, nested local writes join it; external effects need a consistency design
+    PlaceCmd-->>-API: One process result or error
+    Note over API: Map the outcome, no business sequencing here
+    Note over PlaceCmd,ReserveCmd: With unit of work attached, nested local writes join it, external effects need a consistency design

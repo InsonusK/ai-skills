@@ -9,4 +9,4 @@ sequenceDiagram
     Note over API: A failure does not suppress the other command
     API->>+Remind: Dispatch through command pipeline
     Remind-->>-API: Result or error
-    Note over API: Map each outcome independently; calls need not run in parallel
+    Note over API: Map each outcome independently, calls need not run in parallel

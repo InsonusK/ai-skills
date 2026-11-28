@@ -1,10 +1,10 @@
 sequenceDiagram
     autonumber
     participant API as API entry point
-    participant Create as CreateOrderCommand
+    participant CreateCmd as CreateOrderCommand
     participant Reserve as ReserveStockCommand
-    API->>+Create: Dispatch through command pipeline
-    Create-->>-API: Order ID or error
+    API->>+CreateCmd: Dispatch through command pipeline
+    CreateCmd-->>-API: Order ID or error
     alt Order created
         API->>+Reserve: Dispatch with Order ID
         Reserve-->>-API: Result or error
@@ -12,4 +12,4 @@ sequenceDiagram
         Note over API: Decide to skip reservation
     end
     Note over API: Rejected: business sequencing lives in the transport
-    Note over Create,Reserve: Separate top-level dispatches do not share one outer command unit of work
+    Note over CreateCmd,Reserve: Separate top-level dispatches do not share one outer command unit of work
