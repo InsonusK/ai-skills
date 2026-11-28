@@ -1,0 +1,35 @@
+flowchart TB
+    api["API"]
+    factory["Command factory<br/>(optional)"]
+    command["Command"]
+    domainService["Domain service"]
+    entity["Entity"]
+    service["Service<br/>one external system or cohesive part"]
+    client["Client<br/>API DTOs and technical outcomes"]
+    clientCore["Fixed client code<br/>transport and middleware"]
+    infrastructure["Infrastructure<br/>non-client technical access"]
+    repository["Own-store repository contract<br/>(entities form only)"]
+    provider["External API"]
+    externalSystem["External system or engine"]
+    ownStore["Own store"]
+
+    api --> factory
+    api --> command
+    factory --> domainService
+    factory -. "interface" .-> service
+    command --> domainService
+    command --> entity
+    command -. "interface" .-> service
+    command -->|nested command through its pipeline| command
+    domainService --> entity
+    domainService -. "interface" .-> service
+    entity -->|other entities| entity
+    service -->|construction and behavior APIs| entity
+    service -. "interface; one or more clients of its system" .-> client
+    service -. "interface" .-> infrastructure
+    client --> clientCore
+    client --> provider
+    infrastructure --> externalSystem
+    command -. "entities-form exception" .-> repository
+    domainService -. "entities-form exception" .-> repository
+    repository --> ownStore

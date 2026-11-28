@@ -35,7 +35,7 @@ for skill in skills:
         if top.count(title) != 1: errors.append(f'{skill.name}: section {title}')
     if set(top) - {'Goal','Core Principle','Rule','Check list','Scope','Workflow','Example'}:
         errors.append(f'{skill.name}: unsupported sections')
-    if 'updated: 20261126' not in text: errors.append(f'{skill.name}: date')
+    if not re.search(r'^updated: \d{8}$', text, re.M): errors.append(f'{skill.name}: date')
     if '  - stack\n' not in text or '  - concern/architecture\n' not in text:
         errors.append(f'{skill.name}: facets')
     rule = text.split('# Rule\n',1)[1].split('# Check list',1)[0].split('# Example',1)[0]

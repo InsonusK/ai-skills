@@ -648,7 +648,7 @@
         "app-layers",
         "infrastructure/client"
       ],
-      "owned_file_count": 5,
+      "owned_file_count": 6,
       "example_roots": []
     },
     {

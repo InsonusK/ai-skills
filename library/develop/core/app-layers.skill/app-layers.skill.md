@@ -2,7 +2,7 @@
 name: app-layers
 description: How an application's code is split into layers — api, command (with an optional command factory), domain (entities and domain services), service, client, and infrastructure — what each layer owns, what it may call, where an interface stands between them, how each is tested
 whenToUse: when you design an application or a feature, when you add or change an entry point, a command or command factory, an entity or domain service, a service, a client, or an infrastructure adapter, or when you review such a change — in any stack
-updated: 20261126
+updated: 20261128
 tags:
   - stack
   - concern/architecture
@@ -52,6 +52,10 @@ Place every part of the application in one of these layers and let it call only 
 | repository (entities form) | the entities of the application's own store, behind a contract of the application's side: pick them by a specification, save them | its store | every layer above |
 | client | API calls, wire parsing, API DTOs, technical outcomes and client middleware | its external API, fixed client code | services, commands, domain |
 | infrastructure | storage and other non-client technical access | its external system or engine | every layer above |
+
+@import "./diagrams/layer-calls.mmd" {as="mermaid"}
+
+Arrows show permitted calls, not directory containment; dotted arrows cross interfaces, including the own-store repository exception.
 
 - Violation: a command that runs an SQL query, or a service that calls another service to finish its method.
 - Risk: a call skipping a layer spreads the knowledge of that layer's technique upward, so replacing it means editing every caller.
