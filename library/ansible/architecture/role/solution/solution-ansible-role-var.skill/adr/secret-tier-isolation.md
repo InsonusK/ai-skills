@@ -1,8 +1,13 @@
 ---
-name: architecture decision record
+name: secret-tier-isolation
 description: Whether secret variable tiers should merge into the same effective config as non-secret variables, or into their own separate variable
 problem: How should the group-secret and host-secret variable tiers (`{{ role_name }}_group_secret`, `{{ role_name }}_secret`) be merged, so that a secret can never leak through an ordinary debug/verbose dump of a role's config?
 decision: Merge secret tiers into a separate `_{{ role_name }}_secret_config`, never into `_{{ role_name }}_config`; source both tiers from SOPS-encrypted inventory files decrypted by the `community.sops.sops` vars plugin
+tags:
+  - solution/ansible-role-var
+  - stack/ansible
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

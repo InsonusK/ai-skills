@@ -23,6 +23,8 @@ The application listens to `navigator.onLine`/`online`/`offline` events as an im
 
 ## navigator.onLine events + periodic health-check
 
+**Selected.**
+
 ### Description
 
 `window.addEventListener('online'/'offline', ...)` provides an immediate signal on network interface changes. A periodic (e.g. every N seconds, backed off further when already known offline) `HEAD` request to a lightweight backend health endpoint confirms actual reachability, correcting for cases where the network interface is up but the backend is not reachable.

@@ -39,11 +39,11 @@ depends_on:
   - "[[library/dotnet/architecture/solutions/solution-dto-property-validators.skill/solution-dto-property-validators.skill|solution-dto-property-validators]]"
 built_on_plateau:
 adr:
-  - "[[library/dotnet/architecture/solutions/solution-mediator-integration.skill/adr/mediator-pattern-is-one-common-solution|The MediatR pattern is one common solution, not per-request-kind, and does not depend on the domain layer]]"
+  - adr/mediator-pattern-is-one-common-solution.md
 ---
 
 # Goal
-- Define the MediatR integration pattern for the whole family: `ICommand`/`ICommand<TResponse>`, `IQuery<TResponse>`, and `INotificationEvent` markers in `Shared`, and the request/handler/validator conventions every module follows.
+- Define the MediatR integration pattern for the whole family: `ICommand`/`ICommand<TResponse>`, `IQuery<TResponse>`, and `INotificationEvent` markers in `Shared`, and the request/handler/validator conventions every module follows. Decision recorded in [mediator-pattern-is-one-common-solution](./adr/mediator-pattern-is-one-common-solution.md).
 - Define where requests are declared — immutable records in `/{Module}.Interfaces/{Commands|Queries|Events}`.
 - Define how a handler is structured — guard → (domain call | read) → return `Result<T>` — with the persisted-entity load/stage steps added only when the request actually touches stored state.
 - Define module DI self-registration (one extension method, handlers/validators assembly-scanned) and App.Host module wiring.

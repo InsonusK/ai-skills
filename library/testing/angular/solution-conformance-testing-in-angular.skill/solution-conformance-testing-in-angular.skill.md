@@ -31,11 +31,11 @@ extends:
 depends_on:
   - "[solution-conformance-testing-in-typescript](library/testing/typescript/solution-conformance-testing-in-typescript.skill/solution-conformance-testing-in-typescript.skill.md)"
 adr:
-  - "[Angular test kinds](./adr/angular-test-kinds.md)"
-  - "[Complete Makefile example](./adr/complete-makefile-example.md)"
-  - "[Chromium system dependencies](./adr/chromium-system-dependencies.md)"
-  - "[Repository shape selection](./adr/repository-shape-selection.md)"
-  - "[Browser spec discovery](./adr/browser-spec-discovery.md)"
+  - adr/angular-test-kinds.md
+  - adr/complete-makefile-example.md
+  - adr/chromium-system-dependencies.md
+  - adr/repository-shape-selection.md
+  - adr/browser-spec-discovery.md
 ---
 
 # Goal

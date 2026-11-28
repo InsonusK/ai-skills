@@ -16,7 +16,7 @@ tags:
 How does an agent select Angular test delivery for application, library and Nx repositories?
 
 # Selected variant
-[Three repository shapes](#three-repository-shapes)
+**Selected variant:** [[#Three repository shapes]]
 
 # Searched variants
 ## Three repository shapes

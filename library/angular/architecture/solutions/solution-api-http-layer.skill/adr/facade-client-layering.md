@@ -23,6 +23,8 @@ For feature-level operations, the Signal Store method itself (see the "State man
 
 ## Signal Store calls Facade directly; Client is an internal transport detail
 
+**Selected.**
+
 ### Description
 
 - **Facade**: the `data-access` lib's public API. Contains business-rule validation and orchestration (may call more than one Client method, may enrich a request with data read from `shared-state`). Exceptions/rejections it surfaces are always the Client's typed domain errors, optionally wrapped with additional business context.

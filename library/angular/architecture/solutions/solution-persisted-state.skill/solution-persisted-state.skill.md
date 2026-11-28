@@ -21,8 +21,8 @@ extends:
 depends_on:
   - "[[library/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
 adr:
-  - "[[library/angular/architecture/solutions/solution-persisted-state.skill/adr/storage-backend-choice.md|storage-backend-choice]]"
-  - "[[library/angular/architecture/solutions/solution-persisted-state.skill/adr/rehydration-timing.md|rehydration-timing]]"
+  - adr/storage-backend-choice.md
+  - adr/rehydration-timing.md
 ---
 
 # Goal

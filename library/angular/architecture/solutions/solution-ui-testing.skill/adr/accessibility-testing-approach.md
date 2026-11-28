@@ -23,6 +23,8 @@ Every component/state covered by a visual regression spec (see [[library/angular
 
 ## @axe-core/playwright against demo/preview pages
 
+**Selected.**
+
 ### Description
 
 `@axe-core/playwright` injects the axe-core accessibility engine into the same Playwright page already loaded for a component's screenshot test, runs a scan, and asserts the returned violations array is empty (or contains only explicitly, individually acknowledged exceptions).

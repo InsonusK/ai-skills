@@ -25,7 +25,7 @@ depends_on:
   - "[[library/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
   - "[[library/angular/architecture/solutions/solution-platform-contracts.skill/solution-platform-contracts.skill.md|solution-platform-contracts]]"
 adr:
-  - "[[library/angular/architecture/solutions/solution-federation-host.skill/adr/embedding-mechanism.md|embedding-mechanism]]"
+  - adr/embedding-mechanism.md
 ---
 
 # Goal

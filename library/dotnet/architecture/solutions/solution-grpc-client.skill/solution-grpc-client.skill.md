@@ -28,7 +28,7 @@ depends_on:
   - "[[library/dotnet/architecture/solutions/solution-infrastructure-project.skill/solution-infrastructure-project.skill|solution-infrastructure-project]]"
   - "[[library/dotnet/architecture/solutions/solution-app-logging.skill/solution-app-logging.skill|solution-app-logging]]"
 adr:
-  - "[[library/dotnet/architecture/solutions/solution-grpc-client.skill/adr/generated-stub-behind-shared-result-interface|Generated stub behind a narrow Shared Result-returning interface]]"
+  - adr/generated-stub-behind-shared-result-interface.md
 ---
 
 # Goal

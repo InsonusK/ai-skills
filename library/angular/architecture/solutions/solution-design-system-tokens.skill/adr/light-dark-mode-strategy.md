@@ -23,6 +23,8 @@ Both this design system's own `--ds-*` tokens and Material's `--mat-sys-*` token
 
 ## color-scheme + light-dark() (Material's built-in mechanism)
 
+**Selected.**
+
 ### Description
 
 Every color token — both Material's own and this design system's custom `--ds-*` additions — is defined as `light-dark(lightValue, darkValue)`. The browser natively resolves the correct value based on the `color-scheme` property and the user's OS-level preference, with zero JavaScript involved in the common case (following OS preference).

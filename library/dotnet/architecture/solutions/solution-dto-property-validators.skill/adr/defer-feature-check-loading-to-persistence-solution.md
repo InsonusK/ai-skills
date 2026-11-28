@@ -21,7 +21,7 @@ The previous version of `{Feature}Check.cs.create.md` injected `IReadRepository<
 
 # Selected variant
 
-**Selected variant:** Leave Load unimplemented; defer the concrete body to solution-repository-integration
+**Selected variant:** [[#Leave Load unimplemented; defer the concrete body to solution-repository-integration]]
 
 `{Feature}Check.cs.create.md` now shows `Load` throwing `NotSupportedException`, with a comment pointing at whichever solution introduces a data-loading abstraction. `solution-repository-integration` — which already `extends` `{Module}.Application.csproj` for its own specs — adds a `{Feature}Check.cs.extend.md`, in the same `Before`/`After` style `solution-domain-shared-rules` already uses for this same class, replacing the stub `Load` with a concrete `IReadRepository<T>`-based implementation. `CheckAsync` is untouched by that extension.
 
@@ -31,10 +31,30 @@ The previous version of `{Feature}Check.cs.create.md` injected `IReadRepository<
 
 # Searched variants
 
+## Leave Load unimplemented; defer the concrete body to solution-repository-integration
+
+**Selected.**
+
+### Description
+`{Feature}Check.cs.create.md` shows `Load` throwing `NotSupportedException`, with a comment pointing at whichever solution introduces a data-loading abstraction. `solution-repository-integration` — which already `extends` `{Module}.Application.csproj` for its own specs — adds a `{Feature}Check.cs.extend.md`, in the same `Before`/`After` style `solution-domain-shared-rules` already uses for this same class, replacing the stub `Load` with a concrete `IReadRepository<T>`-based implementation. `CheckAsync` is untouched by that extension.
+
+### Benefits
+- No plateau ever contains a `{Feature}Check` referencing a type its own lineage doesn't provide — the abstract form is always compilable-in-spirit (a deliberate `NotSupportedException`, not a dangling reference). At `plateau-core` the stub is exactly what the structure skill documents; from `plateau-domain-service` on, `solution-repository-integration`'s `.extend` supplies the real body.
+- The concrete realization is attributed to the solution that actually owns the capability (`solution-repository-integration`), visible in that plateau's `__Applied solutions:__` trailers, instead of being silently baked into `solution-dto-property-validators`'s own worked example.
+- No new field, no new solution, no new "Plateau Component" is needed — this reuses the same cross-solution `.extend.md` mechanism `solution-domain-shared-rules` already established for this exact class.
+
+### Costs
+- A plateau without persistence carries a `Load` member that always throws; only the comment tells the reader the throw is deliberate rather than a bug.
+- The class's final behavior is split across two solutions' files — the stub in this solution's `.create.md`, the real body in `solution-repository-integration`'s `.extend.md` — so it is fully visible only after the plateau merge.
+
 ## Keep the concrete IReadRepository<T> example with a prose caveat (status quo)
 
 ### Description
 Keep injecting `IReadRepository<T>` directly in `{Feature}Check.cs.create.md`'s worked example, relying on the existing "worked example is illustrative until composed" sentence in `# Boundaries`.
+
+### Benefits
+- The worked example shows a real, idiomatic data-loading call, so a reader sees the intended end state of the class immediately, in one file.
+- No file changes and no migration cost — the example stays as written today.
 
 ### Costs
 - The forward reference reappears in every plateau that composes this solution without persistence — a structural skill file describing a type its own plateau lineage never provides.
@@ -45,6 +65,10 @@ Keep injecting `IReadRepository<T>` directly in `{Feature}Check.cs.create.md`'s 
 ### Description
 Split `IReadRepository<T>`'s interface declaration into its own solution, composed into `plateau-core` ahead of persistence, so `{Feature}Check` always has something real to inject.
 
+### Benefits
+- `{Feature}Check` injects a real interface at every plateau depth — no stub, no special case, no prose caveat to maintain.
+- A shared contract solution would also serve other common-baseline classes that need repository-shaped contracts before persistence arrives.
+
 ### Costs
 - Adds a repository interface — a capability the common baseline explicitly does not have — to the one plateau whose entire identity is "contracts and pipeline, no persistence, no external interaction." This dilutes that plateau's own definition for the sake of one class's worked example.
 - Introduces a third category of unit (a "contract solution") alongside Solution/Plateau/Plateau Component, solving one instance of the problem instead of reusing the cross-solution `.extend.md` mechanism the codebase already has for exactly this class (`solution-domain-shared-rules`'s own `{Feature}Check.cs.extend.md`).
@@ -53,6 +77,10 @@ Split `IReadRepository<T>`'s interface declaration into its own solution, compos
 
 ### Description
 Create a new, separate solution whose only job is to inject `IReadRepository<T>` into `{Feature}Check`, `depends_on` both `solution-dto-property-validators` and `solution-repository-integration`.
+
+### Benefits
+- The dependency between the two solutions becomes explicit metadata (`depends_on`) instead of an implicit cross-solution `.extend.md` link.
+- `solution-dto-property-validators`'s own example stays honest about the baseline while a dedicated unit delivers the concrete `Load` wherever persistence exists.
 
 ### Costs
 - Adds a solution, and a `depends_on` edge, purely to move code that already has a natural, established home (`solution-repository-integration`'s own `Implementation/`, via `.extend.md`) — more indirection for no additional capability, and previously rejected for the same reason in this codebase's own design discussion.

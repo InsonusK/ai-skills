@@ -20,10 +20,10 @@ creates:
 extends: []
 depends_on: []
 adr:
-  - "[[library/angular/architecture/solutions/solution-design-system-structure.skill/adr/design-system-workspace-tooling.md|design-system-workspace-tooling]]"
-  - "[[library/angular/architecture/solutions/solution-design-system-structure.skill/adr/library-build-tooling.md|library-build-tooling]]"
-  - "[[library/angular/architecture/solutions/solution-design-system-structure.skill/adr/release-versioning-strategy.md|release-versioning-strategy]]"
-  - "[[library/angular/architecture/solutions/solution-design-system-structure.skill/adr/component-preview-tooling.md|component-preview-tooling]]"
+  - adr/design-system-workspace-tooling.md
+  - adr/library-build-tooling.md
+  - adr/release-versioning-strategy.md
+  - adr/component-preview-tooling.md
 ---
 
 # Goal

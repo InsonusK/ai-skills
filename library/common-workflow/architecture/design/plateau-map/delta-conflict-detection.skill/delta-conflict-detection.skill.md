@@ -8,7 +8,7 @@ tags:
   - stack
   - concern/architecture
 adr:
-  - "[[library/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/adr/intersection-registry-design|Intersection Registry: per-element files, placed at the shallowest plateau where the intersection is real]]"
+  - adr/intersection-registry-design.md
 ---
 
 # Goal

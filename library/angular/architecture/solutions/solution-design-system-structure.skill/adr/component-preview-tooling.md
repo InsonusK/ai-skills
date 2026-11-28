@@ -23,6 +23,8 @@ A plain Angular application, part of this repository's workspace, renders each c
 
 ## Self-built demo Angular application
 
+**Selected.**
+
 ### Description
 
 A standard Angular application (the second project in this repository's Angular CLI workspace) imports the library and renders a page per component (or per component family) with representative usage examples, states, and variants.

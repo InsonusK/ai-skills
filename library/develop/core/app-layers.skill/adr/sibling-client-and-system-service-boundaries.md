@@ -14,7 +14,7 @@ tags:
 Should external API clients remain under infrastructure, and does one service still mean exactly one infrastructure adapter?
 
 # Selected variant
-[Sibling client and service boundaries](#sibling-client-and-service-boundaries)
+**Selected variant:** [[#Sibling client and service boundaries]]
 
 Owner decision, 2026-11-26.
 

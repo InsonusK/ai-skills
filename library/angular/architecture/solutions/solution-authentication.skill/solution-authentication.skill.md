@@ -26,8 +26,8 @@ depends_on:
   - "[[library/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
   - "[[library/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
 adr:
-  - "[[library/angular/architecture/solutions/solution-authentication.skill/adr/token-storage-strategy.md|token-storage-strategy]]"
-  - "[[library/angular/architecture/solutions/solution-authentication.skill/adr/authorization-model.md|authorization-model]]"
+  - adr/token-storage-strategy.md
+  - adr/authorization-model.md
 ---
 
 # Goal

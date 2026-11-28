@@ -23,8 +23,8 @@ extends:
 depends_on:
   - "[[library/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]"
 adr:
-  - "[[library/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/adr/tenant-resolution-strategy.md|tenant-resolution-strategy]]"
-  - "[[library/angular/architecture/solutions/solution-design-system-multi-tenant-theming.skill/adr/tenant-palette-scope.md|tenant-palette-scope]]"
+  - adr/tenant-resolution-strategy.md
+  - adr/tenant-palette-scope.md
 ---
 
 # Goal

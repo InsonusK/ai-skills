@@ -23,6 +23,8 @@ The design system's theme (`theme.scss`'s `mat.theme()` output, plus `custom-tok
 
 ## Platform-shell applies the theme in production; embeddable apps apply it only for standalone development
 
+**Selected.**
+
 ### Description
 
 Only `apps/platform-shell` includes `theme.scss`/`custom-tokens.scss` in its production build's applied styles at the root selector. Each embeddable app's repository also imports these files (so that running the app standalone, outside the platform, during local development still looks correct), but this application of the theme is inert/redundant once that app's components are mounted inside the platform's document, since Angular Material and this design system's own components resolve their styling from whatever CSS custom properties are already present at the document root — which the platform has already set.

@@ -23,6 +23,8 @@ The access token is held only in an in-memory Signal inside `libs/shared/state`'
 
 ## In-memory access token + HttpOnly refresh cookie
 
+**Selected.**
+
 ### Description
 
 Access token lives only as an in-memory Signal (part of the `shared-state` auth slice from `solution-global-store`), lost on full page reload by design. Refresh token lives in an `HttpOnly`/`Secure`/`SameSite` cookie, never touched by JS. On bootstrap and on 401 responses, the app calls a refresh endpoint; the browser attaches the refresh cookie automatically, and the response body contains a new access token that is stored back into memory.

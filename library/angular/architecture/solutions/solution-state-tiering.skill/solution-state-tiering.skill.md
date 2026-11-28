@@ -22,7 +22,7 @@ extends:
 depends_on:
   - "[[library/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
 adr:
-  - "[[library/angular/architecture/solutions/solution-state-tiering.skill/adr/state-tiering-policy.md|state-tiering-policy]]"
+  - adr/state-tiering-policy.md
 ---
 
 # Goal

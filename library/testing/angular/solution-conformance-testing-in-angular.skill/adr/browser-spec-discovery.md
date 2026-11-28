@@ -16,7 +16,7 @@ tags:
 How does browser discovery include the existing catalog layers without changing their assertion rules?
 
 # Selected variant
-[All browser suffixes in the UI kind](#all-browser-suffixes-in-the-ui-kind)
+**Selected variant:** [[#All browser suffixes in the UI kind]]
 
 # Searched variants
 ## All browser suffixes in the UI kind

@@ -26,9 +26,9 @@ depends_on:
   - "[[library/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
   - "[[library/angular/architecture/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]"
 adr:
-  - "[[library/angular/architecture/solutions/solution-app-testing.skill/adr/test-runner-choice.md|Test runner choice ADR]]"
-  - "[[library/angular/architecture/solutions/solution-app-testing.skill/adr/e2e-framework-choice.md|E2E framework choice ADR]]"
-  - "[[library/angular/architecture/solutions/solution-app-testing.skill/adr/testing-layers-and-mocking.md|Testing layers and mocking ADR]]"
+  - adr/test-runner-choice.md
+  - adr/e2e-framework-choice.md
+  - adr/testing-layers-and-mocking.md
 ---
 
 > This solution deliberately does not cover UI/component/visual testing. A component only ever needs a signal/input on the way in and a rendered result/event on the way out to be tested — it never needs the business-layer mocking this solution establishes (`HttpTestingController`, faked Facade/Client). That entire concern — behavioral component tests, visual regression, and accessibility checks — is owned by [[library/angular/architecture/solutions/solution-ui-testing.skill/solution-ui-testing.skill.md|solution-ui-testing]], which reuses this solution's Vitest/Playwright ADRs without re-arguing the tool choice.

@@ -30,9 +30,9 @@ extends:
 depends_on:
   - "[Angular conformance testing](../solution-conformance-testing-in-angular.skill/solution-conformance-testing-in-angular.skill.md)"
 adr:
-  - "[Project aggregation](./adr/project-aggregation.md)"
-  - "[Delta selection](./adr/delta-selection.md)"
-  - "[Fresh runner evidence](./adr/fresh-runner-evidence.md)"
+  - adr/project-aggregation.md
+  - adr/delta-selection.md
+  - adr/fresh-runner-evidence.md
 ---
 
 # Goal

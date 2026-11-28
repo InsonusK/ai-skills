@@ -26,7 +26,7 @@ depends_on:
   - "[[library/dotnet/architecture/solutions/solution-domain-behaviour.skill/solution-domain-behaviour.skill|solution-domain-behaviour]]"
   - "[[library/dotnet/architecture/solutions/solution-infrastructure-project.skill/solution-infrastructure-project.skill|solution-infrastructure-project]]"
 adr:
-  - "[[library/dotnet/architecture/solutions/solution-domain-configuration.skill/adr/entity-configuration-lives-in-domain|entity-configuration-lives-in-domain]]"
+  - adr/entity-configuration-lives-in-domain.md
 built_on_plateau:
 ---
 

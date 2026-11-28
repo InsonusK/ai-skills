@@ -54,6 +54,10 @@ The variation point must attach with no change to a repository. Go has no scope 
 ### Description
 `Statements.session(ctx)` reads a transaction from the context, if there is one.
 
+### Benefits
+- The routing decision is explicit in the repository's own statements file, readable without knowing GORM's callback and pool internals.
+- No plugin, callback set, or pool wrapper to keep compatible with a GORM upgrade.
+
 ### Costs
 - vp-postgres knows the unit of work, and removing the unit leaves code that reads a context no one fills. The unit still has to open the transaction before the first write, which `session` cannot tell from a read.
 
@@ -61,6 +65,10 @@ The variation point must attach with no change to a repository. Go has no scope 
 
 ### Description
 The middleware runs BEGIN before the handler.
+
+### Benefits
+- One BEGIN per command, so a write adds no SAVEPOINT/RELEASE round trips.
+- Covers every statement of the command, also a `Raw(...).Scan` as the first write.
 
 ### Costs
 - A command that only reads holds a connection in a transaction for as long as it runs, also through its calls of another service, which [vp-unit-of-work](library/architecture/spec/vp-unit-of-work.skill/vp-unit-of-work.skill.md) forbids.

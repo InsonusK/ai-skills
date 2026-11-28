@@ -23,6 +23,8 @@ The Client is the only place a raw `HttpErrorResponse` is ever caught. It is alw
 
 ## Client throws a typed domain error; Facade preserves the throw/reject channel
 
+**Selected.**
+
 ### Description
 
 `OrdersClient.addOrder()` wraps its `HttpClient` call; any `HttpErrorResponse` it catches is mapped to a typed `OrdersAddError` (a discriminated union or class hierarchy specific to that operation) and rethrown — never left as a raw `HttpErrorResponse`. `OrdersFacade.addOrder()` calls the Client; if it needs to add business-level context, it catches the domain error and rethrows an enriched version, still via throw. The Signal Store method (`try/catch`) or NgRx effect (`catchError`) at the call site handles the typed domain error exactly as it already does today.

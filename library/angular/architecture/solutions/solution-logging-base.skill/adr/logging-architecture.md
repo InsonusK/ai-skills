@@ -23,6 +23,8 @@ A `LoggerService` is the only way any code in the application logs. Internally, 
 
 ## Custom LoggerService over pluggable LogSinks, structured entries
 
+**Selected.**
+
 ### Description
 
 Every log call goes through `LoggerService.debug/info/warn/error(message, context?)`, where `context` is a plain object (e.g. `{ feature: 'orders', orderId: '123' }`). The service iterates over an injected, multi-provider list of `LogSink` implementations (`LOG_SINKS`, `{ multi: true }`) and forwards each entry to all of them. This solution provides only `ConsoleLogSink`. Minimum log level is read from environment-specific configuration, filtering out `debug`/`info` in production builds while keeping `warn`/`error` always on.

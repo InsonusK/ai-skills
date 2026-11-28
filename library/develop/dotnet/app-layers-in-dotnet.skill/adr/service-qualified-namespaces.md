@@ -20,7 +20,7 @@ The same ownership question applies to `App.Host`, `Shared` and module types.
 
 # Selected variant
 
-[Service-qualified namespaces with independent project identities](#service-qualified-namespaces-with-independent-project-identities)
+**Selected variant:** [[#Service-qualified namespaces with independent project identities]]
 
 The owner selected `{ServiceName}.{Layer}.{LogicalName}` and approved the
 migration plan: one `TodoExampleService` root for variants of the same Todo

@@ -22,7 +22,7 @@ creates:
   - "pyproject.toml"
 extends:
 adr:
-  - "[[./adr/build-backend-and-metadata-format.md|Build backend and metadata format]]"
+  - adr/build-backend-and-metadata-format.md
 ---
 
 # Goal

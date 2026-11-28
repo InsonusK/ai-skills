@@ -32,10 +32,10 @@ depends_on:
 built_on_plateau:
 adr:
   - adr/one-livingdoc-view.md
-  - "[[library/testing/core/solution-conformance-testing.skill/adr/mutation-tool-per-stack.md|Mutation-testing tool per stack]]"
-  - "[[library/testing/core/solution-conformance-testing.skill/adr/scenario-report.md|Scenario report from tagged .feature files]]"
-  - "[[library/testing/core/solution-conformance-testing.skill/adr/livingdoc-renderer-per-protocol.md|Living-doc renderer per Cucumber report protocol]]"
-  - "[[library/testing/core/solution-conformance-testing.skill/adr/caller-contract.md|Caller contract: independent test kinds, purpose of the run, caller-chosen directories]]"
+  - adr/mutation-tool-per-stack.md
+  - adr/scenario-report.md
+  - adr/livingdoc-renderer-per-protocol.md
+  - adr/caller-contract.md
 ---
 
 # Goal

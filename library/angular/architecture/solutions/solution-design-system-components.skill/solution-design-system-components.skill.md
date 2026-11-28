@@ -24,8 +24,8 @@ depends_on:
   - "[[library/angular/architecture/solutions/solution-design-system-structure.skill/solution-design-system-structure.skill.md|solution-design-system-structure]]"
   - "[[library/angular/architecture/solutions/solution-design-system-tokens.skill/solution-design-system-tokens.skill.md|solution-design-system-tokens]]"
 adr:
-  - "[[library/angular/architecture/solutions/solution-design-system-components.skill/adr/component-api-authoring-style.md|component-api-authoring-style]]"
-  - "[[library/angular/architecture/solutions/solution-design-system-components.skill/adr/component-encapsulation-strategy.md|component-encapsulation-strategy]]"
+  - adr/component-api-authoring-style.md
+  - adr/component-encapsulation-strategy.md
 ---
 
 # Goal

@@ -26,6 +26,8 @@ This ADR does not cover how a component itself is tested — a component's own b
 
 ## Layered strategy: TestBed for non-DOM business-layer units; HttpTestingController only at Client tests, MSW only for cross-layer/integration tests
 
+**Selected.**
+
 ### Description
 
 See "Selected variant" above — this is the strategy being adopted.

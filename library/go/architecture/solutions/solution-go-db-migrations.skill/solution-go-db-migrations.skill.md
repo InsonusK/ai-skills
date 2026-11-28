@@ -24,9 +24,9 @@ depends_on:
   - "[[library/go/architecture/solutions/solution-persistent-db.skill/solution-persistent-db.skill.md|solution-persistent-db]]"
 built_on_plateau:
 adr:
-  - "[[library/go/architecture/solutions/solution-go-db-migrations.skill/adr/migration-tool-choice.md|Migration tool choice]]"
-  - "[[library/go/architecture/solutions/solution-go-db-migrations.skill/adr/job-only-not-startup-run.md|Deploy-time job only, never startup-run (superseded)]]"
-  - "[[library/go/architecture/solutions/solution-go-db-migrations.skill/adr/migration-mode-per-platform.md|Two modes, chosen per deployment platform]]"
+  - adr/migration-tool-choice.md
+  - adr/job-only-not-startup-run.md
+  - adr/migration-mode-per-platform.md
 ---
 
 # Goal

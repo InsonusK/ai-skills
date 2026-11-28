@@ -28,8 +28,8 @@ depends_on:
   - "[[library/testing/core/solution-conformance-testing.skill/solution-conformance-testing.skill.md|solution-conformance-testing]]"
 built_on_plateau:
 adr:
-  - "[[./adr/distribution-version.md|Distribution version]]"
-  - "[[library/testing/go/solution-conformance-testing-in-go.skill/adr/mutation-tool-choice.md|Mutation-testing tool for Go]]"
+  - adr/distribution-version.md
+  - adr/mutation-tool-choice.md
 ---
 
 # Goal

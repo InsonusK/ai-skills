@@ -11,7 +11,7 @@ tags:
   - pytest-bdd
 
 adr:
-  - "[[library/testing/python/cucumber-testing-in-python.skill/adr/test-location|Test location]]"
+  - adr/test-location.md
 ---
 
 # Goal

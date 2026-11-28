@@ -21,6 +21,8 @@ Every release of the design system needs a correctly classified semver bump (pat
 
 ## Changesets
 
+**Selected.**
+
 ### Description
 
 Each pull request that changes the published package includes a small changeset file (a short markdown file stating the intended bump — patch/minor/major — and a human-readable description). On release, tooling aggregates all pending changesets into the version bump and CHANGELOG automatically.

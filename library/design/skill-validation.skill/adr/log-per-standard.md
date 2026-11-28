@@ -20,6 +20,8 @@ The validation config supports several rules, each selecting files (possibly ove
 
 ## Per-standard log files
 
+**Selected.**
+
 ### Description
 One file per reference standard: `./.validation/{validation-skill}-log.yaml`, each a flat map of repository-root-relative file path → last validation date.
 

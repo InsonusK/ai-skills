@@ -22,9 +22,9 @@ depends_on:
   - "[[library/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
   - "[[library/angular/architecture/solutions/solution-state-tiering.skill/solution-state-tiering.skill.md|solution-state-tiering]]"
 adr:
-  - "[[library/angular/architecture/solutions/solution-api-http-layer.skill/adr/facade-client-layering.md|Facade Client Layering ADR]]"
-  - "[[library/angular/architecture/solutions/solution-api-http-layer.skill/adr/error-handling-strategy.md|Error Handling Strategy ADR]]"
-  - "[[library/angular/architecture/solutions/solution-api-http-layer.skill/adr/dto-mapping-strategy.md|Dto Mapping Strategy ADR]]"
+  - adr/facade-client-layering.md
+  - adr/error-handling-strategy.md
+  - adr/dto-mapping-strategy.md
 ---
 
 # Goal

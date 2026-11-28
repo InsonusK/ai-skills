@@ -23,6 +23,8 @@ Vitest is adopted as the test runner for all unit and component tests, matching 
 
 ## Vitest
 
+**Selected.**
+
 ### Description
 
 Angular CLI's own default test runner from Angular 21 onward, built on Vite/esbuild, with native ESM support and no separate transform step for TypeScript.
