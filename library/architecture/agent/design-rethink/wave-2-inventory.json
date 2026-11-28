@@ -642,7 +642,7 @@
         "api-client",
         "app-layers"
       ],
-      "owned_file_count": 10,
+      "owned_file_count": 13,
       "example_roots": [
         "library/develop/core/api-client.skill/examples"
       ]

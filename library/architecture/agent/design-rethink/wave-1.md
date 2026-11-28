@@ -122,3 +122,31 @@ navigation benefit and the cost of transitive loads/cycles. Service identifies
 api-client only for API adaptation; repository/infrastructure have no invented
 generic implementation contract. The gate allows these table links while still
 rejecting unrelated outgoing dependencies hidden in topology ADRs.
+
+## Protocol mechanics versus logical API adaptation
+
+Owner clarification, 2026-11-28: client encapsulates endpoint calls, protocol-error
+normalization and configured technical policies; service encapsulates API DTO to
+Domain Model conversion and the API operations/clients realizing its consumer
+method. Equivalent HTTP-to-gRPC replacement preserves service; logical API changes
+are absorbed by client declarations and service realization while the consumer
+contract remains implementable.
+
+The protocol-neutral-client-contract ADR resolves the earlier representation
+question: client-owned logical API DTOs and common technical outcomes cross into
+service; transport-specific generated types and raw protocol exceptions do not.
+Shared generated DTOs qualify when both protocols expose the same contract; an
+extra handwritten type is not required solely because the DTO was generated. This is
+mechanical wire conversion, not a move of domain mapping back into client.
+
+Examples now distinguish multiple calls of one client from UserService owning
+UsersClient and NamesClient of the same Identity system, each with its own API.
+A separate protocol-swap diagram makes that change boundary visible. Permitting
+service-to-service calls after a split into independent systems remains a proposed
+architecture change; no new call edge is authorized by these examples.
+
+A separate review checked equivalent transport replacement, remote error meaning,
+service/domain mapping ownership, and one-client versus two-client examples. It
+retained explicit unavailable-to-application-unavailable mapping and kept the
+proposed cross-system service-call edge out of the accepted layer map. The shared
+check gate and repository structural suite pass; no runtime files are changed.

@@ -158,9 +158,10 @@ Proposed documentation contract for wave 2:
   do not fold implementation into admission or require all stacks to exist at once.
 - Proposed: reusable authoring skills in `library/architecture/design/`; keep the old
   design pipeline available to its existing consumers.
-- Open: the public DTO for a gRPC client may be a generated provider message or an
-  API-shaped client-owned DTO. Decide before changing the generated-message rule;
-  neither choice permits returning consumer domain entities from the client.
+- Resolved by owner requirement, 2026-11-28: protocol replacement for an equivalent
+  logical API must not change service; client-owned protocol-neutral API DTOs and
+  normalized outcomes define the contract; generated DTOs qualify only when
+  shared unchanged by the protocol implementations.
 - Accepted by owner: sibling domain/infrastructure/client/service boundaries;
   partial contract clients grouped by entity responsibility; a service may compose
   multiple clients of one external system; one owning service per client by default.
@@ -168,9 +169,10 @@ Proposed documentation contract for wave 2:
   `api-client` and `app-layers` before architecture changes.
 - Proposed: per-stack catalog overlay layouts with explicit alternatives; base
   capability documentation with no automatic proliferation of VP skills.
-- Open: generated versus API-shaped client-owned gRPC DTOs; physical .NET project
-  placement and cross-module model ownership; shared configuration policy when
-  multiple clients use the same provider endpoint.
+- Open: physical .NET project placement, cross-module model ownership and shared
+  configuration policy when several clients use one provider endpoint.
+- Open: service-to-service composition after a provider splits into independent
+  systems; current cross-system orchestration remains above integration services.
 
 ## Status
 

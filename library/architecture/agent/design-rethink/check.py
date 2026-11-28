@@ -26,7 +26,7 @@ for row in section.splitlines()[2:]:
     cells = [cell.strip() for cell in row.strip('|').split('|')]
     if len(cells) != 4 or cells[1] not in relations or not all(cells):
         errors.append(f'Invalid dependency row: {row}')
-for marker in ['implementation pending', 'return-value ADR', 'client-owned API DTOs']:
+for marker in ['implementation pending', 'return-value ADR', 'client-owned logical API DTOs']:
     if marker not in sample:
         errors.append(f'Missing boundary qualification: {marker}')
 if errors:

@@ -25,7 +25,7 @@ Owner decision, 2026-11-26.
 **Selected.**
 
 ### Description
-A client covers the needed operations of one entity or cohesive resource, including reads; a large OpenAPI or proto file may have several clients. The copied provider file remains complete. Service adapts one external system, using several clients where needed. A large system can be decomposed into cohesive services. Each client normally has one owning service; sharing is exceptional, justified, and limited to those decomposed services of the same system. This replaces the one-client-per-API and one-service-per-client cardinality; it does not permit one service to integrate unrelated systems.
+A client covers the needed operations of one entity or cohesive resource, including reads; a large OpenAPI or proto file may have several clients. A split into several API contracts inside that same system also allows separate clients; it does not force service consumers to coordinate them. The copied provider files remain complete. Service adapts one external system, using several clients where needed. A large system can be decomposed into cohesive services. Each client normally has one owning service; sharing is exceptional, justified, and limited to those decomposed services of the same system. This replaces the one-client-per-API and one-service-per-client cardinality; it does not permit one service to integrate unrelated systems.
 
 ### Benefits
 - Boundaries follow integration responsibilities rather than provider packaging.

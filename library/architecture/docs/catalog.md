@@ -88,8 +88,10 @@ places retry in client middleware. The
 [client organization card](../backlog/client-code-organization.md) contains broader
 questions. Sibling client/service boundaries and one-system service scope are
 now recorded in the shared skills; exact stack projects and cross-module model
-ownership still need propagation and review. Whether gRPC returns
-generated messages or client-owned API DTOs remains to be decided explicitly.
+ownership still need propagation and review. The [protocol-neutral client decision](../../develop/core/api-client.skill/adr/protocol-neutral-client-contract.md)
+now requires client-owned logical API DTOs at the service boundary; transport-specific
+wire messages stay inside client implementations; shared generated DTOs may
+implement the same logical contract for both protocols.
 
 ## Existing decisions and unresolved work
 

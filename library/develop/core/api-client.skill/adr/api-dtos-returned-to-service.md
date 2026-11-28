@@ -25,7 +25,7 @@ Owner decision, 2026-11-26.
 **Selected.**
 
 ### Description
-Client parses the provider response into an API-shaped DTO; service adapts that DTO, composing calls of its external system where necessary, and constructs consumer entities through domain APIs. This supersedes the selection in [client-returns-application-values](./client-returns-application-values.md), including its prohibition on response DTOs reaching service. API DTOs do not escape service into commands or domain logic. DTO representation may use a generated type or a client-owned API-shaped type; stack-specific representation is decided during propagation, without restoring consumer-model mapping in client.
+Client parses the provider response into an API-shaped DTO; service adapts that DTO, composing calls of its external system where necessary, and constructs consumer entities through domain APIs. This supersedes the selection in [client-returns-application-values](./client-returns-application-values.md), including its prohibition on response DTOs reaching service. API DTOs do not escape service into commands or domain logic. The representation question is resolved by [protocol-neutral-client-contract](./protocol-neutral-client-contract.md): service receives client-owned logical API DTOs, while transport-specific generated messages remain inside client; consumer-model mapping remains in service.
 
 ### Benefits
 - One explicit boundary owns adaptation, even when a single response suffices.
