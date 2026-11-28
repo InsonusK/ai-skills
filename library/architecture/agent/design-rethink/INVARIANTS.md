@@ -171,8 +171,8 @@ Proposed documentation contract for wave 2:
   capability documentation with no automatic proliferation of VP skills.
 - Open: physical .NET project placement, cross-module model ownership and shared
   configuration policy when several clients use one provider endpoint.
-- Open: service-to-service composition after a provider splits into independent
-  systems; current cross-system orchestration remains above integration services.
+- Confirmed by owner, 2026-11-28: retain the prohibition on service-to-service
+  calls; cross-system composition stays in commands or domain services.
 
 ## Status
 

@@ -150,3 +150,13 @@ service/domain mapping ownership, and one-client versus two-client examples. It
 retained explicit unavailable-to-application-unavailable mapping and kept the
 proposed cross-system service-call edge out of the accepted layer map. The shared
 check gate and repository structural suite pass; no runtime files are changed.
+
+## Historical ADR clarity and service-call confirmation
+
+The owner confirmed retaining the service-to-service prohibition. The example
+and decision log now record that choice rather than leave it open. The old
+client-returns-application-values ADR retains its original alternatives and
+selection as history, but its description, decision metadata, leading notice
+and selection paragraph explicitly mark it superseded. The current rule is
+service-owned API DTO to Domain Model mapping even for a single-response
+full-name conversion. The owning skill labels the historical ADR link accordingly.

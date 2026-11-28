@@ -94,7 +94,7 @@ client. This may require changing the orchestration and its wiring at project le
 @import "./diagrams/master-system-before.mmd" {as="mermaid"}
 @import "./diagrams/master-system-after.mmd" {as="mermaid"}
 
-### Open design question: service calling service
+### Decision: keep cross-system composition above integration services
 
 Allowing an integration service to call another could keep its consumer-facing
 contract while the provider splits into systems. It also changes the one-system
@@ -102,7 +102,6 @@ boundary and can hide new dependency chains, cycles and failure/consistency
 semantics. Calls alone do not guarantee that the original business capability
 can still be honored.
 
-The current rule remains cross-system composition above integration services.
-A service-to-service facade is an alternative to evaluate explicitly against
-that rule, including ownership, permitted direction, cycle prevention and tests;
-it is not approved by the same-system client-composition examples above.
+Owner confirmed on 2026-11-28: retain the prohibition on service-to-service calls.
+Cross-system composition stays in commands or domain services; splitting APIs
+inside one system remains a separate case handled by its integration service.

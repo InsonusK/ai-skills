@@ -76,7 +76,7 @@ Assign each client to one service of its external system, permitting shared use 
 - Fix: keep one owner normally; first split an overly broad client by entity responsibility, and document why any remaining same-system sharing is preferable.
 
 ### Return API DTOs from the client
-Return the API-shaped response DTOs and technical outcomes of [the protocol-neutral client contract](#keep-the-client-contract-independent-of-the-protocol) from client methods, leaving conversion into consumer entities or models to the service, as decided in [api-dtos-returned-to-service](./adr/api-dtos-returned-to-service.md), superseding [client-returns-application-values](./adr/client-returns-application-values.md).
+Return the API-shaped response DTOs and technical outcomes of [the protocol-neutral client contract](#keep-the-client-contract-independent-of-the-protocol) from client methods, leaving conversion into consumer entities or models to the service, as decided in [api-dtos-returned-to-service](./adr/api-dtos-returned-to-service.md), superseding [the superseded historical mapping decision](./adr/client-returns-application-values.md).
 - Violation: splitting a full-name field into the consumer's name model in the client; returning a consumer entity; passing a domain entity into client code to populate.
 - Risk: application semantics enter transport code, and replacing the provider rewrites domain mapping in several places.
 - Fix: parse and validate the wire representation in client; let service map the DTO through public domain construction and behavior APIs; treat malformed provider data as a technical failure, never automatically as invalid caller input.
