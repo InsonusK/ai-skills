@@ -4,7 +4,8 @@ description: Shared Kafka connection/config plumbing that solution-go-kafka-prod
 whenToUse: when a Go web-service needs to publish or consume Kafka messages for the first time and no shared broker configuration exists yet
 domain: skill
 type: architecture
-version: 20260917000000
+version: 20261128000000
+updated: 20261128
 tags:
   - skill/architecture/solution
   - solution/messaging-infrastructure
@@ -19,12 +20,7 @@ built_on_plateau:
 adr:
 ---
 
-> Draft contract — no consumer yet. No plateau in this catalog's first build composes
-> [[library/go/architecture/solutions/solution-go-kafka-producer.skill/solution-go-kafka-producer.skill.md|solution-go-kafka-producer]] or
-> [[library/go/architecture/solutions/solution-go-kafka-consumer.skill/solution-go-kafka-consumer.skill.md|solution-go-kafka-consumer]]
-> yet (see `library/go/architecture/variability-map.md` VP-C006/VP-C007). This solution's shape is
-> plausible, not verified against a runnable example — treat it as a starting point, not a
-> finished contract, until a real plateau consumes it.
+This contract supplies shared broker configuration shapes; the application selects the Kafka client and implements its connection wiring.
 
 # Goal
 - Give both the producer and consumer solutions one shared place for the broker address and any connection-wide settings, mirroring [[library/go/architecture/solutions/solution-go-domain-ports.skill/solution-go-domain-ports.skill.md|solution-go-domain-ports]]'s shared-prerequisite shape for the outbound-port packages.
@@ -33,7 +29,7 @@ adr:
 - Holds connection/config plumbing only — no publish or consume logic, which belong to the producer/consumer solutions themselves.
 
 # Boundaries
-- Which Kafka client library this catalog standardizes on is not yet decided — a real application of this solution should confirm a choice (e.g. `github.com/twmb/franz-go` or `github.com/segmentio/kafka-go`) and record it as an ADR before relying on this skeleton for real code.
+- Select the project's Kafka client library (e.g. `github.com/twmb/franz-go` or `github.com/segmentio/kafka-go`) and record the choice as a project ADR before implementing the connection and messaging adapters.
 
 # Template Skill Mutations
 FILES:

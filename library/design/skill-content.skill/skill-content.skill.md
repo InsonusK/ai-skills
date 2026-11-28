@@ -2,7 +2,7 @@
 name: skill-content
 description: How the prose inside a skill file must read — Goal as a deliverables list or, in a skill describing an element, as that element's purpose; rules as named headings with one imperative sentence and Violation/Risk/Fix, every fact stated once, no authoring narrative, illustrations moved out
 whenToUse: when you write or revise the text of a skill — the Goal and Core Principle bullets, the rule statements and their Violation/Risk/Fix elaboration — or when you tighten an existing skill for concision
-updated: 20261011
+updated: 20261128
 tags:
   - skill/core
   - stack
@@ -10,6 +10,7 @@ tags:
 adr:
   - adr/rules-as-headings.md
   - adr/goal-by-skill-genre.md
+  - adr/consumer-instructions-without-catalog-status.md
 ---
 
 # Goal
@@ -83,6 +84,12 @@ Move an illustrative code block or table longer than ~15 lines (a full runnable 
 - Risk: an over-long example buries the rules the agent must skim; a moved-out contract forces the agent to open a second file to learn a rule it must follow.
 - Fix: move only content that illustrates a rule; keep a code block, snippet, or table inline when it defines part of the rule/contract itself (a table of required fields, a 3-line config flag). For a code block, script, or config file, first apply [skill-code-delivery](library/design/skill-code-delivery.skill/skill-code-delivery.skill.md): code that is the same in every project leaves the skill file as a script, asset, or template whatever its length, and only what remains an instruction falls under this rule.
 
+### Keep catalog development status out of consumer instructions
+Keep migration-wave numbers, release progress and catalog backlog notes in authoring/project tracking artifacts rather than consumer skill instructions or templates.
+- Violation: a runtime skill tells an external agent that its examples await the next authoring wave or that no catalog consumer exists yet.
+- Risk: the agent receives irrelevant development context and contradictory instructions instead of a usable contract.
+- Fix: preserve actual capability limits and required project decisions as application requirements, track catalog work separately, and follow [consumer-instructions-without-catalog-status](./adr/consumer-instructions-without-catalog-status.md).
+
 ## SHOULD
 
 ### Justifications stay impersonal
@@ -107,3 +114,4 @@ Remove every `hint`, `example`, and `code example` block, and the `# How Apply t
 - [ ] Every code block, script, and config file was classified per [skill-code-delivery](library/design/skill-code-delivery.skill/skill-code-delivery.skill.md) before the previous item was applied to it.
 - [ ] Justifications carry no authoring narrative; at most one precedent per `Risk`, stated as a fact about the artifact.
 - [ ] No `hint`/`example`/`code example` block and no `# How Apply this template` section remain.
+- [ ] Check [consumer instruction scope](#keep-catalog-development-status-out-of-consumer-instructions).

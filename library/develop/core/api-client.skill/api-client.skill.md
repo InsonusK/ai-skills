@@ -29,7 +29,6 @@ adr:
 - **Fixed once, written per API** - Configuration, the timeout, the call log, the request id, the error report, and the mock switch are fixed code the same for every API of every application; the application writes entity-focused client methods, API DTO parsing, emulator answers, and the service's consumer-model mapping.
 
 # Scope
-- Migration status: shared rules are revised; stack client skills and architecture examples await propagation of paths and DTO returns.
 - Covers the calls an application makes to HTTP and gRPC APIs of other services. The transport-specific parts are the variation points `vp-http-client` and `vp-grpc-client` and their stack extensions.
 - A retry of a failed call is not here: it comes from its own variation point, `vp-client-retry`, a client middleware, so no call is repeated unless the application attached it and the client marked the operation safe to repeat.
 - A split into independent external systems changes project dependencies, failure and consistency boundaries; cross-system composition is a project design question, distinct from splitting one system's API (see [api-change-cases](./examples/api-change-cases.md)).

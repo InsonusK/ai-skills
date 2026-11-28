@@ -2,7 +2,7 @@
 name: base-plateau-extension-in-dotnet
 description: How a variation point extends the base plateau in dotnet — one registration method per module, API, and variation point called in order in the three sections of Program.cs (AddTodoModule, AddCommandMiddleware with the list of command middleware, AddHttpApi and AddGrpcApi with their lists of API middleware, every entry point registered as an Entry), every middleware in a folder of its own named {Name}Middleware — the command middleware as MediatR pipeline behaviors in the Middleware project, an API's in App.Host/Api/{Api}/Middleware inside its fixed RequestLogMiddleware and AnswerFailuresMiddleware — marks as interfaces of Shared a command implements, rejections as ErrorKindException, the variation point's own settings, and attach.allow, with a sample access variation point attached to the HTTP example
 whenToUse: when you write, attach, or review a variation point of a dotnet application built on the base plateau, when you add a middleware around commands or around the requests or calls of an API, or when you add a command or a module to such an application
-updated: 20261119
+updated: 20261128
 tags:
   - stack/dotnet
   - concern/architecture
@@ -214,7 +214,7 @@ public sealed class AuditMiddleware(IServiceScopeFactory scopes) : IMiddleware
 
 - Violation: `context.RequestServices.GetRequiredService<IAuditLog>()`; a scoped service (`DbContext`) taken in the constructor; a field set in `InvokeAsync`.
 - Risk: `context.RequestServices` is the web host's own container (`WebHost.CreateBuilder`), which holds none of the application's services, so the call fails at run time; a scoped service taken in the constructor lives as long as the process and is shared by every request at once — a `DbContext` is not safe for that; a field is overwritten by the request served beside it.
-- Fix: the constructor takes singletons and `IServiceScopeFactory` only; the scope a middleware opens is its own, not the command's — a unit of work shared with the handler is the DB variation point's scope per command (README backlog).
+- Fix: the constructor takes singletons and `IServiceScopeFactory` only; the scope a middleware opens is its own, not the command's — a unit of work shared with the handler is the DB variation point's scope per command.
 
 ### Read the settings in the variation point's folder
 Read a variation point's settings with `{VariationPoint}Config.Load()` from one of its folders, called in the `try` of `AppConfig.Load()`, and register the result in `// [services]`; a `FormatException` stops the start with `startup failed` and exit code `1`.

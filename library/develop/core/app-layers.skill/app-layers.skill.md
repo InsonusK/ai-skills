@@ -27,7 +27,6 @@ adr:
 
 # Scope
 - Covers the stack-independent layer map; stack extensions determine physical packages and projects.
-- Client/service paths in existing stack examples still await the planned propagation wave.
 
 # Rule
 

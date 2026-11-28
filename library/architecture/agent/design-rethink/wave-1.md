@@ -189,3 +189,32 @@ agent copies are not hand-edited.
 Relocation validation: no old source-path references remain; the shared gate and
 repository suite pass, and 812 skills sync. Validation logs were refreshed through
 validation_queue.py (registration/pruning only, no validation dates stamped).
+
+## Consumer instructions separated from catalog progress
+
+The owner clarified that consumers use released master/develop skill sets and do
+not need migration-wave or draft-authoring status. Four current runtime skills
+contained such notes; those notes are removed. The .NET extension's old README
+backlog parenthesis is removed while its actual lifetime constraint remains.
+HTTP/gRPC client specs now state the current API DTO/normalized-outcome contract
+rather than retain old rules behind a development-status disclaimer. Stack code
+and example migration remains work in this plan, not an instruction to consumers.
+
+The audit also found nine older .NET/Go solution headers describing lack of prior
+consumers or unfinished catalog authoring. They now describe contract/template
+scope and required project inputs (Kafka client, serialization, retry, auth,
+subscription and relay policy), preserving those decisions rather than pretending
+they were finalized. No legacy implementation or runtime example was completed
+by this editorial pass.
+
+The skill-content standard now forbids catalog-progress notes in consumer
+instructions, with an owning ADR. The bulk-authoring harness keeps draft status
+in authoring artifacts. check-consumer-status.py scans all tracked skill/template
+entry files outside fenced code for the concrete error patterns. Runtime pending
+states, database migrations, async awaits, conformance todo states and authoring
+procedures describing artifact state remain valid and were retained.
+
+Consumer-status validation result: the expanded shared/sample gate and repository
+suite passed, covering 817 skill/template entry files; aism synced 812 skills.
+The broader source search left such catalogue notes only in authoring/history
+records. No executable template or example changed during this cleanup.

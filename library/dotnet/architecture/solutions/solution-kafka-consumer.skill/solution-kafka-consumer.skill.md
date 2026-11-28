@@ -1,10 +1,11 @@
 ---
 name: solution-kafka-consumer
-description: Skeleton — realizes AsyncInboundApi (VP-C007). A hosted background consumer per subscribed topic that deserializes each message and dispatches it into MediatR as a Command or Notification, with offset commit only after the handler succeeds.
+description: Shared contract — realizes AsyncInboundApi (VP-C007). A hosted background consumer per subscribed topic that deserializes each message and dispatches it into MediatR as a Command or Notification, with offset commit only after the handler succeeds.
 whenToUse: when a module must react to asynchronous messages from another service — subscribing to a Kafka topic and turning each message into a MediatR dispatch
 domain: skill
 type: architecture
-version: 20260901000000
+version: 20261128000000
+updated: 20261128
 tags:
   - skill/architecture/solution
   - concern/architecture
@@ -22,7 +23,7 @@ depends_on:
   - "[[library/dotnet/architecture/solutions/solution-mediator-integration.skill/solution-mediator-integration.skill|solution-mediator-integration]]"
 ---
 
-> **Draft contract — no consumer yet.** VP-C007 has no v3 prior art. This skeleton fixes the shape (hosted consumer → deserialize → dispatch → commit-after-success). The retry/dead-letter policy, the envelope-to-request mapping convention, and the poison-message handling are finalized with the first real subscription.
+Each subscription supplies its retry/dead-letter policy, envelope-to-request mapping and poison-message handling.
 
 # Goal
 - Turn each message on a subscribed topic into exactly one MediatR dispatch: a Command when the module must act, a Notification when it is a fact to observe.

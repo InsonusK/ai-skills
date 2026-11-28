@@ -4,7 +4,8 @@ description: Writes an outgoing message to a transactional outbox table in the s
 whenToUse: when a Go web-service both persists data (solution-persistent-db) and publishes to Kafka (solution-go-kafka-producer), and a specific publication is triggered by a change to that persisted data
 domain: skill
 type: architecture
-version: 20260917000000
+version: 20261128000000
+updated: 20261128
 tags:
   - skill/architecture/solution
   - solution/transactional-outbox
@@ -21,9 +22,7 @@ built_on_plateau:
 adr:
 ---
 
-> Draft contract — no consumer yet. No plateau in this catalog's first build realizes VP-C010 (see
-> `library/go/architecture/variability-map.md`). Full authoring is deferred until a real plateau
-> composes this solution.
+This contract supplies the outbox persistence and relay shapes; the application implements them against its store and publication port.
 
 # Goal
 - Guarantee a Kafka publication triggered by a persisted-data change is never lost or duplicated relative to that change — by writing both inside the same database transaction, then relaying the outbox row to Kafka asynchronously.

@@ -76,11 +76,10 @@ The shared contract has been revised in wave 1. The
 [api-client skill](../../develop/core/api-client.skill/api-client.skill.md) and
 [API DTOs mapped by service](../../develop/core/api-client.skill/adr/api-dtos-returned-to-service.md)
 assign all API-to-Domain Model mapping to service.
-The architecture specifications for both
-[HTTP](../spec/vp-http-client.skill/vp-http-client.skill.md) and
-[gRPC](../spec/vp-grpc-client.skill/vp-grpc-client.skill.md) prohibit returning
-response types to service. Those downstream rules, their scenarios and all three stack
-realizations await wave 2; this sample does not claim they already comply.
+The [HTTP](../spec/vp-http-client.skill/vp-http-client.skill.md) and
+[gRPC](../spec/vp-grpc-client.skill/vp-grpc-client.skill.md) specifications refine
+that protocol-neutral API DTO/outcome contract with their wire mechanics.
+Implementation progress is tracked in the authoring plan, not in those skills.
 
 The [retry spec](../spec/vp-client-retry.skill/vp-client-retry.skill.md) already
 places retry in client middleware. The
