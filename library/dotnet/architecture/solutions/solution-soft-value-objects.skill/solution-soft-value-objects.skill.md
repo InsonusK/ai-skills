@@ -21,8 +21,8 @@ depends_on:
   - "[[library/dotnet/architecture/solutions/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]"
 built_on_plateau:
 adr:
-  - "[[library/dotnet/architecture/solutions/solution-soft-value-objects.skill/adr/soft-and-strict-value-object-split|Soft (permissive) and strict Value Object as two separate solutions]]"
-  - "[[library/dotnet/architecture/solutions/solution-soft-value-objects.skill/adr/response-dto-uses-soft-value-objects|ResponseDto/RequestDto use Soft{ValueObject} or primitive, never the domain {ValueObject}]]"
+  - adr/soft-and-strict-value-object-split.md
+  - adr/response-dto-uses-soft-value-objects.md
 ---
 
 # Goal

@@ -1,8 +1,8 @@
 @type/tech-check
 Feature: The todo API's PlanItems
   As the service that plans with the todo service
-  I want PlanItems sent as the contract says and its answer mapped to items
-  So that the service sees items, never the contract's shapes
+  I want PlanItems sent as the contract says and its answer returned as logical API DTOs
+  So that the service adapts API fields without knowing HTTP wire types
 
   @category/happy
   Scenario: The titles are sent and the planned items come back

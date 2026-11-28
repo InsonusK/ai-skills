@@ -16,7 +16,7 @@ tags:
 Which browser host and compilation target should a publishable library use?
 
 # Selected variant
-[Projects demo application](#projects-demo-application)
+**Selected variant:** [[#Projects demo application]]
 
 # Searched variants
 ## Projects demo application

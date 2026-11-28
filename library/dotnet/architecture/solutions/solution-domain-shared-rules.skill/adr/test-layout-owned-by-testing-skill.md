@@ -14,7 +14,7 @@ tags:
 VP4 rule test templates retain the old feature and binding folders.
 
 # Selected variant
-[Use the stack-owned layout for rule tests](#use-the-stack-owned-layout-for-rule-tests)
+**Selected variant:** [[#Use the stack-owned layout for rule tests]]
 
 # Searched variants
 

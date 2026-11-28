@@ -25,7 +25,7 @@ extends:
 depends_on:
   - "[[library/common-workflow/develop/solid-decomposition.skill/solid-decomposition.skill.md|solid-decomposition]]"
 adr:
-  - "[[./adr/integration-client-split.md|Integration/Client split]]"
+  - adr/integration-client-split.md
 ---
 
 # Goal

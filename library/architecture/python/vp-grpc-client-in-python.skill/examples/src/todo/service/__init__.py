@@ -1,4 +1,4 @@
-"""The services: each wraps one infrastructure and speaks the application's
+"""The services: each adapts one external system and speaks the application's
 language, hiding the technique behind it. Only main.py imports this package."""
 
 from todo.service.errors import TitlesRejectedError, TodoServiceUnavailableError

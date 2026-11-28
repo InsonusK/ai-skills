@@ -23,6 +23,8 @@ Every component that ships a demo/preview page (design system: `projects/demo`; 
 
 ## Playwright screenshot testing against demo/preview pages
 
+**Selected.**
+
 ### Description
 
 Use Playwright's own built-in screenshot assertion (`expect(page).toHaveScreenshot()`) directly against the plateau's existing demo/preview pages. A baseline screenshot is committed per component/state/color-scheme; CI fails on pixel diff beyond a configured threshold; an engineer explicitly re-runs with `--update-snapshots` to accept an intentional visual change, which then goes through normal code review as a diff to the committed baseline image.

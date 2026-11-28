@@ -22,7 +22,7 @@ extends:
 depends_on:
   - "[[library/angular/architecture/solutions/solution-app-routing.skill/solution-app-routing.skill.md|solution-app-routing]]"
 adr:
-  - "[[library/angular/architecture/solutions/solution-performance-tuned-routing.skill/adr/preloading-strategy.md|Preloading Strategy ADR]]"
+  - adr/preloading-strategy.md
 ---
 
 # Goal

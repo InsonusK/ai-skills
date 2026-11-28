@@ -2,7 +2,7 @@
 name: app-layers-in-go
 description: The application layers in Go — one package per layer under internal/, interfaces declared by their consumer so that only cmd/{app}/main.go imports both sides, entities with unexported fields, and hand-written fakes for the layer below
 whenToUse: when you design a Go application or feature, when you add or change a Go entry point, command, entity, domain service, service, or infrastructure adapter, or when you review such a change
-updated: 20261026
+updated: 20261128
 tags:
   - stack/go
   - concern/architecture
@@ -22,6 +22,11 @@ tags:
 
 ## MUST
 
+### Apply the implementation contract of each layer
+For every layer being implemented, apply the requirements identified in the `Implementation contract` column of the [app-layers table](library/develop/core/app-layers.skill/app-layers.skill.md#keep-each-part-in-its-layer-and-its-calls-downward).
+- Risk: a duplicated skill list becomes stale when a layer or its implementation contract is added or changed.
+- Fix: follow the linked contract or the providing mechanism/VP identified by that row, and use this stack extension for physical organization and language mechanisms.
+
 ### One package per layer
 Place each layer of [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md) in its package.
 
@@ -35,7 +40,8 @@ Place each layer of [app-layers](library/develop/core/app-layers.skill/app-layer
 | entity | `internal/domain/entity` |
 | domain service | `internal/domain/service`, imported as `domainservice` |
 | service | `internal/service` |
-| infrastructure | `internal/infrastructure/{kind}` (`postgres`, `memory`, ...); a client of another service's API in `internal/infrastructure/client/{api}` (`userapi`) |
+| client | `internal/client/{api}`; logical API DTOs in `{api}/contract`, fixed mechanics in `client/core`, policies in `client/middleware/{name}` |
+| infrastructure | `internal/infrastructure/{kind}` (`postgres`, `memory`, ...) |
 | composition root | `cmd/{app}/main.go` |
 
 - Violation: entities and domain services in one `internal/domain` package, or `internal/domain/service` imported without the `domainservice` name.
@@ -73,7 +79,7 @@ Put the fixed code that serves several entry points and belongs to none of them 
 - Fix: `core/` holds only code copied from templates; each part appears with the base plateau (`entry`) or with the first variation point that needs it (`rpcstatus`).
 
 ### Declare an interface in the consumer's package
-Declare the interface a command, factory, or domain service uses to reach a service in that consumer's package, and the interface a service uses to reach its infrastructure in `internal/service`, each listing only the methods that consumer calls.
+Declare the interface a command, factory, or domain service uses to reach a service in that consumer's package, and the interface a service uses to reach its clients or infrastructure in `internal/service`, each listing only the methods that consumer calls.
 
 ```go
 // internal/command/add_user.go - the command declares what it needs
@@ -83,7 +89,7 @@ type users interface {
 }
 
 // internal/service/user_service.go - a struct; no interface declared for itself
-type UserService struct{ api userAPI } // userAPI: declared here, implemented in internal/infrastructure/userapi
+type UserService struct{ api userAPI } // userAPI: declared here, implemented in internal/client/userapi
 ```
 
 - Violation: `internal/service` declaring `type UserServiceInterface interface {...}` next to `UserService`, imported by commands.
@@ -91,7 +97,7 @@ type UserService struct{ api userAPI } // userAPI: declared here, implemented in
 - Fix: one small interface per consumer; the struct satisfies it implicitly.
 
 ### Wire implementations only in main
-Import `internal/service` only from `cmd/{app}/main.go`, and `internal/infrastructure/{kind}` only from `main.go` and from the one service over it — for the types its methods return — and pass each implementation to its consumer's constructor in `main.go`.
+Import `internal/service` only from `cmd/{app}/main.go`, and `internal/client/{api}` or `internal/infrastructure/{kind}` only from `main.go` and from the one service over it — using its protocol-neutral contract types — and pass each implementation to its consumer's constructor in `main.go`.
 - Violation: `internal/command` importing `internal/service` to construct a `UserService`, or a service constructing its HTTP client itself.
 - Risk: the consumer depends on the concrete implementation, so it cannot be tested with a fake or given another implementation without editing it.
 - Fix: the consumer's constructor takes the interface; `main.go` builds the struct and passes it.
@@ -110,6 +116,6 @@ Write the fake of the layer below as a small struct in the test package that imp
 # Check list
 - [ ] Every layer is in its package per [One package per layer](#one-package-per-layer); the code the entry points share is in `internal/api/core/`.
 - [ ] Every interface to a service or an infrastructure adapter is declared in its consumer's package and lists only the methods that consumer calls.
-- [ ] `internal/service` is imported only by `main.go`; `internal/infrastructure/{kind}` only by `main.go` and the one service over it.
+- [ ] `internal/service` is imported only by `main.go`; `internal/client/{api}` and `internal/infrastructure/{kind}` only by `main.go` and their owning service; logical API DTO imports use the client contract package.
 - [ ] Entities have unexported fields, a validating constructor, and guarded state-change methods.
 - [ ] Tests fake the layer below with hand-written structs implementing the consumer's interface.

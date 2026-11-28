@@ -23,6 +23,8 @@ Every design system component has its own selector (`ds-*`) and an API designed 
 
 ## Full API encapsulation, internal implementation decided per component
 
+**Selected.**
+
 ### Description
 
 See "Selected variant" above.

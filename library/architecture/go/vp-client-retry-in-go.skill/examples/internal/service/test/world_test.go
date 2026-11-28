@@ -4,14 +4,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	todoapicontract "github.com/example/todo/internal/client/todoapi/contract"
 	"reflect"
 	"strings"
 
 	"github.com/cucumber/godog"
 
+	"github.com/example/todo/internal/client/core/outcome"
 	"github.com/example/todo/internal/domain/entity"
-	"github.com/example/todo/internal/infrastructure/client/core/outcome"
-	"github.com/example/todo/internal/infrastructure/client/todoapi"
 	"github.com/example/todo/internal/service"
 	"github.com/example/todo/internal/shared/errorkind"
 )
@@ -23,11 +23,11 @@ func logf(format string, args ...any) {
 // fakeTodoAPI is the adapter faked: the items it answers or the technical
 // outcome it reports.
 type fakeTodoAPI struct {
-	items []todoapi.Item
+	items []todoapicontract.ItemDTO
 	err   error
 }
 
-func (f *fakeTodoAPI) PlanItems(_ context.Context, _ []string) ([]todoapi.Item, error) {
+func (f *fakeTodoAPI) PlanItems(_ context.Context, _ []string) ([]todoapicontract.ItemDTO, error) {
 	return f.items, f.err
 }
 
@@ -50,7 +50,7 @@ var kinds = map[string]error{"invalid": errorkind.ErrInvalid, "unavailable": err
 func registerSteps(sc *godog.ScenarioContext, w *World) {
 	sc.Step(`^the todo API plans "([^"]*)"$`, func(titles string) error {
 		for _, title := range strings.Split(titles, "|") {
-			w.api.items = append(w.api.items, todoapi.Item{Title: title})
+			w.api.items = append(w.api.items, todoapicontract.ItemDTO{Title: title})
 		}
 		return nil
 	})

@@ -68,6 +68,8 @@ Keep `{ValueObject}` physically in `{Module}.Domain`, but add a project referenc
 
 ## ResponseDto uses Soft{ValueObject} or primitive, mapped from the domain {ValueObject}
 
+**Selected.**
+
 ### Description
 
 `{ValueObject}` stays sealed in `{Module}.Domain`. `ResponseDto`/`RequestDto` properties in `{Module}.Interfaces` are typed as `Soft{ValueObject}` — or the underlying primitive when no `Soft{ValueObject}` exists — never as the domain `{ValueObject}`. `{Module}.Application` maps between the two when building a DTO.

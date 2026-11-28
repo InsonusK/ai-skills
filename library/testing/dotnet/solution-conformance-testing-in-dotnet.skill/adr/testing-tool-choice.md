@@ -20,6 +20,8 @@ tags:
 
 ## Reqnroll xUnit coverlet ReportGenerator Stryker.NET
 
+**Selected.**
+
 ### Description
 Use Reqnroll (the actively maintained successor to SpecFlow) with the xUnit runner for Gherkin scenarios, `coverlet.collector` + `ReportGenerator` for coverage, and Stryker.NET (`dotnet-stryker`) for mutation testing.
 

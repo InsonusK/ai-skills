@@ -14,7 +14,7 @@ created_by:
   - "[[library/python/architecture/solutions/solution-default-cli.skill/solution-default-cli.skill.md|solution-default-cli]]"
   - "[[library/python/architecture/solutions/solution-cli-packaging.skill/solution-cli-packaging.skill.md|solution-cli-packaging]]"
 adr:
-  - "[[library/python/architecture/plateau/plateau-python-cli/adr/remove-solution-test-layout-in-python|Remove solution-test-layout-in-python]]"
+  - adr/remove-solution-test-layout-in-python.md
 ---
 
 # Core Principles

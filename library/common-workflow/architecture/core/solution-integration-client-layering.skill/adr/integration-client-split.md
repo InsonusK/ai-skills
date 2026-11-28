@@ -3,6 +3,11 @@ name: integration-client-split
 description: Where to put API response parsing/error handling versus application-facing composition when consuming an external API
 problem: How to structure the code that talks to an external API so a contract change or API replacement touches the smallest possible surface
 decision: Split the integration surface into two units — Integration (call + typed parsing + contract-error handling) and Client (composition of 1..n Integration calls into an application model)
+tags:
+  - solution/integration-client-layering
+  - stack
+  - concern/documentation
+  - concern/documentation/adr
 ---
 
 # Problem

@@ -16,7 +16,7 @@ tags:
 What does DELTA_BASE mean for each kind in an Nx repository?
 
 # Selected variant
-[Affected checks and full reports](#affected-checks-and-full-reports)
+**Selected variant:** [[#Affected checks and full reports]]
 
 # Searched variants
 ## Affected checks and full reports

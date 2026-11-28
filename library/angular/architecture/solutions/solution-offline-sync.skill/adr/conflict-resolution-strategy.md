@@ -23,6 +23,8 @@ By default, the server's current state wins — a queued mutation whose target h
 
 ## Server wins, field-scoped diff, extension point deferred
 
+**Selected.**
+
 ### Description
 
 On a 409-style conflict response, the backend returns the current values of the fields the failed command's payload touched (e.g. a command that set `priority` gets back the current `priority`, not the whole entity). The replay orchestrator compares the command's intended value(s) against these returned current value(s), discards the local change (server wins), and surfaces a notification — via the `notifications` global slice already sketched in the "State management" solution — describing the specific fields that differed and their current server values. The replay orchestrator's conflict-handling step is implemented as a single, clearly separated function/injection point, so a future solution can register alternative, per-operation resolution strategies (e.g. an "independent fields don't conflict" policy) without reworking the rest of the queue.

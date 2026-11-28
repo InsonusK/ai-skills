@@ -2,7 +2,7 @@
 name: solution-create
 description: Define how to create new solution skills by patterns
 whenToUse: when you write a solution skill
-updated: 20261007
+updated: 20261128
 adr:
   - adr/multi-stack-solution-location.md
   - adr/contract-vp-realized-by-libraries.md
@@ -98,7 +98,7 @@ When a Rule assumes behavior this solution does not itself implement and does no
 - Fix: add a `# Boundaries` bullet naming the gap; mention a solution that closes it today only informationally, never as a `depends_on` requirement.
 
 ### Record decisions as ADRs
-Record every architecture decision made while building or editing the solution as an ADR following [adr-create](library/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md), registered in the solution's `adr:` property and linked from the skill body.
+Record every architecture decision made while building or editing the solution as an ADR following [adr-create](library/design/adr-create.skill/adr-create.skill.md), registered in the solution's `adr:` property and linked from the skill body.
 - Risk: the rejected alternatives and trade-offs are lost, and the decision gets re-argued the next time someone edits the solution.
 - Fix: create the ADR immediately, register it in `adr:`, link it from the body.
 

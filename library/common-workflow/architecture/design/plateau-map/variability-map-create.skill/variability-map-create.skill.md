@@ -8,12 +8,13 @@ tags:
   - stack
   - concern/architecture
 adr:
-  - "[[library/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/one-map-per-catalog|One map per catalog, not per plateau]]"
-  - "[[library/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/constraint-vs-ordering-columns|Constraint vs. ordering stays column-level, not a depends_on schema change]]"
-  - "[[library/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/no-plateau-view-in-variability-map|The map binds VPs to solutions; the plateau↔VP view lives in plateau-map-create]]"
-  - "[[library/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/common-vps-inherited-by-id|Common VPs inherited by ID, not copied]]"
-  - "[[library/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/inbox-status-key-not-task-id|Inbox status by a separate status_key, not by the task id]]"
-  - "[[library/common-workflow/architecture/design/plateau-map/variability-map-create.skill/adr/prefer-module-realization|Prefer a module realization for a Variation Point]]"
+  - adr/one-map-per-catalog.md
+  - adr/constraint-vs-ordering-columns.md
+  - adr/no-plateau-view-in-variability-map.md
+  - adr/common-vp-concept-per-file.md
+  - adr/common-vps-inherited-by-id.md
+  - adr/inbox-status-key-not-task-id.md
+  - adr/prefer-module-realization.md
 ---
 
 # Goal

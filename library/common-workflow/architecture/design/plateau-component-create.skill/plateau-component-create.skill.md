@@ -2,7 +2,7 @@
 name: plateau-component-create
 description: Define how to build a Plateau Component — an optional, cross-cutting capability (logging, tracing, caching, ...) that attaches to a plateau's composition root without being composed into the plateau itself
 whenToUse: when a capability needs to be attachable, as an optional add-on, to a plateau (or several plateaus) at its composition root — registered once via DI/middleware, working identically regardless of which Solutions the plateau composed, and never touching a module's own project files — as opposed to a Solution, which is composed into a specific plateau's `created_by` and may extend module-internal classes
-updated: 20260909
+updated: 20261128
 tags:
   - skill/architecture/component/design
   - stack
@@ -101,7 +101,7 @@ Tag the component skill and its Implementation files with the facet tags require
 Prefer a Component over duplicating the same optional capability's Solution across every plateau that might want it.
 
 ### Record decisions as ADRs
-Record architecture decisions made while building the component as an ADR, following [[library/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]].
+Record architecture decisions made while building the component as an ADR, following [[library/design/adr-create.skill/adr-create.skill|adr-create]].
 
 ## MAY
 

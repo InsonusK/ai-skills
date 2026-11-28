@@ -21,6 +21,8 @@ The design system is published as an npm package, consumed by the platform monor
 
 ## ng-packagr
 
+**Selected.**
+
 ### Description
 
 The official Angular library packaging tool, producing output that conforms to the Angular Package Format (APF): Ivy partial compilation, correctly structured `package.json` exports, and pre-built metadata consumers' own Angular CLI builds rely on.

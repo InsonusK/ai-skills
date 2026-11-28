@@ -11,17 +11,17 @@
     <Project Path="src/App/App.Host/App.Host.csproj" />
     <Project Path="src/App/App.Host.Tests/App.Host.Tests.csproj" />
   </Folder>
-  <Folder Name="/src/Infrastructure/Client/Core/">
-    <Project Path="src/Infrastructure/Client/Core/Client.Abstractions/Client.Abstractions.csproj" />
-    <Project Path="src/Infrastructure/Client/Core/Client.Pipeline/Client.Pipeline.csproj" />
-    <Project Path="src/Infrastructure/Client/Core/Client.Pipeline.Tests/Client.Pipeline.Tests.csproj" />
-    <Project Path="src/Infrastructure/Client/Core/Client.Grpc/Client.Grpc.csproj" />
-    <Project Path="src/Infrastructure/Client/Core/Client.Grpc.Tests/Client.Grpc.Tests.csproj" />
+  <Folder Name="/src/Client/Core/">
+    <Project Path="src/Client/Core/Client.Abstractions/Client.Abstractions.csproj" />
+    <Project Path="src/Client/Core/Client.Pipeline/Client.Pipeline.csproj" />
+    <Project Path="src/Client/Core/Client.Pipeline.Tests/Client.Pipeline.Tests.csproj" />
+    <Project Path="src/Client/Core/Client.Grpc/Client.Grpc.csproj" />
+    <Project Path="src/Client/Core/Client.Grpc.Tests/Client.Grpc.Tests.csproj" />
   </Folder>
-  <Folder Name="/src/Infrastructure/Client/TodoApi/">
-    <Project Path="src/Infrastructure/Client/TodoApi/TodoApi.Abstractions/TodoApi.Abstractions.csproj" />
-    <Project Path="src/Infrastructure/Client/TodoApi/TodoApi/TodoApi.csproj" />
-    <Project Path="src/Infrastructure/Client/TodoApi/TodoApi.Tests/TodoApi.Tests.csproj" />
+  <Folder Name="/src/Client/Todo/">
+    <Project Path="src/Client/Todo/Todo.Client.Abstractions/Todo.Client.Abstractions.csproj" />
+    <Project Path="src/Client/Todo/Todo.Client/Todo.Client.csproj" />
+    <Project Path="src/Client/Todo/Todo.Client.Tests/Todo.Client.Tests.csproj" />
   </Folder>
   <Folder Name="/src/Modules/Todo/">
     <Project Path="src/Modules/Todo/Todo.Domain/Todo.Domain.csproj" />
@@ -29,5 +29,9 @@
     <Project Path="src/Modules/Todo/Todo.Commands/Todo.Commands.csproj" />
     <Project Path="src/Modules/Todo/Todo.Application/Todo.Application.csproj" />
     <Project Path="src/Modules/Todo/Todo.Application.Tests/Todo.Application.Tests.csproj" />
+  </Folder>
+  <Folder Name="/src/Service/Todo/">
+    <Project Path="src/Service/Todo/Todo.Service/Todo.Service.csproj" />
+    <Project Path="src/Service/Todo/Todo.Service.Tests/Todo.Service.Tests.csproj" />
   </Folder>
 </Solution>

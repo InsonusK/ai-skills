@@ -21,8 +21,8 @@ creates:
 extends: []
 depends_on: []
 adr:
-  - "[[library/angular/architecture/solutions/solution-repository-structure.skill/adr/nx-vs-angular-cli-workspace.md|Nx Vs Angular Cli Workspace ADR]]"
-  - "[[library/angular/architecture/solutions/solution-repository-structure.skill/adr/feature-lib-split-conditional-on-backend-data-access.md|Feature Lib Split Conditional On Backend Data Access ADR]]"
+  - adr/nx-vs-angular-cli-workspace.md
+  - adr/feature-lib-split-conditional-on-backend-data-access.md
 ---
 
 # Goal

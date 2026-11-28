@@ -22,7 +22,7 @@ extends:
 depends_on:
   - "[[library/angular/architecture/solutions/solution-repository-structure.skill/solution-repository-structure.skill.md|solution-repository-structure]]"
 adr:
-  - "[[library/angular/architecture/solutions/solution-app-routing.skill/adr/route-ownership-location.md|Route Ownership Location ADR]]"
+  - adr/route-ownership-location.md
 ---
 
 # Goal

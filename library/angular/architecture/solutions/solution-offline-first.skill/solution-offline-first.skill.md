@@ -29,9 +29,9 @@ depends_on:
   - "[[library/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
   - "[[library/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
 adr:
-  - "[[library/angular/architecture/solutions/solution-offline-first.skill/adr/service-worker-mechanism.md|Service Worker Mechanism ADR]]"
-  - "[[library/angular/architecture/solutions/solution-offline-first.skill/adr/caching-strategy-per-content-type.md|Caching Strategy Per Content Type ADR]]"
-  - "[[library/angular/architecture/solutions/solution-offline-first.skill/adr/connectivity-detection.md|Connectivity Detection ADR]]"
+  - adr/service-worker-mechanism.md
+  - adr/caching-strategy-per-content-type.md
+  - adr/connectivity-detection.md
 ---
 
 # Goal

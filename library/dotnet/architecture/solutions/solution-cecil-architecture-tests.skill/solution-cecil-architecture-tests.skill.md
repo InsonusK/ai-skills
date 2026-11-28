@@ -28,12 +28,12 @@ depends_on:
 built_on_plateau:
 adr:
   - adr/feature-tag-contract.md
-  - "[[library/dotnet/architecture/solutions/solution-cecil-architecture-tests.skill/adr/cecil-over-reflection|Mono.Cecil over Reflection/Roslyn for architecture tests]]"
-  - "[[library/dotnet/architecture/solutions/solution-cecil-architecture-tests.skill/adr/registry-driven-coverage-over-per-rule-tests|Registry-driven coverage check over one test per rule]]"
-  - "[[library/dotnet/architecture/solutions/solution-cecil-architecture-tests.skill/adr/checks-degrade-without-domain-layer|The four checks degrade to an applicable subset when VP1/VP3 are absent]]"
+  - adr/cecil-over-reflection.md
+  - adr/registry-driven-coverage-over-per-rule-tests.md
+  - adr/checks-degrade-without-domain-layer.md
 ---
 
-> Mandatory companion of `solution-domain-shared-rules` (VP4). The four checks split across two test projects by what each can load: **dead-rule** and **code-uniqueness** scan only `{Module}.Domain.Rules`, so they live in `{Module}.Domain.Rules.Tests` (which always exists with VP4) as `{Module}RuleArchitectureTests`; **exception-scoping** and **guarded-property-coverage** need `{Module}.Domain` entities and `DomainException` (VP1), so they live in `{Module}.Domain.Tests` as `{Module}ArchitectureTests` + `GuardedPropertyRuleCoverageTests`, and are simply absent for a rules-only module. See the ADR.
+> Mandatory companion of `solution-domain-shared-rules` (VP4). The four checks split across two test projects by what each can load: **dead-rule** and **code-uniqueness** scan only `{Module}.Domain.Rules`, so they live in `{Module}.Domain.Rules.Tests` (which always exists with VP4) as `{Module}RuleArchitectureTests`; **exception-scoping** and **guarded-property-coverage** need `{Module}.Domain` entities and `DomainException` (VP1), so they live in `{Module}.Domain.Tests` as `{Module}ArchitectureTests` + `GuardedPropertyRuleCoverageTests`, and are simply absent for a rules-only module. See [checks-degrade-without-domain-layer](./adr/checks-degrade-without-domain-layer.md).
 
 # Goal
 

@@ -5,6 +5,10 @@ instead of one plateau per combination of features. It is built here, beside the
 (`library/{stack}/architecture/`, `library/common-workflow/architecture/design/plateau-map/`),
 which stay untouched until this one replaces them.
 
+The [feature and VP documentation sample](docs/catalog.md) and its
+[review contract](agent/design-rethink/INVARIANTS.md) propose the authoring redesign;
+the sample explicitly distinguishes current contracts from pending decisions.
+
 ## Model
 
 The layers and who may call whom are defined once in `library/develop/core/app-layers`
@@ -33,6 +37,10 @@ request ─▶ request log ─▶ answer failures ─▶ API middleware ─▶ r
 ```
 
 ## Layout
+
+Complete placement views: [Go](docs/layouts/go.md), [.NET](docs/layouts/dotnet.md),
+[Python](docs/layouts/python.md), with [base capability ownership](docs/base-capabilities.md).
+
 
 | Folder | Holds |
 |---|---|
@@ -63,8 +71,9 @@ the `spec/` skills come along because every stack skill links its spec.
 | Commands + handlers | `internal/command` (contract in `internal/command/pipeline`, middleware in `internal/command/middleware/{name}`) | `src/{package}/command` (contract in `src/{package}/command/pipeline`, middleware in `src/{package}/command/middleware/{name}`) | `src/Modules/{Module}/{Module}.Application/Commands` (command types in `{Module}.Commands`, command middleware in `src/Middleware/{Name}`) |
 | API (entries) | `internal/api/{transport}`: `pipeline/` (fixed), `middleware/{name}/` (fixed request log and answer failures, an application's), `endpoint/` (`{Resource}Handler` per file), `routes.go` / `services.go` / `commands.go` (registration) | `src/{package}/api/{transport}`: `pipeline/`, `middleware/{name}/`, `endpoint/`, `routes.py` / `services.py` / `commands.py`; generated gRPC code in `src/{package}/gen/api/{contract}` | `src/App/App.Host/Api/{Transport}`: `Pipeline/` (fixed), `Middleware/{Name}/`, `Endpoint/` (`{Resource}Handler` per file), `Routes.cs` / `Services.cs` (registration) |
 | API — shared by the entries | `internal/api/core/{entry,rpcstatus}` | `src/{package}/api/core/{entry,rpcstatus}` | `src/App/App.Host/Api/Core/{Entry,Errors,Hosting}` |
-| Service | `internal/service` | `src/{package}/service` | `src/Modules/{Module}/{Module}.Application/Services` (interface beside its consumer) |
-| Infrastructure | `internal/infrastructure/{kind}`; clients of other services' APIs in `internal/infrastructure/client/{api}`, their fixed code in `client/core/` | `src/{package}/infrastructure/{kind}`; clients in `infrastructure/client/{api}` | `src/Shared.Persistence` + `src/Infrastructure/{Store}/{Store}` for the own store; `src/Infrastructure/{Infra}/{Infra}.Abstractions` + `{Infra}` for other infrastructure |
+| Service | `internal/service` | `src/{package}/service` | `src/Service/{ApiServiceName}/{ApiServiceName}.Service`; consumer interface in `{Module}.Application/Services` |
+| Infrastructure | `internal/infrastructure/{kind}` | `src/{package}/infrastructure/{kind}` | `src/Shared.Persistence` + `src/Infrastructure/{Store}/{Store}` for the own store; `src/Infrastructure/{Infra}/{Infra}.Abstractions` + `{Infra}` for other infrastructure |
+| Client | `internal/client/{api}`; fixed code in `internal/client/core` | `src/{package}/client/{api}`; fixed code in `client/core` | `src/Client/{ApiName}/{ApiName}.Client`; fixed code in `Client/Core` |
 | Composition root | `cmd/{app}/main.go` | `src/{package}/main.py` | `src/App/App.Host/Program.cs` (`RunAsync`) |
 | Error kinds and the error with a kind (kind, message, cause) | `internal/shared/errorkind` | `src/{package}/shared/errors` (exceptions, the cause as `__cause__`) | `src/Shared/Errors` (the cause as the inner exception) |
 
@@ -108,7 +117,7 @@ version and external id exist before their stack implementations.
 | 3d | a repeated request (`vp-idempotency`): header `Idempotency-Key`, a table of keys with the stored answer, in front of the command | | | |
 | 4 | TaskBox, Inbox, Outbox | | | |
 | 5 | SQLite (`vp-sqlite`): one more persistent DB of step 3, an SQLite file - the driver per stack, the file's path setting, the same migrations and stores; fits a CLI that keeps its data between runs, and an application with an API within its limits (below) | | | |
-| 6 | data cache (`vp-cache-data`): with a DB VP and a client VP attached, a service of its own that wraps the client's service behind the same interface, answering its cacheable methods from a store first and calling the client's service only on a miss, passing every other method on unchanged | | | |
+| 6 | data cache (`vp-cache-data`): DB and client capabilities; composition unresolved because the earlier wrapper-service proposal conflicts with the service-to-service prohibition | | | |
 
 ## Library candidates
 
@@ -148,7 +157,7 @@ Agreed with the owner; written into the variation point's skill and ADR when it 
 | VP | Decided (2026-10-29) | Left to the VP |
 |---|---|---|
 | TaskBox, Inbox, Outbox | A worker claims rows with `FOR UPDATE SKIP LOCKED`, and the claim opens its transaction itself: a unit of work opens one on the first write, and a lock taken before it ends with its statement, so two workers take the same row (checked on PostgreSQL 17.5, 2026-11-01) | how the claim fits `vp-unit-of-work` |
-| `vp-cache-data` | A separate wrapper service, not a rewrite of the client's service (a VP that rewrites it is harder to attach and to remove): it implements the client service's interface, caches some of its methods, and passes the others on | how the wrapper fits app-layers (a service over a service and a store); the mark of a cacheable method and the shape of the key |
+| `vp-cache-data` | Earlier proposal: a wrapper behind the client service's interface caches selected methods; this proposal requires revision under the current service-to-service prohibition | composition consistent with app-layers without service-to-service calls; cacheable-method marking and key shape |
 | `vp-cache-data` | What is cached and for how long, and whether expired data answers while the API is unavailable, depend on the business case of each method: the VP gives the mechanism, the application decides per method | the default settings, if any |
 | `vp-sqlite` | One more kind of persistent DB, not limited to CLI applications; its skill states the limits for an application that serves an API: the DB is not shared between pods and is lost when the container restarts without a volume. A VP of its own beside `vp-postgres`, replacing its infrastructure project | the driver per stack (Go `modernc.org/sqlite` without cgo, dotnet `Microsoft.Data.Sqlite`, Python `sqlite3`) |
 
@@ -164,7 +173,7 @@ The separate Status table above remains the roadmap for future variation points.
 |---|---|---|
 | [Revise the attach rule](backlog/attach-rule.md) | Needs decision | Before the next VP changes a shared method |
 | [Service-qualified namespaces in .NET](backlog/dotnet-namespaces.md) | Completed | Service namespace migration and owning ADR implemented; see task outcome |
-| [Reconsider Client code organization](backlog/client-code-organization.md) | Needs decision | Investigate Client/Service boundaries and model ownership; agree scope before migration |
+| [Reconsider Client code organization](backlog/client-code-organization.md) | Needs decision | Boundary implemented; decide cross-module reuse and shared provider configuration on a concrete case |
 | [Select middleware when building the chain](backlog/middleware-selection.md) | Needs decision | Investigation can start; agree the registration contract before migration |
 | [Retire legacy client guidance](backlog/legacy-client-skills.md) | Deferred | Confirmed replacement of old catalogs and migration of their consumers |
 | [Invalid loaded entity is a service failure](backlog/invalid-loaded-entity.md) | Ready | Can start independently |

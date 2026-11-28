@@ -23,6 +23,8 @@ The client only ever reasons about permission strings (e.g. `'orders.edit'`), de
 
 ## Granular permissions
 
+**Selected.**
+
 ### Description
 
 The auth slice stores a flat set of permission strings for the current user (e.g. `['orders.view', 'orders.edit', 'billing.view']`), delivered by the backend as part of login/session response. Route guards, structural directives, and feature-level checks all test for specific permissions.

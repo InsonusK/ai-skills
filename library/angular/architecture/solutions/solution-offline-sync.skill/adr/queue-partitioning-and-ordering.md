@@ -23,6 +23,8 @@ The queue is partitioned by feature (matching the `scope:*` tag from `solution-r
 
 ## Partition by feature
 
+**Selected.**
+
 ### Description
 
 Each feature (`libs/{feature}/data-access`) gets its own FIFO queue partition, identified by the feature's `scope` tag. The replay orchestrator processes all partitions concurrently; within a partition, it processes entries strictly in enqueue order, stopping that partition's replay on a failure (same "stop on first failure per cycle" pattern as the retry queue in `solution-logging-global`) without affecting other partitions.

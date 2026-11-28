@@ -2,7 +2,7 @@
 name: vp-cli-api
 description: The CLI API variation point — a command-line entry point attached to the base plateau that runs one command per call as `{app} {resource} {action} [flags]`, prints the result on standard output as one JSON line or as text, writes errors on standard error, exits by the error kind with usage errors as rejected, offers help at every level, and replaces the startup entry without editing any other base file
 whenToUse: when an application built on the base plateau must be run from a command line by a person or a script — adding the CLI entry point, offering a new command as an action, or reviewing the CLI entry point of such an application
-updated: 20261114
+updated: 20261128
 tags:
   - stack
   - concern/architecture
@@ -16,7 +16,7 @@ tags:
 - **Attached, not edited** - The entry point joins the [base plateau](library/architecture/spec/base-plateau.skill/base-plateau.skill.md) by replacing the startup entry in the `entries` list and changes no other base file but the composition root and the module's dependency, build, and readme files.
 
 # Core Principle
-- **A thin translation** - The CLI entry point parses, calls, and prints; it makes no business decision, as [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md) requires of every api layer.
+- **A thin translation** - The CLI entry point parses, calls, and prints; it makes no business decision, as [app-api-layer](library/develop/core/app-api-layer.skill/app-api-layer.skill.md) requires of every entry point.
 - **The same resources as the API** - Actions are grouped by the resources an HTTP API of the same application would have, so `todo items plan` and `POST /v1/items/plan` name one operation.
 - **One call, one command** - The process runs the action its arguments name and ends; it holds no state between calls.
 
@@ -30,11 +30,16 @@ tags:
 
 ## MUST
 
+### Apply the common API layer contract
+Apply [app-api-layer](library/develop/core/app-api-layer.skill/app-api-layer.skill.md) for input translation, command dispatch and outcome mapping before adding this transport's requirements.
+- Risk: transport-specific endpoints take ownership of business orchestration or expose domain entities.
+- Fix: keep shared entry behavior in the API layer contract and specialize only the protocol-specific mechanisms here.
+
 ### One action per command, grouped by resource
 Offer each command as exactly one action `{app} {resource} {action}`, with the actions of one resource together under it.
 - Violation: an action that calls two commands or reads state to choose one; a flat list of every action under the application.
 - Risk: business logic moves into the command line, and a help page listing dozens of actions cannot be read.
-- Fix: one command per action; a choice that depends on state goes to a command factory per app-layers; one group per resource, named as the HTTP resource.
+- Fix: one command per action; a choice that depends on state goes to a command factory per app-command-layer; one group per resource, named as the HTTP resource.
 
 ### Flags and output belong to the entry point
 Declare each action's flags and the shape of its JSON output in the CLI entry point and map them to and from the command and its result.

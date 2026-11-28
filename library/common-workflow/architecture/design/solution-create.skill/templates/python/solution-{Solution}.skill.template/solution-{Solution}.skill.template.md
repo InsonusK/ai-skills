@@ -104,7 +104,7 @@ RECOMMENDATION:
 # Adr
 ```hint
 Use this section only if an architecture decision was made while building or editing the solution.
-Record every such decision as an ADR following [[library/common-workflow/architecture/design/adr-create.skill/adr-create.skill.md|adr-create]]: create ADR files from its template in an `adr/` folder inside the solution skill folder, list them in the `adr:` property of the YAML header, and briefly summarize each decision in the skill body with a link to its ADR.
+Record every such decision as an ADR following [[library/design/adr-create.skill/adr-create.skill.md|adr-create]]: create ADR files from its template in an `adr/` folder inside the solution skill folder, list them in the `adr:` property of the YAML header, and briefly summarize each decision in the skill body with a link to its ADR.
 RECOMMENDATION:
 - Prefer bullet list
 ```

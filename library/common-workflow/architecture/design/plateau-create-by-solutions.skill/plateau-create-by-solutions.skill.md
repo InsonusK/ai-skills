@@ -2,7 +2,7 @@
 name: plateau-create-by-solutions
 description: Define how to build plateau skills from a set of solution skills, for any target language/stack
 whenToUse: when you write skills for building a plateau
-updated: 20260926
+updated: 20261128
 tags:
   - skill/architecture/plateau/design
   - stack
@@ -14,14 +14,14 @@ tags:
 - A repository-level skill, one skill per contributed project/package, and one per contributed class/module — each file named `plateau-{plateau-name}--…`, with a `name` header equal to the file name minus `.skill.md` and a `description` stating which plateau the element belongs to.
 - Every `.create.md`/`.extend.md` for the same element merged into a single skill carrying an `__Applied solutions:__` trailer that lists every contributor.
 - A runnable example application under `examples/`, evolved from the parent plateau's example when `parent_plateaus` is non-empty.
-- A plateau-level ADR, following [[library/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]], for every conflict resolution or solution exclusion.
+- A plateau-level ADR, following [[library/design/adr-create.skill/adr-create.skill|adr-create]], for every conflict resolution or solution exclusion.
 - Plateau root frontmatter filled: `name`, `version` (UTC `YYYYMMDDHHMMSS`), `parent_plateaus`, `created_by`, `standalone`.
 
 # Core Principle
 - **Aggregate, do not reinvent** - A plateau is built by aggregating the `Implementation/` files the selected solutions produce; read [[library/common-workflow/architecture/design/solution-create.skill/solution-create.skill|solution-create]] first for how those files are structured per stack.
 - **Plateau-scoped identity** - Every element skill's file name and `name` header carry the `plateau-{plateau-name}--` prefix, because different plateaus routinely define the same element and a bare `name` collides in any tool that indexes skills by `name`.
 - **Union, then delta** - A plateau with a non-empty `parent_plateaus` is the union of every parent's content by default, plus the delta its own `created_by` solutions add on top; see [[library/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]].
-- **The plateau owns combination decisions** - Resolving a conflict between two solutions or two parents, and excluding a solution, are decisions the plateau owns — not any single structural skill — and are recorded as plateau-level ADRs following [[library/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]].
+- **The plateau owns combination decisions** - Resolving a conflict between two solutions or two parents, and excluding a solution, are decisions the plateau owns — not any single structural skill — and are recorded as plateau-level ADRs following [[library/design/adr-create.skill/adr-create.skill|adr-create]].
 - **A Component is not a Solution** - A Plateau Component (an optional cross-cutting capability like logging or tracing) never appears in `{solutions}`, `created_by`, or `structure/`; verify a suspicious input against [[library/common-workflow/architecture/design/plateau-component-create.skill/plateau-component-create.skill.md|plateau-component-create]] before assembling it.
 - **`FDN` VPs never fork the tree** - Before naming a new plateau for a VP, check whether it classifies `FDN` in [[library/common-workflow/architecture/design/plateau-map/delta-conflict-detection.skill/delta-conflict-detection.skill.md#fdn-never-forks-the-plateau-tree|delta-conflict-detection]] — a Plateau Component, or an alternative adapter behind an already-existing port (e.g. one outbox dispatch target vs another) — in which case it is a composition-root wiring choice, never a new plateau.
 
@@ -38,7 +38,7 @@ Inputs:
 - `{stack}` — target language/stack (`dotnet`, `python`, `go`, `typescript`, …). Detect from `{solutions}` (`domain`/`tags` headers) or ask.
 - `{output}` — folder for the created skills. Default `library/{stack}/architecture/plateau`.
 
-Before starting, read [[library/common-workflow/architecture/design/solution-create.skill/solution-create.skill|solution-create]] and [[library/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]]; read [[library/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]] when `{parent_plateaus}` is non-empty; check any composition-root-only candidate against [[library/common-workflow/architecture/design/plateau-component-create.skill/plateau-component-create.skill.md|plateau-component-create]].
+Before starting, read [[library/common-workflow/architecture/design/solution-create.skill/solution-create.skill|solution-create]] and [[library/design/adr-create.skill/adr-create.skill|adr-create]]; read [[library/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]] when `{parent_plateaus}` is non-empty; check any composition-root-only candidate against [[library/common-workflow/architecture/design/plateau-component-create.skill/plateau-component-create.skill.md|plateau-component-create]].
 
 1. Detect `{stack}` from `{solutions}` or ask the user.
 2. Check whether `{output}/{plateau-name}/` already exists; if it does, ask the user whether to replace it.
@@ -177,7 +177,7 @@ List every solution that contributes at least one project/package, class/module,
 ### Resolve solution conflicts with a plateau-level ADR
 When two solutions define conflicting rules for the same project/package/class/module, resolve the conflict or ask the user before merging, and record the resolution as a plateau-level ADR.
 - Risk: a silent merge picks one solution's rule arbitrarily and the discarded alternative is lost.
-- Fix: decide (or ask), then record the decision in `{output}/{plateau-name}/adr/` following [[library/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]].
+- Fix: decide (or ask), then record the decision in `{output}/{plateau-name}/adr/` following [[library/design/adr-create.skill/adr-create.skill|adr-create]].
 
 ### Build a parent_plateaus plateau as union plus delta
 Give a plateau with a non-empty `parent_plateaus` the union of every parent's content by default — not one parent's delta — plus the delta the `created_by` solutions add or change on top, per [[library/common-workflow/architecture/design/solution-plateau-hierarchy.skill.md|solution-plateau-hierarchy]].
@@ -197,7 +197,7 @@ Set `standalone: true` or `standalone: false` explicitly on every plateau, per [
 - Fix: use `{standalone}` when given, otherwise ask the user, and write the field.
 
 ### Record every plateau-level decision as an ADR
-Record every plateau-level decision (conflict resolution, solution exclusion) as an ADR in `{output}/{plateau-name}/adr/` following [[library/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]], list it in the plateau root skill's `adr:` YAML property, and link it from the relevant section of the root skill.
+Record every plateau-level decision (conflict resolution, solution exclusion) as an ADR in `{output}/{plateau-name}/adr/` following [[library/design/adr-create.skill/adr-create.skill|adr-create]], list it in the plateau root skill's `adr:` YAML property, and link it from the relevant section of the root skill.
 - Violation: a solution excluded because it has no `Implementation/` content, with the reason left only in chat.
 - Risk: the decision and its alternatives are lost once the plateau is assembled.
 - Fix: write the ADR, register it in `adr:`, link it from the root skill body.

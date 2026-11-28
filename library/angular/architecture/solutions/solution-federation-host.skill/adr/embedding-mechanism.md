@@ -26,6 +26,8 @@ Native Federation is selected because it matches Angular's current default build
 
 ## Native Federation + Dynamic Federation
 
+**Selected.**
+
 ### Description
 
 Each embeddable app is built as a federation "remote", exposing an entry point (a component or bootstrap function) via a `remoteEntry` manifest. The platform shell acts as a "dynamic host": it reads the list of available remotes and their URLs from a runtime configuration (not baked in at build time — "build once, deploy everywhere"), and lazily loads a remote's code directly into its own running Angular application. Angular itself, plus any library both sides mark as `singleton: true` (e.g. a shared contracts package), is loaded once and reused by both host and remote.

@@ -1,9 +1,9 @@
 flowchart LR
     contract["{name}.proto<br/>provider wire contract preserved<br/>local code namespace per stack"]
-    generated["generated messages and stub<br/>kept the adapter's"]
+    generated["generated messages and stub<br/>private to client implementation"]
     scenario["contract scenarios"]
-    service["service<br/>outcomes to kinds"]
-    adapter["adapter of the API<br/>one method per method, own types"]
+    service["service<br/>API DTOs to Domain Model, outcomes to kinds"]
+    adapter["entity-focused client<br/>selected methods, logical API DTOs"]
     interceptor["one interceptor per connection<br/>timeout, x-request-id, log, status to outcome"]
     middleware["client middleware<br/>around each attempt, optional"]
     api["the other service's API"]

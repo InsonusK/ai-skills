@@ -2,7 +2,7 @@
 name: base-plateau
 description: The base plateau every application of the architecture catalog starts from — a program that starts, runs exactly one command, reports its result and exits — with its four layers, the direction of their dependencies, the command registry, the runner of the entry points, and the composition root a variation point attaches to
 whenToUse: when you create a new service or CLI application from the architecture catalog, when you write or review a variation point (an API, a client, a store, TaskBox, ...) that attaches to the base plateau, or when you check whether an application still keeps the base plateau's layer and dependency rules
-updated: 20261104
+updated: 20261128
 tags:
   - stack
   - concern/architecture
@@ -26,7 +26,7 @@ adr:
 @import "./diagrams/concept.mmd" {as="mermaid"}
 
 # Scope
-- Covers what the base plateau contains, for every stack; the layer rules themselves are [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md)'s, and how a variation point attaches is [base-plateau-extension](library/architecture/spec/base-plateau-extension.skill/base-plateau-extension.skill.md)'s.
+- Covers what the base plateau contains, for every stack; the dependency map belongs to [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md), and how a variation point attaches is [base-plateau-extension](library/architecture/spec/base-plateau-extension.skill/base-plateau-extension.skill.md)'s.
 - The implementation for each stack is described in its stack-specialized extension: `base-plateau-in-go`, `base-plateau-in-dotnet`, `base-plateau-in-python`.
 
 # Rule
@@ -34,7 +34,7 @@ adr:
 ## MUST
 
 ### Build the base on app-layers
-Build the base plateau following [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md), with exactly these layers filled.
+Build the base plateau with exactly the layers filled below, following [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md#keep-each-part-in-its-layer-and-its-calls-downward) for topology and the requirements identified in its layer table's `Implementation contract` column for each implemented layer.
 
 | Layer | In the base plateau |
 |---|---|
@@ -47,10 +47,10 @@ Build the base plateau following [app-layers](library/develop/core/app-layers.sk
 - Risk: a layer missing from the base is created differently by the first variation point that needs it, and the next variation point finds a second shape.
 - Fix: create the three layers in the base, even when the sample has one command.
 
-### One handler per command, one handler contract
-Give every command exactly one handler, and give every handler the same contract: it takes a context and the command and returns the result or an error.
-- Risk: a handler with its own shape cannot be wrapped by a middleware or served by an entry point without code written for it alone.
-- Fix: define the contract once in the command layer and make every handler satisfy it.
+### Use the common command handler contract
+Use [the command layer's handler contract](library/develop/core/app-command-layer.skill/app-command-layer.skill.md#one-handler-per-command-one-handler-contract) for every base command.
+- Risk: a local handler shape cannot receive the same middleware or dispatch path as a nested command.
+- Fix: register implementations of the common handler contract rather than define a second base-specific contract.
 
 ### Errors carry a kind of error-kinds
 Give every error a caller can act on one kind of [error-kinds](library/develop/core/error-kinds.skill/error-kinds.skill.md), exposed by the command layer, and leave a failure of the service with none.

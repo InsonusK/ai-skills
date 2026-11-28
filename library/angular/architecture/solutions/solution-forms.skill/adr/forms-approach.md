@@ -23,6 +23,8 @@ Signal Forms is adopted as the default for every new form, following Angular's o
 
 ## Signal Forms as the default for all new forms
 
+**Selected.**
+
 ### Description
 
 Every new form is built with `form()`/`FieldTree` from `@angular/forms/signals`. Validation uses the built-in validators (`required`, `minDate`, `maxDate`, `validateHttp()`, etc.) and the `when` option for conditional validation. Submission goes through `submitForm()`'s options-based API. Existing Reactive Forms are left as-is unless a form is being substantially rewritten anyway.

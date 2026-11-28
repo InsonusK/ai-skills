@@ -23,6 +23,8 @@ Chunks are preloaded selectively, based on an explicit `data: { preload: true }`
 
 ## Custom selective preloading via route data flag
 
+**Selected.**
+
 ### Description
 
 A custom `PreloadingStrategy` provider inspects each route's `data.preload` flag. Routes with `preload: true` are prefetched in the background after the initial navigation settles; everything else stays purely on-demand. The flag is set at the mounting point (shell's `app.routes.ts` for top-level segments, a module's own routes for its features) — i.e. by whoever owns the decision of "this section is common enough to warm up," not by the feature/module itself.

@@ -22,7 +22,7 @@ extends:
 depends_on:
   - "[[library/dotnet/architecture/solutions/solution-sln-structure.skill/solution-sln-structure.skill|solution-sln-structure]]"
 adr:
-  - "[[library/dotnet/architecture/solutions/solution-app-logging.skill/adr/console-first-extensible-sink|Console provider first, sink-extensible, no read-back]]"
+  - adr/console-first-extensible-sink.md
 ---
 
 # Goal

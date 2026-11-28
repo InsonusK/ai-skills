@@ -25,9 +25,9 @@ depends_on:
   - "[[library/angular/architecture/solutions/solution-api-http-layer.skill/solution-api-http-layer.skill.md|solution-api-http-layer]]"
   - "[[library/angular/architecture/solutions/solution-global-store.skill/solution-global-store.skill.md|solution-global-store]]"
 adr:
-  - "[[library/angular/architecture/solutions/solution-offline-sync.skill/adr/queue-storage-mechanism.md|Queue Storage Mechanism ADR]]"
-  - "[[library/angular/architecture/solutions/solution-offline-sync.skill/adr/queue-partitioning-and-ordering.md|Queue Partitioning And Ordering ADR]]"
-  - "[[library/angular/architecture/solutions/solution-offline-sync.skill/adr/conflict-resolution-strategy.md|Conflict Resolution Strategy ADR]]"
+  - adr/queue-storage-mechanism.md
+  - adr/queue-partitioning-and-ordering.md
+  - adr/conflict-resolution-strategy.md
 ---
 
 # Goal

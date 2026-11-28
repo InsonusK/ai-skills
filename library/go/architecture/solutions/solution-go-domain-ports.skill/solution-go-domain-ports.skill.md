@@ -16,7 +16,7 @@ extends:
 depends_on:
 built_on_plateau:
 adr:
-  - "[[library/go/architecture/solutions/solution-go-domain-ports.skill/adr/shared-prerequisite-not-common-baseline.md|Shared prerequisite, not part of the common baseline]]"
+  - adr/shared-prerequisite-not-common-baseline.md
 ---
 
 # Goal

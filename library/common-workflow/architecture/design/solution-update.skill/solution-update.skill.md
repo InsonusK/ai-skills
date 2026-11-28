@@ -2,7 +2,7 @@
 name: solution-update
 description: Define how to update an existing solution skill, record the change as an ADR, and propagate the change to dependent solutions and plateaus
 whenToUse: when an existing solution skill must be changed — its rules, implementation files, dependencies, or metadata
-updated: 20260909
+updated: 20261128
 tags:
   - skill/architecture/solution/design
   - stack
@@ -24,11 +24,11 @@ Inputs:
 - `{solution}` — path to the solution skill folder being updated.
 - `{change}` — description of what must change (rules, implementation files, dependencies, metadata).
 
-Before starting, read [[library/common-workflow/architecture/design/solution-create.skill/solution-create.skill|solution-create]] (all its authoring rules — template structure, `whenToUse`, `Implementation/` folder, facet tags, removal of `hint`/`example` blocks — apply unchanged to an update), [[library/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]], and [[library/common-workflow/architecture/design/plateau-update-by-solutions.skill/plateau-update-by-solutions.skill|plateau-update-by-solutions]].
+Before starting, read [[library/common-workflow/architecture/design/solution-create.skill/solution-create.skill|solution-create]] (all its authoring rules — template structure, `whenToUse`, `Implementation/` folder, facet tags, removal of `hint`/`example` blocks — apply unchanged to an update), [[library/design/adr-create.skill/adr-create.skill|adr-create]], and [[library/common-workflow/architecture/design/plateau-update-by-solutions.skill/plateau-update-by-solutions.skill|plateau-update-by-solutions]].
 
 1. Understand the requested change and why. Ask the user before editing if anything is unclear.
 2. Apply the change to the solution skill following [[library/common-workflow/architecture/design/solution-create.skill/solution-create.skill|solution-create]]: update the skill file and the `Implementation/` folder so they stay consistent, keep the facet tags / `whenToUse` / `Implementation/` rules intact, and bump the solution's `version`.
-3. Record the decision behind the change as an ADR following [[library/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]]: create it in the solution's own `adr/` folder, register it in the `adr:` YAML property, and link it from the skill body.
+3. Record the decision behind the change as an ADR following [[library/design/adr-create.skill/adr-create.skill|adr-create]]: create it in the solution's own `adr/` folder, register it in the `adr:` YAML property, and link it from the skill body.
 4. Search other solution skills for references to `{solution}` (in `created_by`, dependency statements, or applied-solutions lists) and update each dependent solution, recording its own ADR per step 3 when the change alters a decision.
 5. Search `library/*/architecture/plateau/**` for plateaus whose `created_by` or `__Applied solutions:__` references a changed solution; for each, run the [[library/common-workflow/architecture/design/plateau-update-by-solutions.skill/plateau-update-by-solutions.skill|plateau-update-by-solutions]] workflow with the changed solution as input, including propagation through child plateaus via `parent_plateaus`.
 6. Verify the result against the [check list](#check-list).
@@ -38,7 +38,7 @@ Before starting, read [[library/common-workflow/architecture/design/solution-cre
 ## MUST
 
 ### Record the change as an ADR
-Record every architecture decision made during the update as an ADR in the solution's own `adr/` folder following [[library/common-workflow/architecture/design/adr-create.skill/adr-create.skill|adr-create]], registered in the solution's `adr:` YAML property.
+Record every architecture decision made during the update as an ADR in the solution's own `adr/` folder following [[library/design/adr-create.skill/adr-create.skill|adr-create]], registered in the solution's `adr:` YAML property.
 - Violation: implementation files are rewritten but no ADR is added to `adr/`.
 - Risk: the reason for the change is lost, and the next editor re-argues or silently reverts the decision.
 - Fix: create the ADR when the change is applied, before moving on to dependent solutions and plateaus.

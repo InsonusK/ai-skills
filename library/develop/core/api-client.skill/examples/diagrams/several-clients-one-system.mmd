@@ -1,0 +1,24 @@
+sequenceDiagram
+    autonumber
+    box App
+    participant Consumer as Consumer
+    participant Service as UserService
+    participant Users as UsersClient
+    participant Names as NamesClient
+    end
+    box Identity Service
+    participant UsersAPI as Identity Users API
+    participant NamesAPI as Identity Names API
+    end
+    Note over UsersAPI,NamesAPI: Two APIs of the same external Identity system
+    Consumer->>+Service: UserName(42) - unchanged
+    Service->>+Users: GetUser(42)
+    Users->>+UsersAPI: Call user endpoint through configured protocol/policies
+    UsersAPI-->>-Users: Wire response
+    Users-->>-Service: UserDto(nameId=17, surname=Lee)
+    Service->>+Names: GetName(17)
+    Names->>+NamesAPI: Call name endpoint through configured protocol/policies
+    NamesAPI-->>-Names: Wire response
+    Names-->>-Service: NameDto(givenName=Ann)
+    Note over Service: Construct Domain Model through public domain APIs
+    Service-->>-Consumer: Domain name Ann Lee - unchanged

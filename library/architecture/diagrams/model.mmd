@@ -10,12 +10,16 @@ flowchart TB
         command --> domain
     end
 
-    subgraph services["Service variation points"]
-        service["service<br/>business language"]
-        infrastructure["infrastructure - technique<br/>DB · HTTP / gRPC client ·<br/>Kafka / RabbitMQ producer · TaskBox"]
+    subgraph services["Integration variation points"]
+        service["service<br/>consumer operations, API DTOs to Domain Model"]
+        client["client<br/>logical API DTOs, HTTP / gRPC, call policies"]
+        infrastructure["infrastructure - technique<br/>DB · Kafka / RabbitMQ producer · TaskBox"]
+        service --> client
         service --> infrastructure
     end
 
     entries -- "plain parameters → command" --> command
     command -- "through interfaces" --> service
     domain -- "through interfaces" --> service
+
+    command -. "own-store entities form (.NET), through repository" .-> infrastructure
