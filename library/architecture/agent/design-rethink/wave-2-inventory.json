@@ -499,9 +499,7 @@
       "state": "wave-2-review",
       "evidence": [
         "app-layers",
-        "app-api-layer",
-        "app-command-layer",
-        "app-domain-layer"
+        "app-command-layer"
       ],
       "owned_file_count": 11,
       "example_roots": []

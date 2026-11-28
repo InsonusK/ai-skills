@@ -34,7 +34,7 @@ adr:
 ## MUST
 
 ### Build the base on app-layers
-Build the base plateau following [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md) for topology and [app-api-layer](library/develop/core/app-api-layer.skill/app-api-layer.skill.md), [app-command-layer](library/develop/core/app-command-layer.skill/app-command-layer.skill.md) and [app-domain-layer](library/develop/core/app-domain-layer.skill.md) for their implementation contracts, with exactly these layers filled.
+Build the base plateau with exactly the layers filled below, following [app-layers](library/develop/core/app-layers.skill/app-layers.skill.md#keep-each-part-in-its-layer-and-its-calls-downward) for topology and the requirements identified in its layer table's `Implementation contract` column for each implemented layer.
 
 | Layer | In the base plateau |
 |---|---|
