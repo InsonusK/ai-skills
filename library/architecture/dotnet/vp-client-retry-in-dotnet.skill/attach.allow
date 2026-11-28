@@ -1,5 +1,5 @@
 # The client retry variation point attaches to the HTTP client example: it
-# adds the retry middleware (src/Infrastructure/Client/Middleware/Retry, with
+# adds the retry middleware (src/Client/Middleware/Retry, with
 # its scenarios) and changes only these files: the composition root, which
 # lists it in the client middleware of the API, its project, the solution, and
 # the readme.

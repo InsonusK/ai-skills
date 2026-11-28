@@ -1,6 +1,6 @@
 # Feature and VP authoring redesign
 
-Review contract, 2026-11-26. Status: wave 1 shared contracts prepared; waves 2–4 pending.
+Review contract, 2026-11-26. Status: waves 1–2 implemented; waves 3–4 pending.
 
 ## Outcome
 
@@ -169,19 +169,19 @@ Proposed documentation contract for wave 2:
   `api-client` and `app-layers` before architecture changes.
 - Proposed: per-stack catalog overlay layouts with explicit alternatives; base
   capability documentation with no automatic proliferation of VP skills.
-- Open: physical .NET project placement, cross-module model ownership and shared
-  configuration policy when several clients use one provider endpoint.
+- Accepted by owner: separate .NET Service project with a reference to the
+  consumer-owned Application interface; Application has no client reference.
+- Open: cross-module model ownership and shared configuration policy when
+  several clients use one provider endpoint.
 - Confirmed by owner, 2026-11-28: retain the prohibition on service-to-service
   calls; cross-system composition stays in commands or domain services.
 
 ## Status
 
-The owner merged plan refinement PR #311 into the parent branch. Wave 1 revises
-the shared contracts, ADRs and directly linked examples; see [wave-1.md](./wave-1.md)
-for its audit and validation record. Waves 2–4 remain pending. The parent PR #310
-remains a draft until the waves are complete. Architecture client specs and stack
-examples are explicitly marked as awaiting migration; this is not a conforming
-end-to-end implementation of the new contract yet.
+The owner merged wave 1 PR #312 into the parent branch. Wave 2 propagates the
+client/service contract into stack realizations and documents complete layouts;
+see [wave-2/STATUS.md](./wave-2/STATUS.md) for scope, decisions and test evidence.
+Waves 3–4 remain pending. Parent PR #310 remains draft until all waves complete.
 
 ## Separate audit pass
 

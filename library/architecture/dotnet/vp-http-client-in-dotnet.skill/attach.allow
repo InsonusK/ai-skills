@@ -14,4 +14,4 @@ change README.md
 # The todo API's adapter is written per API: the HTTP and the gRPC client
 # examples each show their own. The service over it catches only the outcomes
 # of Client.Abstractions, the same for both.
-sample src/Infrastructure/Client/TodoApi/*
+sample src/Client/TodoApi/*

@@ -3,8 +3,8 @@
 The base plateau in dotnet with the HTTP client and the client retry variation points attached: the startup command
 `PlanRemoteItems` plans its titles with another service's todo API (`POST /v1/items/plan` of
 `docs/integration/client/todo/openapi.json`) through the service `RemotePlannerService` and the adapter
-`TodoApiClient`, built on the fixed client code `src/Infrastructure/Client/Core`; the client middleware
-`src/Infrastructure/Client/Middleware/Retry` sends a call of a retryable operation again while the API does not answer.
+`TodoApiClient`, built on the fixed client code `src/Client/Core`; the client middleware
+`src/Client/Middleware/Retry` sends a call of a retryable operation again while the API does not answer.
 
 ```bash
 make init                                             # once: the packages
@@ -37,12 +37,12 @@ make test                                             # every scenario
 | `src/Modules/Todo/Todo.Commands` | the commands and their results — all an entry point sees |
 | `src/Modules/Todo/Todo.Application` | the command handlers and the services (`RemotePlannerService`) |
 | `src/Modules/Todo/Todo.Domain` | entities, domain services, the rule errors |
-| `src/Infrastructure/Client/Core/Client.Abstractions` | the outcomes every client reports — fixed code, no packages |
-| `src/Infrastructure/Client/Core/Client.Pipeline` | the client middleware run around the attempts of each call — fixed code, no packages |
-| `src/Infrastructure/Client/Middleware/Retry` | the retry of a call the API did not answer — fixed code |
-| `src/Infrastructure/Client/Core/Client.Http` | the HTTP call, its settings, log, and mock — fixed code |
-| `src/Infrastructure/Client/TodoApi/TodoApi.Abstractions` | `ITodoApi`, what the service sees of the todo API |
-| `src/Infrastructure/Client/TodoApi/TodoApi` | `TodoApiClient` and its mock `Mock/TodoApiMock.cs` |
+| `src/Client/Core/Client.Abstractions` | the outcomes every client reports — fixed code, no packages |
+| `src/Client/Core/Client.Pipeline` | the client middleware run around the attempts of each call — fixed code, no packages |
+| `src/Client/Middleware/Retry` | the retry of a call the API did not answer — fixed code |
+| `src/Client/Core/Client.Http` | the HTTP call, its settings, log, and mock — fixed code |
+| `src/Client/TodoApi/TodoApi.Abstractions` | `ITodoApi`, what the service sees of the todo API |
+| `src/Client/TodoApi/TodoApi` | `TodoApiClient` and its mock `Mock/TodoApiMock.cs` |
 | `src/BuildingBlocks` | pipeline behaviors, logging — fixed code |
 | `src/Shared` | the error kinds — fixed code, no packages |
 

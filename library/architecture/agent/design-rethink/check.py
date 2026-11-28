@@ -26,7 +26,7 @@ for row in section.splitlines()[2:]:
     cells = [cell.strip() for cell in row.strip('|').split('|')]
     if len(cells) != 4 or cells[1] not in relations or not all(cells):
         errors.append(f'Invalid dependency row: {row}')
-for marker in ['implementation pending', 'API DTOs mapped by service', 'client-owned logical API DTOs']:
+for marker in ['API DTOs mapped by service', 'client-owned logical API DTOs']:
     if marker not in sample:
         errors.append(f'Missing boundary qualification: {marker}')
 if errors:
@@ -40,3 +40,7 @@ import sys
 wave1 = Path(__file__).with_name('check-wave-1.py')
 if wave1.exists():
     subprocess.run([sys.executable, str(wave1)], cwd=root, check=True)
+
+wave2 = Path(__file__).with_name("wave-2") / "check.py"
+if wave2.exists():
+    subprocess.run([sys.executable, str(wave2)], cwd=root, check=True)

@@ -1,3 +1,4 @@
+using TodoExampleService.Service.Todo;
 // The composition root: the one place that builds concrete types and wires
 // them together. A variation point joins the application by adding lines to
 // the marked sections below - never by editing another file.
@@ -9,16 +10,16 @@ using TodoExampleService.App.Host.Config;
 using TodoExampleService.App.Host.Version;
 using TodoExampleService.BuildingBlocks.Logging;
 using TodoExampleService.BuildingBlocks.Pipeline;
-using TodoExampleService.Infrastructure.Client.Core.Http;
-using TodoExampleService.Infrastructure.Client.Core.Pipeline;
+using TodoExampleService.Client.Core.Http;
+using TodoExampleService.Client.Core.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using TodoExampleService.Middleware.Logging;
 using TodoExampleService.Modules.Todo.Application;
 using TodoExampleService.Modules.Todo.Application.Services;
 using TodoExampleService.Modules.Todo.Commands;
-using TodoExampleService.Infrastructure.Client.TodoApi;
-using TodoExampleService.Infrastructure.Client.TodoApi.Abstractions;
+using TodoExampleService.Client.TodoApi;
+using TodoExampleService.Client.TodoApi.Abstractions;
 
 namespace TodoExampleService.App.Host;
 

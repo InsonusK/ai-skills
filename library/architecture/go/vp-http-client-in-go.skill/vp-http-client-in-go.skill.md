@@ -1,8 +1,8 @@
 ---
 name: vp-http-client-in-go
-description: The HTTP client variation point in Go — internal/infrastructure/client/core/httpclient and core/outcome copied from templates (the {API} settings, Client.Call with the timeout, JSON in and out, outcome.ErrUnavailable and outcome.StatusError, the call log, the request id, the mock against an emulator), one client per API in internal/infrastructure/client/{api} with its operations, its mock, and its contract scenario, the service over it in internal/service, and the lines of main.go that build them
+description: The HTTP client variation point in Go — internal/client/core/httpclient and core/outcome copied from templates (the {API} settings, Client.Call with the timeout, JSON in and out, outcome.ErrUnavailable and outcome.StatusError, the call log, the request id, the mock against an emulator), entity-focused clients in internal/client/{api} with its operations, its mock, and its contract scenario, the service over it in internal/service, and the lines of main.go that build them
 whenToUse: when a Go application built on the base plateau must call another service's HTTP API, when you call a further operation of such an API, or when you review a Go HTTP client
-updated: 20261104
+updated: 20261128
 tags:
   - stack/go
   - concern/architecture
@@ -15,49 +15,49 @@ tags:
 - **Attached by the listed changes only** - Attaching it adds files and changes only the base files [attach.allow](./attach.allow) names, which the repository's attach check verifies against [base-plateau-in-go](library/architecture/go/base-plateau-in-go.skill/base-plateau-in-go.skill.md)'s example.
 
 # Core Principle
-- **Copied once, written per operation** - `internal/infrastructure/client/core/httpclient` is copied from templates and never edited; per API the application writes a client package whose operations are calls of `httpclient.Client.Call`, the client's emulator, and the service over it.
+- **Copied once, written per operation** - `internal/client/core/httpclient` is copied from templates and never edited; per API the application writes a client package whose operations are calls of `httpclient.Client.Call`, the client's emulator, and the service over it.
 - **The service sees outcomes, never a transport** - The service catches `outcome.ErrUnavailable` and `*outcome.StatusError`, the same for an HTTP and a gRPC client, as dotnet's `Client.Abstractions` and Python's `outcomes.py`: the service, its interface, and its scenarios are the same over both transports.
 
-```
-docs/integration/client/{api-name}/openapi.json   the provider's contract, copied unchanged
-internal/infrastructure/
-├── client/                  every client of another service's API, and nothing else
-│   ├── core/outcome/     copied from templates, never edited: ErrUnavailable, StatusError, Code - every transport
-│   ├── core/pipeline/    copied from templates, never edited: the client middleware around the attempts of a call
-│   ├── core/httpclient/     copied from templates, never edited
-│   │   ├── config.go        LoadConfig(prefix): {API}_HOST, _HTTP_PORT, _TLS, _TIMEOUT; Mock
-│   │   ├── client.go        Client.Call: timeout, JSON, X-Request-Id, call log; returns the outcomes
-│   │   └── features/ test/  the fixed code's scenarios, with a test API of their own
-│   └── {api}/               written per API (todoapi)
-│       ├── {api}.go         Prefix, Operations, Client with one method per operation and its own types
-│       ├── mock/{api}_mock.go   mock.Emulator(): every operation answered with stable data ({API}_HOST=mock)
-│       └── features/ test/  each operation against an emulator of the scenario + the contract scenario
-└── {store}/                 a store (memory, postgres): beside client/, never in it
-internal/service/{name}.go   the service over the client: technical outcomes → the application's kinds
+```text
+docs/integration/client/{api-name}/       provider's wire contract
+internal/client/
+  core/{outcome,pipeline,httpclient}/  fixed code copied from templates
+  {api}/
+    contract/dto.go                         protocol-neutral logical API DTOs
+    {api}.go                               concrete protocol implementation
+    mock/                                  in-process emulator
+    features/ test/                        operation and contract scenarios
+internal/service/{name}.go                 consumer adaptation and error meanings
 ```
 
 # Rule
 
 ## MUST
 
+### Keep logical DTOs outside the protocol implementation
+Declare the API DTOs in `internal/client/{api}/contract`, importing that package in service and both protocol implementations without importing transport types into service.
+- Risk: a DTO or a service interface changes when the protocol client is replaced.
+- Fix: use the same contract package and names for HTTP/gRPC implementations; the example uses `todoapicontract.ItemDTO` while service constructs domain entities.
+
+
 ### Copy the client code from templates
-Fill and copy [config.go](./templates/internal/infrastructure/client/core/httpclient/config.go) and [client.go](./templates/internal/infrastructure/client/core/httpclient/client.go) to `internal/infrastructure/client/core/httpclient/`, with the example's `features/` and `test/`, [outcome.go](./templates/internal/infrastructure/client/core/outcome/outcome.go) to `internal/infrastructure/client/core/outcome/`, and [pipeline.go](./templates/internal/infrastructure/client/core/pipeline/pipeline.go) with the example's `features/` and `test/` to `internal/infrastructure/client/core/pipeline/` — already there, unchanged, when the gRPC client is attached — replacing `{module-path}` with the module path from `go.mod`.
+Fill and copy [config.go](./templates/internal/client/core/httpclient/config.go) and [client.go](./templates/internal/client/core/httpclient/client.go) to `internal/client/core/httpclient/`, with the example's `features/` and `test/`, [outcome.go](./templates/internal/client/core/outcome/outcome.go) to `internal/client/core/outcome/`, and [pipeline.go](./templates/internal/client/core/pipeline/pipeline.go) with the example's `features/` and `test/` to `internal/client/core/pipeline/` — already there, unchanged, when the gRPC client is attached — replacing `{module-path}` with the module path from `go.mod`.
 - Risk: a retyped client drifts in its timeout, its error report, or its log from every other Go client of the catalog.
 - Fix: copy the files; after filling, searching them for `{module-path}` returns nothing; `make test` passes.
 
-### One client package per API
-Write each API as `internal/infrastructure/client/{api}/` holding `Prefix` (`"TODO_API"`), `Operations` (an `httpclient.Operation` - method, path, and `Retryable` - for every operation it calls), `New(logger, middlewares)` reading the settings and `NewClient(cfg, logger, middlewares)` taking them, and per operation one method of `Client` with an unexported request and response type and the mapping to the values the service uses.
+### Entity-focused client packages
+Write each selected entity-focused API client as `internal/client/{api}/` holding `Prefix` (`"TODO_API"`), `Operations` (an `httpclient.Operation` - method, path, and `Retryable` - for every operation it calls), `New(logger, middlewares)` reading the settings and `NewClient(cfg, logger, middlewares)` taking them, and per operation one method of `Client` with an unexported request and response type and the mechanical mapping into the logical API DTO contract.
 
 ```go
 // PlanItems is POST /v1/items/plan: one open item per title, planned by the API.
-func (c *Client) PlanItems(ctx context.Context, titles []string) ([]Item, error) {
+func (c *Client) PlanItems(ctx context.Context, titles []string) ([]todoapicontract.ItemDTO, error) {
 	var answer planItemsResponse
 	if err := c.http.Call(ctx, http.MethodPost, "/v1/items/plan", planItemsRequest{Titles: titles}, &answer); err != nil {
 		return nil, err
 	}
-	items := make([]Item, len(answer.Items))
+	items := make([]todoapicontract.ItemDTO, len(answer.Items))
 	for i, item := range answer.Items {
-		items[i] = Item{Title: item.Title, Done: item.Done}
+		items[i] = todoapicontract.ItemDTO{Title: item.Title, Done: item.Done}
 	}
 	return items, nil
 }
@@ -65,10 +65,10 @@ func (c *Client) PlanItems(ctx context.Context, titles []string) ([]Item, error)
 
 - Violation: `http.Client` used in the client beside `Call`; the client returning `entity` types or the application's kinds; an operation missing from `Operations`.
 - Risk: a call that bypasses `Call` has no timeout, no log, and no request id; the contract scenario misses the operation.
-- Fix: follow the example's [todoapi.go](./examples/internal/infrastructure/client/todoapi/todoapi.go); a new operation adds its method, its two types, its line of `Operations`, and its route in [todoapi_mock.go](./examples/internal/infrastructure/client/todoapi/mock/todoapi_mock.go).
+- Fix: follow the example's [todoapi.go](./examples/internal/client/todoapi/todoapi.go); a new operation adds its method, its two types, its line of `Operations`, and its route in [todoapi_mock.go](./examples/internal/client/todoapi/mock/todoapi_mock.go).
 
 ### Answer every operation in the mock
-Write the mock of each client as `internal/infrastructure/client/{api}/mock/{api}_mock.go`, package `mock`, with `Emulator()` returning an `http.Handler` that answers every operation of `Operations` as the API does, with stable data and no state, and pass it to `httpclient.New`; `{API}_HOST=mock` runs the client against it. The file's name says it is a mock and of which client.
+Write the mock of each client as `internal/client/{api}/mock/{api}_mock.go`, package `mock`, with `Emulator()` returning an `http.Handler` that answers every operation of `Operations` as the API does, with stable data and no state, and pass it to `httpclient.New`; `{API}_HOST=mock` runs the client against it. The file's name says it is a mock and of which client.
 - Risk: an operation the emulator does not answer fails with 404 under `mock`, and the service cannot run without the other service.
 - Fix: the emulator's scenario runs the client mocked and checks its answer.
 
@@ -108,12 +108,12 @@ remotePlanner := service.NewRemotePlanner(todoAPI)
 - Fix: the command takes the service through an interface; the composition root builds both.
 
 ### Cover the client with scenarios
-Copy the example's `internal/infrastructure/client/core/httpclient/features/` and `test/` unchanged but for the module path: they cover the settings, the call, the outcomes, the log, and the mock through a test API of their own. Write per client a feature calling each operation against an `httptest` emulator of the scenario and its emulator mocked, and its contract scenario reading `docs/integration/client/{api-name}/openapi.json`; per service a feature with the client faked; tag them `@type/tech-check` and `@type/service`.
+Copy the example's `internal/client/core/httpclient/features/` and `test/` unchanged but for the module path: they cover the settings, the call, the outcomes, the log, and the mock through a test API of their own. Write per client a feature calling each operation against an `httptest` emulator of the scenario and its emulator mocked, and its contract scenario reading `docs/integration/client/{api-name}/openapi.json`; per service a feature with the client faked; tag them `@type/tech-check` and `@type/service`.
 - Risk: a client feature that repeats the outcomes of `Call` grows with every operation and tests nothing new.
 - Fix: a client feature checks only its own request and mapping.
 
 # Check list
-- [ ] `internal/infrastructure/client/core/httpclient/{config,client}.go` are filled copies of the templates; no placeholder is left.
+- [ ] `internal/client/core/httpclient/{config,client}.go` are filled copies of the templates; no placeholder is left.
 - [ ] Each API has its package with `Prefix`, `Operations`, `New`, `NewClient`, and one method per operation, and its mock in `mock/{api}_mock.go`; the contract scenario passes.
 - [ ] The service maps `outcome.ErrUnavailable`, the expected `outcome.StatusError` codes, and nothing else to kinds; it is the same over HTTP and gRPC.
 - [ ] `main.go` builds the client middleware of each API in `// [client middleware]`; every operation of the client is in its list, `Retryable` where a repeat does what one call does.

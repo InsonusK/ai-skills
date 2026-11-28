@@ -1,8 +1,8 @@
 ---
 name: vp-client-retry-in-dotnet
-description: The client retry variation point in dotnet — the Retry project in src/Infrastructure/Client/Middleware copied from templates (RetryConfig.Load reading {API}_RETRY_ATTEMPTS and {API}_RETRY_BACKOFF, RetryMiddleware repeating a retryable call on ApiUnavailableException with doubled, jittered waits that the caller's cancellation ends, and a WARN record per repeat), listed in the client middleware of an API in Program.cs
+description: The client retry variation point in dotnet — the Retry project in src/Client/Middleware copied from templates (RetryConfig.Load reading {API}_RETRY_ATTEMPTS and {API}_RETRY_BACKOFF, RetryMiddleware repeating a retryable call on ApiUnavailableException with doubled, jittered waits that the caller's cancellation ends, and a WARN record per repeat), listed in the client middleware of an API in Program.cs
 whenToUse: when a dotnet application with a client of another service's API (vp-http-client-in-dotnet, vp-grpc-client-in-dotnet) must repeat calls the API did not answer, when you mark an operation retryable, or when you review a dotnet client retry
-updated: 20261119
+updated: 20261128
 tags:
   - stack/dotnet
   - concern/architecture
@@ -19,7 +19,7 @@ tags:
 - **The caller's cancellation ends the wait** - A `CancellationToken` carries no deadline to check before a wait, so `Task.Delay` takes the caller's token and a cancelled wait throws the `ApiUnavailableException` of the last attempt.
 
 ```
-src/Infrastructure/Client/
+src/Client/
 ├── Core/Client.Pipeline/          of the clients: ClientCall, ClientAttempt, IClientMiddleware, ClientPipeline
 ├── Middleware/Retry/              copied from templates, never edited
 │   ├── RetryConfig.cs             Load(prefix): {API}_RETRY_ATTEMPTS (3), {API}_RETRY_BACKOFF (100ms)
@@ -38,7 +38,7 @@ Fill `{service-namespace}` with the application's namespace root from [the names
 - Fix: substitute the same identifier in every delivered source, preserve template logic, and verify no `{service-namespace}` remains in application sources.
 
 ### Copy the middleware from templates
-Copy [Retry](./templates/src/Infrastructure/Client/Middleware/Retry/) to `src/Infrastructure/Client/Middleware/Retry/`, with the example's `Retry.Tests`, add both projects to the solution, and reference `Retry` from `App.Host`.
+Copy [Retry](./templates/src/Client/Middleware/Retry/) to `src/Client/Middleware/Retry/`, with the example's `Retry.Tests`, add both projects to the solution, and reference `Retry` from `App.Host`.
 - Risk: a retyped retry repeats unmarked calls or statuses, or waits without jitter.
 - Fix: copy the files unchanged after namespace substitution; `make test` passes.
 
@@ -62,7 +62,7 @@ Set `Retryable: true` on each `HttpOperation` or `GrpcMethod` of the adapter's l
 - Fix: the example's `TodoApiClient.Operations` marks `POST /v1/items/plan`, which stores nothing.
 
 # Check list
-- [ ] `src/Infrastructure/Client/Middleware/Retry` is an copy of the filled templates; `App.Host` references it.
+- [ ] `src/Client/Middleware/Retry` is an copy of the filled templates; `App.Host` references it.
 - [ ] `Program.cs` loads the retry settings of each API and lists the middleware in its client middleware.
 - [ ] Only operations whose repeat does what one call does are `Retryable`; the contract scenario holds the marks.
 - [ ] `make test` passes; `bash test/check-vp-attach.sh` in this repository reports no file changed beyond [attach.allow](./attach.allow).

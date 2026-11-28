@@ -1,8 +1,8 @@
 ---
 name: vp-client-retry-in-go
-description: The client retry variation point in Go — internal/infrastructure/client/middleware/retry copied from templates (LoadConfig reading {API}_RETRY_ATTEMPTS and {API}_RETRY_BACKOFF, Middleware repeating a Retryable call on outcome.ErrUnavailable with doubled, jittered waits within the caller's deadline and a WARN record per repeat), added to the client middleware of an API in main.go
+description: The client retry variation point in Go — internal/client/middleware/retry copied from templates (LoadConfig reading {API}_RETRY_ATTEMPTS and {API}_RETRY_BACKOFF, Middleware repeating a Retryable call on outcome.ErrUnavailable with doubled, jittered waits within the caller's deadline and a WARN record per repeat), added to the client middleware of an API in main.go
 whenToUse: when a Go application with a client of another service's API (vp-http-client-in-go, vp-grpc-client-in-go) must repeat calls the API did not answer, when you mark an operation retryable, or when you review a Go client retry
-updated: 20261102
+updated: 20261128
 tags:
   - stack/go
   - concern/architecture
@@ -18,7 +18,7 @@ tags:
 - **A middleware of client/core/pipeline** - `retry.Middleware` is a `pipeline.Middleware`: it sees `pipeline.Call` (API, operation, `Retryable`) and calls `next`, the attempt, once or more; the client runs it around its attempts, so it is the same over `httpclient` and `grpcclient`.
 
 ```
-internal/infrastructure/client/
+internal/client/
 ├── core/pipeline/           of the client: Call, Attempt, Middleware, Run
 ├── middleware/retry/        copied from templates, never edited
 │   ├── config.go            LoadConfig(prefix): {API}_RETRY_ATTEMPTS (3), {API}_RETRY_BACKOFF (100ms)
@@ -32,7 +32,7 @@ internal/infrastructure/client/
 ## MUST
 
 ### Copy the middleware from templates
-Fill and copy [config.go](./templates/internal/infrastructure/client/middleware/retry/config.go) and [retry.go](./templates/internal/infrastructure/client/middleware/retry/retry.go) to `internal/infrastructure/client/middleware/retry/`, with the example's `features/` and `test/`, replacing `{module-path}` with the module path from `go.mod`.
+Fill and copy [config.go](./templates/internal/client/middleware/retry/config.go) and [retry.go](./templates/internal/client/middleware/retry/retry.go) to `internal/client/middleware/retry/`, with the example's `features/` and `test/`, replacing `{module-path}` with the module path from `go.mod`.
 - Risk: a retyped retry repeats unmarked calls or statuses, or waits without jitter.
 - Fix: copy the files; after filling, searching them for `{module-path}` returns nothing; `make test` passes.
 
@@ -61,7 +61,7 @@ Set `Retryable: true` on each `httpclient.Operation` or `grpcclient.Method` of t
 - Fix: the example's `todoapi.Operations` marks `POST /v1/items/plan`, which stores nothing.
 
 # Check list
-- [ ] `internal/infrastructure/client/middleware/retry/{config,retry}.go` are filled copies of the templates.
+- [ ] `internal/client/middleware/retry/{config,retry}.go` are filled copies of the templates.
 - [ ] `main.go` loads the retry settings of each API and lists the middleware in its client middleware.
 - [ ] Only operations whose repeat does what one call does are `Retryable`; the contract scenario holds the marks.
 - [ ] `make test` passes; `bash test/check-vp-attach.sh` in this repository reports no file changed beyond [attach.allow](./attach.allow).

@@ -24,16 +24,16 @@ Feature: Calling an HTTP API
     Then the test API should have received no request id
 
   @category/negative
-  Scenario: An error answer is reported with its status and its google.rpc.Status
+  Scenario: An error answer exposes its logical status and retains HTTP diagnostics
     Given the test API answers 409 with '{"code":6,"message":"the name is taken","details":[]}'
     When I call POST "/v1/echo" with the text "hi"
-    Then the call should fail with the status 409, the code 6, and the message "the name is taken"
+    Then the call should fail with the diagnostic HTTP status 409, the code 6, and the message "the name is taken"
 
   @category/negative
-  Scenario: An error answer that is not a google.rpc.Status is reported with its status alone
+  Scenario: An unstructured error is unknown with HTTP diagnostics retained
     Given the test API answers 404 with '<html>not here</html>'
     When I call POST "/v1/echo" with the text "hi"
-    Then the call should fail with the status 404, the code 0, and the message ""
+    Then the call should fail with the diagnostic HTTP status 404, the code 2, and the message ""
 
   @category/error
   Scenario Outline: An API that does not answer is unavailable

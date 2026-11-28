@@ -10,6 +10,8 @@ tags:
   - concern/documentation/adr
 ---
 
+Client/service placement is amended by [client-and-service-sibling-projects](./client-and-service-sibling-projects.md); the service-qualified namespace prefix remains unchanged.
+
 # Problem
 
 The infrastructure examples put projects beneath `Infrastructure` but expose
@@ -38,8 +40,8 @@ assembly and folder names. Client/Service organization remains a separate choice
 Choose a valid C# namespace root for the service and qualify every service-owned
 layer beneath it. Modules use `ServiceName.Modules.Module.Domain` (and Commands,
 Application); PostgreSQL uses `ServiceName.Infrastructure.Database.Postgres`;
-client core uses `ServiceName.Infrastructure.Client.Core.Http` or Grpc, Pipeline,
-Abstractions, and an API client uses `ServiceName.Infrastructure.Client.ApiName`.
+client core uses `ServiceName.Client.Core.Http` or Grpc, Pipeline,
+Abstractions, and an API client uses `ServiceName.Client.ApiName`.
 Tests/helpers extend the corresponding root with Tests/Testing.
 
 Set `ServiceNamespace` once in `Directory.Build.props` and set each project's

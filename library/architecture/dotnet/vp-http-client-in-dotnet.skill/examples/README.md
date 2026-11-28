@@ -3,7 +3,7 @@
 The base plateau in dotnet with the HTTP client variation point attached: the startup command
 `PlanRemoteItems` plans its titles with another service's todo API (`POST /v1/items/plan` of
 `docs/integration/client/todo/openapi.json`) through the service `RemotePlannerService` and the client
-`TodoApiClient`, built on the fixed client code `src/Infrastructure/Client/Core`.
+`TodoApiClient`, built on the fixed client code `src/Client/Core`.
 
 ```bash
 make init                                             # once: the packages
@@ -33,10 +33,10 @@ make test                                             # every scenario
 | `src/Modules/Todo/Todo.Commands` | the commands and their results — all an entry point sees |
 | `src/Modules/Todo/Todo.Application` | the command handlers and the services (`RemotePlannerService`) |
 | `src/Modules/Todo/Todo.Domain` | entities, domain services, the rule errors |
-| `src/Infrastructure/Client/Core/Client.Abstractions` | the outcomes every client reports — fixed code, no packages |
-| `src/Infrastructure/Client/Core/Client.Http` | the HTTP call, its settings, log, and mock — fixed code |
-| `src/Infrastructure/Client/TodoApi/TodoApi.Abstractions` | `ITodoApi`, what the service sees of the todo API |
-| `src/Infrastructure/Client/TodoApi/TodoApi` | `TodoApiClient` and its mock `Mock/TodoApiMock.cs` |
+| `src/Client/Core/Client.Abstractions` | the outcomes every client reports — fixed code, no packages |
+| `src/Client/Core/Client.Http` | the HTTP call, its settings, log, and mock — fixed code |
+| `src/Client/TodoApi/TodoApi.Abstractions` | `ITodoApi`, what the service sees of the todo API |
+| `src/Client/TodoApi/TodoApi` | `TodoApiClient` and its mock `Mock/TodoApiMock.cs` |
 | `src/BuildingBlocks` | pipeline behaviors, logging — fixed code |
 | `src/Shared` | the error kinds — fixed code, no packages |
 

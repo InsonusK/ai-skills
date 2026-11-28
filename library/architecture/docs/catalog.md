@@ -48,7 +48,7 @@ recorded as a roadmap gap rather than silently dropping them.
 A stack example's selected HTTP/CLI entry is `example-built-on` evidence, not a
 constraint requiring every application using that VP to choose that entry.
 
-## Client and service: shared contract revised, stack implementation pending
+## Client and service: shared contract implemented
 
 The owner decided on 2026-11-26:
 
@@ -72,25 +72,16 @@ later returns a name ID and requires a lookup, service coordinates those calls
 and preserves its consumer-facing contract. Combining different systems still
 belongs to the layers that own that composition.
 
-The shared contract has been revised in wave 1. The
-[api-client skill](../../develop/core/api-client.skill/api-client.skill.md) and
+The [api-client skill](../../develop/core/api-client.skill/api-client.skill.md),
 [API DTOs mapped by service](../../develop/core/api-client.skill/adr/api-dtos-returned-to-service.md)
-assign all API-to-Domain Model mapping to service.
-The architecture specifications for both
-[HTTP](../spec/vp-http-client.skill/vp-http-client.skill.md) and
-[gRPC](../spec/vp-grpc-client.skill/vp-grpc-client.skill.md) prohibit returning
-response types to service. Those downstream rules, their scenarios and all three stack
-realizations await wave 2; this sample does not claim they already comply.
+and [protocol-neutral client decision](../../develop/core/api-client.skill/adr/protocol-neutral-client-contract.md)
+are implemented in the HTTP/gRPC/retry realizations for all three stacks. Client returns client-owned logical API DTOs; transport-specific wire messages stay inside its concrete
+implementation. Service constructs Domain Model. Equivalent transport/retry
+variants keep the same service, DTO and technical outcome contracts.
 
-The [retry spec](../spec/vp-client-retry.skill/vp-client-retry.skill.md) already
-places retry in client middleware. The
-[client organization card](../backlog/client-code-organization.md) contains broader
-questions. Sibling client/service boundaries and one-system service scope are
-now recorded in the shared skills; exact stack projects and cross-module model
-ownership still need propagation and review. The [protocol-neutral client decision](../../develop/core/api-client.skill/adr/protocol-neutral-client-contract.md)
-now requires client-owned logical API DTOs at the service boundary; transport-specific
-wire messages stay inside client implementations; shared generated DTOs may
-implement the same logical contract for both protocols.
+See the complete [Go](layouts/go.md), [.NET](layouts/dotnet.md) and
+[Python](layouts/python.md) placement views. Cross-module reuse and shared provider
+configuration remain open in the [client organization card](../backlog/client-code-organization.md).
 
 ## Existing decisions and unresolved work
 
@@ -101,7 +92,7 @@ implement the same logical contract for both protocols.
 | Fixed middleware stays inside entry | [Entry ADR](../spec/base-plateau-extension.skill/adr/fixed-middleware-inside-the-entry.md) | Current |
 | Shared scenarios copied to stacks | [Conformance ADR](../spec/vp-logging.skill/adr/conformance-scenarios-copied-into-each-stack.md) | Current |
 | Database rows or entities | [Storage ADR](../spec/vp-postgres.skill/adr/two-forms-rows-and-entities.md) | Current, stack-specific form |
-| Client DTO -> service entity boundary | Owner decision above | Shared ADR recorded; stack implementation pending |
+| Client DTO -> service entity boundary | Owner decision above | Implemented in HTTP/gRPC/retry for all three stacks |
 | Attachment restrictions | [Attach card](../backlog/attach-rule.md) | Under review; do not turn existing allowlists into a new absolute design rule |
 | Cache wrapper, SQLite, queue claim transaction | [Roadmap decisions](../README.md#decisions-and-open-questions-of-the-queued-vps) | Accepted parts plus explicitly open details |
 

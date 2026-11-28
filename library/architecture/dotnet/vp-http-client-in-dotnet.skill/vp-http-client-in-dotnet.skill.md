@@ -1,8 +1,8 @@
 ---
 name: vp-http-client-in-dotnet
-description: The HTTP client variation point in dotnet — Client.Abstractions (ApiUnavailableException, ApiStatusException, ApiStatusCode) and Client.Http (HttpApiConfig, HttpApiClient.CallAsync with the timeout, JSON in and out, the call log, the request id, the mock as an HttpMessageHandler) copied from templates, one client per API in Infrastructure/Client/{Api} with its {Api}.Abstractions, its mock, and its contract scenario, the service over it in {Module}.Application/Services, and the lines of Program.cs that build them
+description: The HTTP client variation point in dotnet — Client.Abstractions (ApiUnavailableException, ApiStatusException, ApiStatusCode) and Client.Http (HttpApiConfig, HttpApiClient.CallAsync with the timeout, JSON in and out, the call log, the request id, the mock as an HttpMessageHandler) copied from templates, entity-focused clients in Client/{Api} with its {Api}.Abstractions, its mock, and its contract scenario, the adapting implementation in Service/{Module}/{Module}.Service, and the lines of Program.cs that build them
 whenToUse: when a dotnet application built on the base plateau must call another service's HTTP API, when you call a further operation of such an API, or when you review a dotnet HTTP client
-updated: 20261119
+updated: 20261128
 adr:
   - adr/one-outcome-project-for-every-client.md
 tags:
@@ -18,27 +18,29 @@ tags:
 
 # Core Principle
 - **Copied once, written per operation** - `Client.Abstractions` and `Client.Http` are copied from templates and never edited; per API the application writes `{Api}.Abstractions` with its interface, `{Api}` with the client whose operations are calls of `HttpApiClient.CallAsync` and its mock, and the service over it.
-- **The service sees outcomes, never a transport** - `{Module}.Application` references `{Api}.Abstractions`, which references `Client.Abstractions`: the service catches `ApiUnavailableException` and `ApiStatusException`, the same for an HTTP and a gRPC client. Decision recorded in [one-outcome-project-for-every-client](./adr/one-outcome-project-for-every-client.md).
+- **The service sees outcomes, never a transport** - `{Module}.Service` references `{Api}.Abstractions`, which references `Client.Abstractions`: the service catches `ApiUnavailableException` and `ApiStatusException`, the same for an HTTP and a gRPC client. Decision recorded in [one-outcome-project-for-every-client](./adr/one-outcome-project-for-every-client.md).
 
-```
-docs/integration/client/{api-name}/openapi.json        the provider's contract, copied unchanged
-src/Infrastructure/Client/                             every client of another service's API, and nothing else
-├── Core/                                              copied from templates, never edited
-│   ├── Client.Abstractions/   ApiOutcomes.cs          ApiUnavailableException, ApiStatusException, ApiStatusCode; no package
-│   ├── Client.Http/           HttpApiConfig.cs        Load(prefix): {API}_HOST, _HTTP_PORT, _TLS, _TIMEOUT; Mock
-│   │                          HttpApiClient.cs        CallAsync: timeout, JSON, X-Request-Id, call log, outcomes
-│   └── Client.Http.Tests/                             the fixed code's scenarios, with a test API of their own
-└── {Api}/                                             written per API (TodoApi)
-    ├── {Api}.Abstractions/    I{Api}.cs               the interface in the API's terms, its own item types
-    ├── {Api}/                 {Api}Client.cs          Prefix, Operations, one method per operation with its own types
-    │                          Mock/{Api}Mock.cs       an HttpMessageHandler answering every operation ({API}_HOST=mock)
-    └── {Api}.Tests/                                   each operation against a server of the scenario + the contract scenario
-src/Modules/{Module}/{Module}.Application/Services/    I{Service}.cs, {Service}Service.cs, {Service}Errors.cs: outcomes → kinds
+```text
+docs/integration/client/{api-name}/       provider's wire contract
+src/Client/
+  Core/{Client.Abstractions,Client.Pipeline,Client.Http}/
+  {Api}/{Api}.Abstractions/                 logical API DTOs and I{Api}
+  {Api}/{Api}/                              concrete protocol implementation and Mock/
+  {Api}/{Api}.Tests/                        emulator and contract scenarios
+src/Modules/{Module}/{Module}.Application/Services/I{Service}.cs
+src/Service/{Module}/{Module}.Service/      adapting implementation and errors
+src/Service/{Module}/{Module}.Service.Tests/ service tests with clients faked
 ```
 
 # Rule
 
 ## MUST
+
+### Keep DTOs in the client abstraction project
+Declare protocol-neutral API DTOs in `{Api}.Abstractions` without transport-specific message or library references.
+- Risk: service signatures and errors depend on the selected HTTP/gRPC implementation.
+- Fix: keep the same interface and DTOs across transports; generated wire types and protocol error parsing remain in the implementation project.
+
 
 ### Fill the service namespace
 Fill `{service-namespace}` with the application's namespace root from [the namespace convention](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md#qualify-namespaces-with-the-service-name) before copying this skill's templates.
@@ -46,32 +48,32 @@ Fill `{service-namespace}` with the application's namespace root from [the names
 - Fix: substitute the same identifier in every delivered source, preserve template logic, and verify no `{service-namespace}` remains in application sources.
 
 ### Copy the client code from templates
-Copy [Client.Abstractions](./templates/src/Infrastructure/Client/Core/Client.Abstractions/), [Client.Pipeline](./templates/src/Infrastructure/Client/Core/Client.Pipeline/), and [Client.Http](./templates/src/Infrastructure/Client/Core/Client.Http/) to `src/Infrastructure/Client/Core/`, with the example's `Client.Pipeline.Tests` and `Client.Http.Tests`, and add the five projects to the solution.
+Copy [Client.Abstractions](./templates/src/Client/Core/Client.Abstractions/), [Client.Pipeline](./templates/src/Client/Core/Client.Pipeline/), and [Client.Http](./templates/src/Client/Core/Client.Http/) to `src/Client/Core/`, with the example's `Client.Pipeline.Tests` and `Client.Http.Tests`, and add the five projects to the solution.
 - Risk: a retyped client drifts in its timeout, its outcomes, or its log from every other dotnet client of the catalog.
 - Fix: copy the files unchanged after namespace substitution; `make test` passes.
 
-### One client per API, behind its abstractions
-Write each API as two projects under `src/Infrastructure/Client/{Api}/`: `{Api}.Abstractions` with `I{Api}`, one method per operation in the API's terms and its own item records, referencing only `Client.Abstractions`; and `{Api}` with `{Api}Client : I{Api}` holding `Prefix` (`"TODO_API"`), `Operations` (an `HttpOperation` - method, path, and `Retryable` where a repeat does what one call does - for every operation it calls), the client middleware in its constructor, and per operation one method that calls `HttpApiClient.CallAsync` with private request and response records and maps the answer.
+### Entity-focused client contracts and implementations
+Write each entity-focused API client as two projects under `src/Client/{Api}/`: `{Api}.Abstractions` with `I{Api}`, one method per operation in the API's terms and its own item records, referencing only `Client.Abstractions`; and `{Api}` with `{Api}Client : I{Api}` holding `Prefix` (`"TODO_API"`), `Operations` (an `HttpOperation` - method, path, and `Retryable` where a repeat does what one call does - for every operation it calls), the client middleware in its constructor, and per operation one method that calls `HttpApiClient.CallAsync` with private request and response records and maps the answer.
 
 ```csharp
-public async Task<IReadOnlyList<TodoApiItem>> PlanItemsAsync(IReadOnlyList<string> titles, CancellationToken cancellationToken)
+public async Task<IReadOnlyList<TodoApiItemDto>> PlanItemsAsync(IReadOnlyList<string> titles, CancellationToken cancellationToken)
 {
     var answer = await _http.CallAsync<PlanItemsResponse>(HttpMethod.Post, "/v1/items/plan", new PlanItemsRequest(titles), cancellationToken);
-    return answer.Items.Select(item => new TodoApiItem(item.Title, item.Done)).ToList();
+    return answer.Items.Select(item => new TodoApiItemDto(item.Title, item.Done)).ToList();
 }
 ```
 
-- Violation: `HttpClient` used in the client; `{Module}.Application` referencing `{Api}` itself; the client throwing an `ErrorKindException`; an operation missing from `Operations`.
+- Violation: `HttpClient` used in the client; `{Module}.Service` referencing `{Api}` itself; the client throwing an `ErrorKindException`; an operation missing from `Operations`.
 - Risk: a call that bypasses `CallAsync` has no timeout, no log, and no request id; a service on the client's class cannot be tested with a fake.
-- Fix: follow the example's [TodoApiClient.cs](./examples/src/Infrastructure/Client/TodoApi/TodoApi/TodoApiClient.cs); a new operation adds its method to `I{Api}` and `{Api}Client`, its line of `Operations`, and its route in [TodoApiMock.cs](./examples/src/Infrastructure/Client/TodoApi/TodoApi/Mock/TodoApiMock.cs).
+- Fix: follow the example's [TodoApiClient.cs](./examples/src/Client/TodoApi/TodoApi/TodoApiClient.cs); a new operation adds its method to `I{Api}` and `{Api}Client`, its line of `Operations`, and its route in [TodoApiMock.cs](./examples/src/Client/TodoApi/TodoApi/Mock/TodoApiMock.cs).
 
 ### Answer every operation in the mock
-Write the mock of each client as `src/Infrastructure/Client/{Api}/{Api}/Mock/{Api}Mock.cs`, an `HttpMessageHandler` that answers every operation of `Operations` as the API does, with stable data and no state, and pass it to `HttpApiClient` in the client; `{API}_HOST=mock` runs the client against it. The file's name says it is a mock and of which client.
+Write the mock of each client as `src/Client/{Api}/{Api}/Mock/{Api}Mock.cs`, an `HttpMessageHandler` that answers every operation of `Operations` as the API does, with stable data and no state, and pass it to `HttpApiClient` in the client; `{API}_HOST=mock` runs the client against it. The file's name says it is a mock and of which client.
 - Risk: an operation the mock does not route answers 404 under `mock`, and the service cannot run without the other service.
 - Fix: the mocked scenario of the client's feature runs it and checks its answer.
 
 ### Map the outcomes in the service
-Write the service over the client in `{Module}.Application/Services/` with its interface beside it, per [app-layers-in-dotnet](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md), and its errors as factory methods of `{Service}Errors.cs` beside it: catch `ApiUnavailableException` as the kind unavailable, each `ApiStatusException` code it expects as the kind that fits, with the outcome as the inner exception, and let anything else pass with no kind; throw an entity's rule error raised by the API's answer as an exception with no inner exception.
+Write the adapting service in `src/Service/{Module}/{Module}.Service/` with its interface beside its consumer, per [app-layers-in-dotnet](library/develop/dotnet/app-layers-in-dotnet.skill/app-layers-in-dotnet.skill.md), and its errors as factory methods of `{Service}Errors.cs` beside it: catch `ApiUnavailableException` as the kind unavailable, each `ApiStatusException` code it expects as the kind that fits, with the outcome as the inner exception, and let anything else pass with no kind; throw an entity's rule error raised by the API's answer as an exception with no inner exception.
 
 ```csharp
 catch (ApiUnavailableException unavailable)
@@ -113,7 +115,7 @@ Copy the example's `Client.Http.Tests` with the chosen service namespace: it cov
 # Check list
 - [ ] `Client.Abstractions` and `Client.Http` are copies of the filled templates.
 - [ ] Each API has `{Api}.Abstractions` with `I{Api}` and `{Api}` with `Prefix`, `Operations`, one method per operation, and `Mock/{Api}Mock.cs`; the contract scenario passes.
-- [ ] `{Module}.Application` references `{Api}.Abstractions` only; the service maps `ApiUnavailableException`, the expected `ApiStatusException` codes, and nothing else to kinds.
+- [ ] `{Module}.Application` declares the consumer interface without client references; `{Module}.Service` references `{Api}.Abstractions`; the service maps `ApiUnavailableException`, the expected `ApiStatusException` codes, and nothing else to kinds.
 - [ ] `Program.cs` loads the settings and registers the client and the service in `// [services]`.
 - [ ] `make test` passes; `bash test/check-vp-attach.sh` in this repository reports no base file changed beyond [attach.allow](./attach.allow).
 

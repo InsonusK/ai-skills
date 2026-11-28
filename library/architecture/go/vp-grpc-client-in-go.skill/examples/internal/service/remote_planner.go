@@ -1,4 +1,4 @@
-// Package service holds the services: each wraps one infrastructure and
+// Package service holds the services: each adapts one external system and
 // speaks the application's language, hiding the technique behind it.
 package service
 
@@ -7,15 +7,15 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/example/todo/internal/client/core/outcome"
+	todoapicontract "github.com/example/todo/internal/client/todoapi/contract"
 	"github.com/example/todo/internal/domain/entity"
-	"github.com/example/todo/internal/infrastructure/client/core/outcome"
-	"github.com/example/todo/internal/infrastructure/client/todoapi"
 	"github.com/example/todo/internal/shared/errorkind"
 )
 
-// todoAPI is what RemotePlanner needs of its infrastructure; todoapi.Client has it.
+// todoAPI is what RemotePlanner needs of its logical API client; todoapi.Client has it.
 type todoAPI interface {
-	PlanItems(ctx context.Context, titles []string) ([]todoapi.Item, error)
+	PlanItems(ctx context.Context, titles []string) ([]todoapicontract.ItemDTO, error)
 }
 
 // RemotePlanner plans items with the todo service. It turns the API's

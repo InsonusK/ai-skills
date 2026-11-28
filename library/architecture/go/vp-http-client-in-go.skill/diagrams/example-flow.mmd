@@ -2,9 +2,9 @@ sequenceDiagram
     autonumber
     participant Handler as PlanRemoteItemsHandler<br/>internal/command/plan_remote_items.go
     participant Service as service.RemotePlanner<br/>internal/service/remote_planner.go
-    participant Adapter as todoapi.Client<br/>internal/infrastructure/client/todoapi/todoapi.go
-    participant Client as httpclient.Client<br/>internal/infrastructure/client/core/httpclient/client.go
-    participant API as Todo API, or with TODO_API_HOST=mock its emulator<br/>internal/infrastructure/client/todoapi/mock/todoapi_mock.go
+    participant Adapter as todoapi.Client<br/>internal/client/todoapi/todoapi.go
+    participant Client as httpclient.Client<br/>internal/client/core/httpclient/client.go
+    participant API as Todo API, or with TODO_API_HOST=mock its emulator<br/>internal/client/todoapi/mock/todoapi_mock.go
 
     Handler->>+Service: Plan(ctx, titles)
     Service->>+Adapter: PlanItems(ctx, titles)
@@ -15,6 +15,6 @@ sequenceDiagram
     API-->>-Client: answer, or none
     Note over Client: record "http client response received"
     Client-->>-Adapter: answer, or outcome.ErrUnavailable, or outcome.StatusError
-    Adapter-->>-Service: []todoapi.Item, or the outcome
+    Adapter-->>-Service: []todoapicontract.ItemDTO, or the outcome
     Note over Service: ErrUnavailable: errorkind.Wrap(ErrUnavailable, message, err). Code INVALID_ARGUMENT: errorkind.Wrap(ErrInvalid, ...). Anything else: no kind
     Service-->>-Handler: []entity.Item, or an error

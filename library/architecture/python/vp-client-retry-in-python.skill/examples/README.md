@@ -3,8 +3,8 @@
 The base plateau in Python with the HTTP client and the client retry variation points attached: the startup command
 `PlanRemoteItems` plans its titles with another service's todo API (`POST /v1/items/plan` of
 `docs/integration/client/todo/openapi.json`) through the service `RemotePlanner` and the client
-`todo.infrastructure.client.todo_api`, built on the fixed client code `todo.infrastructure.client.core`
-(`httpclient` on httpx2); the client middleware `todo.infrastructure.client.middleware.retry` sends a call of a
+`todo.client.todo_api`, built on the fixed client code `todo.client.core`
+(`httpclient` on httpx2); the client middleware `todo.client.middleware.retry` sends a call of a
 retryable operation again while the API does not answer.
 
 ```bash
